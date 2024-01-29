@@ -6,8 +6,9 @@
  */
 
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, useColorScheme } from 'react-native';
+import { SafeAreaView, StyleSheet, useColorScheme } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import LoginScreen from './src/ui/screens/LoginScreen';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -18,7 +19,7 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaView style={[backgroundStyle, styles.container]}>
-      <Text>Hello</Text>
+      <LoginScreen />
     </SafeAreaView>
   );
 }
