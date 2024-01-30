@@ -4,15 +4,18 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
   useColorScheme
 } from 'react-native';
 
 import { Colors } from '../../components/colors';
+import CategoryScreen from '../CategoryScreen';
 
 function DashboardClientScreen(): React.JSX.Element {
 
   const [searchText,setSearchText] = useState<string>('');
+  const [showCategoryScreen, setShowCategoryScreen] = useState<boolean>(false);
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -20,8 +23,13 @@ function DashboardClientScreen(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.dark : Colors.light,
   };
 
-  return (
-    <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
+  function navigateToCategory() {
+    setShowCategoryScreen(true)
+  }
+
+  const dashboardScreen = () => {
+    return (
+      <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
       <View style={[styles.innerContainer, backgroundStyle]}>
         <View style={styles.innerComponentsContainer}>
           <View style={styles.searchInputContainer}>
@@ -32,9 +40,9 @@ function DashboardClientScreen(): React.JSX.Element {
               style={styles.textInput}
             />
           </View>
-          <View style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
+          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
             <Text>Gestion des documents</Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
       <View style={styles.topContainer}>
@@ -43,6 +51,15 @@ function DashboardClientScreen(): React.JSX.Element {
         </View>
         <Text style={styles.navigationHistory}>Tableau de bord</Text>
       </View>
+    </SafeAreaView>
+    )
+  }
+
+  return (
+    <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
+      {
+        showCategoryScreen ? <CategoryScreen setShowCategoryScreen={setShowCategoryScreen} /> : dashboardScreen()
+      }
     </SafeAreaView>
   );
 }
