@@ -3,14 +3,16 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   useColorScheme
 } from 'react-native';
 
-import { Colors } from '../../components/colors';
 import CategoryScreen from '../CategoryScreen';
+
+import AppIcon from '../../components/AppIcon';
+import SearchTextInput from '../../components/SearchTextInput';
+import { Colors } from '../../components/colors';
 
 function DashboardClientScreen(): React.JSX.Element {
 
@@ -33,11 +35,9 @@ function DashboardClientScreen(): React.JSX.Element {
         <View style={[styles.innerContainer, backgroundStyle]}>
           <View style={styles.innerComponentsContainer}>
             <View style={styles.searchInputContainer}>
-              <TextInput
-                value={searchText}
-                onChangeText={setSearchText}
-                placeholder={'Recherche'}
-                style={styles.textInput}
+              <SearchTextInput 
+                searchText={searchText}
+                setSearchText={setSearchText}
               />
             </View>
             <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
@@ -46,9 +46,7 @@ function DashboardClientScreen(): React.JSX.Element {
           </View>
         </View>
         <View style={styles.topContainer}>
-          <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
-            <Text style={{color: Colors.white }}>App Icon</Text>
-          </View>
+          <AppIcon />
           <Text style={styles.navigationHistory}>Tableau de bord</Text>
         </View>
       </SafeAreaView>
@@ -98,29 +96,10 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   // Components
-  appIcon: {
-    borderRadius: 10,
-    width: 150,
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 60,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: 'black',
-  },
   navigationHistory: {
     paddingLeft: 8,
     fontSize: 20,
     fontWeight: '600'
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
-    width: '30%',
-    padding: 10,
-    margin: 8,
   },
 });
 

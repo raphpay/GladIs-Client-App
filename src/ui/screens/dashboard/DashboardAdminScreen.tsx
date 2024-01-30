@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import {
-  Image,
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
   useColorScheme
 } from 'react-native';
 
+import plusIcon from '../../assets/plus.png';
+import AppIcon from '../../components/AppIcon';
+import IconButton from '../../components/IconButton';
+import SearchTextInput from '../../components/SearchTextInput';
 import { Colors } from '../../components/colors';
 
 function DashboardAdminScreen(): React.JSX.Element {
@@ -27,20 +28,14 @@ function DashboardAdminScreen(): React.JSX.Element {
       <View style={[styles.innerContainer, backgroundStyle]}>
         <View style={styles.innerComponentsContainer}>
           <View style={styles.searchInputContainer}>
-            <TouchableOpacity>
-              <View style={[styles.addButtonContainer, { backgroundColor: Colors.primary}]}>
-                <Image
-                  style={styles.plusIcon}
-                  source={require('../../assets/plus.png')}
-                />
-                <Text style={styles.textButtonColor}>Ajouter un client</Text>
-              </View>
-            </TouchableOpacity>
-            <TextInput
-              value={searchText}
-              onChangeText={setSearchText}
-              placeholder={'Recherche'}
-              style={styles.textInput}
+            <IconButton
+              title='Hello'
+              icon={plusIcon}
+              onClick={() => { console.log('hello')}}
+            />
+            <SearchTextInput
+              searchText={searchText}
+              setSearchText={setSearchText}
             />
           </View>
           <View style={[styles.clientContainer, { backgroundColor: Colors.textInput}]}>
@@ -54,9 +49,7 @@ function DashboardAdminScreen(): React.JSX.Element {
         </View>
       </View>
       <View style={styles.topContainer}>
-        <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
-          <Text style={{color: Colors.white }}>App Icon</Text>
-        </View>
+        <AppIcon />
         <Text style={styles.navigationHistory}>Tableau de bord</Text>
       </View>
     </SafeAreaView>
@@ -107,26 +100,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 4
   },
-  addButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    height: 50,
-    padding: 8
-  },
   // Components
-  appIcon: {
-    borderRadius: 10,
-    width: 150,
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 60,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: 'black',
-  },
   navigationHistory: {
     paddingLeft: 8,
     fontSize: 20,
@@ -140,16 +114,6 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 8,
   },
-  textButtonColor: {
-    color: 'white',
-    fontSize: 14,
-    padding: 4
-  },
-  plusIcon: {
-    width: 20,
-    height: 20,
-    padding: 4
-  }
 });
 
 export default DashboardAdminScreen;
