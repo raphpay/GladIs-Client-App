@@ -30,28 +30,28 @@ function DashboardClientScreen(): React.JSX.Element {
   const dashboardScreen = () => {
     return (
       <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-      <View style={[styles.innerContainer, backgroundStyle]}>
-        <View style={styles.innerComponentsContainer}>
-          <View style={styles.searchInputContainer}>
-            <TextInput
-              value={searchText}
-              onChangeText={setSearchText}
-              placeholder={'Recherche'}
-              style={styles.textInput}
-            />
+        <View style={[styles.innerContainer, backgroundStyle]}>
+          <View style={styles.innerComponentsContainer}>
+            <View style={styles.searchInputContainer}>
+              <TextInput
+                value={searchText}
+                onChangeText={setSearchText}
+                placeholder={'Recherche'}
+                style={styles.textInput}
+              />
+            </View>
+            <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
+              <Text>Gestion des documents</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
-            <Text>Gestion des documents</Text>
-          </TouchableOpacity>
         </View>
-      </View>
-      <View style={styles.topContainer}>
-        <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
-          <Text style={{color: Colors.white }}>App Icon</Text>
+        <View style={styles.topContainer}>
+          <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
+            <Text style={{color: Colors.white }}>App Icon</Text>
+          </View>
+          <Text style={styles.navigationHistory}>Tableau de bord</Text>
         </View>
-        <Text style={styles.navigationHistory}>Tableau de bord</Text>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
     )
   }
 
