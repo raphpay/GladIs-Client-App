@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +16,7 @@ function LoginScreen(): React.JSX.Element {
   const [email, onEmailChange] = useState('');
   const [password, onPasswordChange] = useState('');
 
+  const { t } = useTranslation();
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -26,28 +28,28 @@ function LoginScreen(): React.JSX.Element {
   return (
     <SafeAreaView style={[backgroundStyle, styles.container]}>
       <AppIcon />
-      <Text>Se connecter à GladIs</Text>
+      <Text>{t('login.title')}</Text>
       <TextInput
         value={email}
         onChangeText={onEmailChange}
-        placeholder={'Email'}
+        placeholder={t('login.email')}
         keyboardType='email-address'
         style={styles.textInput}
       />
       <TextInput
         value={password}
         onChangeText={onPasswordChange}
-        placeholder={'Mot de passe'}
+        placeholder={t('login.password')}
         style={styles.textInput}
       />
       <TouchableOpacity style={[styles.button, { backgroundColor: primaryColor }]}>
         <Text style={[styles.buttonText, { color: Colors.white }]}>
-          Se connecter
+          {t('login.login')}
         </Text>
       </TouchableOpacity>
       <TouchableOpacity>
         <Text style={[styles.textButtonText, { color: primaryColor }]}>
-          Pas de compte ? Contactez votre fournisseur.
+          {t('login.signUp')}
         </Text>
       </TouchableOpacity>
     </SafeAreaView>

@@ -1,0 +1,43 @@
+{
+  "login": {
+    "title": "Connect to GladIs!",
+    "email": "Email",
+    "password": "Password",
+    "login": "Log in",
+    "signUp": "No account yet? Please contact your supplier."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "modules": {
+      "documentManagement": "Document Management"
+    },
+    "buttons": {
+      "addClient": "Add a client"
+    }
+  },
+  "categories": {
+    "title": "Document management",
+    "systemQuality": {
+      "title": "System quality"
+    },
+    "description": "Description"
+  },
+  "subCategories": {
+    "title": "System quality",
+    "processus": "Processus"
+  },
+  "documents": {
+    "title": "Processus",
+    "document": {
+      "management": "PRS_M01_Management"
+    }
+  },
+  "components": {
+    "searchTextInput": {
+      "placeholder": "Search"
+    },
+    "buttons": {
+      "back": "Back"
+    }
+  }
+}

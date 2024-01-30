@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   StyleSheet,
   TextInput
@@ -11,11 +12,13 @@ type SearchTextInputProps = {
 
 function SearchTextInput(props: SearchTextInputProps): React.JSX.Element {
 
+  const { t } = useTranslation();
+
   return (
     <TextInput
       value={props.searchText}
       onChangeText={props.setSearchText}
-      placeholder={'Recherche'}
+      placeholder={t('components.searchTextInput.placeholder')}
       style={styles.textInput}
     />
   );

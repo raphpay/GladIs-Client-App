@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Image,
   SafeAreaView,
@@ -23,7 +24,8 @@ type CategoryAppProps = {
 function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
   const [searchText,setSearchText] = useState<string>('');
   const [showSubCategoryScreen, setShowSubCategoryScreen] = useState<boolean>(false);
-
+  
+  const { t } = useTranslation();
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -53,14 +55,14 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
               <View style={styles.categoryContainer}>
                 <View style={styles.categoryImageContainer} />
                 <View style={[styles.categoryTextsContainer, { backgroundColor: Colors.textInput }]}>
-                  <Text style={styles.categoryTitle}>Système qualité</Text>
-                  <Text style={styles.categoryDescription}>Description</Text>
+                  <Text style={styles.categoryTitle}>{t('categories.systemQuality.title')}</Text>
+                  <Text style={styles.categoryDescription}>{t('categories.description')}</Text>
                 </View>
               </View>
             </TouchableOpacity>
           </View>
           <View style={styles.backButtonContainer}>
-            <TextButton title={'Retour'} onPress={navigateBack}/>
+            <TextButton title={t('components.buttons.back')} onPress={navigateBack}/>
           </View>
         </View>
         <View style={styles.topContainer}>
@@ -68,11 +70,15 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
           <View>
             <View style={styles.navigationHistoryContainer}>
               <TouchableOpacity onPress={navigateBack}>
-                <Text style={styles.navigationHistory}>Tableau de bord</Text>
+                <Text style={styles.navigationHistory}>
+                  {t('dashboard.title')}
+                </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
             </View>
-            <Text style={styles.currentPageTitle}>Gestion des documents</Text>
+            <Text style={styles.currentPageTitle}>
+              {t('categories.title')}
+            </Text>
           </View>
         </View>
       </SafeAreaView>

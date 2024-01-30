@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,12 +15,14 @@ import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
 import { Colors } from '../../components/colors';
 
+
 function DashboardClientScreen(): React.JSX.Element {
 
   const [searchText,setSearchText] = useState<string>('');
   const [showCategoryScreen, setShowCategoryScreen] = useState<boolean>(false);
 
   const isDarkMode = useColorScheme() === 'dark';
+  const { t } = useTranslation();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.dark : Colors.light,
@@ -41,13 +44,15 @@ function DashboardClientScreen(): React.JSX.Element {
               />
             </View>
             <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
-              <Text>Gestion des documents</Text>
+              <Text>{t('dashboard.modules.documentManagement')}</Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.topContainer}>
           <AppIcon style={styles.appIcon}/>
-          <Text style={styles.navigationHistory}>Tableau de bord</Text>
+          <Text style={styles.navigationHistory}>
+            {t('dashboard.title')}
+          </Text>
         </View>
       </SafeAreaView>
     )

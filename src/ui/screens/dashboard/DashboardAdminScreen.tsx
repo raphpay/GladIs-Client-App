@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,6 +20,7 @@ function DashboardAdminScreen(): React.JSX.Element {
   const [searchText,setSearchText] = useState<string>('');
 
   const isDarkMode = useColorScheme() === 'dark';
+  const { t } = useTranslation();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.dark : Colors.light,
@@ -30,7 +32,7 @@ function DashboardAdminScreen(): React.JSX.Element {
         <View style={styles.innerComponentsContainer}>
           <View style={styles.searchInputContainer}>
             <IconButton
-              title='Hello'
+              title={t('dashboard.buttons.addClient')}
               icon={plusIcon}
               onPress={() => { console.log('hello')}}
             />
@@ -44,14 +46,16 @@ function DashboardAdminScreen(): React.JSX.Element {
               <Text>Client A</Text>
             </View>
             <View style={styles.innerBottomClientContainer}>
-              <Text>Gestion des documents</Text>
+              <Text>{t('dashboard.modules.documentManagement')}</Text>
             </View>
           </View>
         </View>
       </View>
       <View style={styles.topContainer}>
         <AppIcon style={styles.appIcon} />
-        <Text style={styles.navigationHistory}>Tableau de bord</Text>
+        <Text style={styles.navigationHistory}>
+          {t('dashboard.title')}
+        </Text>
       </View>
     </SafeAreaView>
   );
