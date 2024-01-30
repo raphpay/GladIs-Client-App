@@ -11,9 +11,9 @@ import {
   Colors,
 } from '../components/colors';
 
-interface AppIconProps {
-  style?: StyleProp<ViewStyle>; // Style prop for extra styles
-}
+type AppIconProps = {
+  style?: StyleProp<ViewStyle>;
+};
 
 function AppIcon(props: AppIconProps): React.JSX.Element {
 

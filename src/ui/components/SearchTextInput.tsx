@@ -4,7 +4,6 @@ import {
   TextInput
 } from 'react-native';
 
-
 type SearchTextInputProps = {
   searchText: string;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;

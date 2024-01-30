@@ -12,9 +12,7 @@ import {
 
 import AppIcon from '../components/AppIcon';
 import TextButton from '../components/TextButton';
-import {
-  Colors,
-} from '../components/colors';
+import { Colors } from '../components/colors';
 
 type DocumentsAppProps = {
   setShowDocumentsScreen: React.Dispatch<React.SetStateAction<boolean>>;

@@ -7,11 +7,12 @@ import {
   useColorScheme
 } from 'react-native';
 
-import plusIcon from '../../assets/plus.png';
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 import { Colors } from '../../components/colors';
+
+import plusIcon from '../../assets/plus.png';
 
 function DashboardAdminScreen(): React.JSX.Element {
 

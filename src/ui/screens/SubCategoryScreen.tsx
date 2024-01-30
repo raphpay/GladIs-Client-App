@@ -14,9 +14,7 @@ import DocumentsScreen from './DocumentsScreen';
 
 import AppIcon from '../components/AppIcon';
 import TextButton from '../components/TextButton';
-import {
-  Colors,
-} from '../components/colors';
+import { Colors } from '../components/colors';
 
 type SubCategoryAppProps = {
   setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;

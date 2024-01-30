@@ -5,9 +5,10 @@ import {
   useColorScheme
 } from 'react-native';
 
-import { Colors } from '../../components/colors';
 import DashboardAdminScreen from './DashboardAdminScreen';
 import DashboardClientScreen from './DashboardClientScreen';
+
+import { Colors } from '../../components/colors';
 
 type DashboardScreenProps = {
   // TODO: Change this accordingly with the userType

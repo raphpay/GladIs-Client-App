@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
+
 import { Colors } from './colors';
 
 type TextButtonProps = {
