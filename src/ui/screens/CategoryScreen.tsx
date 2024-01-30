@@ -86,7 +86,10 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
     <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
       {
         showSubCategoryScreen ? 
-          <SubCategoryScreen setShowSubCategoryScreen={setShowSubCategoryScreen}  /> : 
+          <SubCategoryScreen 
+            setShowCategoryScreen={props.setShowCategoryScreen}
+            setShowSubCategoryScreen={setShowSubCategoryScreen}
+          /> : 
           mainScreen()
       }
     </SafeAreaView>
