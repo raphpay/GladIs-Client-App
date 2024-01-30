@@ -102,7 +102,13 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
   return (
     <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
       {
-        showDocumentsScreen ? <DocumentsScreen setShowDocumentsScreen={setShowDocumentsScreen} /> : mainScreen()
+        showDocumentsScreen ?
+        <DocumentsScreen
+          setShowDocumentsScreen={setShowDocumentsScreen}
+          setShowSubCategoryScreen={props.setShowSubCategoryScreen}
+          setShowCategoryScreen={props.setShowCategoryScreen}
+        /> :
+        mainScreen()
       }
     </SafeAreaView>
   );
