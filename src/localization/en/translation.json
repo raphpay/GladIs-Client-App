@@ -1,0 +1,9 @@
+{
+  "login": {
+    "title": "Connect to GladIs!",
+    "email": "Email",
+    "password": "Password",
+    "login": "Log in",
+    "signUp": "No account yet? Please contact your supplier."
+  }
+}
