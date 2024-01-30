@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   useColorScheme
@@ -14,6 +13,7 @@ type CategoryAppProps = {
   setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+import SearchTextInput from '../components/SearchTextInput';
 import { Colors } from '../components/colors';
 import SubCategoryScreen from './SubCategoryScreen';
 
@@ -41,11 +41,9 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
         <View style={[styles.innerContainer, backgroundStyle]}>
           <View style={styles.innerComponentsContainer}>
             <View style={styles.searchInputContainer}>
-              <TextInput
-                value={searchText}
-                onChangeText={setSearchText}
-                placeholder={'Recherche'}
-                style={styles.textInput}
+              <SearchTextInput 
+                searchText={searchText}
+                setSearchText={setSearchText}
               />
             </View>
             <TouchableOpacity onPress={navigateToSubCategory}>
@@ -176,14 +174,6 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     fontSize: 20,
     fontWeight: '600'
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
-    width: '30%',
-    padding: 10,
-    margin: 8,
   },
   backButton: {
     width: 178,
