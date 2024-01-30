@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Image,
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   useColorScheme
 } from 'react-native';
 
 import AppIcon from '../components/AppIcon';
+import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
 
@@ -24,6 +25,7 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
 
   const isDarkMode = useColorScheme() === 'dark';
+  const { t } = useTranslation();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.dark : Colors.light,
@@ -53,11 +55,9 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
         <View style={[styles.innerContainer, backgroundStyle]}>
           <View style={styles.innerComponentsContainer}>
             <View style={styles.searchInputContainer}>
-              <TextInput
-                value={searchText}
-                onChangeText={setSearchText}
-                placeholder={'Recherche'}
-                style={styles.textInput}
+              <SearchTextInput
+                searchText={searchText}
+                setSearchText={setSearchText}
               />
             </View>
             <TouchableOpacity onPress={navigateToDocument}>
@@ -65,7 +65,9 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
                 <View style={styles.subCategoryLineRow}>
                   <Image source={require('../assets/PDF_file_icon.png')}/>
                   <View style={styles.subCategoryTextContainer}>
-                    <Text>PRS_M01_Management</Text>
+                    <Text>
+                      {t('documents.document.management')}
+                    </Text>
                   </View>
                   <Image source={require('../assets/ellipsis.png')}/>
                 </View>
@@ -74,7 +76,7 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
             </TouchableOpacity>
           </View>
           <View style={styles.backButtonContainer}>
-            <TextButton title={'Retour'} onPress={navigateBack}/>
+            <TextButton title={t('components.buttons.back')} onPress={navigateBack}/>
           </View>
         </View>
         <View style={styles.topContainer}>
@@ -82,19 +84,27 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
           <View>
             <View style={styles.navigationHistoryContainer}>
               <TouchableOpacity onPress={navigateToDashboard}>
-                <Text style={styles.navigationHistory}>Tableau de bord</Text>
+                <Text style={styles.navigationHistory}>
+                  {t('dashboard.title')}
+                </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToCategories}>
-                <Text style={styles.navigationHistory}>Gestion des documents</Text>
+                <Text style={styles.navigationHistory}>
+                  {t('categories.title')}
+                </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
-                <Text style={styles.navigationHistory}>Système qualité</Text>
+                <Text style={styles.navigationHistory}>
+                  {t('subCategories.title')}
+                </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
             </View>
-            <Text style={styles.currentPageTitle}>Processus</Text>
+            <Text style={styles.currentPageTitle}>
+            {t('documents.title')}
+            </Text>
           </View>
         </View>
       </SafeAreaView>

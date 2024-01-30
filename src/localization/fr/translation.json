@@ -1,7 +1,43 @@
 {
-  "_comment": "src/localization/en/translation.json",
-  "demoScope": {
-    "title": "i18next is Great!",
-    "description": "Everyone understands me!"
+  "login": {
+    "title": "Se connecter à GladIs!",
+    "email": "Email",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "signUp": "Pas de compte ? Contactez votre fournisseur."
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "modules": {
+      "documentManagement": "Gestion des documents"
+    },
+    "buttons": {
+      "addClient": "Ajouter un client"
+    }
+  },
+  "categories": {
+    "title": "Gestion des documents",
+    "systemQuality": {
+      "title": "Système qualité"
+    },
+    "description": "Description"
+  },
+  "subCategories": {
+    "title": "Système qualité",
+    "processus": "Processus"
+  },
+  "documents": {
+    "title": "Processus",
+    "document": {
+      "management": "PRS_M01_Management"
+    }
+  },
+  "components": {
+    "searchTextInput": {
+      "placeholder": "Recherche"
+    },
+    "buttons": {
+      "back": "Retour"
+    }
   }
 }

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Image,
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   useColorScheme
@@ -13,6 +13,7 @@ import {
 import DocumentsScreen from './DocumentsScreen';
 
 import AppIcon from '../components/AppIcon';
+import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
 
@@ -24,7 +25,8 @@ type SubCategoryAppProps = {
 function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [showDocumentsScreen, setShowDocumentsScreen] = useState<boolean>(false);
-
+  
+  const { t } = useTranslation();
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -50,11 +52,9 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
         <View style={[styles.innerContainer, backgroundStyle]}>
           <View style={styles.innerComponentsContainer}>
             <View style={styles.searchInputContainer}>
-              <TextInput
-                value={searchText}
-                onChangeText={setSearchText}
-                placeholder={'Recherche'}
-                style={styles.textInput}
+              <SearchTextInput 
+                searchText={searchText}
+                setSearchText={setSearchText}
               />
             </View>
             <TouchableOpacity onPress={navigateToDocuments}>
@@ -64,7 +64,9 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
                     <Text>P</Text>
                   </View>
                   <View style={styles.subCategoryTextContainer}>
-                    <Text>Processus</Text>
+                    <Text>
+                      {t('subCategories.processus')}
+                    </Text>
                   </View>
                   <Image source={require('../assets/ellipsis.png')}/>
                 </View>
@@ -73,7 +75,7 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
             </TouchableOpacity>
           </View>
           <View style={styles.backButtonContainer}>
-            <TextButton title={'Retour'} onPress={navigateBack}/>
+            <TextButton title={t('components.buttons.back')} onPress={navigateBack}/>
           </View>
         </View>
         <View style={styles.topContainer}>
@@ -81,15 +83,21 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
           <View>
             <View style={styles.navigationHistoryContainer}>
               <TouchableOpacity onPress={navigateToDashboard}>
-                <Text style={styles.navigationHistory}>Tableau de bord</Text>
+                <Text style={styles.navigationHistory}>
+                  {t('dashboard.title')}
+                </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
-                <Text style={styles.navigationHistory}>Gestion des documents</Text>
+                <Text style={styles.navigationHistory}>
+                  {t('categories.title')}
+                </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
             </View>
-            <Text style={styles.currentPageTitle}>Système qualité</Text>
+            <Text style={styles.currentPageTitle}>
+              {t('subCategories.title')}
+            </Text>
           </View>
         </View>
       </SafeAreaView>
