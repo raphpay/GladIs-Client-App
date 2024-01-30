@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import {
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
   useColorScheme
 } from 'react-native';
 
-import { Colors } from '../components/colors';
+import { Colors } from '../../components/colors';
 
-function DashboardScreen(): React.JSX.Element {
+function DashboardAdminScreen(): React.JSX.Element {
+
   const [searchText,setSearchText] = useState<string>('');
 
   const isDarkMode = useColorScheme() === 'dark';
@@ -24,6 +27,15 @@ function DashboardScreen(): React.JSX.Element {
       <View style={[styles.innerContainer, backgroundStyle]}>
         <View style={styles.innerComponentsContainer}>
           <View style={styles.searchInputContainer}>
+            <TouchableOpacity>
+              <View style={[styles.addButtonContainer, { backgroundColor: Colors.primary}]}>
+                <Image
+                  style={styles.plusIcon}
+                  source={require('../../assets/plus.png')}
+                />
+                <Text style={styles.textButtonColor}>Ajouter un client</Text>
+              </View>
+            </TouchableOpacity>
             <TextInput
               value={searchText}
               onChangeText={setSearchText}
@@ -31,11 +43,19 @@ function DashboardScreen(): React.JSX.Element {
               style={styles.textInput}
             />
           </View>
+          <View style={[styles.clientContainer, { backgroundColor: Colors.textInput}]}>
+            <View style={[styles.innerTopClientContainer, { backgroundColor: Colors.secondary }]}>
+              <Text>Client A</Text>
+            </View>
+            <View style={styles.innerBottomClientContainer}>
+              <Text>Gestion des documents</Text>
+            </View>
+          </View>
         </View>
       </View>
       <View style={styles.topContainer}>
         <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
-          <Text>App Icon</Text>
+          <Text style={{color: Colors.white }}>App Icon</Text>
         </View>
         <Text style={styles.navigationHistory}>Tableau de bord</Text>
       </View>
@@ -69,6 +89,32 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row-reverse'
   },
+  innerTopClientContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '75%',
+    borderTopEndRadius: 10,
+    borderTopStartRadius: 10
+  },
+  innerBottomClientContainer: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    height: '25%',
+  },
+  clientContainer: {
+    height: 75,
+    width: 190,
+    borderRadius: 10,
+    margin: 4
+  },
+  addButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    height: 50,
+    padding: 8
+  },
   // Components
   appIcon: {
     borderRadius: 10,
@@ -92,8 +138,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '30%',
     padding: 10,
-    margin: 8
+    margin: 8,
   },
+  textButtonColor: {
+    color: 'white',
+    fontSize: 14,
+    padding: 4
+  },
+  plusIcon: {
+    width: 20,
+    height: 20,
+    padding: 4
+  }
 });
 
-export default DashboardScreen;
+export default DashboardAdminScreen;
