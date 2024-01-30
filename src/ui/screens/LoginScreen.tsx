@@ -5,10 +5,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
   useColorScheme
 } from 'react-native';
 
+import AppIcon from '../components/AppIcon';
 import { Colors } from '../components/colors';
 
 function LoginScreen(): React.JSX.Element {
@@ -25,9 +25,7 @@ function LoginScreen(): React.JSX.Element {
 
   return (
     <SafeAreaView style={[backgroundStyle, styles.container]}>
-      <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
-        <Text>App icon</Text>
-      </View>
+      <AppIcon />
       <Text>Se connecter à GladIs</Text>
       <TextInput
         value={email}
@@ -61,13 +59,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  appIcon: {
-    borderRadius: 10,
-    width: 100,
-    height: 100,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   textInput: {
     borderWidth: 1,

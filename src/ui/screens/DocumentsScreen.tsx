@@ -10,6 +10,7 @@ import {
   useColorScheme
 } from 'react-native';
 
+import AppIcon from '../components/AppIcon';
 import {
   Colors,
 } from '../components/colors';
@@ -80,9 +81,7 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
           </View>
         </View>
         <View style={styles.topContainer}>
-          <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
-            <Text style={{color: Colors.white }}>App Icon</Text>
-          </View>
+          <AppIcon style={styles.appIcon} />
           <View>
             <View style={styles.navigationHistoryContainer}>
               <TouchableOpacity onPress={navigateToDashboard}>
@@ -179,15 +178,8 @@ const styles = StyleSheet.create({
   },
   // Components
   appIcon: {
-    borderRadius: 10,
-    width: 150,
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginLeft: 60,
     marginTop: 16,
-    borderWidth: 1,
-    borderColor: 'black',
   },
   navigationHistory: {
     paddingLeft: 8,

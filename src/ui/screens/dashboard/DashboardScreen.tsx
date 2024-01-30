@@ -64,17 +64,6 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   // Components
-  appIcon: {
-    borderRadius: 10,
-    width: 150,
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 60,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: 'black',
-  },
   navigationHistory: {
     paddingLeft: 8,
     fontSize: 20,

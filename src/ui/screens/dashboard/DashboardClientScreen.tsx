@@ -46,7 +46,7 @@ function DashboardClientScreen(): React.JSX.Element {
           </View>
         </View>
         <View style={styles.topContainer}>
-          <AppIcon />
+          <AppIcon style={styles.appIcon}/>
           <Text style={styles.navigationHistory}>Tableau de bord</Text>
         </View>
       </SafeAreaView>
@@ -96,6 +96,10 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   // Components
+  appIcon: {
+    marginLeft: 60,
+    marginTop: 16,
+  },
   navigationHistory: {
     paddingLeft: 8,
     fontSize: 20,

@@ -13,6 +13,7 @@ type CategoryAppProps = {
   setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
 import { Colors } from '../components/colors';
 import SubCategoryScreen from './SubCategoryScreen';
@@ -63,9 +64,7 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
           </View>
         </View>
         <View style={styles.topContainer}>
-          <View style={[styles.appIcon, { backgroundColor: Colors.primary }]}>
-            <Text style={{color: Colors.white }}>App Icon</Text>
-          </View>
+          <AppIcon style={styles.appIcon} />
           <View>
             <View style={styles.navigationHistoryContainer}>
               <TouchableOpacity onPress={navigateBack}>
@@ -154,15 +153,8 @@ const styles = StyleSheet.create({
   },
   // Components
   appIcon: {
-    borderRadius: 10,
-    width: 150,
-    height: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginLeft: 60,
     marginTop: 16,
-    borderWidth: 1,
-    borderColor: 'black',
   },
   navigationHistory: {
     paddingLeft: 8,
