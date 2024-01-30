@@ -31,7 +31,7 @@ function DashboardAdminScreen(): React.JSX.Element {
             <IconButton
               title='Hello'
               icon={plusIcon}
-              onClick={() => { console.log('hello')}}
+              onPress={() => { console.log('hello')}}
             />
             <SearchTextInput
               searchText={searchText}

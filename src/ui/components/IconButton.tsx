@@ -15,18 +15,18 @@ import {
 type IconButtonProps = {
   title: string;
   icon: ImageSourcePropType;
-  onClick: () => void;
+  onPress: () => void;
 };
 
 function IconButton(props: IconButtonProps): React.JSX.Element {
   return (
-    <TouchableOpacity onPress={props.onClick}>
+    <TouchableOpacity onPress={props.onPress}>
       <View style={[styles.container, { backgroundColor: Colors.primary}]}>
           <Image
             style={styles.icon}
             source={props.icon}
           />
-        <Text style={styles.textButtonColor}>Ajouter un client</Text>
+        <Text style={[styles.textButton, { color: Colors.white }]}>{props.title}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -46,8 +46,7 @@ const styles = StyleSheet.create({
     height: 20,
     padding: 4
   },
-  textButtonColor: {
-    color: 'white',
+  textButton: {
     fontSize: 14,
     padding: 4
   },

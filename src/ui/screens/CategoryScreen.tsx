@@ -9,14 +9,16 @@ import {
   useColorScheme
 } from 'react-native';
 
-type CategoryAppProps = {
-  setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+import SubCategoryScreen from './SubCategoryScreen';
 
 import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
+import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
-import SubCategoryScreen from './SubCategoryScreen';
+
+type CategoryAppProps = {
+  setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
   const [searchText,setSearchText] = useState<string>('');
@@ -58,9 +60,7 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
             </TouchableOpacity>
           </View>
           <View style={styles.backButtonContainer}>
-            <TouchableOpacity style={[styles.backButton, { backgroundColor: Colors.primary }]} onPress={navigateBack}>
-              <Text style={{ color: Colors.white }}>Retour</Text>
-            </TouchableOpacity>
+            <TextButton title={'Retour'} onPress={navigateBack}/>
           </View>
         </View>
         <View style={styles.topContainer}>
@@ -166,13 +166,6 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     fontSize: 20,
     fontWeight: '600'
-  },
-  backButton: {
-    width: 178,
-    height: 55,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   categoryTitle: {
     fontSize: 12

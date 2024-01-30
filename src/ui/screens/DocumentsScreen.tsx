@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import AppIcon from '../components/AppIcon';
+import TextButton from '../components/TextButton';
 import {
   Colors,
 } from '../components/colors';
@@ -75,9 +76,7 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
             </TouchableOpacity>
           </View>
           <View style={styles.backButtonContainer}>
-            <TouchableOpacity style={[styles.backButton, { backgroundColor: Colors.primary }]} onPress={navigateBack}>
-              <Text style={{ color: Colors.white }}>Retour</Text>
-            </TouchableOpacity>
+            <TextButton title={'Retour'} onPress={navigateBack}/>
           </View>
         </View>
         <View style={styles.topContainer}>
@@ -199,13 +198,6 @@ const styles = StyleSheet.create({
     width: '30%',
     padding: 10,
     margin: 8,
-  },
-  backButton: {
-    width: 178,
-    height: 55,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
   },
   categoryTitle: {
     fontSize: 12
