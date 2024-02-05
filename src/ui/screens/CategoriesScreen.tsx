@@ -10,9 +10,7 @@ import {
   View,
   useColorScheme
 } from 'react-native';
-
 import { IDashboardStackParams } from '../../navigation/Routes';
-
 
 import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
@@ -22,8 +20,8 @@ import { Colors } from '../components/colors';
 type CategoriesScreenProps = NativeStackScreenProps<IDashboardStackParams, 'CategoriesScreen'>;
 
 function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
+  const { params } = props.route;
   const [searchText,setSearchText] = useState<string>('');
-  const [showSubCategoryScreen, setShowSubCategoryScreen] = useState<boolean>(false);
   
   const { t } = useTranslation();
   const isDarkMode = useColorScheme() === 'dark';
@@ -37,7 +35,12 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   }
 
   function navigateToSubCategory() {
-    setShowSubCategoryScreen(true);
+    props.navigation.navigate('SubCategoryScreen',
+    {
+      isAdmin: params.isAdmin,
+      category: params.category,
+      subCategory: 'systemQuality'
+    });
   }
 
   return (
@@ -54,7 +57,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
               <View style={styles.categoryContainer}>
                 <View style={styles.categoryImageContainer} />
                 <View style={[styles.categoryTextsContainer, { backgroundColor: Colors.textInput }]}>
-                  <Text style={styles.categoryTitle}>{t('categories.systemQuality.title')}</Text>
+                  <Text style={styles.categoryTitle}>{t('subCategories.systemQuality.title')}</Text>
                   <Text style={styles.categoryDescription}>{t('categories.description')}</Text>
                 </View>
               </View>
@@ -76,7 +79,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
               <Image source={require('../assets/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t('categories.title')}
+              {t(`categories.${params.category}.title`)}
             </Text>
           </View>
         </View>

@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,6 +10,7 @@ import {
   View,
   useColorScheme
 } from 'react-native';
+import { IDashboardStackParams } from '../../navigation/Routes';
 
 import DocumentsScreen from './DocumentsScreen';
 
@@ -17,12 +19,10 @@ import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
 
-type SubCategoryAppProps = {
-  setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSubCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type SubCategoryScreenProps = NativeStackScreenProps<IDashboardStackParams, 'CategoriesScreen'>;
 
-function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
+function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
+  const { params } = props.route;
   const [searchText, setSearchText] = useState<string>('');
   const [showDocumentsScreen, setShowDocumentsScreen] = useState<boolean>(false);
   
@@ -34,12 +34,15 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
   };
 
   function navigateToDashboard() {
-    props.setShowCategoryScreen(false);
-    props.setShowSubCategoryScreen(false);
+    if (params.isAdmin) {
+      props.navigation.navigate('DashboardAdminScreen', { isAdmin: true})
+    } else {
+      props.navigation.navigate('DashboardClientScreen', { isAdmin: false})
+    }
   }
 
   function navigateBack() {
-    props.setShowSubCategoryScreen(false);
+    props.navigation.goBack();
   }
 
   function navigateToDocuments() {
@@ -90,13 +93,13 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
               <Image source={require('../assets/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
-                  {t('categories.title')}
+                  {t(`categories.${params.category}.title`)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t('subCategories.title')}
+              {t(`subCategories.${params.subCategory}.title`)}
             </Text>
           </View>
         </View>

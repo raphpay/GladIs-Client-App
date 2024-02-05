@@ -12,9 +12,9 @@ function DashboardScreen(props: DashboardScreenProps): any {
   useEffect(() => {
     if (params.isAdmin) {
       // TODO: Create constants
-      props.navigation.navigate('DashboardAdminScreen')
+      props.navigation.navigate('DashboardAdminScreen', { isAdmin: true })
     } else {
-      props.navigation.navigate('DashboardClientScreen')
+      props.navigation.navigate('DashboardClientScreen', { isAdmin: false })
     }
   }, []);
 }

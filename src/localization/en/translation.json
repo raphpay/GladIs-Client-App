@@ -16,14 +16,18 @@
     }
   },
   "categories": {
-    "title": "Document management",
+    "documentManagement": {
+      "title": "Document management"
+    },
     "systemQuality": {
       "title": "System quality"
     },
     "description": "Description"
   },
   "subCategories": {
-    "title": "System quality",
+    "systemQuality": {
+      "title": "System quality"
+    },
     "processus": "Processus"
   },
   "documents": {

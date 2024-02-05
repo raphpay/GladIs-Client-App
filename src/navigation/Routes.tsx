@@ -8,11 +8,12 @@ import React from 'react';
 import LoginScreen from '../ui/screens/LoginScreen';
 import SignUpScreen from '../ui/screens/SignUpScreen';
 
-import CategoriesScreen from '../ui/screens/CategoriesScreen';
-
 import DashboardAdminScreen from '../ui/screens/dashboard/DashboardAdminScreen';
 import DashboardClientScreen from '../ui/screens/dashboard/DashboardClientScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
+
+import CategoriesScreen from '../ui/screens/CategoriesScreen';
+import SubCategoryScreen from '../ui/screens/SubCategoryScreen';
 
 export type IRootStackParams = {
   Home: undefined,
@@ -27,9 +28,10 @@ export type ILoginStackParams = {
 
 export type IDashboardStackParams = {
   DashboardScreen: { isAdmin: boolean },
-  CategoriesScreen: { category: string },
-  DashboardAdminScreen: undefined,
-  DashboardClientScreen: undefined,
+  CategoriesScreen: { isAdmin: boolean, category: string },
+  SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
+  DashboardAdminScreen: { isAdmin: boolean },
+  DashboardClientScreen: { isAdmin: boolean },
 }
 
 let HomeStack = createStackNavigator<ILoginStackParams>();
@@ -81,6 +83,13 @@ function Dashboard() {
       <DashboardStack.Screen
         name={'CategoriesScreen'}
         component={CategoriesScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <DashboardStack.Screen
+        name={'SubCategoryScreen'}
+        component={SubCategoryScreen}
         options={{
           headerShown: false
         }}

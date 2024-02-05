@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { IDashboardStackParams } from '../../../navigation/Routes';
 
-
 import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
 import { Colors } from '../../components/colors';
@@ -19,6 +18,7 @@ import { Colors } from '../../components/colors';
 type DashboardClientScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DashboardClientScreen'>;
 
 function DashboardClientScreen(props: DashboardClientScreenProps): React.JSX.Element {
+  const { params } = props.route;
 
   const [searchText,setSearchText] = useState<string>('');
 
@@ -30,15 +30,7 @@ function DashboardClientScreen(props: DashboardClientScreenProps): React.JSX.Ele
   };
 
   function navigateToCategory() {
-    props.navigation.navigate('CategoriesScreen', { category: t('dashboard.modules.documentManagement')})
-  }
-
-  const dashboardScreen = () => {
-    return (
-      <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-        
-      </SafeAreaView>
-    )
+    props.navigation.navigate('CategoriesScreen', { isAdmin: params.isAdmin, category: 'documentManagement'})
   }
 
   return (

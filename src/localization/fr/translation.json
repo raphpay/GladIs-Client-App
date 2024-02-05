@@ -16,14 +16,18 @@
     }
   },
   "categories": {
-    "title": "Gestion des documents",
+    "documentManagement": {
+      "title": "Gestion des documents"
+    },
     "systemQuality": {
       "title": "Système qualité"
     },
     "description": "Description"
   },
   "subCategories": {
-    "title": "Système qualité",
+    "systemQuality": {
+      "title": "Système qualité"
+    },
     "processus": "Processus"
   },
   "documents": {
