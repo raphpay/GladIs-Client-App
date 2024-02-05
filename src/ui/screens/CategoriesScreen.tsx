@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -10,18 +11,17 @@ import {
   useColorScheme
 } from 'react-native';
 
-import SubCategoryScreen from './SubCategoryScreen';
+import { IDashboardStackParams } from '../../navigation/Routes';
+
 
 import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
 
-type CategoryAppProps = {
-  setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type CategoriesScreenProps = NativeStackScreenProps<IDashboardStackParams, 'CategoriesScreen'>;
 
-function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
+function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   const [searchText,setSearchText] = useState<string>('');
   const [showSubCategoryScreen, setShowSubCategoryScreen] = useState<boolean>(false);
   
@@ -33,17 +33,16 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
   };
 
   function navigateBack() {
-    props.setShowCategoryScreen(false);
+    props.navigation.goBack();
   }
 
   function navigateToSubCategory() {
     setShowSubCategoryScreen(true);
   }
 
-  const mainScreen = () => {
-    return (
-      <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-        <View style={[styles.innerContainer, backgroundStyle]}>
+  return (
+    <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
+      <View style={[styles.innerContainer, backgroundStyle]}>
           <View style={styles.innerComponentsContainer}>
             <View style={styles.searchInputContainer}>
               <SearchTextInput 
@@ -81,20 +80,6 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
             </Text>
           </View>
         </View>
-      </SafeAreaView>
-    )
-  }
-
-  return (
-    <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-      {
-        showSubCategoryScreen ? 
-          <SubCategoryScreen 
-            setShowCategoryScreen={props.setShowCategoryScreen}
-            setShowSubCategoryScreen={setShowSubCategoryScreen}
-          /> : 
-          mainScreen()
-      }
     </SafeAreaView>
   );
 }
@@ -181,4 +166,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CategoryScreen;
+export default CategoriesScreen;

@@ -1,3 +1,4 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -8,18 +9,18 @@ import {
   View,
   useColorScheme
 } from 'react-native';
+import { IDashboardStackParams } from '../../../navigation/Routes';
 
-import CategoryScreen from '../CategoryScreen';
 
 import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
 import { Colors } from '../../components/colors';
 
+type DashboardClientScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DashboardClientScreen'>;
 
-function DashboardClientScreen(): React.JSX.Element {
+function DashboardClientScreen(props: DashboardClientScreenProps): React.JSX.Element {
 
   const [searchText,setSearchText] = useState<string>('');
-  const [showCategoryScreen, setShowCategoryScreen] = useState<boolean>(false);
 
   const isDarkMode = useColorScheme() === 'dark';
   const { t } = useTranslation();
@@ -29,44 +30,43 @@ function DashboardClientScreen(): React.JSX.Element {
   };
 
   function navigateToCategory() {
-    setShowCategoryScreen(true)
+    props.navigation.navigate('CategoriesScreen', { category: t('dashboard.modules.documentManagement')})
   }
 
   const dashboardScreen = () => {
     return (
       <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-        <View style={[styles.innerContainer, backgroundStyle]}>
-          <View style={styles.innerComponentsContainer}>
-            <View style={styles.searchInputContainer}>
-              <SearchTextInput 
-                searchText={searchText}
-                setSearchText={setSearchText}
-              />
-            </View>
-            <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
-              <Text>{t('dashboard.modules.documentManagement')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.topContainer}>
-          <AppIcon style={styles.appIcon}/>
-          <Text style={styles.navigationHistory}>
-            {t('dashboard.title')}
-          </Text>
-        </View>
+        
       </SafeAreaView>
     )
   }
 
   return (
     <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-      {
-        showCategoryScreen ? <CategoryScreen setShowCategoryScreen={setShowCategoryScreen} /> : dashboardScreen()
-      }
+      <View style={[styles.innerContainer, backgroundStyle]}>
+        <View style={styles.innerComponentsContainer}>
+          <View style={styles.searchInputContainer}>
+            <SearchTextInput 
+              searchText={searchText}
+              setSearchText={setSearchText}
+            />
+          </View>
+          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
+            <Text>{t('dashboard.modules.documentManagement')}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.topContainer}>
+        <AppIcon style={styles.appIcon}/> 
+        <Text style={styles.navigationHistory}>
+          {t('dashboard.title')}
+        </Text>
+      </View>
     </SafeAreaView>
   );
 }
 
+// TODO: Find a way to separate styles from the file
 const styles = StyleSheet.create({
   // Containers
   container: {
