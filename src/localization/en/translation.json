@@ -27,11 +27,12 @@
   "subCategories": {
     "systemQuality": {
       "title": "System quality"
-    },
-    "processus": "Processus"
+    }
   },
   "documents": {
-    "title": "Processus",
+    "processus": {
+      "title": "Processus"
+    },
     "document": {
       "management": "PRS_M01_Management"
     }

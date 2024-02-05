@@ -13,6 +13,7 @@ import DashboardClientScreen from '../ui/screens/dashboard/DashboardClientScreen
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 
 import CategoriesScreen from '../ui/screens/CategoriesScreen';
+import DocumentsScreen from '../ui/screens/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/SubCategoryScreen';
 
 export type IRootStackParams = {
@@ -28,10 +29,11 @@ export type ILoginStackParams = {
 
 export type IDashboardStackParams = {
   DashboardScreen: { isAdmin: boolean },
-  CategoriesScreen: { isAdmin: boolean, category: string },
-  SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
   DashboardAdminScreen: { isAdmin: boolean },
   DashboardClientScreen: { isAdmin: boolean },
+  CategoriesScreen: { isAdmin: boolean, category: string },
+  SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
+  DocumentsScreen: { isAdmin: boolean, category: string, subCategory: string, documents: string },
 }
 
 let HomeStack = createStackNavigator<ILoginStackParams>();
@@ -90,6 +92,13 @@ function Dashboard() {
       <DashboardStack.Screen
         name={'SubCategoryScreen'}
         component={SubCategoryScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <DashboardStack.Screen
+        name={'DocumentsScreen'}
+        component={DocumentsScreen}
         options={{
           headerShown: false
         }}

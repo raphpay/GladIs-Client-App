@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,19 +10,17 @@ import {
   View,
   useColorScheme
 } from 'react-native';
+import { IDashboardStackParams } from '../../navigation/Routes';
 
 import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
 
-type DocumentsAppProps = {
-  setShowDocumentsScreen: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSubCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type DocumentsScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DocumentsScreen'>;
 
-function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
+function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
+  const { params } = props.route;
   const [searchText, setSearchText] = useState<string>('');
 
   const isDarkMode = useColorScheme() === 'dark';
@@ -32,18 +31,24 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
   };
 
   function navigateToDashboard() {
-    props.setShowCategoryScreen(false);
-    props.setShowSubCategoryScreen(false);
+    if (params.isAdmin) {
+      props.navigation.navigate('DashboardAdminScreen', { isAdmin: true})
+    } else {
+      props.navigation.navigate('DashboardClientScreen', { isAdmin: false})
+    }
   }
 
   function navigateToCategories() {
-    props.setShowCategoryScreen(true);
-    props.setShowSubCategoryScreen(false);
-    props.setShowDocumentsScreen(false);
+    props.navigation.navigate('CategoriesScreen',
+    {
+      isAdmin: params.isAdmin,
+      category: params.category
+    });
   }
 
   function navigateBack() {
-    props.setShowDocumentsScreen(false)
+    // Back to subcategories
+    props.navigation.goBack();
   }
 
   function navigateToDocument() {
@@ -91,19 +96,19 @@ function DocumentsScreen(props: DocumentsAppProps): React.JSX.Element {
               <Image source={require('../assets/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToCategories}>
                 <Text style={styles.navigationHistory}>
-                  {t('categories.title')}
+                  {t(`categories.${params.category}.title`)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
-                  {t('subCategories.title')}
+                  {t(`subCategories.${params.subCategory}.title`)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../assets/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-            {t('documents.title')}
+            {t(`documents.${params.documents}.title`)}
             </Text>
           </View>
         </View>
