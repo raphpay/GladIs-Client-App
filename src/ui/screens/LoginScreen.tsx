@@ -15,6 +15,8 @@ import TextButton from '../components/TextButton';
 type LoginScreenProps = NativeStackScreenProps<ILoginStackParams, 'LoginScreen'>;
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
+  const { navigation } = props;
+
   const [identifier, onIdentifierChange] = useState('');
   const [password, onPasswordChange] = useState('');
 
@@ -33,8 +35,8 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     props.navigation.navigate('SignUpScreen');
   }
 
-  function showAlert() {
-    // Show alert
+  function goToPasswordReset() {
+    navigation.navigate('PasswordResetScreen', { identifier })
   }
 
   return (
@@ -54,7 +56,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       />
       <TextButton title={t('login.login')} onPress={login} width={'40%'}/>
       <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
-      <SimpleTextButton title={t('login.forgottenPassword')} onPress={showAlert} />
+      <SimpleTextButton title={t('login.forgottenPassword')} onPress={goToPasswordReset} />
     </SafeAreaView>
   );
 }

@@ -7,6 +7,12 @@
     "signUp": "No account yet? Please contact your supplier.",
     "forgottenPassword": "Forgot password?"
   },
+  "passwordReset": {
+    "title": "Password reset",
+    "message": "A mail containing a temporary password will be sent to you.",
+    "email": "Email",
+    "reset": "Reset"
+  },
   "dashboard": {
     "title": "Dashboard",
     "modules": {

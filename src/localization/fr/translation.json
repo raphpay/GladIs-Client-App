@@ -7,6 +7,12 @@
     "signUp": "Pas de compte ? Contactez votre fournisseur.",
     "forgottenPassword": "Mot de passe oublié ?"
   },
+  "passwordReset": {
+    "title": "Réinitialisation du mot de passe",
+    "message": "Un email contenant un mot de passe temporaire vous sera envoyé",
+    "email": "Adresse Email",
+    "reset": "Réinitialiser"
+  },
   "dashboard": {
     "title": "Tableau de bord",
     "modules": {

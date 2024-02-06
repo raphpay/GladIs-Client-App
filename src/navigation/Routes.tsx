@@ -3,7 +3,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React from 'react';
-
+import { useTranslation } from 'react-i18next';
 
 import LoginScreen from '../ui/screens/LoginScreen';
 import SignUpScreen from '../ui/screens/SignUpScreen';
@@ -14,6 +14,7 @@ import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 
 import CategoriesScreen from '../ui/screens/CategoriesScreen';
 import DocumentsScreen from '../ui/screens/DocumentsScreen';
+import PasswordResetScreen from '../ui/screens/PasswordResetScreen';
 import SubCategoryScreen from '../ui/screens/SubCategoryScreen';
 
 export type IRootStackParams = {
@@ -24,7 +25,8 @@ export type IRootStackParams = {
 export type ILoginStackParams = {
   LoginScreen: undefined,
   SignUpScreen: undefined,
-  DashboardStack: undefined
+  PasswordResetScreen: { identifier: string },
+  DashboardStack: IDashboardStackParams,
 }
 
 export type IDashboardStackParams = {
@@ -41,6 +43,8 @@ let RootStack = createStackNavigator<IRootStackParams>();
 let DashboardStack = createStackNavigator<IDashboardStackParams>();
 
 function Home() {
+  const { t } = useTranslation();
+
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -53,6 +57,15 @@ function Home() {
       <HomeStack.Screen
         name={'SignUpScreen'}
         component={SignUpScreen}
+      />
+      <HomeStack.Screen
+        name={'PasswordResetScreen'}
+        component={PasswordResetScreen}
+        options={
+          {
+            title: t('passwordReset.title')
+          }
+        }
       />
     </HomeStack.Navigator>
   )
