@@ -1,6 +1,8 @@
 export interface IColors {
   primary: string;
   secondary: string;
+  tertiary: string;
+  lightBlue: string;
   success: string;
   danger: string;
   warning: string;
@@ -14,8 +16,10 @@ export interface IColors {
 }
 
 export const Colors: IColors = {
-  primary: '#101878',
-  secondary: '#7174AC',
+  primary: '#133D64',
+  secondary: '#1066AF',
+  tertiary: '#071FDF',
+  lightBlue: '#92D3E9',
   success: '#28a745',
   danger: '#dc3545',
   warning: '#ffc107',
