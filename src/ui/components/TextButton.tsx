@@ -5,7 +5,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-import { Colors } from './colors';
+import { Colors } from '../assets/colors/colors';
 
 type TextButtonProps = {
   title: string;

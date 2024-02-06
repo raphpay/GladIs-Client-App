@@ -1,24 +1,20 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  Text,
-  TextInput,
-  TouchableOpacity
-} from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
 
+import { Colors } from '../assets/colors/colors';
 import AppIcon from '../components/AppIcon';
-import { Colors } from '../components/colors';
 
 import { ILoginStackParams } from '../../navigation/Routes';
 
 import styles from '../assets/styles/LoginScreenStyles';
+import GladisTextInput from '../components/GladisTextInput';
 
 type LoginScreenProps = NativeStackScreenProps<ILoginStackParams, 'LoginScreen'>;
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
-  const [email, onEmailChange] = useState('');
+  const [identifier, onIdentifierChange] = useState('');
   const [password, onPasswordChange] = useState('');
 
   const { t } = useTranslation();
@@ -40,18 +36,16 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     <SafeAreaView style={styles.container}>
       <AppIcon />
       <Text>{t('login.title')}</Text>
-      <TextInput
-        value={email}
-        onChangeText={onEmailChange}
-        placeholder={t('login.email')}
-        keyboardType='email-address'
-        style={styles.textInput}
+      <GladisTextInput
+        value={identifier}
+        onValueChange={onIdentifierChange}
+        placeholder={t('login.identifier')}
       />
-      <TextInput
+      <GladisTextInput
         value={password}
-        onChangeText={onPasswordChange}
+        onValueChange={onPasswordChange}
         placeholder={t('login.password')}
-        style={styles.textInput}
+        secureTextEntry={true}
       />
       <TouchableOpacity onPress={login} style={styles.button}>
         <Text style={[styles.buttonText, { color: Colors.white }]}>

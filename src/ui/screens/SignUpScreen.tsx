@@ -6,7 +6,7 @@ import {
   useColorScheme
 } from 'react-native';
 
-import { Colors } from '../components/colors';
+import { Colors } from '../assets/colors/colors';
 
 function SignUpScreen(): React.JSX.Element {
 

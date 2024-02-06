@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import { IDashboardStackParams } from '../../navigation/Routes';
 
+import { Colors } from '../assets/colors/colors';
 import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
-import { Colors } from '../components/colors';
 
 type DocumentsScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DocumentsScreen'>;
 

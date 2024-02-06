@@ -9,7 +9,7 @@ import {
 
 import {
   Colors,
-} from '../components/colors';
+} from '../assets/colors/colors';
 
 type AppIconProps = {
   style?: StyleProp<ViewStyle>;

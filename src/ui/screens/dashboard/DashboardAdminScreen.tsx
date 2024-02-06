@@ -8,10 +8,10 @@ import {
   useColorScheme
 } from 'react-native';
 
+import { Colors } from '../../assets/colors/colors';
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
-import { Colors } from '../../components/colors';
 
 import plusIcon from '../../assets/images/plus.png';
 

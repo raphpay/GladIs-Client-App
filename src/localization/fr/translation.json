@@ -1,7 +1,7 @@
 {
   "login": {
     "title": "Se connecter à GladIs!",
-    "email": "Email",
+    "identifier": "Identifiant",
     "password": "Mot de passe",
     "login": "Se connecter",
     "signUp": "Pas de compte ? Contactez votre fournisseur."

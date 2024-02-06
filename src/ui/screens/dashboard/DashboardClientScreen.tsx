@@ -11,9 +11,9 @@ import {
 } from 'react-native';
 import { IDashboardStackParams } from '../../../navigation/Routes';
 
+import { Colors } from '../../assets/colors/colors';
 import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
-import { Colors } from '../../components/colors';
 
 type DashboardClientScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DashboardClientScreen'>;
 
