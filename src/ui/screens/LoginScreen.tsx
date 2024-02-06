@@ -1,15 +1,16 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text } from 'react-native';
 
-import { Colors } from '../assets/colors/colors';
 import AppIcon from '../components/AppIcon';
 
 import { ILoginStackParams } from '../../navigation/Routes';
 
 import styles from '../assets/styles/LoginScreenStyles';
 import GladisTextInput from '../components/GladisTextInput';
+import SimpleTextButton from '../components/SimpleTextButton';
+import TextButton from '../components/TextButton';
 
 type LoginScreenProps = NativeStackScreenProps<ILoginStackParams, 'LoginScreen'>;
 
@@ -32,6 +33,10 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     props.navigation.navigate('SignUpScreen');
   }
 
+  function showAlert() {
+    // Show alert
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <AppIcon />
@@ -47,16 +52,9 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         placeholder={t('login.password')}
         secureTextEntry={true}
       />
-      <TouchableOpacity onPress={login} style={styles.button}>
-        <Text style={[styles.buttonText, { color: Colors.white }]}>
-          {t('login.login')}
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={goToSignUp}>
-        <Text style={styles.textButtonText}>
-          {t('login.signUp')}
-        </Text>
-      </TouchableOpacity>
+      <TextButton title={t('login.login')} onPress={login} width={'40%'}/>
+      <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
+      <SimpleTextButton title={t('login.forgottenPassword')} onPress={showAlert} />
     </SafeAreaView>
   );
 }

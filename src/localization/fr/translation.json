@@ -4,7 +4,8 @@
     "identifier": "Identifiant",
     "password": "Mot de passe",
     "login": "Se connecter",
-    "signUp": "Pas de compte ? Contactez votre fournisseur."
+    "signUp": "Pas de compte ? Contactez votre fournisseur.",
+    "forgottenPassword": "Mot de passe oublié ?"
   },
   "dashboard": {
     "title": "Tableau de bord",

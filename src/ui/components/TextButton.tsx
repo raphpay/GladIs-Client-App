@@ -1,40 +1,26 @@
 import React from 'react';
 import {
-  StyleSheet,
+  DimensionValue,
   Text,
   TouchableOpacity
 } from 'react-native';
 
-import { Colors } from '../assets/colors/colors';
+import styles from '../assets/styles/components/TextButtonStyles';
 
 type TextButtonProps = {
   title: string;
   onPress: () => void;
+  width?: DimensionValue | undefined
 };
 
 function TextButton(props: TextButtonProps): React.JSX.Element {
+  const { title, onPress, width } = props;
+
   return (
-    <TouchableOpacity
-      style={[styles.container, { backgroundColor: Colors.primary }]}
-      onPress={props.onPress}
-    >
-      <Text style={[styles.textButton, { color: Colors.white }]}>{props.title}</Text>
+    <TouchableOpacity style={[styles.container, { width }]} onPress={onPress}>
+      <Text style={styles.textButton}>{title}</Text>
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: 178,
-    height: 55,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  textButton: {
-    fontSize: 14,
-    padding: 4
-  },
-});
 
 export default TextButton;

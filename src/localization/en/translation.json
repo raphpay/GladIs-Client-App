@@ -4,7 +4,8 @@
     "identifier": "Identifier",
     "password": "Password",
     "login": "Log in",
-    "signUp": "No account yet? Please contact your supplier."
+    "signUp": "No account yet? Please contact your supplier.",
+    "forgottenPassword": "Forgot password?"
   },
   "dashboard": {
     "title": "Dashboard",
