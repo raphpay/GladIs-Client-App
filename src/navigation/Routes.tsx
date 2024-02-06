@@ -57,15 +57,16 @@ function Home() {
       <HomeStack.Screen
         name={'SignUpScreen'}
         component={SignUpScreen}
+        options={{
+          title: t('quotation.title')
+        }}
       />
       <HomeStack.Screen
         name={'PasswordResetScreen'}
         component={PasswordResetScreen}
-        options={
-          {
-            title: t('passwordReset.title')
-          }
-        }
+        options={{
+          title: t('passwordReset.title')
+        }}
       />
     </HomeStack.Navigator>
   )

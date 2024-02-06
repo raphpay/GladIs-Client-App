@@ -13,6 +13,23 @@
     "email": "Adresse Email",
     "reset": "Réinitialiser"
   },
+  "quotation": {
+    "title": "Request for quotation",
+    "name": "NAME First Name",
+    "phone": "Phone number",
+    "companyName": "Nom de l'entreprise",
+    "email": "Email",
+    "products": "Type of products sold",
+    "modules": {
+      "title": "Select the modules",
+      "documentManagement": "Document Management",
+      "module1": "Module1"
+    },
+    "employees": "Number of employees",
+    "users": "Number of potential users",
+    "capital": "Sales amount",
+    "submit": "Submit"
+  },
   "dashboard": {
     "title": "Tableau de bord",
     "modules": {
