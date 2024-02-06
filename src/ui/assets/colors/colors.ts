@@ -18,7 +18,7 @@ export interface IColors {
 export const Colors: IColors = {
   primary: '#133D64',
   secondary: '#1066AF',
-  tertiary: '#071FDF',
+  tertiary: '#07AFDF',
   lightBlue: '#92D3E9',
   success: '#28a745',
   danger: '#dc3545',
