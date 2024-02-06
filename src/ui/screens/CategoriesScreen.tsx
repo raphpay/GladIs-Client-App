@@ -76,7 +76,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
                   {t('dashboard.title')}
                 </Text>
               </TouchableOpacity>
-              <Image source={require('../assets/chevron.right.png')}/>
+              <Image source={require('../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
               {t(`categories.${params.category}.title`)}

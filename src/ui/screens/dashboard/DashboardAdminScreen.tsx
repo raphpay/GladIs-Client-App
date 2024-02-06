@@ -13,7 +13,7 @@ import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 import { Colors } from '../../components/colors';
 
-import plusIcon from '../../assets/plus.png';
+import plusIcon from '../../assets/images/plus.png';
 
 function DashboardAdminScreen(): React.JSX.Element {
 
