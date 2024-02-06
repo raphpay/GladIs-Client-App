@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,22 +10,18 @@ import {
   View,
   useColorScheme
 } from 'react-native';
-
-import DocumentsScreen from './DocumentsScreen';
+import { IDashboardStackParams } from '../../navigation/Routes';
 
 import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
 
-type SubCategoryAppProps = {
-  setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-  setShowSubCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type SubCategoryScreenProps = NativeStackScreenProps<IDashboardStackParams, 'SubCategoryScreen'>;
 
-function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
+function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
+  const { params } = props.route;
   const [searchText, setSearchText] = useState<string>('');
-  const [showDocumentsScreen, setShowDocumentsScreen] = useState<boolean>(false);
   
   const { t } = useTranslation();
   const isDarkMode = useColorScheme() === 'dark';
@@ -34,87 +31,79 @@ function SubCategoryScreen(props: SubCategoryAppProps): React.JSX.Element {
   };
 
   function navigateToDashboard() {
-    props.setShowCategoryScreen(false);
-    props.setShowSubCategoryScreen(false);
+    if (params.isAdmin) {
+      props.navigation.navigate('DashboardAdminScreen', { isAdmin: true})
+    } else {
+      props.navigation.navigate('DashboardClientScreen', { isAdmin: false})
+    }
   }
 
   function navigateBack() {
-    props.setShowSubCategoryScreen(false);
+    props.navigation.goBack();
   }
 
   function navigateToDocuments() {
-    setShowDocumentsScreen(true);
-  }
-
-  const mainScreen = () => {
-    return (
-      <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-        <View style={[styles.innerContainer, backgroundStyle]}>
-          <View style={styles.innerComponentsContainer}>
-            <View style={styles.searchInputContainer}>
-              <SearchTextInput 
-                searchText={searchText}
-                setSearchText={setSearchText}
-              />
-            </View>
-            <TouchableOpacity onPress={navigateToDocuments}>
-              <View style={styles.subCategoryLineContainer}>
-                <View style={styles.subCategoryLineRow}>
-                  <View style={[styles.letterCircle, { backgroundColor: Colors.textInput }]}>
-                    <Text>P</Text>
-                  </View>
-                  <View style={styles.subCategoryTextContainer}>
-                    <Text>
-                      {t('subCategories.processus')}
-                    </Text>
-                  </View>
-                  <Image source={require('../assets/ellipsis.png')}/>
-                </View>
-                <View style={styles.separator}/>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.backButtonContainer}>
-            <TextButton title={t('components.buttons.back')} onPress={navigateBack}/>
-          </View>
-        </View>
-        <View style={styles.topContainer}>
-          <AppIcon style={styles.appIcon}/>
-          <View>
-            <View style={styles.navigationHistoryContainer}>
-              <TouchableOpacity onPress={navigateToDashboard}>
-                <Text style={styles.navigationHistory}>
-                  {t('dashboard.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../assets/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateBack}>
-                <Text style={styles.navigationHistory}>
-                  {t('categories.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../assets/chevron.right.png')}/>
-            </View>
-            <Text style={styles.currentPageTitle}>
-              {t('subCategories.title')}
-            </Text>
-          </View>
-        </View>
-      </SafeAreaView>
-    )
+    props.navigation.navigate('DocumentsScreen', {
+      isAdmin: params.isAdmin,
+      category: params.category,
+      subCategory: params.subCategory,
+      documents: 'processus'
+    })
   }
 
   return (
     <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-      {
-        showDocumentsScreen ?
-        <DocumentsScreen
-          setShowDocumentsScreen={setShowDocumentsScreen}
-          setShowSubCategoryScreen={props.setShowSubCategoryScreen}
-          setShowCategoryScreen={props.setShowCategoryScreen}
-        /> :
-        mainScreen()
-      }
+      <View style={[styles.innerContainer, backgroundStyle]}>
+        <View style={styles.innerComponentsContainer}>
+          <View style={styles.searchInputContainer}>
+            <SearchTextInput 
+              searchText={searchText}
+              setSearchText={setSearchText}
+            />
+          </View>
+          <TouchableOpacity onPress={navigateToDocuments}>
+            <View style={styles.subCategoryLineContainer}>
+              <View style={styles.subCategoryLineRow}>
+                <View style={[styles.letterCircle, { backgroundColor: Colors.textInput }]}>
+                  <Text>P</Text>
+                </View>
+                <View style={styles.subCategoryTextContainer}>
+                  <Text>
+                    {t('documents.processus.title')}
+                  </Text>
+                </View>
+                <Image source={require('../assets/ellipsis.png')}/>
+              </View>
+              <View style={styles.separator}/>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.backButtonContainer}>
+          <TextButton title={t('components.buttons.back')} onPress={navigateBack}/>
+        </View>
+      </View>
+      <View style={styles.topContainer}>
+        <AppIcon style={styles.appIcon}/>
+        <View>
+          <View style={styles.navigationHistoryContainer}>
+            <TouchableOpacity onPress={navigateToDashboard}>
+              <Text style={styles.navigationHistory}>
+                {t('dashboard.title')}
+              </Text>
+            </TouchableOpacity>
+            <Image source={require('../assets/chevron.right.png')}/>
+            <TouchableOpacity onPress={navigateBack}>
+              <Text style={styles.navigationHistory}>
+                {t(`categories.${params.category}.title`)}
+              </Text>
+            </TouchableOpacity>
+            <Image source={require('../assets/chevron.right.png')}/>
+          </View>
+          <Text style={styles.currentPageTitle}>
+            {t(`subCategories.${params.subCategory}.title`)}
+          </Text>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }

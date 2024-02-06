@@ -16,18 +16,23 @@
     }
   },
   "categories": {
-    "title": "Gestion des documents",
+    "documentManagement": {
+      "title": "Gestion des documents"
+    },
     "systemQuality": {
       "title": "Système qualité"
     },
     "description": "Description"
   },
   "subCategories": {
-    "title": "Système qualité",
-    "processus": "Processus"
+    "systemQuality": {
+      "title": "Système qualité"
+    }
   },
   "documents": {
-    "title": "Processus",
+    "processus": {
+      "title": "Processus"
+    },
     "document": {
       "management": "PRS_M01_Management"
     }

@@ -1,3 +1,4 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,7 +13,11 @@ import {
 import AppIcon from '../components/AppIcon';
 import { Colors } from '../components/colors';
 
-function LoginScreen(): React.JSX.Element {
+import { ILoginStackParams } from '../../navigation/Routes';
+
+type LoginScreenProps = NativeStackScreenProps<ILoginStackParams, 'LoginScreen'>;
+
+function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [email, onEmailChange] = useState('');
   const [password, onPasswordChange] = useState('');
 
@@ -24,6 +29,19 @@ function LoginScreen(): React.JSX.Element {
   };
 
   const primaryColor = isDarkMode ? Colors.secondary : Colors.primary;
+
+  function login() {
+    props.navigation.navigate(
+      'DashboardStack',
+      {
+        screen: 'DashboardScreen',
+        params: { isAdmin: false}
+      });
+  }
+
+  function goToSignUp() {
+    props.navigation.navigate('SignUpScreen');
+  }
 
   return (
     <SafeAreaView style={[backgroundStyle, styles.container]}>
@@ -42,12 +60,12 @@ function LoginScreen(): React.JSX.Element {
         placeholder={t('login.password')}
         style={styles.textInput}
       />
-      <TouchableOpacity style={[styles.button, { backgroundColor: primaryColor }]}>
+      <TouchableOpacity onPress={login} style={[styles.button, { backgroundColor: primaryColor }]}>
         <Text style={[styles.buttonText, { color: Colors.white }]}>
           {t('login.login')}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={goToSignUp}>
         <Text style={[styles.textButtonText, { color: primaryColor }]}>
           {t('login.signUp')}
         </Text>

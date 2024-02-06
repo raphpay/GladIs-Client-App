@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,21 +10,18 @@ import {
   View,
   useColorScheme
 } from 'react-native';
-
-import SubCategoryScreen from './SubCategoryScreen';
+import { IDashboardStackParams } from '../../navigation/Routes';
 
 import AppIcon from '../components/AppIcon';
 import SearchTextInput from '../components/SearchTextInput';
 import TextButton from '../components/TextButton';
 import { Colors } from '../components/colors';
 
-type CategoryAppProps = {
-  setShowCategoryScreen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type CategoriesScreenProps = NativeStackScreenProps<IDashboardStackParams, 'CategoriesScreen'>;
 
-function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
+function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
+  const { params } = props.route;
   const [searchText,setSearchText] = useState<string>('');
-  const [showSubCategoryScreen, setShowSubCategoryScreen] = useState<boolean>(false);
   
   const { t } = useTranslation();
   const isDarkMode = useColorScheme() === 'dark';
@@ -33,17 +31,21 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
   };
 
   function navigateBack() {
-    props.setShowCategoryScreen(false);
+    props.navigation.goBack();
   }
 
   function navigateToSubCategory() {
-    setShowSubCategoryScreen(true);
+    props.navigation.navigate('SubCategoryScreen',
+    {
+      isAdmin: params.isAdmin,
+      category: params.category,
+      subCategory: 'systemQuality'
+    });
   }
 
-  const mainScreen = () => {
-    return (
-      <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-        <View style={[styles.innerContainer, backgroundStyle]}>
+  return (
+    <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
+      <View style={[styles.innerContainer, backgroundStyle]}>
           <View style={styles.innerComponentsContainer}>
             <View style={styles.searchInputContainer}>
               <SearchTextInput 
@@ -55,7 +57,7 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
               <View style={styles.categoryContainer}>
                 <View style={styles.categoryImageContainer} />
                 <View style={[styles.categoryTextsContainer, { backgroundColor: Colors.textInput }]}>
-                  <Text style={styles.categoryTitle}>{t('categories.systemQuality.title')}</Text>
+                  <Text style={styles.categoryTitle}>{t('subCategories.systemQuality.title')}</Text>
                   <Text style={styles.categoryDescription}>{t('categories.description')}</Text>
                 </View>
               </View>
@@ -77,24 +79,10 @@ function CategoryScreen(props: CategoryAppProps): React.JSX.Element {
               <Image source={require('../assets/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t('categories.title')}
+              {t(`categories.${params.category}.title`)}
             </Text>
           </View>
         </View>
-      </SafeAreaView>
-    )
-  }
-
-  return (
-    <SafeAreaView style={[{ backgroundColor: Colors.primary }, styles.container]}>
-      {
-        showSubCategoryScreen ? 
-          <SubCategoryScreen 
-            setShowCategoryScreen={props.setShowCategoryScreen}
-            setShowSubCategoryScreen={setShowSubCategoryScreen}
-          /> : 
-          mainScreen()
-      }
     </SafeAreaView>
   );
 }
@@ -181,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CategoryScreen;
+export default CategoriesScreen;
