@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
   textButton: {
     fontSize: Fonts.p,
     fontWeight: Fonts.bold,
+    fontFamily: Fonts.bikoBold,
     color: Colors.white
   },
 });

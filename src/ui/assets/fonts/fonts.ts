@@ -9,6 +9,8 @@ export interface IFonts {
   h3: number;
   h4: number;
   p: number;
+  poppinsLight: string,
+  bikoBold: string,
   // Add more inputs as needed
 }
 
@@ -21,4 +23,6 @@ export const Fonts: IFonts = {
   h3: 32,
   h4: 24,
   p: 14,
+  poppinsLight: 'Poppins Light',
+  bikoBold: 'Biko Bold'
 };

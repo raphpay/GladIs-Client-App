@@ -45,7 +45,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <AppIcon />
-      <Text>{t('login.title')}</Text>
+      <Text style={styles.title} >{t('login.title')}</Text>
       <GladisTextInput
         value={identifier}
         onValueChange={onIdentifierChange}

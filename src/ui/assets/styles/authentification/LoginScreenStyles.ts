@@ -1,11 +1,16 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "../../colors/colors";
+import { Fonts } from "../../fonts/fonts";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  title: {
+    fontSize: 22,
+    fontFamily: Fonts.bikoBold
   },
   textInput: {
     borderWidth: 1,

@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     fontWeight: Fonts.bold,
-    fontSize: Fonts.h4
+    fontSize: Fonts.h4,
+    fontFamily: Fonts.poppinsLight,
   }
 });
 
