@@ -7,16 +7,23 @@ type DashboardScreenProps = NativeStackScreenProps<IDashboardStackParams, 'Dashb
 
 function DashboardScreen(props: DashboardScreenProps): any {
 
-  const { params } = props.route;
+  const { navigation } = props;
+  const { isAdmin, isFirstConnection, temporaryPassword } = props.route.params;
 
   useEffect(() => {
-    if (params.isAdmin) {
-      // TODO: Create constants
-      props.navigation.navigate('DashboardAdminScreen', { isAdmin: true })
+    if (isFirstConnection) {
+      navigation.navigate('FirstConnectionScreen', { isAdmin, temporaryPassword })
     } else {
-      props.navigation.navigate('DashboardClientScreen', { isAdmin: false })
+      if (isAdmin) {
+        // TODO: Create constants
+        navigation.navigate('DashboardAdminScreen', { isAdmin })
+      } else {
+        navigation.navigate('DashboardClientScreen', { isAdmin })
+      }
     }
   }, []);
+
+
 }
 
 export default DashboardScreen;

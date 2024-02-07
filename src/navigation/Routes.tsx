@@ -13,6 +13,7 @@ import DashboardAdminScreen from '../ui/screens/dashboard/DashboardAdminScreen';
 import DashboardClientScreen from '../ui/screens/dashboard/DashboardClientScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 
+import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
@@ -30,9 +31,10 @@ export type IAuthenticationStackParams = {
 }
 
 export type IDashboardStackParams = {
-  DashboardScreen: { isAdmin: boolean },
+  DashboardScreen: { isFirstConnection: boolean, isAdmin: boolean, temporaryPassword?: string },
   DashboardAdminScreen: { isAdmin: boolean },
   DashboardClientScreen: { isAdmin: boolean },
+  FirstConnectionScreen: { isAdmin: boolean, temporaryPassword?: string},
   CategoriesScreen: { isAdmin: boolean, category: string },
   SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
   DocumentsScreen: { isAdmin: boolean, category: string, subCategory: string, documents: string },
@@ -78,6 +80,13 @@ function Dashboard() {
       <DashboardStack.Screen
         name={'DashboardScreen'}
         component={DashboardScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <DashboardStack.Screen
+        name={'FirstConnectionScreen'}
+        component={FirstConnectionScreen}
         options={{
           headerShown: false
         }}

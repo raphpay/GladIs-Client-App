@@ -23,16 +23,17 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { t } = useTranslation();
 
   function login() {
-    props.navigation.navigate(
+    // TODO: The params should not be hardcoded
+    navigation.navigate(
       'DashboardStack',
       {
         screen: 'DashboardScreen',
-        params: { isAdmin: false}
+        params: { isFirstConnection: true, isAdmin: false, temporaryPassword: password }
       });
   }
 
   function goToSignUp() {
-    props.navigation.navigate('SignUpScreen');
+    navigation.navigate('SignUpScreen');
   }
 
   function goToPasswordReset() {
