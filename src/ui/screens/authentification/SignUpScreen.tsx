@@ -6,12 +6,16 @@ import {
   Text
 } from 'react-native';
 
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { IAuthenticationStackParams } from '../../../navigation/Routes';
 import styles from '../../assets/styles/SignUpScreenStyles';
 import CheckboxWithTitle from '../../components/CheckBoxWithTitle';
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';
 
-function SignUpScreen(): React.JSX.Element {
+type SignUpScreenProps = NativeStackScreenProps<IAuthenticationStackParams, 'SignUpScreen'>;
+
+function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [name, setName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
@@ -23,9 +27,14 @@ function SignUpScreen(): React.JSX.Element {
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
 
+  const { navigation } = props;
+
   const { t } = useTranslation();
 
-  function submit() {}
+  function submit() {
+    // TODO: Handle sumbission
+    navigation.goBack();
+  }
 
   return (
     <SafeAreaView style={styles.container}>
