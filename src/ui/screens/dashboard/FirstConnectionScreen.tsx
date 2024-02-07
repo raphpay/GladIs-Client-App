@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
-  StyleSheet,
   Text
 } from 'react-native';
 import { IDashboardStackParams } from '../../../navigation/Routes';
+import styles from '../../assets/styles/dashboard/FirstConnectionScreenStyles';
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';
 
@@ -52,13 +52,5 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default FirstConnectionScreen;
