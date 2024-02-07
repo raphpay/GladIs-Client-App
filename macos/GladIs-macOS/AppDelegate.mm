@@ -15,7 +15,7 @@
     
     // Set minimum size for the main window
     NSWindow *mainWindow = [[[NSApplication sharedApplication] windows] firstObject];
-    [mainWindow setMinSize:NSMakeSize(750, 500)]; // Set minimum size to 750x500
+    [mainWindow setMinSize:NSMakeSize(750, 750)]; // Set minimum size to 750x750
     
     // You can also set other window properties here if needed
     
