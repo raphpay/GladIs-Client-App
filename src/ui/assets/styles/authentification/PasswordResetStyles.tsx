@@ -9,11 +9,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: Fonts.h4,
-    fontWeight: Fonts.semiBold
+    fontWeight: Fonts.semiBold,
+    fontFamily: Fonts.poppinsSemiBold
   },
   message: {
     fontSize: Fonts.p,
     fontWeight: Fonts.regular,
+    fontFamily: Fonts.poppinsLight,
     paddingBottom: 24
   }
 });

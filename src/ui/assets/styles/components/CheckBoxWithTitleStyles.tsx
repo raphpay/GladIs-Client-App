@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   container: {
@@ -9,6 +10,8 @@ const styles = StyleSheet.create({
   },
   title: {
     marginLeft: 10,
+    fontSize: 14,
+    fontFamily: Fonts.poppinsLight,
   },
   checkbox: {
     width: 20,

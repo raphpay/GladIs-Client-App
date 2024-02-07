@@ -42,13 +42,13 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Text>{t('quotation.title')}</Text>
+        <Text style={styles.title}>{t('quotation.title')}</Text>
         <GladisTextInput value={name} onValueChange={setName} placeholder={t('quotation.name')}/>
         <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')}/>
         <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')}/>
         <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')}/>
         <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')}/>
-        <Text>{t('quotation.modules.title')}</Text>
+        <Text style={styles.subtitle}>{t('quotation.modules.title')}</Text>
         <CheckboxWithTitle
           title={t('quotation.modules.documentManagement')}
           isChecked={documentManagementIsChecked}
