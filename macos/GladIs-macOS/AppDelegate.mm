@@ -1,25 +1,34 @@
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-  self.moduleName = @"GladIs";
-  // You can add your custom initial props in the dictionary below.
-  // They will be passed down to the ViewController used by React Native.
-  self.initialProps = @{};
-
-  return [super applicationDidFinishLaunching:notification];
+    self.moduleName = @"GladIs";
+    // You can add your custom initial props in the dictionary below.
+    // They will be passed down to the ViewController used by React Native.
+    self.initialProps = @{};
+    
+    // Call super to ensure that the rest of the setup is performed
+    [super applicationDidFinishLaunching:notification];
+    
+    // Set minimum size for the main window
+    NSWindow *mainWindow = [[[NSApplication sharedApplication] windows] firstObject];
+    [mainWindow setMinSize:NSMakeSize(750, 500)]; // Set minimum size to 750x500
+    
+    // You can also set other window properties here if needed
+    
+    // Return from the method
+    return;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
-  return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
 }
 
@@ -31,9 +40,9 @@
 - (BOOL)concurrentRootEnabled
 {
 #ifdef RN_FABRIC_ENABLED
-  return true;
+    return true;
 #else
-  return false;
+    return false;
 #endif
 }
 
