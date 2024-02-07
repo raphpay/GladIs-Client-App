@@ -6,6 +6,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import LoginScreen from '../ui/screens/LoginScreen';
+import PasswordResetScreen from '../ui/screens/PasswordResetScreen';
 import SignUpScreen from '../ui/screens/SignUpScreen';
 
 import DashboardAdminScreen from '../ui/screens/dashboard/DashboardAdminScreen';
@@ -14,7 +15,6 @@ import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 
 import CategoriesScreen from '../ui/screens/CategoriesScreen';
 import DocumentsScreen from '../ui/screens/DocumentsScreen';
-import PasswordResetScreen from '../ui/screens/PasswordResetScreen';
 import SubCategoryScreen from '../ui/screens/SubCategoryScreen';
 
 export type IRootStackParams = {
@@ -22,10 +22,10 @@ export type IRootStackParams = {
   DashboardStack: { isAdmin: boolean }
 }
 
-export type ILoginStackParams = {
+export type IAuthenticationStackParams = {
   LoginScreen: undefined,
   SignUpScreen: undefined,
-  PasswordResetScreen: { identifier: string },
+  PasswordResetScreen: undefined,
   DashboardStack: IDashboardStackParams,
 }
 
@@ -38,7 +38,7 @@ export type IDashboardStackParams = {
   DocumentsScreen: { isAdmin: boolean, category: string, subCategory: string, documents: string },
 }
 
-let HomeStack = createStackNavigator<ILoginStackParams>();
+let AuthenticationStack = createStackNavigator<IAuthenticationStackParams>();
 let RootStack = createStackNavigator<IRootStackParams>();
 let DashboardStack = createStackNavigator<IDashboardStackParams>();
 
@@ -46,29 +46,29 @@ function Home() {
   const { t } = useTranslation();
 
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen
+    <AuthenticationStack.Navigator>
+      <AuthenticationStack.Screen
         name={'LoginScreen'}
         component={LoginScreen}
         options={{
           headerShown: false
         }}
       />
-      <HomeStack.Screen
+      <AuthenticationStack.Screen
         name={'SignUpScreen'}
         component={SignUpScreen}
         options={{
           title: t('quotation.title')
         }}
       />
-      <HomeStack.Screen
+      <AuthenticationStack.Screen
         name={'PasswordResetScreen'}
         component={PasswordResetScreen}
         options={{
           title: t('passwordReset.title')
         }}
       />
-    </HomeStack.Navigator>
+    </AuthenticationStack.Navigator>
   )
 }
 

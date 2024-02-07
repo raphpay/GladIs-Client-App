@@ -11,7 +11,6 @@ import CheckboxWithTitle from '../components/CheckBoxWithTitle';
 import GladisTextInput from '../components/GladisTextInput';
 import TextButton from '../components/TextButton';
 
-
 function SignUpScreen(): React.JSX.Element {
   const [name, setName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');

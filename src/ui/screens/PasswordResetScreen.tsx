@@ -1,4 +1,3 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,19 +5,12 @@ import {
   Text
 } from 'react-native';
 
-import { ILoginStackParams } from '../../navigation/Routes';
 import GladisTextInput from '../components/GladisTextInput';
 import TextButton from '../components/TextButton';
 
 import styles from '../assets/styles/PasswordResetStyles';
 
-type PasswordResetScreenProps = NativeStackScreenProps<ILoginStackParams, 'PasswordResetScreen'>;
-
-function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element {
-
-  const { navigation } = props;
-  const { identifier } = props.route.params;
-
+function PasswordResetScreen(): React.JSX.Element {
   const [email, setEmail] = useState<string>('');
 
   const { t } = useTranslation();

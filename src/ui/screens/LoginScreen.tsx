@@ -5,14 +5,14 @@ import { SafeAreaView, Text } from 'react-native';
 
 import AppIcon from '../components/AppIcon';
 
-import { ILoginStackParams } from '../../navigation/Routes';
+import { IAuthenticationStackParams } from '../../navigation/Routes';
 
 import styles from '../assets/styles/LoginScreenStyles';
 import GladisTextInput from '../components/GladisTextInput';
 import SimpleTextButton from '../components/SimpleTextButton';
 import TextButton from '../components/TextButton';
 
-type LoginScreenProps = NativeStackScreenProps<ILoginStackParams, 'LoginScreen'>;
+type LoginScreenProps = NativeStackScreenProps<IAuthenticationStackParams, 'LoginScreen'>;
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { navigation } = props;
@@ -36,7 +36,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   }
 
   function goToPasswordReset() {
-    navigation.navigate('PasswordResetScreen', { identifier })
+    navigation.navigate('PasswordResetScreen')
   }
 
   return (
