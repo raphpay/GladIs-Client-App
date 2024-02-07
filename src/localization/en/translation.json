@@ -1,18 +1,45 @@
 {
   "login": {
     "title": "Connect to GladIs!",
-    "email": "Email",
+    "identifier": "Identifier",
     "password": "Password",
     "login": "Log in",
-    "signUp": "No account yet? Please contact your supplier."
+    "signUp": "No account yet? Please contact your supplier.",
+    "forgottenPassword": "Forgot password?"
+  },
+  "passwordReset": {
+    "title": "Password reset",
+    "message": "A mail containing a temporary password will be sent to you.",
+    "email": "Email",
+    "reset": "Reset"
+  },
+  "quotation": {
+    "title": "Request for quotation",
+    "name": "NAME First Name",
+    "phone": "Phone number",
+    "companyName": "Company Name",
+    "email": "Email",
+    "products": "Type of products sold",
+    "modules": {
+      "title": "Select the modules",
+      "documentManagement": "Document Management",
+      "module1": "Module1"
+    },
+    "employees": "Number of employees",
+    "users": "Number of potential users",
+    "capital": "Sales amount",
+    "submit": "Submit"
+  },
+  "firstConnection": {
+    "title": "Modify your password",
+    "temporary": "Temporary password",
+    "new": "New password",
+    "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character."
   },
   "dashboard": {
     "title": "Dashboard",
     "modules": {
       "documentManagement": "Document Management"
-    },
-    "buttons": {
-      "addClient": "Add a client"
     }
   },
   "categories": {
@@ -42,7 +69,9 @@
       "placeholder": "Search"
     },
     "buttons": {
-      "back": "Back"
+      "back": "Back",
+      "addClient": "Add a client",
+      "continue": "Continue"
     }
   }
 }

@@ -1,19 +1,46 @@
 {
   "login": {
     "title": "Se connecter à GladIs!",
-    "email": "Email",
+    "identifier": "Identifiant",
     "password": "Mot de passe",
     "login": "Se connecter",
-    "signUp": "Pas de compte ? Contactez votre fournisseur."
+    "signUp": "Pas de compte ? Contactez votre fournisseur.",
+    "forgottenPassword": "Mot de passe oublié ?"
+  },
+  "passwordReset": {
+    "title": "Réinitialisation du mot de passe",
+    "message": "Un email contenant un mot de passe temporaire vous sera envoyé",
+    "email": "Adresse Email",
+    "reset": "Réinitialiser"
+  },
+  "quotation": {
+    "title": "Request for quotation",
+    "name": "NAME First Name",
+    "phone": "Phone number",
+    "companyName": "Nom de l'entreprise",
+    "email": "Email",
+    "products": "Type of products sold",
+    "modules": {
+      "title": "Select the modules",
+      "documentManagement": "Document Management",
+      "module1": "Module1"
+    },
+    "employees": "Number of employees",
+    "users": "Number of potential users",
+    "capital": "Sales amount",
+    "submit": "Submit"
+  },
+  "firstConnection": {
+    "title": "Modification du mot de passe",
+    "temporary": "Mot de passe temporaire",
+    "new": "Nouveau mot de passe",
+    "description": "Le mot de passe doit contenir au moins 12 caractères, dont 1 majuscule, 1 chiffre et 1 caractère spécial."
   },
   "dashboard": {
     "title": "Tableau de bord",
     "modules": {
       "documentManagement": "Gestion des documents"
     },
-    "buttons": {
-      "addClient": "Ajouter un client"
-    }
   },
   "categories": {
     "documentManagement": {
@@ -42,7 +69,9 @@
       "placeholder": "Recherche"
     },
     "buttons": {
-      "back": "Retour"
+      "back": "Retour",
+      "addClient": "Ajouter un client",
+      "continue": "Continuer"
     }
   }
 }

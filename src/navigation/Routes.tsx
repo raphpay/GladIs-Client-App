@@ -3,58 +3,74 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-
-import LoginScreen from '../ui/screens/LoginScreen';
-import SignUpScreen from '../ui/screens/SignUpScreen';
+import LoginScreen from '../ui/screens/authentification/LoginScreen';
+import PasswordResetScreen from '../ui/screens/authentification/PasswordResetScreen';
+import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardAdminScreen from '../ui/screens/dashboard/DashboardAdminScreen';
 import DashboardClientScreen from '../ui/screens/dashboard/DashboardClientScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 
-import CategoriesScreen from '../ui/screens/CategoriesScreen';
-import DocumentsScreen from '../ui/screens/DocumentsScreen';
-import SubCategoryScreen from '../ui/screens/SubCategoryScreen';
+import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
+import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
+import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
+import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
 export type IRootStackParams = {
   Home: undefined,
   DashboardStack: { isAdmin: boolean }
 }
 
-export type ILoginStackParams = {
+export type IAuthenticationStackParams = {
   LoginScreen: undefined,
   SignUpScreen: undefined,
-  DashboardStack: undefined
+  PasswordResetScreen: undefined,
+  DashboardStack: IDashboardStackParams,
 }
 
 export type IDashboardStackParams = {
-  DashboardScreen: { isAdmin: boolean },
+  DashboardScreen: { isFirstConnection: boolean, isAdmin: boolean, temporaryPassword?: string },
   DashboardAdminScreen: { isAdmin: boolean },
   DashboardClientScreen: { isAdmin: boolean },
+  FirstConnectionScreen: { isAdmin: boolean, temporaryPassword?: string},
   CategoriesScreen: { isAdmin: boolean, category: string },
   SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
   DocumentsScreen: { isAdmin: boolean, category: string, subCategory: string, documents: string },
 }
 
-let HomeStack = createStackNavigator<ILoginStackParams>();
+let AuthenticationStack = createStackNavigator<IAuthenticationStackParams>();
 let RootStack = createStackNavigator<IRootStackParams>();
 let DashboardStack = createStackNavigator<IDashboardStackParams>();
 
 function Home() {
+  const { t } = useTranslation();
+
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen
+    <AuthenticationStack.Navigator>
+      <AuthenticationStack.Screen
         name={'LoginScreen'}
         component={LoginScreen}
         options={{
           headerShown: false
         }}
       />
-      <HomeStack.Screen
+      <AuthenticationStack.Screen
         name={'SignUpScreen'}
         component={SignUpScreen}
+        options={{
+          title: t('quotation.title')
+        }}
       />
-    </HomeStack.Navigator>
+      <AuthenticationStack.Screen
+        name={'PasswordResetScreen'}
+        component={PasswordResetScreen}
+        options={{
+          title: t('passwordReset.title')
+        }}
+      />
+    </AuthenticationStack.Navigator>
   )
 }
 
@@ -64,6 +80,13 @@ function Dashboard() {
       <DashboardStack.Screen
         name={'DashboardScreen'}
         component={DashboardScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <DashboardStack.Screen
+        name={'FirstConnectionScreen'}
+        component={FirstConnectionScreen}
         options={{
           headerShown: false
         }}

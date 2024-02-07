@@ -10,7 +10,7 @@ import {
 
 import {
   Colors,
-} from '../components/colors';
+} from '../assets/colors/colors';
 
 type IconButtonProps = {
   title: string;
