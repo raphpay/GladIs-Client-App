@@ -17,6 +17,8 @@ function PasswordResetScreen(): React.JSX.Element {
 
   function resetPassword() {}
 
+  const isButtonDisabled = email.length === 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>
@@ -30,7 +32,12 @@ function PasswordResetScreen(): React.JSX.Element {
         onValueChange={setEmail}
         placeholder={t('passwordReset.email')}
       />
-      <TextButton title={t('passwordReset.reset')} onPress={resetPassword} width={'50%'}/>
+      <TextButton
+        title={t('passwordReset.reset')}
+        onPress={resetPassword}
+        width={'50%'}
+        disabled={isButtonDisabled}
+      />
     </SafeAreaView>
   );
 }

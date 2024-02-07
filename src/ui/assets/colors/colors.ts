@@ -11,7 +11,7 @@ export interface IColors {
   dark: string;
   white: string;
   black: string;
-  textInput: string;
+  inactive: string;
   // Add more colors as needed
 }
 
@@ -28,6 +28,6 @@ export const Colors: IColors = {
   dark: '#222222',
   white: '#fff',
   black: '#000',
-  textInput: '#D9D9D9',
+  inactive: '#D9D9D9',
   // Add more colors as needed
 };

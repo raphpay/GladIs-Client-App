@@ -35,6 +35,8 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
     }
   }
 
+  const isButtonDisabled = temporary.length == 0 || newPassword.length == 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <Text>{t('firstConnection.title')}</Text>
@@ -50,7 +52,11 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
         onValueChange={setNewPassword}
         secureTextEntry={true}
       />
-      <TextButton title={t('components.buttons.continue')} onPress={modifyPassword} />
+      <TextButton
+        title={t('components.buttons.continue')}
+        onPress={modifyPassword}
+        disabled={isButtonDisabled}
+      />
     </SafeAreaView>
   );
 }

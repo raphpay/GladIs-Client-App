@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 10,
     borderBottomEndRadius: 10,
     padding: 4,
+    backgroundColor: Colors.inactive,
   },
   // Components
   appIcon: {

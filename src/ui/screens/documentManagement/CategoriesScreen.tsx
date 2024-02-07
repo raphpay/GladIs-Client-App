@@ -14,7 +14,6 @@ import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
 import TextButton from '../../components/TextButton';
 
-import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/CategoriesScreenStyles';
 
 type CategoriesScreenProps = NativeStackScreenProps<IDashboardStackParams, 'CategoriesScreen'>;
@@ -51,7 +50,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
             <TouchableOpacity onPress={navigateToSubCategory}>
               <View style={styles.categoryContainer}>
                 <View style={styles.categoryImageContainer} />
-                <View style={[styles.categoryTextsContainer, { backgroundColor: Colors.textInput }]}>
+                <View style={styles.categoryTextsContainer}>
                   <Text style={styles.categoryTitle}>{t('subCategories.systemQuality.title')}</Text>
                   <Text style={styles.categoryDescription}>{t('categories.description')}</Text>
                 </View>

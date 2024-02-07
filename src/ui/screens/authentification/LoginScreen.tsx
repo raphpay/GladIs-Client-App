@@ -40,6 +40,8 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     navigation.navigate('PasswordResetScreen')
   }
 
+  const isButtonDisabled = identifier.length === 0 || password.length === 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <AppIcon />
@@ -55,7 +57,12 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         placeholder={t('login.password')}
         secureTextEntry={true}
       />
-      <TextButton title={t('login.login')} onPress={login} width={'40%'}/>
+      <TextButton
+        title={t('login.login')}
+        onPress={login}
+        width={'40%'}
+        disabled={isButtonDisabled}
+      />
       <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
       <SimpleTextButton title={t('login.forgottenPassword')} onPress={goToPasswordReset} />
     </SafeAreaView>

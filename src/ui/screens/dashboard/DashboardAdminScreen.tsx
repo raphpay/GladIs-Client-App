@@ -10,7 +10,6 @@ import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
-import { Colors } from '../../assets/colors/colors';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardAdminScreenStyles';
 
@@ -35,8 +34,8 @@ function DashboardAdminScreen(): React.JSX.Element {
               setSearchText={setSearchText}
             />
           </View>
-          <View style={[styles.clientContainer, { backgroundColor: Colors.textInput}]}>
-            <View style={[styles.innerTopClientContainer, { backgroundColor: Colors.secondary }]}>
+          <View style={styles.clientContainer}>
+            <View style={styles.innerTopClientContainer}>
               <Text>Client A</Text>
             </View>
             <View style={styles.innerBottomClientContainer}>

@@ -109,7 +109,8 @@ const styles = StyleSheet.create({
     height: 25,
     borderRadius: 25,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: Colors.inactive
   },
   separator: {
     width: '100%',

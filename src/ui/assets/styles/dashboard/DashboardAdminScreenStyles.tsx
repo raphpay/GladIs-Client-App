@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: '75%',
     borderTopEndRadius: 10,
-    borderTopStartRadius: 10
+    borderTopStartRadius: 10,
+    backgroundColor: Colors.secondary
   },
   innerBottomClientContainer: {
     justifyContent: 'center',
@@ -44,7 +45,8 @@ const styles = StyleSheet.create({
     height: 75,
     width: 190,
     borderRadius: 10,
-    margin: 4
+    margin: 4,
+    backgroundColor: Colors.inactive
   },
   // Components
   appIcon: {

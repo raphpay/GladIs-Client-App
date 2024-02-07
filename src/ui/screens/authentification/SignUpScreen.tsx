@@ -36,6 +36,9 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
+  const isButtonDisabled = name.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
+  email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -59,7 +62,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')}/>
         <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')}/>
         <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')}/>
-        <TextButton title={t('quotation.submit')} onPress={submit} />
+        <TextButton
+          title={t('quotation.submit')}
+          onPress={submit}
+          disabled={isButtonDisabled}
+        />
       </ScrollView>
     </SafeAreaView>
   );

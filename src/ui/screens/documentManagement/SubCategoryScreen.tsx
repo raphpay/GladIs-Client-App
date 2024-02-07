@@ -14,7 +14,6 @@ import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
 import TextButton from '../../components/TextButton';
 
-import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/SubCategoryScreenStyles';
 
 type SubCategoryScreenProps = NativeStackScreenProps<IDashboardStackParams, 'SubCategoryScreen'>;
@@ -59,7 +58,7 @@ function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
           <TouchableOpacity onPress={navigateToDocuments}>
             <View style={styles.subCategoryLineContainer}>
               <View style={styles.subCategoryLineRow}>
-                <View style={[styles.letterCircle, { backgroundColor: Colors.textInput }]}>
+                <View style={styles.letterCircle}>
                   <Text>P</Text>
                 </View>
                 <View style={styles.subCategoryTextContainer}>

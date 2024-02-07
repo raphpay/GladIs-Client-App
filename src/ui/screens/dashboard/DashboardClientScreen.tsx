@@ -39,7 +39,7 @@ function DashboardClientScreen(props: DashboardClientScreenProps): React.JSX.Ele
               setSearchText={setSearchText}
             />
           </View>
-          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.textInput}]}>
+          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.inactive}]}>
             <Text>{t('dashboard.modules.documentManagement')}</Text>
           </TouchableOpacity>
         </View>
