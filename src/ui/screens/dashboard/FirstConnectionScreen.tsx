@@ -6,9 +6,11 @@ import {
   Text
 } from 'react-native';
 import { IDashboardStackParams } from '../../../navigation/Routes';
-import styles from '../../assets/styles/dashboard/FirstConnectionScreenStyles';
+
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';
+
+import styles from '../../assets/styles/dashboard/FirstConnectionScreenStyles';
 
 type FirstConnectionScreenProps = NativeStackScreenProps<IDashboardStackParams, 'FirstConnectionScreen'>;
 

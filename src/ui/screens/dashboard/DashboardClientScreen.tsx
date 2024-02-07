@@ -9,10 +9,12 @@ import {
 } from 'react-native';
 import { IDashboardStackParams } from '../../../navigation/Routes';
 
-import { Colors } from '../../assets/colors/colors';
-import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
 import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
+
+import { Colors } from '../../assets/colors/colors';
+import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
+
 
 type DashboardClientScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DashboardClientScreen'>;
 
