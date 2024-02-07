@@ -5,17 +5,17 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import LoginScreen from '../ui/screens/LoginScreen';
-import PasswordResetScreen from '../ui/screens/PasswordResetScreen';
-import SignUpScreen from '../ui/screens/SignUpScreen';
+import LoginScreen from '../ui/screens/authentification/LoginScreen';
+import PasswordResetScreen from '../ui/screens/authentification/PasswordResetScreen';
+import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardAdminScreen from '../ui/screens/dashboard/DashboardAdminScreen';
 import DashboardClientScreen from '../ui/screens/dashboard/DashboardClientScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 
-import CategoriesScreen from '../ui/screens/CategoriesScreen';
-import DocumentsScreen from '../ui/screens/DocumentsScreen';
-import SubCategoryScreen from '../ui/screens/SubCategoryScreen';
+import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
+import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
+import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
 export type IRootStackParams = {
   Home: undefined,

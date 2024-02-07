@@ -5,10 +5,10 @@ import {
   Text
 } from 'react-native';
 
-import GladisTextInput from '../components/GladisTextInput';
-import TextButton from '../components/TextButton';
+import GladisTextInput from '../../components/GladisTextInput';
+import TextButton from '../../components/TextButton';
 
-import styles from '../assets/styles/PasswordResetStyles';
+import styles from '../../assets/styles/PasswordResetStyles';
 
 function PasswordResetScreen(): React.JSX.Element {
   const [email, setEmail] = useState<string>('');

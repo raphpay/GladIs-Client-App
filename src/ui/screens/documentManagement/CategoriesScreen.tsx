@@ -10,12 +10,12 @@ import {
   View,
   useColorScheme
 } from 'react-native';
-import { IDashboardStackParams } from '../../navigation/Routes';
+import { IDashboardStackParams } from '../../../navigation/Routes';
 
-import { Colors } from '../assets/colors/colors';
-import AppIcon from '../components/AppIcon';
-import SearchTextInput from '../components/SearchTextInput';
-import TextButton from '../components/TextButton';
+import { Colors } from '../../assets/colors/colors';
+import AppIcon from '../../components/AppIcon';
+import SearchTextInput from '../../components/SearchTextInput';
+import TextButton from '../../components/TextButton';
 
 type CategoriesScreenProps = NativeStackScreenProps<IDashboardStackParams, 'CategoriesScreen'>;
 
@@ -76,7 +76,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
                   {t('dashboard.title')}
                 </Text>
               </TouchableOpacity>
-              <Image source={require('../assets/images/chevron.right.png')}/>
+              <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
               {t(`categories.${params.category}.title`)}

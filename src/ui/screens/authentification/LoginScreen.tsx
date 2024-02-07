@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, Text } from 'react-native';
 
-import AppIcon from '../components/AppIcon';
+import AppIcon from '../../components/AppIcon';
 
-import { IAuthenticationStackParams } from '../../navigation/Routes';
+import { IAuthenticationStackParams } from '../../../navigation/Routes';
 
-import styles from '../assets/styles/LoginScreenStyles';
-import GladisTextInput from '../components/GladisTextInput';
-import SimpleTextButton from '../components/SimpleTextButton';
-import TextButton from '../components/TextButton';
+import styles from '../../assets/styles/LoginScreenStyles';
+import GladisTextInput from '../../components/GladisTextInput';
+import SimpleTextButton from '../../components/SimpleTextButton';
+import TextButton from '../../components/TextButton';
 
 type LoginScreenProps = NativeStackScreenProps<IAuthenticationStackParams, 'LoginScreen'>;
 

@@ -10,12 +10,12 @@ import {
   View,
   useColorScheme
 } from 'react-native';
-import { IDashboardStackParams } from '../../navigation/Routes';
+import { IDashboardStackParams } from '../../../navigation/Routes';
 
-import { Colors } from '../assets/colors/colors';
-import AppIcon from '../components/AppIcon';
-import SearchTextInput from '../components/SearchTextInput';
-import TextButton from '../components/TextButton';
+import { Colors } from '../../assets/colors/colors';
+import AppIcon from '../../components/AppIcon';
+import SearchTextInput from '../../components/SearchTextInput';
+import TextButton from '../../components/TextButton';
 
 type DocumentsScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DocumentsScreen'>;
 
@@ -68,13 +68,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             <TouchableOpacity onPress={navigateToDocument}>
               <View style={styles.subCategoryLineContainer}>
                 <View style={styles.subCategoryLineRow}>
-                  <Image source={require('../assets/images/PDF_file_icon.png')}/>
+                  <Image source={require('../../assets/images/PDF_file_icon.png')}/>
                   <View style={styles.subCategoryTextContainer}>
                     <Text>
                       {t('documents.document.management')}
                     </Text>
                   </View>
-                  <Image source={require('../assets/images/ellipsis.png')}/>
+                  <Image source={require('../../assets/images/ellipsis.png')}/>
                 </View>
                 <View style={styles.separator}/>
               </View>
@@ -93,19 +93,19 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
                   {t('dashboard.title')}
                 </Text>
               </TouchableOpacity>
-              <Image source={require('../assets/images/chevron.right.png')}/>
+              <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToCategories}>
                 <Text style={styles.navigationHistory}>
                   {t(`categories.${params.category}.title`)}
                 </Text>
               </TouchableOpacity>
-              <Image source={require('../assets/images/chevron.right.png')}/>
+              <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
                   {t(`subCategories.${params.subCategory}.title`)}
                 </Text>
               </TouchableOpacity>
-              <Image source={require('../assets/images/chevron.right.png')}/>
+              <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
             {t(`documents.${params.documents}.title`)}

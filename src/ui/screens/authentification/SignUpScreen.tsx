@@ -6,10 +6,10 @@ import {
   Text
 } from 'react-native';
 
-import styles from '../assets/styles/SignUpScreenStyles';
-import CheckboxWithTitle from '../components/CheckBoxWithTitle';
-import GladisTextInput from '../components/GladisTextInput';
-import TextButton from '../components/TextButton';
+import styles from '../../assets/styles/SignUpScreenStyles';
+import CheckboxWithTitle from '../../components/CheckBoxWithTitle';
+import GladisTextInput from '../../components/GladisTextInput';
+import TextButton from '../../components/TextButton';
 
 function SignUpScreen(): React.JSX.Element {
   const [name, setName] = useState<string>('');
