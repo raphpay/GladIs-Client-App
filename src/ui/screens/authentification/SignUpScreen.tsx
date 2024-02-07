@@ -8,7 +8,7 @@ import {
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { IAuthenticationStackParams } from '../../../navigation/Routes';
-import styles from '../../assets/styles/SignUpScreenStyles';
+import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 import CheckboxWithTitle from '../../components/CheckBoxWithTitle';
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';

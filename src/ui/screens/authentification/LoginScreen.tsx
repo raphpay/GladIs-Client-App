@@ -7,7 +7,7 @@ import AppIcon from '../../components/AppIcon';
 
 import { IAuthenticationStackParams } from '../../../navigation/Routes';
 
-import styles from '../../assets/styles/LoginScreenStyles';
+import styles from '../../assets/styles/authentification/LoginScreenStyles';
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
