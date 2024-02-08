@@ -9,10 +9,12 @@ import { IAuthenticationStackParams } from '../../../navigation/Routes';
 
 import UserType from '../../../business-logic/model/enums/UserType';
 import UserService from '../../../business-logic/services/UserService';
-import styles from '../../assets/styles/authentification/LoginScreenStyles';
+
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
+
+import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<IAuthenticationStackParams, 'LoginScreen'>;
 
@@ -25,14 +27,17 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { t } = useTranslation();
 
   async function login() {
-    // TODO: The params should not be hardcoded
     const user = await UserService.getInstance().login(identifier, password);
     const isAdmin = user.userType == UserType.Admin;
     navigation.navigate(
       'DashboardStack',
       {
         screen: 'DashboardScreen',
-        params: { isFirstConnection: user.firstConnection, isAdmin, temporaryPassword: password }
+        params: {
+          isFirstConnection: user.firstConnection,
+          isAdmin,
+          temporaryPassword: user.firstConnection ? password : ''
+        }
       });
   }
 

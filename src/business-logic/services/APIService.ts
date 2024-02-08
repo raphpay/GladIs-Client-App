@@ -85,6 +85,35 @@ class APIService {
     }
   }
 
+  static async put(endpoint: string, data: any = {}, token?: string): Promise<any> {
+    try {
+      const url = `${API_BASE_URL}/${endpoint}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Include token in headers if provided
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating data:', error);
+      throw error;
+    }
+  }
+
   // TODO: Add methods for other HTTP methods like PUT, DELETE, etc. as needed
 }
 

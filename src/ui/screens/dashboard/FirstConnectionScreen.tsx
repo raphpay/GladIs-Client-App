@@ -1,11 +1,13 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
   Text
 } from 'react-native';
 import { IDashboardStackParams } from '../../../navigation/Routes';
+
+import UserService from '../../../business-logic/services/UserService';
 
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';
@@ -21,19 +23,25 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
   const { navigation } = props;
   const { isAdmin, temporaryPassword } =  props.route.params;
 
-  console.log('temp', temporaryPassword);
-
   const { t } = useTranslation();
 
-  function modifyPassword() {
-    // TODO: Handle the logic
-    if (isAdmin) {
-      // TODO: Create constants
-      navigation.navigate('DashboardAdminScreen', { isAdmin })
-    } else {
-      navigation.navigate('DashboardClientScreen', { isAdmin })
+  async function modifyPassword() {
+    try {
+      await UserService.getInstance().changePassword(temporary, newPassword);
+      if (isAdmin) {
+        // TODO: Create constants
+        navigation.navigate('DashboardAdminScreen', { isAdmin })
+      } else {
+        navigation.navigate('DashboardClientScreen', { isAdmin })
+      } 
+    } catch (error) {
+      console.log('Error changing password', error);
     }
   }
+
+  useEffect(() => {
+     setTemporary(temporaryPassword ?? '');
+  }, []);
 
   const isButtonDisabled = temporary.length == 0 || newPassword.length == 0;
 

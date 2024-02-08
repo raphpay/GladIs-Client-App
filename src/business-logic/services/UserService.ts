@@ -1,4 +1,4 @@
-  import IToken from '../model/IToken';
+import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import APIService from './APIService';
 
@@ -15,7 +15,7 @@ class UserService {
     return UserService.instance;
   }
 
-  setToken(token: IToken): void {
+  setToken(token: IToken) {
     UserService.token = token;
   }
 
@@ -54,6 +54,16 @@ class UserService {
       return user;
     } catch (error) {
       console.error('Error getting user after login with token:', UserService.token?.value, error);
+      throw error;
+    }
+  }
+
+  async changePassword(currentPassword: string, newPassword: string) {
+    try {
+      const userID = UserService.token?.user.id;
+      await APIService.put(`users/${userID}/changePassword`, { currentPassword, newPassword }, UserService.token?.value)
+    } catch (error) {
+      console.error('Error changing user password', error);
       throw error;
     }
   }
