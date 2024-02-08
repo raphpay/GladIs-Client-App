@@ -7,6 +7,8 @@ import AppIcon from '../../components/AppIcon';
 
 import { IAuthenticationStackParams } from '../../../navigation/Routes';
 
+import UserType from '../../../business-logic/model/enums/UserType';
+import UserService from '../../../business-logic/services/UserService';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
@@ -22,13 +24,15 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   const { t } = useTranslation();
 
-  function login() {
+  async function login() {
     // TODO: The params should not be hardcoded
+    const user = await UserService.getInstance().login(identifier, password);
+    const isAdmin = user.userType == UserType.Admin;
     navigation.navigate(
       'DashboardStack',
       {
         screen: 'DashboardScreen',
-        params: { isFirstConnection: true, isAdmin: false, temporaryPassword: password }
+        params: { isFirstConnection: user.firstConnection, isAdmin, temporaryPassword: password }
       });
   }
 

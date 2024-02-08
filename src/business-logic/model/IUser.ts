@@ -9,6 +9,7 @@ export default interface IUser {
   username: string;
   password: string;
   phoneNumber?: string | null;
+  firstConnection: boolean;
   userType: UserType; // Define UserType type if it's not already defined
   modules?: IModule[]; // Define Module type if it's not already defined
 }

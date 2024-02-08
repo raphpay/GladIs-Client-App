@@ -58,6 +58,33 @@ class APIService {
     }
   }
 
+  static async login<T>(endpoint: string, username: string, password: string): Promise<T> {
+    try {
+      const url = `${API_BASE_URL}/${endpoint}`;
+      const Buffer = require("buffer").Buffer;
+      let encodedAuth = new Buffer(`${username}:${password}`).toString("base64");
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${encodedAuth}`
+      };
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json() as T;
+    } catch (error) {
+      console.error('Error posting data:', error);
+      throw error;
+    }
+  }
+
   // TODO: Add methods for other HTTP methods like PUT, DELETE, etc. as needed
 }
 
