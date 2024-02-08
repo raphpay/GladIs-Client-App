@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import ModuleService from '../../../business-logic/services/ModuleService';
 import { IAuthenticationStackParams } from '../../../navigation/Routes';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 import CheckboxWithTitle from '../../components/CheckBoxWithTitle';
@@ -33,17 +32,9 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const { t } = useTranslation();
 
   function submit() {
-    // TODO: Handle sumbission
+    // TODO: Handle submission
     navigation.goBack();
   }
-
-  useEffect(() => {
-    async function init() {
-      const modules = await ModuleService.getInstance().getModules();
-      console.log('modules', modules);
-    }
-    init();
-  }, []);
 
   const isButtonDisabled = name.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
   email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
