@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "macos": "react-native run-macos"
+    "macos": "npx react-native run-macos"
   },
   "dependencies": {
     "@react-navigation/native": "^6.1.9",
