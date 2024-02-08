@@ -1,21 +1,27 @@
-// apiService.ts
-
 const API_BASE_URL = 'http://localhost:8080/api';
 
-class ApiService {
-  static async get<T>(endpoint: string, params: Record<string, any> = {}): Promise<T> {
+class APIService {
+  static async get<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Include token in headers if provided
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(url, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any additional headers if needed
-        },
+        headers,
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
       return await response.json() as T;
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -23,20 +29,28 @@ class ApiService {
     }
   }
 
-  static async post<T>(endpoint: string, data: any = {}): Promise<T> {
+  static async post<T>(endpoint: string, data: any = {}, token?: string): Promise<T> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Include token in headers if provided
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any additional headers if needed
-        },
+        headers,
         body: JSON.stringify(data),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
       return await response.json() as T;
     } catch (error) {
       console.error('Error posting data:', error);
@@ -47,4 +61,4 @@ class ApiService {
   // TODO: Add methods for other HTTP methods like PUT, DELETE, etc. as needed
 }
 
-export default ApiService;
+export default APIService;
