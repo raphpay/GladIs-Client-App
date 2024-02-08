@@ -1,5 +1,12 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
+enum HttpMethod {
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
+}
+
 class APIService {
   static async get<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {
     try {
@@ -14,7 +21,7 @@ class APIService {
       }
 
       const response = await fetch(url, {
-        method: 'GET',
+        method: HttpMethod.GET,
         headers,
       });
 
@@ -42,7 +49,7 @@ class APIService {
       }
 
       const response = await fetch(url, {
-        method: 'POST',
+        method: HttpMethod.POST,
         headers,
         body: JSON.stringify(data),
       });
@@ -70,7 +77,7 @@ class APIService {
       };
 
       const response = await fetch(url, {
-        method: 'POST',
+        method: HttpMethod.POST,
         headers,
       });
 
@@ -98,7 +105,7 @@ class APIService {
       }
 
       const response = await fetch(url, {
-        method: 'PUT',
+        method: HttpMethod.PUT,
         headers,
         body: JSON.stringify(data),
       });
