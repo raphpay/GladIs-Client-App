@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, Text } from 'react-native';
 
@@ -7,7 +7,11 @@ import AppIcon from '../../components/AppIcon';
 
 import { IAuthenticationStackParams } from '../../../navigation/Routes';
 
+import IToken from '../../../business-logic/model/IToken';
+import IUser from '../../../business-logic/model/IUser';
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import UserType from '../../../business-logic/model/enums/UserType';
+import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
 
 import GladisTextInput from '../../components/GladisTextInput';
@@ -28,17 +32,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   async function login() {
     const user = await UserService.getInstance().login(identifier, password);
-    const isAdmin = user.userType == UserType.Admin;
-    navigation.navigate(
-      'DashboardStack',
-      {
-        screen: 'DashboardScreen',
-        params: {
-          isFirstConnection: user.firstConnection,
-          isAdmin,
-          temporaryPassword: user.firstConnection ? password : ''
-        }
-      });
+    navigateToDashboard(user);
   }
 
   function goToSignUp() {
@@ -49,7 +43,33 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     navigation.navigate('PasswordResetScreen')
   }
 
+  function navigateToDashboard(user: IUser) {
+    if (user) {
+      const isAdmin = user.userType == UserType.Admin;
+      navigation.navigate(
+        'DashboardStack',
+        {
+          screen: 'DashboardScreen',
+          params: {
+            isFirstConnection: user.firstConnection,
+            isAdmin,
+            temporaryPassword: user.firstConnection ? password : ''
+          }
+        });
+    }
+}
+
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
+
+  useEffect(() => {
+    async function init() {
+      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken) as IToken;
+      const userID = token.user.id;
+      const user = await UserService.getInstance().getUserByID(userID) as IUser;
+      navigateToDashboard(user)
+    }
+    init();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
