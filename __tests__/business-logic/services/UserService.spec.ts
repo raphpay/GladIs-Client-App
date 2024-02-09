@@ -1,6 +1,7 @@
 import IUser from "../../../src/business-logic/model/IUser";
 import UserType from "../../../src/business-logic/model/enums/UserType";
 import APIService from "../../../src/business-logic/services/APIService";
+import CacheService from "../../../src/business-logic/services/CacheService";
 import UserService from "../../../src/business-logic/services/UserService";
 
 
@@ -50,6 +51,10 @@ describe('UserService', () => {
   // Test suite for the getUsers method
   describe('getUsers', () => {
     it('should fetch users from the API', async () => {
+      // Mock the token retrieval from CacheService
+      const mockToken = { value: 'mockTokenValue' };
+      jest.spyOn(CacheService.getInstance(), 'retrieveValue').mockResolvedValueOnce(mockToken);
+  
       // Mock the response from the API
       const mockUser: IUser = {
         id: '1',
@@ -60,15 +65,16 @@ describe('UserService', () => {
         password: 'password',
         firstConnection: true,
         userType: UserType.Client,
-      }
+      };
       const mockUsers = [mockUser];
       jest.spyOn(APIService, 'get').mockResolvedValueOnce(mockUsers);
-
+  
       // Call the getUsers method
       const users = await UserService.getInstance().getUsers();
-
+  
       // Assertions
-      expect(APIService.get).toHaveBeenCalledWith('users', UserService.token?.value);
+      expect(CacheService.getInstance().retrieveValue).toHaveBeenCalledWith('currentUserToken');
+      expect(APIService.get).toHaveBeenCalledWith('users', mockToken.value);
       expect(users).toEqual(mockUsers);
     });
   });

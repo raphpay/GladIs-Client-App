@@ -29,7 +29,9 @@ class UserService {
   // READ
   async getUsers(): Promise<IUser[]> {
     try {
-      const users = await APIService.get<IUser[]>(`users`, UserService.token?.value);
+      const token = await CacheService.getInstance().retrieveValue<IToken>('currentUserToken');
+      const castedToken = token as IToken;
+      const users = await APIService.get<IUser[]>(`users`, castedToken.value);
       return users;
     } catch (error) {
       console.error('Error getting user by ID:', error);
