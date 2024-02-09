@@ -9,18 +9,15 @@ import { IAuthenticationStackParams } from '../../../navigation/Routes';
 
 import IToken from '../../../business-logic/model/IToken';
 import IUser from '../../../business-logic/model/IUser';
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import UserType from '../../../business-logic/model/enums/UserType';
+import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setToken, setUser } from '../../../business-logic/store/slices/tokenReducer';
-import { RootState } from '../../../business-logic/store/store';
 
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
 
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
-import CacheService from '../../../business-logic/services/CacheService';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<IAuthenticationStackParams, 'LoginScreen'>;
@@ -33,17 +30,8 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   const { t } = useTranslation();
 
-  const { token, user } = useAppSelector((state: RootState) => state.token);
-  const dispatch = useAppDispatch();
-
   async function login() {
-    const loginResult = await UserService.getInstance().login(identifier, password);
-    onIdentifierChange('');
-    onPasswordChange('');
-    const user = loginResult.user as IUser;
-    const token = loginResult.token as IToken;
-    dispatch(setUser(user));
-    dispatch(setToken(token));
+    const user = await UserService.getInstance().login(identifier, password);
     navigateToDashboard(user);
   }
 
@@ -58,14 +46,16 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   function navigateToDashboard(user: IUser) {
     if (user) {
       const isAdmin = user.userType == UserType.Admin;
-      const firstConnectionScreen = isAdmin ? 'AdminFirstConnectionScreen' : 'ClientFirstConnectionScreen';
-      const dashboardStack = isAdmin ? 'AdminDashboardStack' : 'ClientDashboardStack';
-      const dashboardScreen = isAdmin ? 'DashboardAdminScreen' : 'DashboardClientScreen';
-
-      navigation.navigate(dashboardStack, {
-        screen: user.firstConnection ? firstConnectionScreen : dashboardScreen,
-        params: user.firstConnection ? { temporaryPassword: password } : undefined
-      });
+      navigation.navigate(
+        'DashboardStack',
+        {
+          screen: 'DashboardScreen',
+          params: {
+            isFirstConnection: user.firstConnection,
+            isAdmin,
+            temporaryPassword: user.firstConnection ? password : ''
+          }
+        });
     }
 }
 
@@ -73,14 +63,10 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
-      if (token && user) {
-        navigateToDashboard(user);
-      } else {
-        const cachedToken = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserToken) as IToken;
-        const cachedUserID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
-        const user = await UserService.getInstance().getUserByID(cachedUserID, cachedToken);
-        navigateToDashboard(user);
-      }
+      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken) as IToken;
+      const userID = token.user.id;
+      const user = await UserService.getInstance().getUserByID(userID) as IUser;
+      navigateToDashboard(user)
     }
     init();
   }, []);

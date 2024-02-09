@@ -11,38 +11,30 @@ import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardAdminScreen from '../ui/screens/dashboard/DashboardAdminScreen';
 import DashboardClientScreen from '../ui/screens/dashboard/DashboardClientScreen';
+import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 
-import AdminFirstConnectionScreen from '../ui/screens/dashboard/AdminFirstConnectionScreen';
-import ClientFirstConnectionScreen from '../ui/screens/dashboard/ClientFirstConnectionScreen';
+import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
 export type IRootStackParams = {
   Home: undefined,
-  AdminDashboardStack: IAdminDashboardStackParams,
-  ClientDashboardStack: IClientDashboardStackParams,
+  DashboardStack: { isAdmin: boolean }
 }
 
 export type IAuthenticationStackParams = {
   LoginScreen: undefined,
   SignUpScreen: undefined,
   PasswordResetScreen: undefined,
-  AdminDashboardStack: IAdminDashboardStackParams,
-  ClientDashboardStack: IClientDashboardStackParams,
+  DashboardStack: IDashboardStackParams,
 }
 
-export type IAdminDashboardStackParams = {
-  DashboardAdminScreen: undefined,
-  AdminFirstConnectionScreen: { temporaryPassword: string},
-  CategoriesScreen: { isAdmin: boolean, category: string },
-  SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
-  DocumentsScreen: { isAdmin: boolean, category: string, subCategory: string, documents: string },
-}
-
-export type IClientDashboardStackParams = {
-  DashboardClientScreen: undefined,
-  ClientFirstConnectionScreen: { isAdmin: boolean, temporaryPassword?: string},
+export type IDashboardStackParams = {
+  DashboardScreen: { isFirstConnection: boolean, isAdmin: boolean, temporaryPassword?: string },
+  DashboardAdminScreen: { isAdmin: boolean },
+  DashboardClientScreen: { isAdmin: boolean },
+  FirstConnectionScreen: { isAdmin: boolean, temporaryPassword?: string},
   CategoriesScreen: { isAdmin: boolean, category: string },
   SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
   DocumentsScreen: { isAdmin: boolean, category: string, subCategory: string, documents: string },
@@ -50,8 +42,7 @@ export type IClientDashboardStackParams = {
 
 let AuthenticationStack = createStackNavigator<IAuthenticationStackParams>();
 let RootStack = createStackNavigator<IRootStackParams>();
-let AdminDashboardStack = createStackNavigator<IAdminDashboardStackParams>();
-let ClientDashboardStack = createStackNavigator<IClientDashboardStackParams>();
+let DashboardStack = createStackNavigator<IDashboardStackParams>();
 
 function Home() {
   const { t } = useTranslation();
@@ -83,87 +74,59 @@ function Home() {
   )
 }
 
-function AdminDashboard() {
+function Dashboard() {
   return (
-    <AdminDashboardStack.Navigator>
-      <AdminDashboardStack.Screen
-        name={'AdminFirstConnectionScreen'}
-        component={AdminFirstConnectionScreen}
+    <DashboardStack.Navigator>
+      <DashboardStack.Screen
+        name={'DashboardScreen'}
+        component={DashboardScreen}
         options={{
           headerShown: false
         }}
       />
-      <AdminDashboardStack.Screen
+      <DashboardStack.Screen
+        name={'FirstConnectionScreen'}
+        component={FirstConnectionScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <DashboardStack.Screen
         name={'DashboardAdminScreen'}
         component={DashboardAdminScreen}
         options={{
           headerShown: false
         }}
       />
-      <AdminDashboardStack.Screen
-        name={'CategoriesScreen'}
-        component={CategoriesScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <AdminDashboardStack.Screen
-        name={'SubCategoryScreen'}
-        component={SubCategoryScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <AdminDashboardStack.Screen
-        name={'DocumentsScreen'}
-        component={DocumentsScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-    </AdminDashboardStack.Navigator>
-  )
-}
-
-function ClientDashboard() {
-  return (
-    <ClientDashboardStack.Navigator>
-      <ClientDashboardStack.Screen
-        name={'ClientFirstConnectionScreen'}
-        component={ClientFirstConnectionScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ClientDashboardStack.Screen
+      <DashboardStack.Screen
         name={'DashboardClientScreen'}
         component={DashboardClientScreen}
         options={{
           headerShown: false
         }}
       />
-      <ClientDashboardStack.Screen
+      <DashboardStack.Screen
         name={'CategoriesScreen'}
         component={CategoriesScreen}
         options={{
           headerShown: false
         }}
       />
-      <ClientDashboardStack.Screen
+      <DashboardStack.Screen
         name={'SubCategoryScreen'}
         component={SubCategoryScreen}
         options={{
           headerShown: false
         }}
       />
-      <ClientDashboardStack.Screen
+      <DashboardStack.Screen
         name={'DocumentsScreen'}
         component={DocumentsScreen}
         options={{
           headerShown: false
         }}
       />
-    </ClientDashboardStack.Navigator>
+    </DashboardStack.Navigator>
   )
 }
 
@@ -179,15 +142,8 @@ export let Routes = () => {
             }}
           />
           <RootStack.Screen
-            name="AdminDashboardStack"
-            component={AdminDashboard}
-            options={{
-              headerShown: false
-            }}
-          />
-          <RootStack.Screen
-            name="ClientDashboardStack"
-            component={ClientDashboard}
+            name="DashboardStack"
+            component={Dashboard}
             options={{
               headerShown: false
             }}
