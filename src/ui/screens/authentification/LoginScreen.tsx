@@ -59,6 +59,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         value={identifier}
         onValueChange={onIdentifierChange}
         placeholder={t('login.identifier')}
+        autoCapitalize={'none'}
       />
       <GladisTextInput
         value={password}

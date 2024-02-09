@@ -15,6 +15,7 @@ type GladisTextInputProps = {
   onValueChange: React.Dispatch<React.SetStateAction<string>>;
   keyboardType?: KeyboardTypeOptions | undefined;
   secureTextEntry?: boolean | false;
+  autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
 };
 
 function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
@@ -24,7 +25,8 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
     placeholder,
     onValueChange,
     keyboardType,
-    secureTextEntry
+    secureTextEntry,
+    autoCapitalize
   } = props;
   const { t } = useTranslation();
 
@@ -37,6 +39,7 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
         keyboardType={keyboardType}
         style={styles.textInput}
         secureTextEntry={secureTextEntry}
+        autoCapitalize={autoCapitalize}
       />
     </View>
   );
