@@ -7,7 +7,13 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { IDashboardStackParams } from '../../../navigation/Routes';
+import { IClientDashboardStackParams } from '../../../navigation/Routes';
+
+import IToken from '../../../business-logic/model/IToken';
+import UserService from '../../../business-logic/services/UserService';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { removeToken, removeUser } from '../../../business-logic/store/slices/tokenReducer';
+import { RootState } from '../../../business-logic/store/store';
 
 import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
@@ -16,17 +22,28 @@ import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
 
 
-type DashboardClientScreenProps = NativeStackScreenProps<IDashboardStackParams, 'DashboardClientScreen'>;
+type DashboardClientScreenProps = NativeStackScreenProps<IClientDashboardStackParams, 'DashboardClientScreen'>;
 
 function DashboardClientScreen(props: DashboardClientScreenProps): React.JSX.Element {
-  const { params } = props.route;
-
   const [searchText,setSearchText] = useState<string>('');
 
   const { t } = useTranslation();
 
+  const { token } = useAppSelector((state: RootState) => state.token);
+  const dispatch = useAppDispatch();
+
+  const { navigation } = props;
+
+  async function logout() {
+    const castedToken = token as IToken;
+    await UserService.getInstance().logout(castedToken);
+    dispatch(removeToken());
+    dispatch(removeUser());
+    navigation.popToTop();
+  }
+
   function navigateToCategory() {
-    props.navigation.navigate('CategoriesScreen', { isAdmin: params.isAdmin, category: 'documentManagement'})
+    navigation.navigate('CategoriesScreen', { isAdmin: false, category: 'documentManagement'})
   }
 
   return (
@@ -45,7 +62,9 @@ function DashboardClientScreen(props: DashboardClientScreenProps): React.JSX.Ele
         </View>
       </View>
       <View style={styles.topContainer}>
-        <AppIcon style={styles.appIcon}/> 
+        <TouchableOpacity onPress={logout}>
+          <AppIcon style={styles.appIcon} /> 
+        </TouchableOpacity>
         <Text style={styles.navigationHistory}>
           {t('dashboard.title')}
         </Text>

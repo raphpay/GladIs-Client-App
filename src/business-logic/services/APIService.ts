@@ -115,6 +115,32 @@ class APIService {
       throw error;
     }
   }
+
+  static async delete(endpoint: string, token?: string): Promise<any> {
+    try {
+      const url = `${API_BASE_URL}/${endpoint}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Include token in headers if provided
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(url, {
+        method: HttpMethod.DELETE,
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error updating data:', error);
+      throw error;
+    }
+  }
 }
 
 export default APIService;

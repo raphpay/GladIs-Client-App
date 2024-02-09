@@ -5,43 +5,49 @@ import {
   SafeAreaView,
   Text
 } from 'react-native';
-import { IDashboardStackParams } from '../../../navigation/Routes';
+import { IClientDashboardStackParams } from '../../../navigation/Routes';
 
+import IToken from '../../../business-logic/model/IToken';
+import IUser from '../../../business-logic/model/IUser';
 import UserService from '../../../business-logic/services/UserService';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/dashboard/FirstConnectionScreenStyles';
 
-type FirstConnectionScreenProps = NativeStackScreenProps<IDashboardStackParams, 'FirstConnectionScreen'>;
+type ClientFirstConnectionScreenProps = NativeStackScreenProps<IClientDashboardStackParams, 'ClientFirstConnectionScreen'>;
 
-function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Element {
+function ClientFirstConnectionScreen(props: ClientFirstConnectionScreenProps): React.JSX.Element {
   const [temporary, setTemporary] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
 
   const { navigation } = props;
-  const { isAdmin, temporaryPassword } =  props.route.params;
+  const { temporaryPassword } =  props.route.params;
+
+  const { token, user } = useAppSelector((state: RootState) => state.token);
 
   const { t } = useTranslation();
 
   async function modifyPassword() {
-    try {
-      await UserService.getInstance().changePassword(temporary, newPassword);
-      await UserService.getInstance().setUserFirstConnectionToFalse();
-      if (isAdmin) {
-        navigation.navigate('DashboardAdminScreen', { isAdmin })
-      } else {
-        navigation.navigate('DashboardClientScreen', { isAdmin })
-      } 
-    } catch (error) {
-      console.log('Error changing password', error);
-    }
+    const castedUser = user as IUser;
+    const castedToken = token as IToken;
+    await UserService.getInstance().changePassword(temporary, newPassword, castedUser, castedToken);
+    await UserService.getInstance().setUserFirstConnectionToFalse(castedUser, castedToken);
+    navigation.navigate('DashboardClientScreen');
   }
 
   useEffect(() => {
      setTemporary(temporaryPassword ?? '');
   }, []);
+
+  useEffect(() => {
+    if (token == null) {
+      navigation.goBack();
+    }
+  }, [navigation]);
 
   const isButtonDisabled = temporary.length == 0 || newPassword.length == 0;
 
@@ -69,4 +75,4 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
   );
 }
 
-export default FirstConnectionScreen;
+export default ClientFirstConnectionScreen;

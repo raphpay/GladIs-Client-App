@@ -4,6 +4,12 @@ import CacheKeys from '../model/enums/CacheKeys';
 import APIService from './APIService';
 import CacheService from './CacheService';
 
+interface LoginResult {
+  user?: IUser;
+  token?: IToken;
+}
+
+
 class UserService {
   private static instance: UserService | null = null;
 
@@ -28,11 +34,9 @@ class UserService {
   }
 
   // READ
-  async getUsers(): Promise<IUser[]> {
+  async getUsers(token: IToken): Promise<IUser[]> {
     try {
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      const users = await APIService.get<IUser[]>(`users`, castedToken.value);
+      const users = await APIService.get<IUser[]>(`users`, token.value);
       return users;
     } catch (error) {
       console.error('Error getting user by ID:', error);
@@ -40,11 +44,9 @@ class UserService {
     }
   }
 
-  async getUserByID(id: string | undefined): Promise<IUser> {
+  async getUserByID(id: string | undefined, token: IToken): Promise<IUser> {
     try {
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      const user = await APIService.get<IUser>(`users/${id}`, castedToken?.value);
+      const user = await APIService.get<IUser>(`users/${id}`, token.value);
       return user;
     } catch (error) {
       console.error('Error getting user by id:', id, error);
@@ -52,50 +54,21 @@ class UserService {
     }
   }
 
-  // Login
-  async login(username: string, password: string): Promise<IUser> {
-    let token: IToken;
-    try {
-      token = await APIService.login<IToken>('users/login', username, password);
-      await CacheService.getInstance().storeValue<string>(CacheKeys.currentUserID, token.user.id);
-      await CacheService.getInstance().storeValue<IToken>(CacheKeys.currentUserToken, token);
-    } catch (error) {
-      console.error('Error logging user with username:', username, error);
-      throw error;
-    }
-
-    try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID)
-      const castedUserID = userID as string;
-      const user = await this.getUserByID(castedUserID);
-      return user;
-    } catch (error) {
-      console.error('Error getting user after login with token:', token, error);
-      throw error;
-    }
-  }
-
   // UPDATE
-  async changePassword(currentPassword: string, newPassword: string) {
+  async changePassword(currentPassword: string, newPassword: string, user: IUser, token: IToken) {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-      const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      await APIService.put(`users/${castedUserID}/changePassword`, { currentPassword, newPassword }, castedToken.value);
+      const castedUserID = user.id as string;
+      await APIService.put(`users/${castedUserID}/changePassword`, { currentPassword, newPassword }, token.value);
     } catch (error) {
       console.error('Error changing user password', error);
       throw error;
     }
   }
 
-  async setUserFirstConnectionToFalse() {
+  async setUserFirstConnectionToFalse(user: IUser, token: IToken) {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-      const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      await APIService.put(`users/${castedUserID}/setFirstConnectionToFalse`, null, castedToken.value);
+      const userID = user.id as string;
+      await APIService.put(`users/${userID}/setFirstConnectionToFalse`, null, token.value);
     } catch (error) {
       console.log('Error changing user first connection parameter', error);
       throw error;
@@ -103,6 +76,38 @@ class UserService {
   }
 
   // DELETE
+
+  // Authentication
+  async login(username: string, password: string): Promise<LoginResult> {
+    let token: IToken;
+    let userID: string;
+    try {
+      token = await APIService.login<IToken>('users/login', username, password);
+      await CacheService.getInstance().storeValue(CacheKeys.currentUserToken, token);
+      userID = token.user.id as string;
+    } catch (error) {
+      console.error('Error logging user with username:', username, error);
+      throw error;
+    }
+
+    try {
+      const user = await this.getUserByID(userID, token);
+      await CacheService.getInstance().storeValue(CacheKeys.currentUserID, userID);
+      return {user, token};
+    } catch (error) {
+      console.error('Error getting user after login with token:', token, error);
+      throw error;
+    }
+  }
+
+  async logout(token: IToken) {
+    try {
+      await APIService.delete(`users/${token.id}/logout`);
+    } catch (error) {
+      console.error('Error logging user out', error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;
