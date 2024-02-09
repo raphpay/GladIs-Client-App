@@ -25,7 +25,7 @@ function DashboardAdminScreen(): React.JSX.Element {
         <View style={styles.innerComponentsContainer}>
           <View style={styles.searchInputContainer}>
             <IconButton
-              title={t('dashboard.buttons.addClient')}
+              title={t('components.buttons.addClient')}
               icon={plusIcon}
               onPress={() => { console.log('hello')}}
             />
