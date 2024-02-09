@@ -1,3 +1,4 @@
+import IToken from "../../../src/business-logic/model/IToken";
 import IUser from "../../../src/business-logic/model/IUser";
 import UserType from "../../../src/business-logic/model/enums/UserType";
 import APIService from "../../../src/business-logic/services/APIService";
@@ -78,4 +79,114 @@ describe('UserService', () => {
       expect(users).toEqual(mockUsers);
     });
   });
+
+  describe('getUserByID', () => {
+    it('should fetch a user by ID from the API', async () => {
+      // Mock the token retrieval from CacheService
+      const mockToken = { value: 'mockTokenValue' };
+      jest.spyOn(CacheService.getInstance(), 'retrieveValue').mockResolvedValueOnce(mockToken);
+  
+      // Mock the response from the API
+      const userId = '1';
+      const mockUser: IUser = {
+        id: userId,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        username: 'john.doe',
+        password: 'password',
+        firstConnection: true,
+        userType: UserType.Client,
+      };
+      jest.spyOn(APIService, 'get').mockResolvedValueOnce(mockUser);
+  
+      // Call the getUserByID method
+      const user = await UserService.getInstance().getUserByID(userId);
+  
+      // Assertions
+      expect(CacheService.getInstance().retrieveValue).toHaveBeenCalledWith('currentUserToken');
+      expect(APIService.get).toHaveBeenCalledWith(`users/${userId}`, mockToken.value);
+      expect(user).toEqual(mockUser);
+    });
+  });
+
+  describe('login', () => {
+    it('should log in a user and return user data', async () => {
+      // Mock the login response from APIService
+      const mockToken: IToken = { value: 'mockTokenValue', user: { id: '1' } };
+      jest.spyOn(APIService, 'login').mockResolvedValueOnce(mockToken);
+  
+      // Mock the storeValue and retrieveValue methods of CacheService
+      jest.spyOn(CacheService.getInstance(), 'storeValue').mockResolvedValueOnce(undefined);
+      jest.spyOn(CacheService.getInstance(), 'retrieveValue').mockResolvedValueOnce('1');
+  
+      // Mock the getUserByID method of UserService
+      const mockUser: IUser = {
+        id: '1',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        username: 'john.doe',
+        password: 'password',
+        firstConnection: true,
+        userType: UserType.Client,
+      };
+      jest.spyOn(UserService.getInstance(), 'getUserByID').mockResolvedValueOnce(mockUser);
+  
+      // Call the login method
+      const user = await UserService.getInstance().login('john.doe', 'password');
+  
+      // Assertions
+      expect(APIService.login).toHaveBeenCalledWith('users/login', 'john.doe', 'password');
+      expect(CacheService.getInstance().storeValue).toHaveBeenCalledWith('currentUserID', '1');
+      expect(CacheService.getInstance().storeValue).toHaveBeenCalledWith('currentUserToken', mockToken);
+      expect(CacheService.getInstance().retrieveValue).toHaveBeenCalledWith('currentUserID');
+      expect(UserService.getInstance().getUserByID).toHaveBeenCalledWith('1');
+      expect(user).toEqual(mockUser);
+    });
+  });
+
+  describe('changePassword', () => {
+    it('should change user password successfully', async () => {
+      const mockToken: IToken = { value: 'mockTokenValue', user: { id: '1' } };
+      // Mock the retrieveValue method of CacheService
+      jest.spyOn(CacheService.getInstance(), 'retrieveValue').mockResolvedValueOnce('1');
+      jest.spyOn(CacheService.getInstance(), 'retrieveValue').mockResolvedValueOnce(mockToken);
+
+      // Mock the put method of APIService
+      jest.spyOn(APIService, 'put').mockResolvedValueOnce(undefined);
+
+      // Call the changePassword method
+      await UserService.getInstance().changePassword('oldPassword', 'newPassword');
+
+      // Assertions
+      expect(CacheService.getInstance().retrieveValue).toHaveBeenCalledWith('currentUserID');
+      expect(CacheService.getInstance().retrieveValue).toHaveBeenCalledWith('currentUserToken');
+      expect(APIService.put).toHaveBeenCalledWith('users/1/changePassword', { currentPassword: 'oldPassword', newPassword: 'newPassword' }, mockToken.value);
+    });
+  });
+
+  describe('setUserFirstConnectionToFalse', () => {
+    it('should update the user first connection parameter', async () => {
+      // Mock the dependencies
+      const userID = '123'; // Mocked user ID
+      const mockToken: IToken = { value: 'mockTokenValue', user: { id: userID } };
+      jest.spyOn(CacheService.getInstance(), 'retrieveValue')
+        .mockResolvedValueOnce(userID)
+        .mockResolvedValueOnce(mockToken);
+  
+      const putSpy = jest.spyOn(APIService, 'put').mockResolvedValueOnce(undefined);
+  
+      // Call the method
+      await UserService.getInstance().setUserFirstConnectionToFalse();
+  
+      // Assertions
+      expect(putSpy).toHaveBeenCalledWith(
+        `users/${userID}/setFirstConnectionToFalse`,
+        null,
+        mockToken.value
+      );
+    });
+  });
+  
 });
