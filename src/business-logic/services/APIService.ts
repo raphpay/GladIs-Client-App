@@ -1,11 +1,6 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+import HttpMethod from "../model/enums/HttpMethod";
 
-enum HttpMethod {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  DELETE = 'DELETE',
-}
+const API_BASE_URL = 'http://localhost:8080/api';
 
 class APIService {
   static async get<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {

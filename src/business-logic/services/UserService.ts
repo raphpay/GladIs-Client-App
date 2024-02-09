@@ -1,5 +1,6 @@
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
+import CacheKeys from '../model/enums/CacheKeys';
 import APIService from './APIService';
 import CacheService from './CacheService';
 
@@ -29,7 +30,7 @@ class UserService {
   // READ
   async getUsers(): Promise<IUser[]> {
     try {
-      const token = await CacheService.getInstance().retrieveValue<IToken>('currentUserToken');
+      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
       const users = await APIService.get<IUser[]>(`users`, castedToken.value);
       return users;
@@ -41,7 +42,7 @@ class UserService {
 
   async getUserByID(id: string | undefined): Promise<IUser> {
     try {
-      const token = await CacheService.getInstance().retrieveValue<IToken>('currentUserToken');
+      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
       const user = await APIService.get<IUser>(`users/${id}`, castedToken?.value);
       return user;
@@ -56,15 +57,15 @@ class UserService {
     let token: IToken;
     try {
       token = await APIService.login<IToken>('users/login', username, password);
-      await CacheService.getInstance().storeValue<string>('currentUserID', token.user.id);
-      await CacheService.getInstance().storeValue<IToken>('currentUserToken', token);
+      await CacheService.getInstance().storeValue<string>(CacheKeys.currentUserID, token.user.id);
+      await CacheService.getInstance().storeValue<IToken>(CacheKeys.currentUserToken, token);
     } catch (error) {
       console.error('Error logging user with username:', username, error);
       throw error;
     }
 
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>('currentUserID')
+      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID)
       const castedUserID = userID as string;
       const user = await this.getUserByID(castedUserID);
       return user;
@@ -77,9 +78,9 @@ class UserService {
   // UPDATE
   async changePassword(currentPassword: string, newPassword: string) {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>('currentUserID');
+      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
       const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>('currentUserToken');
+      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
       await APIService.put(`users/${castedUserID}/changePassword`, { currentPassword, newPassword }, castedToken.value);
     } catch (error) {
@@ -90,9 +91,9 @@ class UserService {
 
   async setUserFirstConnectionToFalse() {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>('currentUserID');
+      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
       const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>('currentUserToken');
+      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
       await APIService.put(`users/${castedUserID}/setFirstConnectionToFalse`, null, castedToken.value);
     } catch (error) {
