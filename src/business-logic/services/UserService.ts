@@ -4,7 +4,7 @@ import APIService from './APIService';
 
 class UserService {
   private static instance: UserService | null = null;
-  private static token: IToken | undefined = undefined;
+  static token: IToken | undefined = undefined;
 
   private constructor() {}
 
@@ -19,6 +19,7 @@ class UserService {
     UserService.token = token;
   }
 
+  // CREATE
   async createUser(user: IUser): Promise<IUser> {
     try {
       const createdUser = await APIService.post<IUser>('users', user);
@@ -29,6 +30,7 @@ class UserService {
     }
   }
 
+  // READ
   async getUsers(): Promise<IUser[]> {
     try {
       const users = await APIService.get<IUser[]>(`users`, UserService.token?.value);
@@ -39,6 +41,17 @@ class UserService {
     }
   }
 
+  async getUserByID(id: string | undefined): Promise<IUser> {
+    try {
+      const user = await APIService.get<IUser>(`users/${id}`, UserService.token?.value);
+      return user;
+    } catch (error) {
+      console.error('Error getting user by id:', id, error);
+      throw error;
+    }
+  }
+
+  // Login
   async login(username: string, password: string): Promise<IUser> {
     try {
       const token = await APIService.login<IToken>('users/login', username, password);
@@ -50,7 +63,7 @@ class UserService {
 
     try {
       const userID = UserService.token?.user.id;
-      const user = await APIService.get<IUser>(`users/${userID}`, UserService.token?.value);
+      const user = await this.getUserByID(userID);
       return user;
     } catch (error) {
       console.error('Error getting user after login with token:', UserService.token?.value, error);
@@ -58,6 +71,7 @@ class UserService {
     }
   }
 
+  // UPDATE
   async changePassword(currentPassword: string, newPassword: string) {
     try {
       const userID = UserService.token?.user.id;
@@ -77,6 +91,8 @@ class UserService {
       throw error;
     }
   }
+
+  // DELETE
 }
 
 export default UserService;
