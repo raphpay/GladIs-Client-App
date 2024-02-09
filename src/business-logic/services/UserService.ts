@@ -61,14 +61,22 @@ class UserService {
   async changePassword(currentPassword: string, newPassword: string) {
     try {
       const userID = UserService.token?.user.id;
-      await APIService.put(`users/${userID}/changePassword`, { currentPassword, newPassword }, UserService.token?.value)
+      await APIService.put(`users/${userID}/changePassword`, { currentPassword, newPassword }, UserService.token?.value);
     } catch (error) {
       console.error('Error changing user password', error);
       throw error;
     }
   }
 
-  // TODO: Define additional methods for updating, deleting users, etc.
+  async setUserFirstConnectionToFalse() {
+    try {
+      const userID = UserService.token?.user.id;
+      await APIService.put(`users/${userID}/setFirstConnectionToFalse`, null, UserService.token?.value);
+    } catch (error) {
+      console.log('Error changing user first connection parameter', error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

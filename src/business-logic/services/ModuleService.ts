@@ -22,8 +22,6 @@ class ModuleService {
       throw error;
     }
   }
-
-  // TODO: Define additional methods for updating, deleting modules, etc.
 }
 
 export default ModuleService;

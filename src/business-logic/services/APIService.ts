@@ -120,8 +120,6 @@ class APIService {
       throw error;
     }
   }
-
-  // TODO: Add methods for other HTTP methods like PUT, DELETE, etc. as needed
 }
 
 export default APIService;

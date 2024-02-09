@@ -28,8 +28,8 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
   async function modifyPassword() {
     try {
       await UserService.getInstance().changePassword(temporary, newPassword);
+      await UserService.getInstance().setUserFirstConnectionToFalse();
       if (isAdmin) {
-        // TODO: Create constants
         navigation.navigate('DashboardAdminScreen', { isAdmin })
       } else {
         navigation.navigate('DashboardClientScreen', { isAdmin })
