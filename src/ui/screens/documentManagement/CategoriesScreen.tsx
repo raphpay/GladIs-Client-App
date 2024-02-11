@@ -29,12 +29,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   }
 
   function navigateToSubCategory() {
-    props.navigation.navigate('SubCategoryScreen',
-    {
-      isAdmin: params.isAdmin,
-      category: params.category,
-      subCategory: 'systemQuality'
-    });
+    props.navigation.navigate('SubCategoryScreen', { subCategory: 'systemQuality' });
   }
 
   return (

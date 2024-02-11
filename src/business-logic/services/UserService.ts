@@ -52,29 +52,6 @@ class UserService {
     }
   }
 
-  // Login
-  async login(username: string, password: string): Promise<IUser> {
-    let token: IToken;
-    try {
-      token = await APIService.login<IToken>('users/login', username, password);
-      await CacheService.getInstance().storeValue<string>(CacheKeys.currentUserID, token.user.id);
-      await CacheService.getInstance().storeValue<IToken>(CacheKeys.currentUserToken, token);
-    } catch (error) {
-      console.error('Error logging user with username:', username, error);
-      throw error;
-    }
-
-    try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID)
-      const castedUserID = userID as string;
-      const user = await this.getUserByID(castedUserID);
-      return user;
-    } catch (error) {
-      console.error('Error getting user after login with token:', token, error);
-      throw error;
-    }
-  }
-
   // UPDATE
   async changePassword(currentPassword: string, newPassword: string) {
     try {

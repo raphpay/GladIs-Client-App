@@ -37,12 +37,7 @@ function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
   }
 
   function navigateToDocuments() {
-    props.navigation.navigate('DocumentsScreen', {
-      isAdmin: params.isAdmin,
-      category: params.category,
-      subCategory: params.subCategory,
-      documents: 'processus'
-    })
+    props.navigation.navigate('DocumentsScreen', { documents: 'processus' })
   }
 
   return (

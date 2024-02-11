@@ -1,26 +1,22 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, Text } from 'react-native';
 
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import { useAppDispatch } from '../../../business-logic/store/hooks';
+import { setToken } from '../../../business-logic/store/slices/tokenReducer';
+
 import AppIcon from '../../components/AppIcon';
-
-import { IAuthenticationStackParams } from '../../../navigation/Routes';
-
-import IToken from '../../../business-logic/model/IToken';
-import IUser from '../../../business-logic/model/IUser';
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
-import UserType from '../../../business-logic/model/enums/UserType';
-import CacheService from '../../../business-logic/services/CacheService';
-import UserService from '../../../business-logic/services/UserService';
-
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
-type LoginScreenProps = NativeStackScreenProps<IAuthenticationStackParams, 'LoginScreen'>;
+type LoginScreenProps = NativeStackScreenProps<IRootStackParams, 'LoginScreen'>;
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { navigation } = props;
@@ -30,9 +26,11 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   const { t } = useTranslation();
 
+  const dispatch = useAppDispatch();
+
   async function login() {
-    const user = await UserService.getInstance().login(identifier, password);
-    navigateToDashboard(user);
+    const token = await AuthenticationService.getInstance().login(identifier, password);
+    dispatch(setToken(token));
   }
 
   function goToSignUp() {
@@ -43,33 +41,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     navigation.navigate('PasswordResetScreen')
   }
 
-  function navigateToDashboard(user: IUser) {
-    if (user) {
-      const isAdmin = user.userType == UserType.Admin;
-      navigation.navigate(
-        'DashboardStack',
-        {
-          screen: 'DashboardScreen',
-          params: {
-            isFirstConnection: user.firstConnection,
-            isAdmin,
-            temporaryPassword: user.firstConnection ? password : ''
-          }
-        });
-    }
-}
-
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
-
-  useEffect(() => {
-    async function init() {
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken) as IToken;
-      const userID = token.user.id;
-      const user = await UserService.getInstance().getUserByID(userID) as IUser;
-      navigateToDashboard(user)
-    }
-    init();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
