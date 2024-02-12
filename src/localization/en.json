@@ -78,6 +78,10 @@
     "login": {
       "title": "Error Logging in",
       "message": "Please verify your credentials"
+    },
+    "logout": {
+      "title": "Error logging out",
+      "message": "Please try again later"
     }
   }
 }

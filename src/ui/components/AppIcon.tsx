@@ -1,5 +1,7 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
+  Alert,
   Image,
   StyleProp,
   TouchableOpacity,
@@ -20,12 +22,16 @@ type AppIconProps = {
 function AppIcon(props: AppIconProps): React.JSX.Element {
 
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   async function logout() {
     await AuthenticationService.getInstance()
       .logout()
       .then(() => {
         dispatch(removeToken())
+      })
+      .catch(() => {
+        Alert.alert(t('errors.logout.title'), t('error.logout.message'));
       });
   }
 

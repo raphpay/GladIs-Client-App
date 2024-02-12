@@ -78,6 +78,10 @@
     "login": {
       "title": "Erreur lors de l'authentification",
       "message": "Veuillez vérifier vos identifiants"
+    },
+    "logout": {
+      "title": "Erreur lors de la déconnexion",
+      "message": "Veuillez réessayer plus tard"
     }
   }
 }
