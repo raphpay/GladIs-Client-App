@@ -6,6 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
@@ -14,7 +16,7 @@ import { Colors } from '../../assets/colors/colors';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
 
-type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, 'DashboardScreen'>;
+type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
 
 function DashboardScreen(props: DashboardScreenProps): any {
   const { navigation } = props;
@@ -25,7 +27,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const { t } = useTranslation();
 
   function navigateToCategory() {
-    navigation.navigate('CategoriesScreen', { category: 'documentManagement'})
+    navigation.navigate(NavigationRoutes.CategoriesScreen, { category: 'documentManagement'})
   }
 
   useEffect(() => {

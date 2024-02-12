@@ -4,10 +4,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
-import IToken from '../business-logic/model/IToken';
+import AuthenticationResult from '../business-logic/model/AuthenticationResult';
+import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
+import { setFirstConnection } from '../business-logic/store/slices/userReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
@@ -15,6 +17,7 @@ import PasswordResetScreen from '../ui/screens/authentification/PasswordResetScr
 import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
+import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
@@ -25,10 +28,11 @@ export type IRootStackParams = {
   SignUpScreen: undefined,
   PasswordResetScreen: undefined,
   // Dashboard Stack
-  DashboardScreen: undefined
+  FirstConnectionScreen: undefined,
+  DashboardScreen: undefined,
   CategoriesScreen: { category: string },
-  SubCategoryScreen: { subCategory: string }
-  DocumentsScreen: { documents: string }
+  SubCategoryScreen: { category: string, subCategory: string },
+  DocumentsScreen: { category: string, subCategory: string, documents: string },
 }
 
 let RootStack = createStackNavigator<IRootStackParams>();
@@ -37,47 +41,57 @@ function LoginStack() {
   return (
     <>
       <RootStack.Screen 
-        name='LoginScreen'
+        name={NavigationRoutes.LoginScreen}
         component={LoginScreen}
         options={{headerShown: false}}
       />
       <RootStack.Screen 
-        name='SignUpScreen'
+        name={NavigationRoutes.SignUpScreen}
         component={SignUpScreen}
-        options={{headerShown: false}}
       />
       <RootStack.Screen 
-        name='PasswordResetScreen'
+        name={NavigationRoutes.PasswordResetScreen}
         component={PasswordResetScreen}
-        options={{headerShown: false}}
       />
     </>
   )
 }
 
-function DashboardStack() {
+function DashboardStack(firstConnection: boolean) {
   return (
     <>
-      <RootStack.Screen
-        name='DashboardScreen'
-        component={DashboardScreen}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen
-        name={'CategoriesScreen'}
-        component={CategoriesScreen}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen
-        name={'SubCategoryScreen'}
-        component={SubCategoryScreen}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen
-        name={'DocumentsScreen'}
-        component={DocumentsScreen}
-        options={{headerShown: false}}
-      />
+      {
+        firstConnection ? (
+          <RootStack.Screen
+            name={NavigationRoutes.FirstConnectionScreen}
+            component={FirstConnectionScreen}
+            options={{headerShown: false}}
+          />
+        ) : (
+          <>
+            <RootStack.Screen
+              name={NavigationRoutes.DashboardScreen}
+              component={DashboardScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.CategoriesScreen}
+              component={CategoriesScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.SubCategoryScreen}
+              component={SubCategoryScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.DocumentsScreen}
+              component={DocumentsScreen}
+              options={{headerShown: false}}
+            />
+          </>
+        )
+      }
     </>
   )
 }
@@ -85,6 +99,7 @@ function DashboardStack() {
 export let Routes = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isFirstConnection, setIsFirstConnection] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
@@ -98,10 +113,12 @@ export let Routes = () => {
       if (token == null) {
         await AuthenticationService.getInstance()
           .checkAuthentication()
-          .then((authToken: IToken | null) => {
-            setIsLoggedIn(!!authToken);
-            if (authToken != null) {
-              dispatch(setToken(authToken));
+          .then((authResult: AuthenticationResult) => {
+            setIsLoggedIn(!!authResult.token);
+            dispatch(setFirstConnection(authResult.firstConnection));
+            setIsFirstConnection(authResult.firstConnection);
+            if (authResult.token != null) {
+              dispatch(setToken(authResult.token));
             } else {
               dispatch(removeToken());
             }
@@ -119,12 +136,12 @@ export let Routes = () => {
       <RootStack.Navigator>
         {
           isLoggedIn ? (
-            DashboardStack()
+            DashboardStack(isFirstConnection)
           ) : (
             LoginStack()
           )
         }
       </RootStack.Navigator>
     </NavigationContainer>
-  )
+  );
 }

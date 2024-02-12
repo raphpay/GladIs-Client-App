@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { IDashboardStackParams } from '../../../navigation/Routes';
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 
 import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
@@ -16,7 +18,7 @@ import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/documentManagement/CategoriesScreenStyles';
 
-type CategoriesScreenProps = NativeStackScreenProps<IDashboardStackParams, 'CategoriesScreen'>;
+type CategoriesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.CategoriesScreen>;
 
 function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   const { params } = props.route;
@@ -29,7 +31,10 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   }
 
   function navigateToSubCategory() {
-    props.navigation.navigate('SubCategoryScreen', { subCategory: 'systemQuality' });
+    props.navigation.navigate(NavigationRoutes.SubCategoryScreen, {
+      category: params.category,
+      subCategory: 'systemQuality'
+    });
   }
 
   return (

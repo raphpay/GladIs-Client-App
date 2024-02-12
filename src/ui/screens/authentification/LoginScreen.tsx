@@ -5,6 +5,7 @@ import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
@@ -16,7 +17,7 @@ import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
-type LoginScreenProps = NativeStackScreenProps<IRootStackParams, 'LoginScreen'>;
+type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { navigation } = props;
@@ -34,11 +35,11 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   }
 
   function goToSignUp() {
-    navigation.navigate('SignUpScreen');
+    navigation.navigate(NavigationRoutes.SignUpScreen);
   }
 
   function goToPasswordReset() {
-    navigation.navigate('PasswordResetScreen')
+    navigation.navigate(NavigationRoutes.PasswordResetScreen)
   }
 
   const isButtonDisabled = identifier.length === 0 || password.length === 0;

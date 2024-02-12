@@ -1,27 +1,27 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
   Text
 } from 'react-native';
-import { IDashboardStackParams } from '../../../navigation/Routes';
+import { IRootStackParams } from '../../../navigation/Routes';
 
 import UserService from '../../../business-logic/services/UserService';
 
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';
 
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import styles from '../../assets/styles/dashboard/FirstConnectionScreenStyles';
 
-type FirstConnectionScreenProps = NativeStackScreenProps<IDashboardStackParams, 'FirstConnectionScreen'>;
+type FirstConnectionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FirstConnectionScreen>;
 
 function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Element {
   const [temporary, setTemporary] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
 
   const { navigation } = props;
-  const { isAdmin, temporaryPassword } =  props.route.params;
 
   const { t } = useTranslation();
 
@@ -29,19 +29,12 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
     try {
       await UserService.getInstance().changePassword(temporary, newPassword);
       await UserService.getInstance().setUserFirstConnectionToFalse();
-      if (isAdmin) {
-        navigation.navigate('DashboardAdminScreen', { isAdmin })
-      } else {
-        navigation.navigate('DashboardClientScreen', { isAdmin })
-      } 
+      navigation.navigate(NavigationRoutes.DashboardScreen)
     } catch (error) {
       console.log('Error changing password', error);
     }
   }
 
-  useEffect(() => {
-     setTemporary(temporaryPassword ?? '');
-  }, []);
 
   const isButtonDisabled = temporary.length == 0 || newPassword.length == 0;
 
