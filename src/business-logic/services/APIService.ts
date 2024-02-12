@@ -26,7 +26,7 @@ class APIService {
 
       return await response.json() as T;
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.log('Error fetching data:', error);
       throw error;
     }
   }
@@ -55,7 +55,7 @@ class APIService {
 
       return await response.json() as T;
     } catch (error) {
-      console.error('Error posting data:', error);
+      console.log('Error posting data:', error);
       throw error;
     }
   }
@@ -82,7 +82,7 @@ class APIService {
 
       return await response.json() as T;
     } catch (error) {
-      console.error('Error posting data:', error);
+      console.log('Error posting data:', error);
       throw error;
     }
   }
@@ -111,7 +111,7 @@ class APIService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error updating data:', error);
+      console.log('Error updating data:', error);
       throw error;
     }
   }

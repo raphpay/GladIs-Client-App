@@ -40,7 +40,7 @@
     "title": "Tableau de bord",
     "modules": {
       "documentManagement": "Gestion des documents"
-    },
+    }
   },
   "categories": {
     "documentManagement": {
@@ -72,6 +72,12 @@
       "back": "Retour",
       "addClient": "Ajouter un client",
       "continue": "Continuer"
+    }
+  },
+  "errors": {
+    "login": {
+      "title": "Erreur lors de l'authentification",
+      "message": "Veuillez vérifier vos identifiants"
     }
   }
 }

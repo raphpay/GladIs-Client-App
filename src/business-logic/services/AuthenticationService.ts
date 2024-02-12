@@ -26,7 +26,7 @@ class AuthenticationService {
       await CacheService.getInstance().storeValue<IToken>(CacheKeys.currentUserToken, token);
       return token
     } catch (error) {
-      console.error('Error logging user with username:', username, error);
+      console.log('Error logging user with username:', username, error);
       throw error;
     }
   }

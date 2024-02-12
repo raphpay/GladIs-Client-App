@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text } from 'react-native';
+import { Alert, SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -15,6 +15,7 @@ import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
 
+import IToken from '../../../business-logic/model/IToken';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
@@ -30,8 +31,14 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const dispatch = useAppDispatch();
 
   async function login() {
-    const token = await AuthenticationService.getInstance().login(identifier, password);
-    dispatch(setToken(token));
+    await AuthenticationService.getInstance()
+      .login(identifier, password)
+      .then((token: IToken) => {
+        dispatch(setToken(token));
+      })
+      .catch(() => {
+        Alert.alert(t('errors.login.title'), t('errors.login.message'))
+      });
   }
 
   function goToSignUp() {

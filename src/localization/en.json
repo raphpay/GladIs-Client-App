@@ -73,5 +73,11 @@
       "addClient": "Add a client",
       "continue": "Continue"
     }
+  },
+  "errors": {
+    "login": {
+      "title": "Error Logging in",
+      "message": "Please verify your credentials"
+    }
   }
 }
