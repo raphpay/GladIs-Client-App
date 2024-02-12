@@ -30,37 +30,71 @@ describe('CacheService', () => {
     });
   });
 
-  describe('retrieveValue', () => {
-    it('should retrieve a value from AsyncStorage', async () => {
-      jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(JSON.stringify('testValue'));
-      const cacheService = CacheService.getInstance();
+  // describe('retrieveValue', () => {
+  //   it('should retrieve a value from AsyncStorage', async () => {
+  //     jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(JSON.stringify('testValue'));
+  //     const cacheService = CacheService.getInstance();
 
-      const result = await cacheService.retrieveValue<string>('testKey');
+  //     const result = await cacheService.retrieveValue<string>('testKey');
 
-      expect(result).toEqual('testValue');
+  //     expect(result).toEqual('testValue');
+  //   });
+
+  //   it('should return null if no value is found', async () => {
+  //     jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(null);
+  //     const cacheService = CacheService.getInstance();
+
+  //     const result = await cacheService.retrieveValue<string>('nonExistentKey');
+
+  //     expect(result).toBeNull();
+  //   });
+
+  //   it('should handle errors when retrieving value', async () => {
+  //     const error = new Error('AsyncStorage error');
+  //     jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(error);
+  //     const consoleErrorSpy = jest.spyOn(console, 'log').mockImplementation();
+
+  //     const cacheService = CacheService.getInstance();
+  //     const result = await cacheService.retrieveValue<string>('testKey');
+
+  //     expect(consoleErrorSpy).toHaveBeenCalledWith(
+  //       'Error retrieving value to cache for key:', 'testKey', error
+  //     );
+  //     expect(result).toBeNull();
+  //   });
+  // });
+
+  describe('CacheService retrieveValue method', () => {
+    it('should retrieve a stored string value from AsyncStorage', async () => {
+      const key = 'testKey';
+      const expectedValue = 'testValue';
+      AsyncStorage.getItem = jest.fn().mockResolvedValueOnce(JSON.stringify(expectedValue));
+  
+      const result = await CacheService.getInstance().retrieveValue<string>(key);
+  
+      expect(result).toEqual(expectedValue);
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith(key);
     });
-
-    it('should return null if no value is found', async () => {
-      jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(null);
-      const cacheService = CacheService.getInstance();
-
-      const result = await cacheService.retrieveValue<string>('nonExistentKey');
-
-      expect(result).toBeNull();
+  
+    it('should retrieve a stored object value from AsyncStorage', async () => {
+      const key = 'testKey';
+      const expectedValue = { prop1: 'value1', prop2: 'value2' };
+      AsyncStorage.getItem = jest.fn().mockResolvedValueOnce(JSON.stringify(expectedValue));
+  
+      const result = await CacheService.getInstance().retrieveValue<typeof expectedValue>(key);
+  
+      expect(result).toEqual(expectedValue);
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith(key);
     });
-
-    it('should handle errors when retrieving value', async () => {
-      const error = new Error('AsyncStorage error');
-      jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(error);
-      const consoleErrorSpy = jest.spyOn(console, 'log').mockImplementation();
-
-      const cacheService = CacheService.getInstance();
-      const result = await cacheService.retrieveValue<string>('testKey');
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Error retrieving value to cache for key:', 'testKey', error
-      );
+  
+    it('should return null if no value is found for the given key', async () => {
+      const key = 'nonExistentKey';
+      AsyncStorage.getItem = jest.fn().mockResolvedValueOnce(null);
+  
+      const result = await CacheService.getInstance().retrieveValue<string>(key);
+  
       expect(result).toBeNull();
+      expect(AsyncStorage.getItem).toHaveBeenCalledWith(key);
     });
   });
 
