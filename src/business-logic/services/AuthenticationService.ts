@@ -29,6 +29,7 @@ class AuthenticationService {
     }
   }
 
+  // Logout
   async logout() {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserID);
@@ -37,6 +38,24 @@ class AuthenticationService {
       console.error('Error logging user out', error);
       throw error;
     }
+  }
+
+  // Authentication check
+  async checkAuthentication(): Promise<IToken | null> {
+    let authToken: IToken | null = null;
+    try {
+      const cachedToken = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserToken) as IToken;
+      const token = await APIService.get<IToken>(`tokens/${cachedToken.id}`);
+      const cachedUserID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
+      if (token.user.id === cachedUserID) {
+        authToken = token
+      }
+    } catch (error) {
+      console.log('Error checking user authentication status', error);
+      throw error;
+    }
+
+    return authToken;
   }
 }
 

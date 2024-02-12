@@ -7,6 +7,7 @@ import {
   ViewStyle
 } from 'react-native';
 
+import AuthenticationService from '../../business-logic/services/AuthenticationService';
 import { useAppDispatch } from '../../business-logic/store/hooks';
 import { removeToken } from '../../business-logic/store/slices/tokenReducer';
 
@@ -20,8 +21,12 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
 
   const dispatch = useAppDispatch();
 
-  function logout() {
-    dispatch(removeToken());
+  async function logout() {
+    await AuthenticationService.getInstance()
+      .logout()
+      .then(() => {
+        dispatch(removeToken())
+      });
   }
 
   return (

@@ -4,7 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
-import { useAppSelector } from '../business-logic/store/hooks';
+import IToken from '../business-logic/model/IToken';
+import AuthenticationService from '../business-logic/services/AuthenticationService';
+import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
+import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
@@ -84,10 +87,32 @@ export let Routes = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-     setIsLoggedIn(!!token);
+    setIsLoggedIn(!!token);
   }, [token]);
+
+  useEffect(() => {
+    async function init() {
+      if (token == null) {
+        await AuthenticationService.getInstance()
+          .checkAuthentication()
+          .then((authToken: IToken | null) => {
+            setIsLoggedIn(!!authToken);
+            if (authToken != null) {
+              dispatch(setToken(authToken));
+            } else {
+              dispatch(removeToken());
+            }
+          })
+          .catch(() => {
+            setIsLoggedIn(false);
+          });
+      }
+    }
+    init();
+  }, []);
 
   return (
     <NavigationContainer>
