@@ -16,6 +16,8 @@
   "quotation": {
     "title": "Request for quotation",
     "name": "NAME First Name",
+    "firstName": "First Name",
+    "lastName": "NAME",
     "phone": "Phone number",
     "companyName": "Company Name",
     "email": "Email",

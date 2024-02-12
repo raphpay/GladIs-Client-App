@@ -1,4 +1,5 @@
 import AuthenticationResult from '../model/AuthenticationResult';
+import IPendingUser from '../model/IPendingUser';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import CacheKeys from '../model/enums/CacheKeys';
@@ -60,6 +61,16 @@ class AuthenticationService {
     }
 
     return authResult;
+  }
+
+  // Ask for an account
+  async askForSignUp(pendingUser: IPendingUser) {
+    try {
+      await APIService.post<IPendingUser>('pendingUsers', pendingUser)
+    } catch (error) {
+      console.log('Error asking for sign up for user', pendingUser, error);
+      throw error;
+    }
   }
 }
 

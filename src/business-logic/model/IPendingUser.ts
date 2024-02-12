@@ -1,7 +1,7 @@
 import IModule from "./IModule";
-import UserType from "./enums/UserType";
+import PendingUserStatus from "./enums/PendingUserStatus";
 
-export default interface IUser {
+export default interface IPendingUser {
   id?: string;
   firstName: string;
   lastName: string;
@@ -12,9 +12,6 @@ export default interface IUser {
   numberOfEmployees?: number | null;
   numberOfUsers?: number | null;
   salesAmount?: number | null;
-  username: string;
-  password: string;
-  firstConnection: boolean;
-  userType: UserType;
-  modules?: IModule[];
+  modules?: IModule[]; // Define Module type if it's not already defined
+  status: PendingUserStatus;
 }
