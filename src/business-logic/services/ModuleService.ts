@@ -1,5 +1,5 @@
 import IModule from '../model/IModule';
-import ApiService from './APIService';
+import APIService from './APIService';
 
 class ModuleService {
   private static instance: ModuleService | null = null;
@@ -13,10 +13,10 @@ class ModuleService {
     return ModuleService.instance;
   }
 
-  async getModules(): Promise<IModule> {
+  async getModules(): Promise<IModule[]> {
     try {
-      const module = await ApiService.get<IModule>('modules');
-      return module;
+      const modules = await APIService.get<IModule[]>('modules');
+      return modules;
     } catch (error) {
       console.error('Error getting modules', error);
       throw error;

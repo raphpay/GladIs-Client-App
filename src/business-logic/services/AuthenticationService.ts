@@ -1,4 +1,5 @@
 import AuthenticationResult from '../model/AuthenticationResult';
+import IModule from '../model/IModule';
 import IPendingUser from '../model/IPendingUser';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
@@ -64,12 +65,27 @@ class AuthenticationService {
   }
 
   // Ask for an account
-  async askForSignUp(pendingUser: IPendingUser) {
+  async askForSignUp(pendingUser: IPendingUser, modules: IModule[]) {
     try {
-      await APIService.post<IPendingUser>('pendingUsers', pendingUser)
+      const userAdded = await APIService.post<IPendingUser>('pendingUsers', pendingUser);
+      await this.addModulesToPendingUser(modules, userAdded);
     } catch (error) {
       console.log('Error asking for sign up for user', pendingUser, error);
       throw error;
+    }
+  }
+
+  private async addModulesToPendingUser(modules: IModule[], pendingUser: IPendingUser) {
+
+    for (const module of modules) {
+      const userID = pendingUser.id as string;
+      const moduleID = module.id as string;
+      try {
+        await APIService.post(`pendingUsers/${userID}/modules/${moduleID}`)
+      } catch (error) {
+        console.log('Error adding module', moduleID, 'to user', userID, error);
+        throw error;
+      }
     }
   }
 }
