@@ -23,7 +23,7 @@ class AuthenticationService {
   async login(username: string, password: string): Promise<IToken> {
     let token: IToken;
     try {
-      token = await APIService.login<IToken>('users/login', username, password);
+      token = await APIService.login<IToken>('tokens/login', username, password);
       await CacheService.getInstance().storeValue<string>(CacheKeys.currentUserID, token.user.id);
       await CacheService.getInstance().storeValue<IToken>(CacheKeys.currentUserToken, token);
       return token

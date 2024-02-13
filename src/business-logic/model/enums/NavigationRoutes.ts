@@ -9,6 +9,9 @@ enum NavigationRoutes {
   CategoriesScreen = 'CategoriesScreen',
   SubCategoryScreen = 'SubCategoryScreen',
   DocumentsScreen = 'DocumentsScreen',
+  // Client Creation
+  ClientManagementStack = 'ClientManagementStack',
+  ClientCreationScreen = 'ClientCreationScreen',
 }
 
 export default NavigationRoutes;

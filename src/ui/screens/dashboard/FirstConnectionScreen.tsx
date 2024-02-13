@@ -7,12 +7,14 @@ import {
 } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserService from '../../../business-logic/services/UserService';
+import { useAppDispatch } from '../../../business-logic/store/hooks';
+import { setFirstConnection } from '../../../business-logic/store/slices/userReducer';
 
 import GladisTextInput from '../../components/GladisTextInput';
 import TextButton from '../../components/TextButton';
 
-import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import styles from '../../assets/styles/dashboard/FirstConnectionScreenStyles';
 
 type FirstConnectionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FirstConnectionScreen>;
@@ -24,12 +26,13 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
   const { navigation } = props;
 
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   async function modifyPassword() {
     try {
       await UserService.getInstance().changePassword(temporary, newPassword);
       await UserService.getInstance().setUserFirstConnectionToFalse();
-      navigation.navigate(NavigationRoutes.DashboardScreen)
+      dispatch(setFirstConnection(false));
     } catch (error) {
       console.log('Error changing password', error);
     }

@@ -30,6 +30,10 @@ function DashboardScreen(props: DashboardScreenProps): any {
     navigation.navigate(NavigationRoutes.CategoriesScreen, { category: 'documentManagement'})
   }
 
+  function navigateToClientCreation() {
+    navigation.navigate(NavigationRoutes.ClientManagementStack);
+  }
+
   useEffect(() => {
      setIsAdmin(true);
   }, []);
@@ -44,7 +48,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
                 <IconButton
                   title={t('components.buttons.addClient')}
                   icon={plusIcon}
-                  onPress={() => { console.log('hello')}}
+                  onPress={navigateToClientCreation}
                 />
               )
             }

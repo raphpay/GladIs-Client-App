@@ -22,6 +22,8 @@ import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen'
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
+import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreation';
+
 export type IRootStackParams = {
   // Login Stack
   LoginScreen: undefined
@@ -35,7 +37,14 @@ export type IRootStackParams = {
   DocumentsScreen: { category: string, subCategory: string, documents: string },
 }
 
+export type IClientManagementParams = {
+  // Client Creation
+  ClientManagementStack: undefined;
+  ClientCreationScreen: undefined;
+}
+
 let RootStack = createStackNavigator<IRootStackParams>();
+let ClientManagementStack = createStackNavigator<IClientManagementParams>();
 
 function LoginStack() {
   return (
@@ -55,6 +64,17 @@ function LoginStack() {
       />
     </>
   )
+}
+
+function ClientManagement() {
+  return (
+    <ClientManagementStack.Navigator>
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.ClientCreationScreen}
+        component={ClientCreationScreen}
+      />
+    </ClientManagementStack.Navigator>
+  );
 }
 
 function DashboardStack(firstConnection: boolean) {
@@ -89,6 +109,11 @@ function DashboardStack(firstConnection: boolean) {
               component={DocumentsScreen}
               options={{headerShown: false}}
             />
+            <ClientManagementStack.Screen
+              name={NavigationRoutes.ClientManagementStack}
+              component={ClientManagement}
+              options={{headerShown: false}}
+            />
           </>
         )
       }
@@ -102,11 +127,16 @@ export let Routes = () => {
   const [isFirstConnection, setIsFirstConnection] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { firstConnection } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     setIsLoggedIn(!!token);
   }, [token]);
+
+  useEffect(() => {
+     setIsFirstConnection(firstConnection)
+  }, [firstConnection]);
 
   useEffect(() => {
     async function init() {

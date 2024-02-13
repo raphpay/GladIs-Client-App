@@ -7,8 +7,6 @@ import {
   Text
 } from 'react-native';
 
-import { IRootStackParams } from '../../../navigation/Routes';
-
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -16,15 +14,18 @@ import PendingUserStatus from '../../../business-logic/model/enums/PendingUserSt
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 
+import { IClientManagementParams } from '../../../navigation/Routes';
+
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import styles from '../../assets/styles/authentification/SignUpScreenStyles';
+import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
-type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
+type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
-function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
+function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
+
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -119,4 +120,4 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   );
 }
 
-export default SignUpScreen;
+export default ClientCreationScreen;
