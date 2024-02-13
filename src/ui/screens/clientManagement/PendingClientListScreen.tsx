@@ -17,9 +17,9 @@ import { RootState } from '../../../business-logic/store/store';
 import { IClientManagementParams } from '../../../navigation/Routes';
 
 import IconButton from '../../components/IconButton';
-import PendingUserRow from '../../components/PendingUserRow';
 
 import plusIcon from '../../assets/images/plus.png';
+import PendingUserRow from '../../components/PendingUserRow';
 
 type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.PendingClientListScreen>;
 
@@ -32,8 +32,12 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   const { navigation } = props;
 
-  function navigateToClientList() {
+  function navigateToCreateClient() {
     // TODO: Add pending user parameter for when selecting one specific user
+    navigation.navigate(NavigationRoutes.ClientCreationScreen);
+  }
+
+  function navigateToSpecificClientCreation(client: IPendingUser) {
     navigation.navigate(NavigationRoutes.ClientCreationScreen);
   }
 
@@ -51,12 +55,16 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
        <IconButton
         title={t('components.buttons.addClient')}
         icon={plusIcon}
-        onPress={navigateToClientList}
+        onPress={navigateToCreateClient}
       />
-      <ScrollView>
+      <ScrollView >
         {
           pendingUsers.map((user) => (
-            <PendingUserRow key={user.id} pendingUser={user}/>
+            <PendingUserRow
+              key={user.id}
+              pendingUser={user}
+              onUserSelect={navigateToSpecificClientCreation}
+            />
           ))
         }
       </ScrollView>
