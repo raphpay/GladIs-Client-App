@@ -30,41 +30,7 @@ describe('CacheService', () => {
     });
   });
 
-  // describe('retrieveValue', () => {
-  //   it('should retrieve a value from AsyncStorage', async () => {
-  //     jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(JSON.stringify('testValue'));
-  //     const cacheService = CacheService.getInstance();
-
-  //     const result = await cacheService.retrieveValue<string>('testKey');
-
-  //     expect(result).toEqual('testValue');
-  //   });
-
-  //   it('should return null if no value is found', async () => {
-  //     jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(null);
-  //     const cacheService = CacheService.getInstance();
-
-  //     const result = await cacheService.retrieveValue<string>('nonExistentKey');
-
-  //     expect(result).toBeNull();
-  //   });
-
-  //   it('should handle errors when retrieving value', async () => {
-  //     const error = new Error('AsyncStorage error');
-  //     jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(error);
-  //     const consoleErrorSpy = jest.spyOn(console, 'log').mockImplementation();
-
-  //     const cacheService = CacheService.getInstance();
-  //     const result = await cacheService.retrieveValue<string>('testKey');
-
-  //     expect(consoleErrorSpy).toHaveBeenCalledWith(
-  //       'Error retrieving value to cache for key:', 'testKey', error
-  //     );
-  //     expect(result).toBeNull();
-  //   });
-  // });
-
-  describe('CacheService retrieveValue method', () => {
+  describe('retrieveValue', () => {
     it('should retrieve a stored string value from AsyncStorage', async () => {
       const key = 'testKey';
       const expectedValue = 'testValue';

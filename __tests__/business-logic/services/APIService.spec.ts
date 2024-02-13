@@ -8,8 +8,10 @@ describe('APIService', () => {
       // Mock the response from the API
       const mockUser: IUser = {
         id: '1',
+        phoneNumber: '123456',
         firstName: 'John',
         lastName: 'Doe',
+        companyName: 'Acme.Inc',
         email: 'john@example.com',
         username: 'john.doe',
         password: 'password',

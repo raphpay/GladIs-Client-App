@@ -47,7 +47,7 @@ class AuthenticationService {
     let authResult: AuthenticationResult = { token: null, firstConnection: true };
     try {
       const cachedToken = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserToken) as IToken;
-      const token = await APIService.get<IToken>(`${this.baseRoute}/${cachedToken.id}`);
+      const token = await APIService.get<IToken>(`{this.baseRoute}/${cachedToken.id}`);
       const cachedUserID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
       const user = await APIService.get<IUser>(`users/${cachedUserID}`, token.value);
       authResult.firstConnection = user.firstConnection;

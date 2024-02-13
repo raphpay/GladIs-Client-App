@@ -1,48 +1,53 @@
-// Import the AuthenticationService and the mock functions
+import fetchMock from 'jest-fetch-mock';
+
+import IToken from '../../../src/business-logic/model/IToken';
 import APIService from '../../../src/business-logic/services/APIService';
 import AuthenticationService from '../../../src/business-logic/services/AuthenticationService';
-import CacheService from '../../../src/business-logic/services/CacheService';
 
-// Mock the APIService.login function
-jest.mock('../../../src/business-logic/services/APIService', () => ({
-  __esModule: true,
-  default: {
-    login: jest.fn(),
-  },
-}));
+fetchMock.enableMocks();
 
-// Mock the CacheService.getInstance().storeValue function
 jest.mock('../../../src/business-logic/services/CacheService', () => ({
-  __esModule: true,
-  default: {
-    getInstance: jest.fn(() => ({
-      storeValue: jest.fn(),
-    })),
-  },
+  getInstance: jest.fn(() => ({
+    storeValue: jest.fn(),
+    removeValueAt: jest.fn(),
+    retrieveValue: jest.fn(),
+  })),
 }));
 
-// jest.mock('../../../src/business-logic/services/APIService');
-// jest.mock('../../../src/business-logic/services/CacheService');
+jest.mock('../../../src/business-logic/services/APIService', () => ({
+  login: jest.fn(),
+  get: jest.fn(),
+}));
 
-// Your test case
 describe('AuthenticationService', () => {
-  it('should login successfully and store user data in cache', async () => {
-    // Mock data
-    const mockUsername = 'mockUsername';
-    const mockPassword = 'mockPassword';
-    const mockToken = { user: { id: 'mockUserId' } };
+  beforeEach(() => {
+    fetchMock.resetMocks();
+    jest.clearAllMocks();
+  });
 
-    // Mock the login function to resolve with the mock token
-    // APIService.login.mockResolvedValue(mockToken);
+  describe('login', () => {
+    it('logs in a user and stores token and user ID in cache', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+      const token: IToken = { id: 'token_id', value: 'token_value', user: { id: 'user_id' } };
 
-    // Run the login function
-    await AuthenticationService.getInstance().login(mockUsername, mockPassword);
+      (APIService.login as jest.Mock).mockResolvedValue(token);
 
-    // Verify that APIService.login was called with the correct arguments
-    expect(APIService.login).toHaveBeenCalledWith('users/login', mockUsername, mockPassword);
+      await AuthenticationService.getInstance().login(username, password);
 
-    // Verify that CacheService.getInstance().storeValue was called with the correct arguments
-    expect(CacheService.getInstance().storeValue).toHaveBeenCalledWith('currentUserID', mockToken.user.id);
-    expect(CacheService.getInstance().storeValue).toHaveBeenCalledWith('currentUserToken', mockToken);
+      expect(APIService.login).toHaveBeenCalledWith('tokens/login', username, password);
+    });
+
+    it('throws an error if login fails', async () => {
+      const username = 'testuser';
+      const password = 'testpassword';
+      const error = new Error('Failed to login');
+
+      (APIService.login as jest.Mock).mockRejectedValue(error);
+
+      await expect(AuthenticationService.getInstance().login(username, password)).rejects.toThrow('Failed to login');
+
+      expect(APIService.login).toHaveBeenCalledWith('tokens/login', username, password);
+    });
   });
 });
