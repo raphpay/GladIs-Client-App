@@ -6,6 +6,7 @@ import CacheService from './CacheService';
 
 class UserService {
   private static instance: UserService | null = null;
+  private baseRoute = 'users';
 
   private constructor() {}
 
@@ -19,7 +20,7 @@ class UserService {
   // CREATE
   async createUser(user: IUser): Promise<IUser> {
     try {
-      const createdUser = await APIService.post<IUser>('users', user);
+      const createdUser = await APIService.post<IUser>(this.baseRoute, user);
       return createdUser;
     } catch (error) {
       console.error('Error creating user:', error);
@@ -32,7 +33,7 @@ class UserService {
     try {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
-      const users = await APIService.get<IUser[]>(`users`, castedToken.value);
+      const users = await APIService.get<IUser[]>(this.baseRoute, castedToken.value);
       return users;
     } catch (error) {
       console.error('Error getting user by ID:', error);
@@ -44,7 +45,7 @@ class UserService {
     try {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
-      const user = await APIService.get<IUser>(`users/${id}`, castedToken?.value);
+      const user = await APIService.get<IUser>(`${this.baseRoute}/${id}`, castedToken?.value);
       return user;
     } catch (error) {
       console.error('Error getting user by id:', id, error);
@@ -59,7 +60,7 @@ class UserService {
       const castedUserID = userID as string;
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
-      await APIService.put(`users/${castedUserID}/changePassword`, { currentPassword, newPassword }, castedToken.value);
+      await APIService.put(`${this.baseRoute}/${castedUserID}/changePassword`, { currentPassword, newPassword }, castedToken.value);
     } catch (error) {
       console.error('Error changing user password', error);
       throw error;
@@ -72,7 +73,7 @@ class UserService {
       const castedUserID = userID as string;
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
-      await APIService.put(`users/${castedUserID}/setFirstConnectionToFalse`, null, castedToken.value);
+      await APIService.put(`${this.baseRoute}/${castedUserID}/setFirstConnectionToFalse`, null, castedToken.value);
     } catch (error) {
       console.log('Error changing user first connection parameter', error);
       throw error;

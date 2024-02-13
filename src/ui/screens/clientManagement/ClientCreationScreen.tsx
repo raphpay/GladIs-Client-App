@@ -8,7 +8,6 @@ import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -70,7 +69,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const module = modules.find(module => module.id === id) as IModule;
       selectedModules.push(module);
     }
-    await AuthenticationService.getInstance()
+    await PendingUserService.getInstance()
       .askForSignUp(newPendingUser, selectedModules)
       .then(() => {
         navigation.goBack();
