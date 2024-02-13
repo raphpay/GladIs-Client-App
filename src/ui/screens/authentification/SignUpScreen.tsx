@@ -25,7 +25,6 @@ import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
 
 function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
-  // const [name, setName] = useState<string>('');
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
