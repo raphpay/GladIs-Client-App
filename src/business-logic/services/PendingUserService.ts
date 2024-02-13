@@ -1,3 +1,4 @@
+import IModule from '../model/IModule';
 import IPendingUser from '../model/IPendingUser';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
@@ -28,7 +29,7 @@ class PendingUserService {
     }
   }
 
-  async getUserByID(id: string | undefined): Promise<IUser> {
+  async getUserByID(id: string): Promise<IUser> {
     try {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
@@ -36,6 +37,21 @@ class PendingUserService {
       return user;
     } catch (error) {
       console.error('Error getting user by id:', id, error);
+      throw error;
+    }
+  }
+
+  async getPendingUsersModulesIDs(id: string): Promise<string[]> {
+    try {
+      let moduleIDs: string[] = [];
+      const modules = await APIService.get<IModule[]>(`pendingUsers/${id}/modules`);
+      for (const module of modules) {
+        const id = module.id as string;
+        moduleIDs.push(id);
+      }
+      return moduleIDs;
+    } catch (error) {
+      console.error('Error getting user\'s modules for id:', id, error);
       throw error;
     }
   }

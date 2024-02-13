@@ -34,11 +34,11 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   function navigateToCreateClient() {
     // TODO: Add pending user parameter for when selecting one specific user
-    navigation.navigate(NavigationRoutes.ClientCreationScreen);
+    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
   }
 
   function navigateToSpecificClientCreation(client: IPendingUser) {
-    navigation.navigate(NavigationRoutes.ClientCreationScreen);
+    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
   }
 
   useEffect(() => {

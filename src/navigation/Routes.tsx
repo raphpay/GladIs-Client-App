@@ -22,6 +22,7 @@ import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen'
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
+import IPendingUser from '../business-logic/model/IPendingUser';
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreation';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 
@@ -42,7 +43,7 @@ export type IClientManagementParams = {
   // Client Creation
   ClientManagementStack: undefined;
   PendingClientListScreen: undefined;
-  ClientCreationScreen: undefined;
+  ClientCreationScreen: { pendingUser?: IPendingUser | null};
 }
 
 let RootStack = createStackNavigator<IRootStackParams>();

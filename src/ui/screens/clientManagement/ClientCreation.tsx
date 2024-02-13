@@ -19,10 +19,12 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import PendingUserService from '../../../business-logic/services/PendingUserService';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
+// TODO: Change title
 function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
 
   const [firstName, setFirstName] = useState<string>('');
@@ -32,12 +34,12 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [email, setEmail] = useState<string>('');
   const [products, setProducts] = useState<string>('');
   const [modules, setModules] = useState<IModule[]>([]);
-  const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
+  const [selectedModulesIDs, setSelectedModulesIDs] = useState<string[]>([]);
   const [employees, setEmployees] = useState<string>('');
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
 
-  const { navigation } = props;
+  const { pendingUser } = props.route.params;
 
   const { t } = useTranslation();
 
@@ -57,17 +59,37 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }
 
   function toggleCheckbox(module: IModule) {
-    setSelectedModules((prevSelectedObjects) => {
-      if (prevSelectedObjects.includes(module)) {
-        return prevSelectedObjects.filter((objectModule) => objectModule.id !== module.id);
+    setSelectedModulesIDs((prevSelectedObjectsIDs) => {
+      const moduleID = module.id as string;
+      if (prevSelectedObjectsIDs.includes(moduleID)) {
+        return prevSelectedObjectsIDs.filter((objectModule) => objectModule !== moduleID);
       } else {
-        return [...prevSelectedObjects, module];
+        return [...prevSelectedObjectsIDs, moduleID];
       }
     });
   }
 
   function isModuleSelected(module: IModule): boolean {
-    return selectedModules.includes(module);
+    const id = module.id as string;
+    return selectedModulesIDs.includes(id);
+  }
+
+  function setDefaultValues() {
+    if (pendingUser != null) {
+      setFirstName(pendingUser.firstName);
+      setLastName(pendingUser.lastName);
+      setPhoneNumber(pendingUser.phoneNumber);
+      setCompanyName(pendingUser.companyName);
+      setEmail(pendingUser.email);
+      const products = pendingUser.products as string;
+      setProducts(products);
+      const employees = pendingUser.numberOfEmployees as number;
+      setEmployees(employees.toString());
+      const users = pendingUser.numberOfUsers as number;
+      setUsers(users.toString());
+      const salesAmount = pendingUser.salesAmount as number;
+      setSales(salesAmount.toString());
+    }
   }
 
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
@@ -77,10 +99,17 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     async function init() {
       const apiModules = await ModuleService.getInstance().getModules();  
       setModules(apiModules);
-      setSelectedModules([]);
+      if (pendingUser?.id != null) {
+        const pendingUsersModulesIDs = await PendingUserService.getInstance().getPendingUsersModulesIDs(pendingUser.id);
+        setSelectedModulesIDs(pendingUsersModulesIDs);
+      } else {
+        setSelectedModulesIDs([]);
+      }
+      setDefaultValues();
     }
     init();
   }, []);
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,6 +128,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             module={module}
             isSelected={isModuleSelected(module)}
             onSelectModule={() => toggleCheckbox(module)}
+            isDisabled={true}
           />
         ))}
         <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')}/>
