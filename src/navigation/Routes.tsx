@@ -23,7 +23,7 @@ import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
 import IPendingUser from '../business-logic/model/IPendingUser';
-import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreation';
+import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 
 export type IRootStackParams = {

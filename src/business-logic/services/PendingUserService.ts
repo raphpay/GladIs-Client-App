@@ -18,6 +18,18 @@ class PendingUserService {
     return PendingUserService.instance;
   }
 
+  // CREATE
+  async convertPendingUserToUser(pendingUser: IPendingUser, token: IToken): Promise<IUser> {
+    try {
+      const id = pendingUser.id as string;
+      const newUser = await APIService.post<IUser>(`pendingUsers/${id}/convertToUser`, {}, token.value);
+      return newUser;
+    } catch (error) {
+      console.log('Error converting pending user:', pendingUser, 'to user', error);
+      throw error;
+    }
+  }
+
   // READ
   async getUsers(token: IToken): Promise<IPendingUser[]> {
     try {
@@ -66,6 +78,16 @@ class PendingUserService {
       await APIService.put(`users/${castedUserID}/changePassword`, { currentPassword, newPassword }, castedToken.value);
     } catch (error) {
       console.error('Error changing user password', error);
+      throw error;
+    }
+  }
+
+  async updatePendingUserStatus(pendingUser: IPendingUser, token: IToken, status: string) {
+    try {
+      const id = pendingUser.id as string;
+      await APIService.put(`pendingUsers/${id}/status`, { "type": status }, token.value);
+    } catch (error) {
+      console.error('Error updating pending user status', pendingUser, status, error);
       throw error;
     }
   }

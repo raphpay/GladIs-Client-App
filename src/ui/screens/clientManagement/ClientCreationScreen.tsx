@@ -1,17 +1,18 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  Text
-} from 'react-native';
+import { SafeAreaView, ScrollView, Text } from 'react-native';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
+import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import ModuleService from '../../../business-logic/services/ModuleService';
+import PendingUserService from '../../../business-logic/services/PendingUserService';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
@@ -19,7 +20,6 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import PendingUserService from '../../../business-logic/services/PendingUserService';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
@@ -39,12 +39,47 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
 
+  const { navigation } = props;
   const { pendingUser } = props.route.params;
-
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
 
   async function submit() {
-    const pendingUser: IPendingUser = {
+    if (pendingUser == null) {
+      createPendingUser();
+    } else {
+      convertPendingUser();
+    }
+  }
+
+  async function createPendingUser() {
+    const newPendingUser: IPendingUser = {
+      firstName,
+      lastName,
+      phoneNumber,
+      companyName,
+      email,
+      products,
+      numberOfEmployees: parseInt(employees),
+      numberOfUsers: parseInt(users),
+      salesAmount: parseFloat(sales),
+      status: PendingUserStatus.pending
+    };
+    const selectedModules: IModule[] = [];
+    for (const id of selectedModulesIDs) {
+      const module = modules.find(module => module.id === id) as IModule;
+      selectedModules.push(module);
+    }
+    await AuthenticationService.getInstance()
+      .askForSignUp(newPendingUser, selectedModules)
+      .then(() => {
+        navigation.goBack();
+      });
+  }
+
+  async function convertPendingUser() {
+    const newPendingUser: IPendingUser = {
+      id: pendingUser?.id,
       firstName,
       lastName,
       phoneNumber,
@@ -56,6 +91,14 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     }
+    const castedToken = token as IToken;
+    await PendingUserService.getInstance()
+      .convertPendingUserToUser(newPendingUser, castedToken)
+      .then(async (newUser) => {
+        const castedUser = pendingUser as IPendingUser;
+        await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
+        navigation.goBack();
+      });
   }
 
   function toggleCheckbox(module: IModule) {
@@ -128,7 +171,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             module={module}
             isSelected={isModuleSelected(module)}
             onSelectModule={() => toggleCheckbox(module)}
-            isDisabled={true}
+            isDisabled={pendingUser != null}
           />
         ))}
         <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')}/>

@@ -1,7 +1,7 @@
 enum PendingUserStatus {
   pending = 'pending',
   inReview = 'inReview',
-  accpeted = 'accpeted',
+  accepted = 'accepted',
   rejected = 'rejected',
 }
 
