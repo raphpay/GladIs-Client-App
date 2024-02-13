@@ -30,7 +30,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
     navigation.navigate(NavigationRoutes.CategoriesScreen, { category: 'documentManagement'})
   }
 
-  function navigateToClientCreation() {
+  function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
@@ -48,7 +48,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
                 <IconButton
                   title={t('components.buttons.addClient')}
                   icon={plusIcon}
-                  onPress={navigateToClientCreation}
+                  onPress={navigateToClientList}
                 />
               )
             }
@@ -57,7 +57,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
               setSearchText={setSearchText}
             />
           </View>
-          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.inactive}]}>
+          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.inactive }]}>
             <Text>{t('dashboard.modules.documentManagement')}</Text>
           </TouchableOpacity>
         </View>

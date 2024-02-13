@@ -11,6 +11,7 @@ enum NavigationRoutes {
   DocumentsScreen = 'DocumentsScreen',
   // Client Creation
   ClientManagementStack = 'ClientManagementStack',
+  PendingClientListScreen = 'PendingClientListScreen',
   ClientCreationScreen = 'ClientCreationScreen',
 }
 

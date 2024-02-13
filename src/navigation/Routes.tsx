@@ -23,6 +23,7 @@ import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreation';
+import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -40,6 +41,7 @@ export type IRootStackParams = {
 export type IClientManagementParams = {
   // Client Creation
   ClientManagementStack: undefined;
+  PendingClientListScreen: undefined;
   ClientCreationScreen: undefined;
 }
 
@@ -69,6 +71,10 @@ function LoginStack() {
 function ClientManagement() {
   return (
     <ClientManagementStack.Navigator>
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.PendingClientListScreen}
+        component={PendingClientListScreen}
+      />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientCreationScreen}
         component={ClientCreationScreen}

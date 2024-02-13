@@ -11,7 +11,6 @@ import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
@@ -55,11 +54,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     }
-    await AuthenticationService.getInstance()
-      .askForSignUp(pendingUser, selectedModules)
-      .then(() => {
-        navigation.goBack();
-      });
   }
 
   function toggleCheckbox(module: IModule) {
