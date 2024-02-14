@@ -2,153 +2,183 @@
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from 'react';
+
+import AuthenticationResult from '../business-logic/model/AuthenticationResult';
+import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
+import AuthenticationService from '../business-logic/services/AuthenticationService';
+import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
+import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
+import { setFirstConnection } from '../business-logic/store/slices/userReducer';
+import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
 import PasswordResetScreen from '../ui/screens/authentification/PasswordResetScreen';
 import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
-import DashboardAdminScreen from '../ui/screens/dashboard/DashboardAdminScreen';
-import DashboardClientScreen from '../ui/screens/dashboard/DashboardClientScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
-
 import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
-export type IRootStackParams = {
-  Home: undefined,
-  DashboardStack: { isAdmin: boolean }
-}
+import IPendingUser from '../business-logic/model/IPendingUser';
+import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
+import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 
-export type IAuthenticationStackParams = {
-  LoginScreen: undefined,
+export type IRootStackParams = {
+  // Login Stack
+  LoginScreen: undefined
   SignUpScreen: undefined,
   PasswordResetScreen: undefined,
-  DashboardStack: IDashboardStackParams,
+  // Dashboard Stack
+  FirstConnectionScreen: undefined,
+  DashboardScreen: undefined,
+  CategoriesScreen: { category: string },
+  SubCategoryScreen: { category: string, subCategory: string },
+  DocumentsScreen: { category: string, subCategory: string, documents: string },
 }
 
-export type IDashboardStackParams = {
-  DashboardScreen: { isFirstConnection: boolean, isAdmin: boolean, temporaryPassword?: string },
-  DashboardAdminScreen: { isAdmin: boolean },
-  DashboardClientScreen: { isAdmin: boolean },
-  FirstConnectionScreen: { isAdmin: boolean, temporaryPassword?: string},
-  CategoriesScreen: { isAdmin: boolean, category: string },
-  SubCategoryScreen: { isAdmin: boolean, category: string, subCategory: string },
-  DocumentsScreen: { isAdmin: boolean, category: string, subCategory: string, documents: string },
+export type IClientManagementParams = {
+  // Client Creation
+  ClientManagementStack: undefined;
+  PendingClientListScreen: undefined;
+  ClientCreationScreen: { pendingUser?: IPendingUser | null};
 }
 
-let AuthenticationStack = createStackNavigator<IAuthenticationStackParams>();
 let RootStack = createStackNavigator<IRootStackParams>();
-let DashboardStack = createStackNavigator<IDashboardStackParams>();
+let ClientManagementStack = createStackNavigator<IClientManagementParams>();
 
-function Home() {
-  const { t } = useTranslation();
-
+function LoginStack() {
   return (
-    <AuthenticationStack.Navigator>
-      <AuthenticationStack.Screen
-        name={'LoginScreen'}
+    <>
+      <RootStack.Screen 
+        name={NavigationRoutes.LoginScreen}
         component={LoginScreen}
-        options={{
-          headerShown: false
-        }}
+        options={{headerShown: false}}
       />
-      <AuthenticationStack.Screen
-        name={'SignUpScreen'}
+      <RootStack.Screen 
+        name={NavigationRoutes.SignUpScreen}
         component={SignUpScreen}
-        options={{
-          title: t('quotation.title')
-        }}
       />
-      <AuthenticationStack.Screen
-        name={'PasswordResetScreen'}
+      <RootStack.Screen 
+        name={NavigationRoutes.PasswordResetScreen}
         component={PasswordResetScreen}
-        options={{
-          title: t('passwordReset.title')
-        }}
       />
-    </AuthenticationStack.Navigator>
+    </>
   )
 }
 
-function Dashboard() {
+function ClientManagement() {
   return (
-    <DashboardStack.Navigator>
-      <DashboardStack.Screen
-        name={'DashboardScreen'}
-        component={DashboardScreen}
-        options={{
-          headerShown: false
-        }}
+    <ClientManagementStack.Navigator>
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.PendingClientListScreen}
+        component={PendingClientListScreen}
       />
-      <DashboardStack.Screen
-        name={'FirstConnectionScreen'}
-        component={FirstConnectionScreen}
-        options={{
-          headerShown: false
-        }}
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.ClientCreationScreen}
+        component={ClientCreationScreen}
       />
-      <DashboardStack.Screen
-        name={'DashboardAdminScreen'}
-        component={DashboardAdminScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <DashboardStack.Screen
-        name={'DashboardClientScreen'}
-        component={DashboardClientScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <DashboardStack.Screen
-        name={'CategoriesScreen'}
-        component={CategoriesScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <DashboardStack.Screen
-        name={'SubCategoryScreen'}
-        component={SubCategoryScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <DashboardStack.Screen
-        name={'DocumentsScreen'}
-        component={DocumentsScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-    </DashboardStack.Navigator>
+    </ClientManagementStack.Navigator>
+  );
+}
+
+function DashboardStack(firstConnection: boolean) {
+  return (
+    <>
+      {
+        firstConnection ? (
+          <RootStack.Screen
+            name={NavigationRoutes.FirstConnectionScreen}
+            component={FirstConnectionScreen}
+            options={{headerShown: false}}
+          />
+        ) : (
+          <>
+            <RootStack.Screen
+              name={NavigationRoutes.DashboardScreen}
+              component={DashboardScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.CategoriesScreen}
+              component={CategoriesScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.SubCategoryScreen}
+              component={SubCategoryScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.DocumentsScreen}
+              component={DocumentsScreen}
+              options={{headerShown: false}}
+            />
+            <ClientManagementStack.Screen
+              name={NavigationRoutes.ClientManagementStack}
+              component={ClientManagement}
+              options={{headerShown: false}}
+            />
+          </>
+        )
+      }
+    </>
   )
 }
 
 export let Routes = () => {
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isFirstConnection, setIsFirstConnection] = useState<boolean>(false);
+
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { firstConnection } = useAppSelector((state: RootState) => state.users);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    setIsLoggedIn(!!token);
+  }, [token]);
+
+  useEffect(() => {
+     setIsFirstConnection(firstConnection)
+  }, [firstConnection]);
+
+  useEffect(() => {
+    async function init() {
+      if (token == null) {
+        await AuthenticationService.getInstance()
+          .checkAuthentication()
+          .then((authResult: AuthenticationResult) => {
+            setIsLoggedIn(!!authResult.token);
+            dispatch(setFirstConnection(authResult.firstConnection));
+            setIsFirstConnection(authResult.firstConnection);
+            if (authResult.token != null) {
+              dispatch(setToken(authResult.token));
+            } else {
+              dispatch(removeToken());
+            }
+          })
+          .catch(() => {
+            setIsLoggedIn(false);
+          });
+      }
+    }
+    init();
+  }, []);
+
   return (
     <NavigationContainer>
       <RootStack.Navigator>
-        <RootStack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              headerShown: false
-            }}
-          />
-          <RootStack.Screen
-            name="DashboardStack"
-            component={Dashboard}
-            options={{
-              headerShown: false
-            }}
-          />
+        {
+          isLoggedIn ? (
+            DashboardStack(isFirstConnection)
+          ) : (
+            LoginStack()
+          )
+        }
       </RootStack.Navigator>
     </NavigationContainer>
-  )
+  );
 }

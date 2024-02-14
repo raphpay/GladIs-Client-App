@@ -1,18 +1,24 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text } from 'react-native';
+import { Alert, SafeAreaView, Text } from 'react-native';
+
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import { useAppDispatch } from '../../../business-logic/store/hooks';
+import { setToken } from '../../../business-logic/store/slices/tokenReducer';
 
 import AppIcon from '../../components/AppIcon';
-
-import { IAuthenticationStackParams } from '../../../navigation/Routes';
-
-import styles from '../../assets/styles/authentification/LoginScreenStyles';
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
 
-type LoginScreenProps = NativeStackScreenProps<IAuthenticationStackParams, 'LoginScreen'>;
+import IToken from '../../../business-logic/model/IToken';
+import styles from '../../assets/styles/authentification/LoginScreenStyles';
+
+type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { navigation } = props;
@@ -22,22 +28,25 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   const { t } = useTranslation();
 
-  function login() {
-    // TODO: The params should not be hardcoded
-    navigation.navigate(
-      'DashboardStack',
-      {
-        screen: 'DashboardScreen',
-        params: { isFirstConnection: true, isAdmin: false, temporaryPassword: password }
+  const dispatch = useAppDispatch();
+
+  async function login() {
+    await AuthenticationService.getInstance()
+      .login(identifier, password)
+      .then((token: IToken) => {
+        dispatch(setToken(token));
+      })
+      .catch(() => {
+        Alert.alert(t('errors.login.title'), t('errors.login.message'))
       });
   }
 
   function goToSignUp() {
-    navigation.navigate('SignUpScreen');
+    navigation.navigate(NavigationRoutes.SignUpScreen);
   }
 
   function goToPasswordReset() {
-    navigation.navigate('PasswordResetScreen')
+    navigation.navigate(NavigationRoutes.PasswordResetScreen)
   }
 
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
@@ -50,6 +59,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         value={identifier}
         onValueChange={onIdentifierChange}
         placeholder={t('login.identifier')}
+        autoCapitalize={'none'}
       />
       <GladisTextInput
         value={password}

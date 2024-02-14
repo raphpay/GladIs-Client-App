@@ -8,39 +8,36 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { IDashboardStackParams } from '../../../navigation/Routes';
+import { IRootStackParams } from '../../../navigation/Routes';
 
 import AppIcon from '../../components/AppIcon';
 import SearchTextInput from '../../components/SearchTextInput';
 import TextButton from '../../components/TextButton';
 
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import styles from '../../assets/styles/documentManagement/SubCategoryScreenStyles';
 
-type SubCategoryScreenProps = NativeStackScreenProps<IDashboardStackParams, 'SubCategoryScreen'>;
+type SubCategoryScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SubCategoryScreen>;
 
 function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
   const { params } = props.route;
   const [searchText, setSearchText] = useState<string>('');
   
   const { t } = useTranslation();
+  const { navigation } = props;
 
   function navigateToDashboard() {
-    if (params.isAdmin) {
-      props.navigation.navigate('DashboardAdminScreen', { isAdmin: true})
-    } else {
-      props.navigation.navigate('DashboardClientScreen', { isAdmin: false})
-    }
+    navigation.navigate(NavigationRoutes.DashboardScreen)
   }
 
   function navigateBack() {
-    props.navigation.goBack();
+    navigation.goBack();
   }
 
   function navigateToDocuments() {
-    props.navigation.navigate('DocumentsScreen', {
-      isAdmin: params.isAdmin,
+    navigation.navigate(NavigationRoutes.DocumentsScreen, {
       category: params.category,
-      subCategory: params.subCategory,
+      subCategory: params.subCategory, 
       documents: 'processus'
     })
   }

@@ -16,6 +16,8 @@
   "quotation": {
     "title": "Request for quotation",
     "name": "NAME First Name",
+    "firstName": "First Name",
+    "lastName": "NAME",
     "phone": "Phone number",
     "companyName": "Company Name",
     "email": "Email",
@@ -72,6 +74,16 @@
       "back": "Back",
       "addClient": "Add a client",
       "continue": "Continue"
+    }
+  },
+  "errors": {
+    "login": {
+      "title": "Error Logging in",
+      "message": "Please verify your credentials"
+    },
+    "logout": {
+      "title": "Error logging out",
+      "message": "Please try again later"
     }
   }
 }

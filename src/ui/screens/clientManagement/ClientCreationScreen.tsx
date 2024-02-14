@@ -1,30 +1,31 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  Text
-} from 'react-native';
-
-import { IRootStackParams } from '../../../navigation/Routes';
+import { SafeAreaView, ScrollView, Text } from 'react-native';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
+import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
+
+import { IClientManagementParams } from '../../../navigation/Routes';
 
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import styles from '../../assets/styles/authentification/SignUpScreenStyles';
+import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
-type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
+type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
-function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
+// TODO: Change title
+function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
+
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -32,17 +33,52 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [products, setProducts] = useState<string>('');
   const [modules, setModules] = useState<IModule[]>([]);
-  const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
+  const [selectedModulesIDs, setSelectedModulesIDs] = useState<string[]>([]);
   const [employees, setEmployees] = useState<string>('');
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
 
   const { navigation } = props;
-
+  const { pendingUser } = props.route.params;
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
 
   async function submit() {
-    const pendingUser: IPendingUser = {
+    if (pendingUser == null) {
+      createPendingUser();
+    } else {
+      convertPendingUser();
+    }
+  }
+
+  async function createPendingUser() {
+    const newPendingUser: IPendingUser = {
+      firstName,
+      lastName,
+      phoneNumber,
+      companyName,
+      email,
+      products,
+      numberOfEmployees: parseInt(employees),
+      numberOfUsers: parseInt(users),
+      salesAmount: parseFloat(sales),
+      status: PendingUserStatus.pending
+    };
+    const selectedModules: IModule[] = [];
+    for (const id of selectedModulesIDs) {
+      const module = modules.find(module => module.id === id) as IModule;
+      selectedModules.push(module);
+    }
+    await PendingUserService.getInstance()
+      .askForSignUp(newPendingUser, selectedModules)
+      .then(() => {
+        navigation.goBack();
+      });
+  }
+
+  async function convertPendingUser() {
+    const newPendingUser: IPendingUser = {
+      id: pendingUser?.id,
       firstName,
       lastName,
       phoneNumber,
@@ -54,25 +90,48 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     }
+    const castedToken = token as IToken;
     await PendingUserService.getInstance()
-      .askForSignUp(pendingUser, selectedModules)
-      .then(() => {
+      .convertPendingUserToUser(newPendingUser, castedToken)
+      .then(async (newUser) => {
+        const castedUser = pendingUser as IPendingUser;
+        await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
         navigation.goBack();
       });
   }
 
   function toggleCheckbox(module: IModule) {
-    setSelectedModules((prevSelectedObjects) => {
-      if (prevSelectedObjects.includes(module)) {
-        return prevSelectedObjects.filter((objectModule) => objectModule.id !== module.id);
+    setSelectedModulesIDs((prevSelectedObjectsIDs) => {
+      const moduleID = module.id as string;
+      if (prevSelectedObjectsIDs.includes(moduleID)) {
+        return prevSelectedObjectsIDs.filter((objectModule) => objectModule !== moduleID);
       } else {
-        return [...prevSelectedObjects, module];
+        return [...prevSelectedObjectsIDs, moduleID];
       }
     });
   }
 
   function isModuleSelected(module: IModule): boolean {
-    return selectedModules.includes(module);
+    const id = module.id as string;
+    return selectedModulesIDs.includes(id);
+  }
+
+  function setDefaultValues() {
+    if (pendingUser != null) {
+      setFirstName(pendingUser.firstName);
+      setLastName(pendingUser.lastName);
+      setPhoneNumber(pendingUser.phoneNumber);
+      setCompanyName(pendingUser.companyName);
+      setEmail(pendingUser.email);
+      const products = pendingUser.products as string;
+      setProducts(products);
+      const employees = pendingUser.numberOfEmployees as number;
+      setEmployees(employees.toString());
+      const users = pendingUser.numberOfUsers as number;
+      setUsers(users.toString());
+      const salesAmount = pendingUser.salesAmount as number;
+      setSales(salesAmount.toString());
+    }
   }
 
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
@@ -82,10 +141,17 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     async function init() {
       const apiModules = await ModuleService.getInstance().getModules();  
       setModules(apiModules);
-      setSelectedModules([]);
+      if (pendingUser?.id != null) {
+        const pendingUsersModulesIDs = await PendingUserService.getInstance().getPendingUsersModulesIDs(pendingUser.id);
+        setSelectedModulesIDs(pendingUsersModulesIDs);
+      } else {
+        setSelectedModulesIDs([]);
+      }
+      setDefaultValues();
     }
     init();
   }, []);
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -104,6 +170,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             module={module}
             isSelected={isModuleSelected(module)}
             onSelectModule={() => toggleCheckbox(module)}
+            isDisabled={pendingUser != null}
           />
         ))}
         <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')}/>
@@ -119,4 +186,4 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   );
 }
 
-export default SignUpScreen;
+export default ClientCreationScreen;

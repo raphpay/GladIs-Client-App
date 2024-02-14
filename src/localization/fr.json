@@ -16,6 +16,8 @@
   "quotation": {
     "title": "Request for quotation",
     "name": "NAME First Name",
+    "firstName": "First Name",
+    "lastName": "NAME",
     "phone": "Phone number",
     "companyName": "Nom de l'entreprise",
     "email": "Email",
@@ -40,7 +42,7 @@
     "title": "Tableau de bord",
     "modules": {
       "documentManagement": "Gestion des documents"
-    },
+    }
   },
   "categories": {
     "documentManagement": {
@@ -72,6 +74,16 @@
       "back": "Retour",
       "addClient": "Ajouter un client",
       "continue": "Continuer"
+    }
+  },
+  "errors": {
+    "login": {
+      "title": "Erreur lors de l'authentification",
+      "message": "Veuillez vérifier vos identifiants"
+    },
+    "logout": {
+      "title": "Erreur lors de la déconnexion",
+      "message": "Veuillez réessayer plus tard"
     }
   }
 }
