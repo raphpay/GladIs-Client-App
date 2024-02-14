@@ -38,6 +38,11 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
     }
   }
 
+  async function submitPasswordChange() {
+    if (temporary.length !== 0 && newPassword.length !== 0) {
+      await modifyPassword();
+    }
+  }
 
   const isButtonDisabled = temporary.length == 0 || newPassword.length == 0;
 
@@ -55,6 +60,7 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
         value={newPassword}
         onValueChange={setNewPassword}
         secureTextEntry={true}
+        onSubmitEditing={submitPasswordChange}
       />
       <TextButton
         title={t('components.buttons.continue')}
