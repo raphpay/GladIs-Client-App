@@ -14,23 +14,19 @@
     "reset": "Réinitialiser"
   },
   "quotation": {
-    "title": "Request for quotation",
-    "name": "NAME First Name",
-    "firstName": "First Name",
-    "lastName": "NAME",
-    "phone": "Phone number",
+    "title": "Demande de devis",
+    "name": "NOM Prénom",
+    "firstName": "Prénom",
+    "lastName": "NOM",
+    "phone": "Numéro de téléphone",
     "companyName": "Nom de l'entreprise",
     "email": "Email",
-    "products": "Type of products sold",
-    "modules": {
-      "title": "Select the modules",
-      "documentManagement": "Document Management",
-      "module1": "Module1"
-    },
-    "employees": "Number of employees",
-    "users": "Number of potential users",
-    "capital": "Sales amount",
-    "submit": "Submit"
+    "modulesTitle": "Sélectionnez les modules",
+    "products": "Type de produits vendus",
+    "employees": "Nombre d'employés",
+    "users": "Nombre d'utilisateurs potentiels",
+    "capital": "Chiffre d'affaires",
+    "submit": "Envoyer"
   },
   "firstConnection": {
     "title": "Modification du mot de passe",

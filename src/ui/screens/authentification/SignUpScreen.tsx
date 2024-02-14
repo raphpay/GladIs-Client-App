@@ -111,7 +111,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')}/>
         <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')}/>
         <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')}/>
-        <Text style={styles.subtitle}>{t('quotation.modules.title')}</Text>
+        <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
         {modules.map((module) => (
           <ModuleCheckBox
             key={module.id}
