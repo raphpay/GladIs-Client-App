@@ -77,10 +77,12 @@ function ClientManagement() {
       <ClientManagementStack.Screen
         name={NavigationRoutes.PendingClientListScreen}
         component={PendingClientListScreen}
+        options={{headerShown: false}}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientCreationScreen}
         component={ClientCreationScreen}
+        options={{headerShown: false}}
       />
     </ClientManagementStack.Navigator>
   );
