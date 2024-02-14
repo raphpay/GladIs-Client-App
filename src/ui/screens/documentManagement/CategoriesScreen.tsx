@@ -13,9 +13,10 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 
 import AppIcon from '../../components/AppIcon';
+import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
-import TextButton from '../../components/TextButton';
 
+import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/CategoriesScreenStyles';
 
 type CategoriesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.CategoriesScreen>;
@@ -58,7 +59,11 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
             </TouchableOpacity>
           </View>
           <View style={styles.backButtonContainer}>
-            <TextButton title={t('components.buttons.back')} onPress={navigateBack}/>
+            <IconButton
+              title={t('components.buttons.back')}
+              icon={backIcon}
+              onPress={navigateBack}
+             />
           </View>
         </View>
         <View style={styles.topContainer}>

@@ -10,11 +10,13 @@ import {
 } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import AppIcon from '../../components/AppIcon';
-import SearchTextInput from '../../components/SearchTextInput';
-import TextButton from '../../components/TextButton';
-
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+
+import AppIcon from '../../components/AppIcon';
+import IconButton from '../../components/IconButton';
+import SearchTextInput from '../../components/SearchTextInput';
+
+import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/SubCategoryScreenStyles';
 
 type SubCategoryScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SubCategoryScreen>;
@@ -70,7 +72,11 @@ function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
           </TouchableOpacity>
         </View>
         <View style={styles.backButtonContainer}>
-          <TextButton title={t('components.buttons.back')} onPress={navigateBack}/>
+          <IconButton
+            title={t('components.buttons.back')}
+            icon={backIcon}
+            onPress={navigateBack}
+            />
         </View>
       </View>
       <View style={styles.topContainer}>
