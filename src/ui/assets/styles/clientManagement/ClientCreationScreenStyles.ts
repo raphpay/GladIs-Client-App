@@ -14,6 +14,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: Fonts.semiBold
   },
+  backButtonContainer: {
+    flexDirection: 'row-reverse',
+  }
 });
 
 export default styles;
