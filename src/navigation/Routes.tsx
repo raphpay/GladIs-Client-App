@@ -65,6 +65,7 @@ function LoginStack() {
       <RootStack.Screen 
         name={NavigationRoutes.PasswordResetScreen}
         component={PasswordResetScreen}
+        options={{headerShown: false}}
       />
     </>
   )
