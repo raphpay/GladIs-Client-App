@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
 import AuthenticationResult from '../business-logic/model/AuthenticationResult';
+import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
@@ -22,7 +23,6 @@ import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen'
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
-import IPendingUser from '../business-logic/model/IPendingUser';
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 
@@ -60,6 +60,7 @@ function LoginStack() {
       <RootStack.Screen 
         name={NavigationRoutes.SignUpScreen}
         component={SignUpScreen}
+        options={{headerShown: false}}
       />
       <RootStack.Screen 
         name={NavigationRoutes.PasswordResetScreen}

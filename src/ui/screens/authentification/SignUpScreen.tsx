@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
   ScrollView,
-  Text
+  Text,
+  View
 } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -17,9 +18,11 @@ import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 
 import GladisTextInput from '../../components/GladisTextInput';
+import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
@@ -75,6 +78,10 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     return selectedModules.includes(module);
   }
 
+  function goBack() {
+    navigation.goBack();
+  }
+
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
     email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
 
@@ -89,6 +96,13 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.buttonContainer}>
+        <IconButton
+          title={t('components.buttons.back')}
+          icon={backIcon}
+          onPress={goBack}
+        />
+      </View>
       <ScrollView>
         <Text style={styles.title}>{t('quotation.title')}</Text>
         <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')}/>
@@ -103,6 +117,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             key={module.id}
             module={module}
             isSelected={isModuleSelected(module)}
+            isDisabled={false}
             onSelectModule={() => toggleCheckbox(module)}
           />
         ))}
