@@ -11,7 +11,7 @@ import ModuleService from '../../business-logic/services/ModuleService';
 
 import ContentUnavailableView from './ContentUnavailableView';
 
-import styles from '../assets/styles/components/DashboardAdminFlatListStyles';
+import styles from '../assets/styles/components/DashboardClientFlatList';
 
 function DashboardClientFlatList(): React.JSX.Element {
 
@@ -25,8 +25,8 @@ function DashboardClientFlatList(): React.JSX.Element {
 
   function FlatListModuleItem(module: IModule) {
     return (
-      <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.clientContainer}>
-        <Text>{t(`modules.${module.name}`)}</Text>
+      <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
+        <Text style={styles.moduleText}>{t(`modules.${module.name}`)}</Text>
       </TouchableOpacity>
     )
   }
