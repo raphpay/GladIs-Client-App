@@ -57,6 +57,9 @@
   "subCategories": {
     "systemQuality": {
       "title": "System quality"
+    },
+    "technicalDocumentation": {
+      "title": "Technical Documentation"
     }
   },
   "documents": {

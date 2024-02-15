@@ -97,7 +97,7 @@ function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
             <Image source={require('../../assets/images/chevron.right.png')}/>
           </View>
           <Text style={styles.currentPageTitle}>
-            {t(`subCategories.${params.subCategory}.title`)}
+            {t(params.subCategory)}
           </Text>
         </View>
       </View>

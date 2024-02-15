@@ -97,7 +97,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
-                  {t(`subCategories.${params.subCategory}.title`)}
+                  {t(params.subCategory)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
