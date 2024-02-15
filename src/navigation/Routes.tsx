@@ -5,7 +5,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
 import AuthenticationResult from '../business-logic/model/AuthenticationResult';
+import IModule from '../business-logic/model/IModule';
 import IPendingUser from '../business-logic/model/IPendingUser';
+import IUser from '../business-logic/model/IUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
@@ -23,9 +25,9 @@ import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen'
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
-import IModule from '../business-logic/model/IModule';
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
+import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
 
 export type IRootStackParams = {
   // Login Stack
@@ -35,6 +37,7 @@ export type IRootStackParams = {
   // Dashboard Stack
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
+  ClientDashboardScreenFromAdmin: { client?: IUser },
   CategoriesScreen: { module: IModule },
   SubCategoryScreen: { module: IModule, subCategory: string },
   DocumentsScreen: { module: IModule, subCategory: string, documents: string },
@@ -104,6 +107,11 @@ function DashboardStack(firstConnection: boolean) {
             <RootStack.Screen
               name={NavigationRoutes.DashboardScreen}
               component={DashboardScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.ClientDashboardScreenFromAdmin}
+              component={ClientDashboardScreenFromAdmin}
               options={{headerShown: false}}
             />
             <RootStack.Screen

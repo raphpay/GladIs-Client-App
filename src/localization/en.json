@@ -57,6 +57,9 @@
   "subCategories": {
     "systemQuality": {
       "title": "System quality"
+    },
+    "technicalDocumentation": {
+      "title": "Technical Documentation"
     }
   },
   "documents": {
@@ -85,6 +88,12 @@
     "logout": {
       "title": "Error logging out",
       "message": "Please try again later"
+    }
+  },
+  "unavailableView": {
+    "adminDashboard": {
+      "title": "No clients",
+      "message": "You have no clients yet, create one to start the adventure."
     }
   }
 }

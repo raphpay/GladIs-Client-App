@@ -13,17 +13,17 @@ import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
 
 import AppIcon from '../../components/AppIcon';
-import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
 import DashboardClientFlatList from '../../components/DashboardClientFlatList';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
+import backIcon from '../../assets/images/arrow.uturn.left.png';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardScreenStyles';
 
-type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
+type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;
 
-function DashboardScreen(props: DashboardScreenProps): any {
+function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminProps): any {
   const { navigation } = props;
   
   const [searchText,setSearchText] = useState<string>('');
@@ -33,6 +33,10 @@ function DashboardScreen(props: DashboardScreenProps): any {
 
   function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
+  }
+
+  function navigateBack() {
+    navigation.goBack();
   }
 
   useEffect(() => {
@@ -63,13 +67,14 @@ function DashboardScreen(props: DashboardScreenProps): any {
               setSearchText={setSearchText}
             />
           </View>
-          {
-            isAdmin ? (
-              <DashboardAdminFlatList />
-            ) : (
-              <DashboardClientFlatList />
-            )
-          }
+          <DashboardClientFlatList />
+        </View>
+        <View style={styles.backButtonContainer}>
+          <IconButton
+            title={t('components.buttons.back')}
+            icon={backIcon}
+            onPress={navigateBack}
+          />
         </View>
       </View>
       <View style={styles.topContainer}>
@@ -82,4 +87,4 @@ function DashboardScreen(props: DashboardScreenProps): any {
   )
 }
 
-export default DashboardScreen;
+export default ClientDashboardScreenFromAdmin;

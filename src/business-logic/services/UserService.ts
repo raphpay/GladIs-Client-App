@@ -1,6 +1,7 @@
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import CacheKeys from '../model/enums/CacheKeys';
+import UserType from '../model/enums/UserType';
 import APIService from './APIService';
 import CacheService from './CacheService';
 
@@ -37,6 +38,19 @@ class UserService {
       return users;
     } catch (error) {
       console.error('Error getting user by ID:', error);
+      throw error;
+    }
+  }
+
+  async getClients(): Promise<IUser[]> {
+    try {
+      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
+      const castedToken = token as IToken;
+      const users = await APIService.get<IUser[]>(this.baseRoute, castedToken.value);
+      const clients = users.filter((user) => user.userType !== UserType.Admin);
+      return clients;
+    } catch (error) {
+      console.error('Error getting clients', error);
       throw error;
     }
   }

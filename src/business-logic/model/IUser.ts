@@ -2,7 +2,7 @@ import IModule from "./IModule";
 import UserType from "./enums/UserType";
 
 export default interface IUser {
-  id?: string;
+  id: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;

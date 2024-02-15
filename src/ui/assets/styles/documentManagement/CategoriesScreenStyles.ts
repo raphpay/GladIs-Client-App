@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
     width: 148,
     height: 228,
     borderWidth: 1,
-    borderColor: 'black'
+    borderColor: 'black',
+    marginHorizontal: 8,
   },
   categoryImageContainer: {
     height: '75%'

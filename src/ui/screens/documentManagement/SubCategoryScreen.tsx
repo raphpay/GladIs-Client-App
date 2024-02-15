@@ -38,7 +38,7 @@ function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
 
   function navigateToDocuments() {
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
-      category: params.category,
+      module: params.module,
       subCategory: params.subCategory, 
       documents: 'processus'
     })
@@ -91,13 +91,13 @@ function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
             <Image source={require('../../assets/images/chevron.right.png')}/>
             <TouchableOpacity onPress={navigateBack}>
               <Text style={styles.navigationHistory}>
-                {t(`categories.${params.category}.title`)}
+                {t(`modules.${params.module.name}`)}
               </Text>
             </TouchableOpacity>
             <Image source={require('../../assets/images/chevron.right.png')}/>
           </View>
           <Text style={styles.currentPageTitle}>
-            {t(`subCategories.${params.subCategory}.title`)}
+            {t(params.subCategory)}
           </Text>
         </View>
       </View>

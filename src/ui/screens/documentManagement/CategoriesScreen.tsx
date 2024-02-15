@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  FlatList,
   Image,
   SafeAreaView,
   Text,
@@ -21,21 +22,53 @@ import styles from '../../assets/styles/documentManagement/CategoriesScreenStyle
 
 type CategoriesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.CategoriesScreen>;
 
+interface ISubCategory {
+  id: string,
+  title: string,
+}
+
 function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
-  const { params } = props.route;
+  const { module } = props.route.params;
+  const { navigation } = props;
+
   const [searchText,setSearchText] = useState<string>('');
   
   const { t } = useTranslation();
 
+
+  const subcategories: ISubCategory[] = [
+    {
+      id: 'systemQualityID',
+      title: t('subCategories.systemQuality.title'),
+    },
+    {
+      id: 'technicalDocumentationID',
+      title: t('subCategories.technicalDocumentation.title'),
+    },
+  ]
+
   function navigateBack() {
-    props.navigation.goBack();
+    navigation.goBack();
   }
 
-  function navigateToSubCategory() {
-    props.navigation.navigate(NavigationRoutes.SubCategoryScreen, {
-      category: params.category,
-      subCategory: 'systemQuality'
+  function navigateTo(subCategory: ISubCategory) {
+    navigation.navigate(NavigationRoutes.SubCategoryScreen, {
+      module: module,
+      subCategory: subCategory.title
     });
+  }
+
+  function SubCategoryFlatListItem(item: ISubCategory) {
+    return (
+      <TouchableOpacity onPress={() => navigateTo(item)}>
+        <View style={styles.categoryContainer}>
+          <View style={styles.categoryImageContainer} />
+          <View style={styles.categoryTextsContainer}>
+            <Text style={styles.categoryTitle}>{item.title}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   return (
@@ -48,15 +81,12 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
                 setSearchText={setSearchText}
               />
             </View>
-            <TouchableOpacity onPress={navigateToSubCategory}>
-              <View style={styles.categoryContainer}>
-                <View style={styles.categoryImageContainer} />
-                <View style={styles.categoryTextsContainer}>
-                  <Text style={styles.categoryTitle}>{t('subCategories.systemQuality.title')}</Text>
-                  <Text style={styles.categoryDescription}>{t('categories.description')}</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+            <FlatList
+              data={subcategories}
+              numColumns={2}
+              renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
+              keyExtractor={(item) => item.id}
+            />
           </View>
           <View style={styles.backButtonContainer}>
             <IconButton
@@ -78,7 +108,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t(`categories.${params.category}.title`)}
+              {t(`modules.${module.name}`)}
             </Text>
           </View>
         </View>
