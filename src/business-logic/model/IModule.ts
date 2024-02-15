@@ -1,4 +1,4 @@
 export default interface IModule {
-  id?: string;
+  id: string;
   name: string;
 }

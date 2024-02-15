@@ -3,13 +3,16 @@ import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 import IUser from '../../business-logic/model/IUser';
 import UserService from '../../business-logic/services/UserService';
-import styles from '../assets/styles/components/DashboardAdminFlatListStyles';
+
 import ContentUnavailableView from './ContentUnavailableView';
+
+import styles from '../assets/styles/components/DashboardAdminFlatListStyles';
 
 function DashboardAdminFlatList(): React.JSX.Element {
 
@@ -24,7 +27,12 @@ function DashboardAdminFlatList(): React.JSX.Element {
   function FlatListClientItem(client: IUser) {
     return (
       <TouchableOpacity onPress={() => navigateToClientDashboard(client)} style={styles.clientContainer}>
-        <Text>{client.username}</Text>
+        <View style={styles.clientLogo}>
+          <Text style={styles.clientNameText}>Client logo</Text>
+        </View>
+        <View style={styles.nameContainer}>
+          <Text style={styles.clientNameText}>{client.username}</Text>
+        </View>
       </TouchableOpacity>
     )
   }

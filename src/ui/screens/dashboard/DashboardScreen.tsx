@@ -12,6 +12,7 @@ import ModuleService from '../../../business-logic/services/ModuleService';
 
 import AppIcon from '../../components/AppIcon';
 import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
+import DashboardClientFlatList from '../../components/DashboardClientFlatList';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
@@ -74,10 +75,11 @@ function DashboardScreen(props: DashboardScreenProps): any {
             />
           </View>
           {
-            isAdmin && (
+            isAdmin ? (
               <DashboardAdminFlatList />
+            ) : (
+              <DashboardClientFlatList />
             )
-            // TODO: Create client flatlist
           }
         </View>
       </View>
