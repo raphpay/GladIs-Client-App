@@ -86,5 +86,11 @@
       "title": "Erreur lors de la déconnexion",
       "message": "Veuillez réessayer plus tard"
     }
+  },
+  "unavailableView": {
+    "adminDashboard": {
+      "title": "Pas de clients",
+      "message": "Vous n'avez pas encore de clients, créez-en un pour commencer l'aventure."
+    }
   }
 }

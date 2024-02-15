@@ -11,10 +11,9 @@ import IModule from '../../../business-logic/model/IModule';
 import ModuleService from '../../../business-logic/services/ModuleService';
 
 import AppIcon from '../../components/AppIcon';
+import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
-// TODO: Move this to components
-import DashboardAdminFlatList from './DashboardAdminFlatList';
 
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
