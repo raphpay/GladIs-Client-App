@@ -1,14 +1,16 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import IModule from '../../../business-logic/model/IModule';
-import ModuleService from '../../../business-logic/services/ModuleService';
+import UserType from '../../../business-logic/model/enums/UserType';
+import CacheService from '../../../business-logic/services/CacheService';
+import UserService from '../../../business-logic/services/UserService';
 
 import AppIcon from '../../components/AppIcon';
 import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
@@ -26,31 +28,18 @@ function DashboardScreen(props: DashboardScreenProps): any {
   
   const [searchText,setSearchText] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [modules, setModules] = useState<IModule[]>([]);
 
   const { t } = useTranslation();
-
-  function navigateToModule(module: IModule) {
-    navigation.navigate(NavigationRoutes.CategoriesScreen, { module })
-  }
 
   function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
-  function FlatListModuleItem(module: IModule) {
-    return (
-      <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
-        <Text>{t(`modules.${module.name}`)}</Text>
-      </TouchableOpacity>
-    )
-  }
-
   useEffect(() => {
-     setIsAdmin(true);
      async function init() {
-      const apiModules = await ModuleService.getInstance().getModules();  
-      setModules(apiModules);
+      const userID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
+      const user = await UserService.getInstance().getUserByID(userID);
+      setIsAdmin(user.userType == UserType.Admin);
     }
     init();
   }, []);

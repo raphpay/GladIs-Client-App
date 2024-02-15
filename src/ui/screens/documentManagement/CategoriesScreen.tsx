@@ -22,7 +22,7 @@ import styles from '../../assets/styles/documentManagement/CategoriesScreenStyle
 type CategoriesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.CategoriesScreen>;
 
 function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
-  const { params } = props.route;
+  const { module } = props.route.params;
   const [searchText,setSearchText] = useState<string>('');
   
   const { t } = useTranslation();
@@ -33,7 +33,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
 
   function navigateToSubCategory() {
     props.navigation.navigate(NavigationRoutes.SubCategoryScreen, {
-      category: params.category,
+      module: module,
       subCategory: 'systemQuality'
     });
   }
@@ -78,7 +78,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t(`categories.${params.category}.title`)}
+              {t(`modules.${module.name}`)}
             </Text>
           </View>
         </View>

@@ -34,7 +34,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   function navigateToCategories() {
-    navigation.navigate(NavigationRoutes.CategoriesScreen, { category: params.category });
+    navigation.navigate(NavigationRoutes.CategoriesScreen, { module: params.module });
   }
 
   function navigateBack() {
@@ -91,7 +91,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToCategories}>
                 <Text style={styles.navigationHistory}>
-                  {t(`categories.${params.category}.title`)}
+                  {t(`modules.${params.module.name}`)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>

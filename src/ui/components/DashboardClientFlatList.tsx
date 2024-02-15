@@ -11,17 +11,20 @@ import ModuleService from '../../business-logic/services/ModuleService';
 
 import ContentUnavailableView from './ContentUnavailableView';
 
+import { useNavigation } from '@react-navigation/native';
+import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import styles from '../assets/styles/components/DashboardClientFlatList';
 
 function DashboardClientFlatList(): React.JSX.Element {
 
   const [modules, setModules] = useState<IModule[]>([]);
 
-  function navigateToModule(module: IModule) {
-    //
-  }
-
+  const navigation = useNavigation();
   const { t } = useTranslation();
+
+  function navigateToModule(module: IModule) {
+    navigation.navigate(NavigationRoutes.CategoriesScreen, { module })
+  }
 
   function FlatListModuleItem(module: IModule) {
     return (
