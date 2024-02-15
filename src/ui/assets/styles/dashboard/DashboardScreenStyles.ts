@@ -36,6 +36,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.inactive,
     margin: 8
   },
+  backButtonContainer: {
+    width: '100%',
+    flexDirection: 'row-reverse',
+    padding: 16
+  },
   // Components
   appIcon: {
     marginLeft: 60,

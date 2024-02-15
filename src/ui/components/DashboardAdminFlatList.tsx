@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,14 +13,17 @@ import UserService from '../../business-logic/services/UserService';
 
 import ContentUnavailableView from './ContentUnavailableView';
 
+import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import styles from '../assets/styles/components/DashboardAdminFlatListStyles';
 
 function DashboardAdminFlatList(): React.JSX.Element {
 
   const [clients, setClients] = useState<IUser[]>([]);
 
+  const navigation = useNavigation();
+
   function navigateToClientDashboard(client: IUser) {
-    //
+    navigation.navigate(NavigationRoutes.ClientDashboardScreenFromAdmin, { client })
   }
 
   const { t } = useTranslation();
@@ -34,7 +38,7 @@ function DashboardAdminFlatList(): React.JSX.Element {
           <Text style={styles.clientNameText}>{client.username}</Text>
         </View>
       </TouchableOpacity>
-    )
+    );
   }
 
   useEffect(() => {

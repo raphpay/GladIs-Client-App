@@ -6,6 +6,7 @@ enum NavigationRoutes {
   // Dashboard Stack
   FirstConnectionScreen = 'FirstConnectionScreen',
   DashboardScreen = 'DashboardScreen',
+  ClientDashboardScreenFromAdmin = 'ClientDashboardScreenFromAdmin',
   CategoriesScreen = 'CategoriesScreen',
   SubCategoryScreen = 'SubCategoryScreen',
   DocumentsScreen = 'DocumentsScreen',
