@@ -73,6 +73,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         placeholder={t('login.password')}
         secureTextEntry={true}
         onSubmitEditing={submitLogin}
+        showVisibilityButton={true}
       />
       <TextButton
         title={t('login.login')}

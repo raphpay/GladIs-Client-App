@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
   KeyboardTypeOptions,
   Text,
   TextInput,
+  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -14,12 +16,16 @@ type GladisTextInputProps = {
   placeholder: string
   onValueChange: React.Dispatch<React.SetStateAction<string>>;
   keyboardType?: KeyboardTypeOptions | undefined;
-  secureTextEntry?: boolean | false;
+  secureTextEntry?: boolean;
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
   onSubmitEditing?: () => void;
+  showVisibilityButton?: boolean;
 };
 
 function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
+
+  const [isSecure, setIsSecure] = useState<boolean>(false);
+  const [visibilityIconURI, setVisibilityIconURI] = useState<string>('../assets/images/eye.fill.png');
 
   const {
     value,
@@ -28,9 +34,20 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
     keyboardType,
     secureTextEntry,
     autoCapitalize,
-    onSubmitEditing
+    onSubmitEditing,
+    showVisibilityButton
   } = props;
+
   const { t } = useTranslation();
+
+  function toggleVisibility() {
+    setIsSecure(!isSecure);
+    setVisibilityIconURI(isSecure ? '../assets/images/eye.fill.png' : '../assets/images/eye.slash.fill.png');
+  }
+
+  useEffect(() => {
+    setIsSecure(secureTextEntry || false)
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -40,10 +57,28 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
         onChangeText={onValueChange}
         keyboardType={keyboardType}
         style={styles.textInput}
-        secureTextEntry={secureTextEntry}
+        secureTextEntry={isSecure}
         autoCapitalize={autoCapitalize}
         onSubmitEditing={onSubmitEditing}
       />
+      {
+        showVisibilityButton && (
+          <>
+            <TouchableOpacity
+              style={styles.visibilityButtonContainer}
+              onPress={toggleVisibility}
+            >
+              {
+                isSecure ? (
+                  <Image source={require('../assets/images/eye.fill.png')} />
+                ) : (
+                  <Image source={require('../assets/images/eye.slash.fill.png')} />
+                )
+              }
+            </TouchableOpacity>
+          </>
+        )
+      }
     </View>
   );
 }
