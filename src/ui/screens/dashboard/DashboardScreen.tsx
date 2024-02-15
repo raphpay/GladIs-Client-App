@@ -17,7 +17,7 @@ import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
 import plusIcon from '../../assets/images/plus.png';
-import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
+import styles from '../../assets/styles/dashboard/DashboardScreenStyles';
 
 type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
 
