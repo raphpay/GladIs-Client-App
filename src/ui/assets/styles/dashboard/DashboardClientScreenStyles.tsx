@@ -32,7 +32,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 75,
     width: 190,
-    borderRadius: 10
+    borderRadius: 10,
+    backgroundColor: Colors.inactive,
+    margin: 8
   },
   // Components
   appIcon: {

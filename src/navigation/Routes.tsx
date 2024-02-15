@@ -23,6 +23,7 @@ import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen'
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
+import IModule from '../business-logic/model/IModule';
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 
@@ -34,9 +35,9 @@ export type IRootStackParams = {
   // Dashboard Stack
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
-  CategoriesScreen: { category: string },
-  SubCategoryScreen: { category: string, subCategory: string },
-  DocumentsScreen: { category: string, subCategory: string, documents: string },
+  CategoriesScreen: { module: IModule },
+  SubCategoryScreen: { module: IModule, subCategory: string },
+  DocumentsScreen: { module: IModule, subCategory: string, documents: string },
 }
 
 export type IClientManagementParams = {

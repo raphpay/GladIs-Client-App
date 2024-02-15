@@ -9,7 +9,7 @@ import styles from '../assets/styles/components/CheckBoxWithTitleStyles';
 type ModuleCheckBoxProps = {
   module: IModule;
   isSelected: boolean;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   onSelectModule: (obj: IModule) => void;
 };
 
