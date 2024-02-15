@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -13,6 +13,8 @@ import ModuleService from '../../../business-logic/services/ModuleService';
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
+// TODO: Move this to components
+import DashboardAdminFlatList from './DashboardAdminFlatList';
 
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
@@ -36,7 +38,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
-  function FlatListItem(module: IModule) {
+  function FlatListModuleItem(module: IModule) {
     return (
       <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
         <Text>{t(`modules.${module.name}`)}</Text>
@@ -72,12 +74,12 @@ function DashboardScreen(props: DashboardScreenProps): any {
               setSearchText={setSearchText}
             />
           </View>
-          <FlatList 
-            data={modules}
-            numColumns={4}
-            renderItem={(renderItem) => FlatListItem(renderItem.item)}
-            keyExtractor={(item) => item.name}
-          />
+          {
+            isAdmin && (
+              <DashboardAdminFlatList />
+            )
+            // TODO: Create client flatlist
+          }
         </View>
       </View>
       <View style={styles.topContainer}>
