@@ -49,6 +49,12 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.PasswordResetScreen)
   }
 
+  async function submitLogin() {
+    if (identifier.length !== 0 && password.length !== 0) {
+      await login();
+    }
+  }
+
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
 
   return (
@@ -66,6 +72,8 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         onValueChange={onPasswordChange}
         placeholder={t('login.password')}
         secureTextEntry={true}
+        onSubmitEditing={submitLogin}
+        showVisibilityButton={true}
       />
       <TextButton
         title={t('login.login')}

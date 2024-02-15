@@ -15,8 +15,6 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     marginTop: 104,
-    marginHorizontal: 16,
-    marginBottom: 16,
     backgroundColor: Colors.light,
   },
   innerComponentsContainer: {
@@ -34,7 +32,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 75,
     width: 190,
-    borderRadius: 10
+    borderRadius: 10,
+    backgroundColor: Colors.inactive,
+    margin: 8
   },
   // Components
   appIcon: {

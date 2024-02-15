@@ -14,23 +14,19 @@
     "reset": "Réinitialiser"
   },
   "quotation": {
-    "title": "Request for quotation",
-    "name": "NAME First Name",
-    "firstName": "First Name",
-    "lastName": "NAME",
-    "phone": "Phone number",
+    "title": "Demande de devis",
+    "name": "NOM Prénom",
+    "firstName": "Prénom",
+    "lastName": "NOM",
+    "phone": "Numéro de téléphone",
     "companyName": "Nom de l'entreprise",
     "email": "Email",
-    "products": "Type of products sold",
-    "modules": {
-      "title": "Select the modules",
-      "documentManagement": "Document Management",
-      "module1": "Module1"
-    },
-    "employees": "Number of employees",
-    "users": "Number of potential users",
-    "capital": "Sales amount",
-    "submit": "Submit"
+    "modulesTitle": "Sélectionnez les modules",
+    "products": "Type de produits vendus",
+    "employees": "Nombre d'employés",
+    "users": "Nombre d'utilisateurs potentiels",
+    "capital": "Chiffre d'affaires",
+    "submit": "Envoyer"
   },
   "firstConnection": {
     "title": "Modification du mot de passe",
@@ -39,10 +35,15 @@
     "description": "Le mot de passe doit contenir au moins 12 caractères, dont 1 majuscule, 1 chiffre et 1 caractère spécial."
   },
   "dashboard": {
-    "title": "Tableau de bord",
-    "modules": {
-      "documentManagement": "Gestion des documents"
-    }
+    "title": "Tableau de bord"
+  },
+  "modules": {
+    "documentManagement": "Gestion des documents",
+    "module1": "Module 1",
+    "module2": "Module 2",
+    "module3": "Module 3",
+    "module4": "Module 4",
+    "module5": "Module 5"
   },
   "categories": {
     "documentManagement": {

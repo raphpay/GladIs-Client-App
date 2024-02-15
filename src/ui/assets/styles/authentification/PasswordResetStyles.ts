@@ -4,6 +4,7 @@ import { Fonts } from '../../fonts/fonts';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center'
   },
@@ -17,6 +18,11 @@ const styles = StyleSheet.create({
     fontWeight: Fonts.regular,
     fontFamily: Fonts.poppinsLight,
     paddingBottom: 24
+  },
+  backButtonContainer: {
+    width: '100%',
+    flexDirection: 'row-reverse',
+    padding: 16,
   }
 });
 

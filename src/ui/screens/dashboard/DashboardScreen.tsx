@@ -1,18 +1,19 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import IModule from '../../../business-logic/model/IModule';
+import ModuleService from '../../../business-logic/services/ModuleService';
 
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
-import { Colors } from '../../assets/colors/colors';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardClientScreenStyles';
 
@@ -23,21 +24,35 @@ function DashboardScreen(props: DashboardScreenProps): any {
   
   const [searchText,setSearchText] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [modules, setModules] = useState<IModule[]>([]);
 
   const { t } = useTranslation();
 
-  function navigateToCategory() {
-    navigation.navigate(NavigationRoutes.CategoriesScreen, { category: 'documentManagement'})
+  function navigateToModule(module: IModule) {
+    navigation.navigate(NavigationRoutes.CategoriesScreen, { module })
   }
 
   function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
+  function FlatListItem(module: IModule) {
+    return (
+      <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
+        <Text>{t(`modules.${module.name}`)}</Text>
+      </TouchableOpacity>
+    )
+  }
+
   useEffect(() => {
      setIsAdmin(true);
+     async function init() {
+      const apiModules = await ModuleService.getInstance().getModules();  
+      setModules(apiModules);
+    }
+    init();
   }, []);
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -57,9 +72,12 @@ function DashboardScreen(props: DashboardScreenProps): any {
               setSearchText={setSearchText}
             />
           </View>
-          <TouchableOpacity onPress={navigateToCategory} style={[styles.moduleContainer, { backgroundColor: Colors.inactive }]}>
-            <Text>{t('dashboard.modules.documentManagement')}</Text>
-          </TouchableOpacity>
+          <FlatList 
+            data={modules}
+            numColumns={4}
+            renderItem={(renderItem) => FlatListItem(renderItem.item)}
+            keyExtractor={(item) => item.name}
+          />
         </View>
       </View>
       <View style={styles.topContainer}>

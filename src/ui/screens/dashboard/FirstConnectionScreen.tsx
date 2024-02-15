@@ -38,6 +38,11 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
     }
   }
 
+  async function submitPasswordChange() {
+    if (temporary.length !== 0 && newPassword.length !== 0) {
+      await modifyPassword();
+    }
+  }
 
   const isButtonDisabled = temporary.length == 0 || newPassword.length == 0;
 
@@ -49,12 +54,15 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
         value={temporary}
         onValueChange={setTemporary}
         secureTextEntry={true}
+        showVisibilityButton={true}
       />
       <GladisTextInput 
         placeholder={t('firstConnection.new')}
         value={newPassword}
         onValueChange={setNewPassword}
         secureTextEntry={true}
+        onSubmitEditing={submitPasswordChange}
+        showVisibilityButton={true}
       />
       <TextButton
         title={t('components.buttons.continue')}
