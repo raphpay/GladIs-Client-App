@@ -20,7 +20,14 @@ const styles = StyleSheet.create({
     fontWeight: Fonts.bold,
     fontSize: Fonts.h4,
     fontFamily: Fonts.poppinsLight,
-  }
+  },
+  visibilityButtonContainer: {
+    position: 'absolute',
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    right: 8,
+    top: 58,
+  },
 });
 
 export default styles;

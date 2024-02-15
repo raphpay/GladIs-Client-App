@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
   SafeAreaView,
   ScrollView,
-  StyleSheet
+  View
 } from 'react-native';
 
 import IPendingUser from '../../../business-logic/model/IPendingUser';
@@ -17,9 +17,11 @@ import { RootState } from '../../../business-logic/store/store';
 import { IClientManagementParams } from '../../../navigation/Routes';
 
 import IconButton from '../../components/IconButton';
-
-import plusIcon from '../../assets/images/plus.png';
 import PendingUserRow from '../../components/PendingUserRow';
+
+import backIcon from '../../assets/images/arrow.uturn.left.png';
+import plusIcon from '../../assets/images/plus.png';
+import styles from '../../assets/styles/clientManagement/PendingClientListScreenStyles';
 
 type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.PendingClientListScreen>;
 
@@ -41,6 +43,10 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
   }
 
+  function goBack() {
+    navigation.goBack();
+  }
+
   useEffect(() => {
     async function init() {
       const castedToken = token as IToken;
@@ -52,11 +58,20 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   return (
     <SafeAreaView style={styles.container}>
-       <IconButton
-        title={t('components.buttons.addClient')}
-        icon={plusIcon}
-        onPress={navigateToCreateClient}
-      />
+       <View style={styles.buttonsContainer}>
+        <IconButton
+          title={t('components.buttons.back')}
+          icon={backIcon}
+          onPress={goBack}
+          style={styles.button}
+        />
+        <IconButton
+          title={t('components.buttons.addClient')}
+          icon={plusIcon}
+          onPress={navigateToCreateClient}
+          style={styles.button}
+        />
+       </View>
       <ScrollView >
         {
           pendingUsers.map((user) => (
@@ -71,13 +86,5 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default PendingClientListScreen;

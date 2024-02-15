@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
 import AuthenticationResult from '../business-logic/model/AuthenticationResult';
+import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
@@ -22,7 +23,7 @@ import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen'
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
-import IPendingUser from '../business-logic/model/IPendingUser';
+import IModule from '../business-logic/model/IModule';
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 
@@ -34,9 +35,9 @@ export type IRootStackParams = {
   // Dashboard Stack
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
-  CategoriesScreen: { category: string },
-  SubCategoryScreen: { category: string, subCategory: string },
-  DocumentsScreen: { category: string, subCategory: string, documents: string },
+  CategoriesScreen: { module: IModule },
+  SubCategoryScreen: { module: IModule, subCategory: string },
+  DocumentsScreen: { module: IModule, subCategory: string, documents: string },
 }
 
 export type IClientManagementParams = {
@@ -60,10 +61,12 @@ function LoginStack() {
       <RootStack.Screen 
         name={NavigationRoutes.SignUpScreen}
         component={SignUpScreen}
+        options={{headerShown: false}}
       />
       <RootStack.Screen 
         name={NavigationRoutes.PasswordResetScreen}
         component={PasswordResetScreen}
+        options={{headerShown: false}}
       />
     </>
   )
@@ -75,10 +78,12 @@ function ClientManagement() {
       <ClientManagementStack.Screen
         name={NavigationRoutes.PendingClientListScreen}
         component={PendingClientListScreen}
+        options={{headerShown: false}}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientCreationScreen}
         component={ClientCreationScreen}
+        options={{headerShown: false}}
       />
     </ClientManagementStack.Navigator>
   );

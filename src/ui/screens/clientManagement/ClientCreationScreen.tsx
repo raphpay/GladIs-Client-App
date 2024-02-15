@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, Text } from 'react-native';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
@@ -16,10 +16,13 @@ import { RootState } from '../../../business-logic/store/store';
 import { IClientManagementParams } from '../../../navigation/Routes';
 
 import GladisTextInput from '../../components/GladisTextInput';
+import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
+
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
@@ -134,6 +137,10 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
+  function goBack() {
+    navigation.goBack();
+  }
+
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
     email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
 
@@ -155,6 +162,13 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.backButtonContainer}>
+        <IconButton
+          title={t('components.buttons.back')}
+          icon={backIcon}
+          onPress={goBack}
+        />
+      </View>
       <ScrollView>
         <Text style={styles.title}>{t('quotation.title')}</Text>
         <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')}/>

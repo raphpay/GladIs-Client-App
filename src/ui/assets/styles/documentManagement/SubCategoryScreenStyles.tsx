@@ -15,8 +15,6 @@ const styles = StyleSheet.create({
   innerContainer: {
     flex: 1,
     marginTop: 104,
-    marginHorizontal: 16,
-    marginBottom: 16,
     backgroundColor: Colors.light,
   },
   innerComponentsContainer: {

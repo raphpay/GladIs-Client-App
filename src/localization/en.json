@@ -22,11 +22,7 @@
     "companyName": "Company Name",
     "email": "Email",
     "products": "Type of products sold",
-    "modules": {
-      "title": "Select the modules",
-      "documentManagement": "Document Management",
-      "module1": "Module1"
-    },
+    "modulesTitle": "Select the modules",
     "employees": "Number of employees",
     "users": "Number of potential users",
     "capital": "Sales amount",
@@ -39,10 +35,15 @@
     "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character."
   },
   "dashboard": {
-    "title": "Dashboard",
-    "modules": {
-      "documentManagement": "Document Management"
-    }
+    "title": "Dashboard"
+  },
+  "modules": {
+    "documentManagement": "Document Management",
+    "module1": "Module 1",
+    "module2": "Module 2",
+    "module3": "Module 3",
+    "module4": "Module 4",
+    "module5": "Module 5"
   },
   "categories": {
     "documentManagement": {
