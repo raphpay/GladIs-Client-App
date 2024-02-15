@@ -39,7 +39,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
   function FlatListItem(module: IModule) {
     return (
       <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
-        <Text>{module.name}</Text>
+        <Text>{t(`modules.${module.name}`)}</Text>
       </TouchableOpacity>
     )
   }

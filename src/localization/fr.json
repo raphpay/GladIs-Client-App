@@ -35,10 +35,15 @@
     "description": "Le mot de passe doit contenir au moins 12 caractères, dont 1 majuscule, 1 chiffre et 1 caractère spécial."
   },
   "dashboard": {
-    "title": "Tableau de bord",
-    "modules": {
-      "documentManagement": "Gestion des documents"
-    }
+    "title": "Tableau de bord"
+  },
+  "modules": {
+    "documentManagement": "Gestion des documents",
+    "module1": "Module 1",
+    "module2": "Module 2",
+    "module3": "Module 3",
+    "module4": "Module 4",
+    "module5": "Module 5"
   },
   "categories": {
     "documentManagement": {
