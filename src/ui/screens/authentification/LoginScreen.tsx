@@ -78,6 +78,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         secureTextEntry={true}
         onSubmitEditing={submitLogin}
         showVisibilityButton={true}
+        autoCapitalize={'none'}
       />
       <TextButton
         title={t('login.login')}

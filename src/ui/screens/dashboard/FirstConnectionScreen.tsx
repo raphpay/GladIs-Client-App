@@ -55,6 +55,7 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
         onValueChange={setTemporary}
         secureTextEntry={true}
         showVisibilityButton={true}
+        autoCapitalize={'none'}
       />
       <GladisTextInput 
         placeholder={t('firstConnection.new')}
@@ -63,6 +64,7 @@ function FirstConnectionScreen(props: FirstConnectionScreenProps): React.JSX.Ele
         secureTextEntry={true}
         onSubmitEditing={submitPasswordChange}
         showVisibilityButton={true}
+        autoCapitalize={'none'}
       />
       <TextButton
         title={t('components.buttons.continue')}
