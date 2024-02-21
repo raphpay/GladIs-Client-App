@@ -134,7 +134,6 @@ function DashboardStack(firstConnection: boolean) {
             <RootStack.Screen
               name={NavigationRoutes.PDFScreen}
               component={PDFScreen}
-              options={{headerShown: false}}
             />
             <ClientManagementStack.Screen
               name={NavigationRoutes.ClientManagementStack}
