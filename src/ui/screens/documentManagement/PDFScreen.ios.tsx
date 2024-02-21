@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import {
-  Dimensions,
   SafeAreaView,
-  StyleSheet,
   Text,
   TouchableOpacity
 } from 'react-native';
@@ -12,6 +10,7 @@ import DocumentPicker, {
   types
 } from 'react-native-document-picker';
 import Pdf from 'react-native-pdf';
+import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 
 function PDFScreen(): React.JSX.Element {
 
@@ -70,20 +69,5 @@ function PDFScreen(): React.JSX.Element {
     </SafeAreaView>
   );
 }
-
-// TODO: move styles into a separate screen
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pdf: {
-    flex: 1,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
 
 export default PDFScreen;
