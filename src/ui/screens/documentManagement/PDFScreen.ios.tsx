@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
-import {
-  SafeAreaView,
-  Text,
-  TouchableOpacity
-} from 'react-native';
-import DocumentPicker, {
-  isCancel,
-  isInProgress,
-  types
-} from 'react-native-document-picker';
+import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import DocumentPicker, { types } from 'react-native-document-picker';
 import Pdf from 'react-native-pdf';
+
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 
 function PDFScreen(): React.JSX.Element {
@@ -27,18 +20,7 @@ function PDFScreen(): React.JSX.Element {
         setPDFPath(pickerResult.fileCopyUri)
       }
     } catch (e) {
-      handleError(e)
-    }
-  }
-
-  const handleError = (err: unknown) => {
-    if (isCancel(err)) {
-      console.warn('cancelled')
-      // User cancelled the picker, exit any dialogs or menus and move on
-    } else if (isInProgress(err)) {
-      console.warn('multiple pickers were opened, only the last will be considered')
-    } else {
-      throw err
+      console.log('error', e);
     }
   }
 
