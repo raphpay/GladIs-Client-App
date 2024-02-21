@@ -23,6 +23,7 @@ import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
+import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
 import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
@@ -41,6 +42,7 @@ export type IRootStackParams = {
   CategoriesScreen: { module: IModule },
   SubCategoryScreen: { module: IModule, subCategory: string },
   DocumentsScreen: { module: IModule, subCategory: string, documents: string },
+  PDFScreen: { document: string },
 }
 
 export type IClientManagementParams = {
@@ -127,6 +129,11 @@ function DashboardStack(firstConnection: boolean) {
             <RootStack.Screen
               name={NavigationRoutes.DocumentsScreen}
               component={DocumentsScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.PDFScreen}
+              component={PDFScreen}
               options={{headerShown: false}}
             />
             <ClientManagementStack.Screen

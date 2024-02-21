@@ -10,6 +10,7 @@ enum NavigationRoutes {
   CategoriesScreen = 'CategoriesScreen',
   SubCategoryScreen = 'SubCategoryScreen',
   DocumentsScreen = 'DocumentsScreen',
+  PDFScreen = 'PDFScreen',
   // Client Creation
   ClientManagementStack = 'ClientManagementStack',
   PendingClientListScreen = 'PendingClientListScreen',

@@ -43,7 +43,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   function navigateToDocument() {
-
+    navigation.navigate(NavigationRoutes.PDFScreen, { document: '' });
   }
 
   return (
