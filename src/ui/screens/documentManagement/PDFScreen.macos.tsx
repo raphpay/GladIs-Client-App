@@ -17,7 +17,6 @@ function PDFScreen(): React.JSX.Element {
     setPDFPath(selectedPDF);
   }
 
-  // TODO: Add a back button
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={pickPDF}>
