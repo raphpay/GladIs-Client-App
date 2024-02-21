@@ -71,6 +71,8 @@ function PDFScreen(): React.JSX.Element {
   );
 }
 
+// TODO: move styles into a separate screen
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

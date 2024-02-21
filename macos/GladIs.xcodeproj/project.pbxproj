@@ -14,6 +14,9 @@
 		5E9FD566CF13EFDBD64ED614 /* libPods-GladIs-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C575F9B6E1E7133B81E7DDB0 /* libPods-GladIs-macOS.a */; };
 		8620316E2B85E8E8000E38A9 /* FinderModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8620316D2B85E8E8000E38A9 /* FinderModule.swift */; };
 		862031702B85E96A000E38A9 /* FinderModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 8620316F2B85E96A000E38A9 /* FinderModule.m */; };
+		862031722B85ED1D000E38A9 /* PDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862031712B85ED1D000E38A9 /* PDFViewer.swift */; };
+		862031742B85ED38000E38A9 /* PDFViewerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 862031732B85ED38000E38A9 /* PDFViewerManager.swift */; };
+		862031762B85ED4B000E38A9 /* PDFViewerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 862031752B85ED4B000E38A9 /* PDFViewerManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +32,9 @@
 		8620316C2B85E8E8000E38A9 /* GladIs-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GladIs-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		8620316D2B85E8E8000E38A9 /* FinderModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinderModule.swift; sourceTree = "<group>"; };
 		8620316F2B85E96A000E38A9 /* FinderModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FinderModule.m; sourceTree = "<group>"; };
+		862031712B85ED1D000E38A9 /* PDFViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewer.swift; sourceTree = "<group>"; };
+		862031732B85ED38000E38A9 /* PDFViewerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewerManager.swift; sourceTree = "<group>"; };
+		862031752B85ED4B000E38A9 /* PDFViewerManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PDFViewerManager.m; sourceTree = "<group>"; };
 		A41EF67FE3FB84224134003C /* Pods-GladIs-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GladIs-macOS.debug.xcconfig"; path = "Target Support Files/Pods-GladIs-macOS/Pods-GladIs-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		BD50580BCE23172A23B464C7 /* Pods-GladIs-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-GladIs-macOS.release.xcconfig"; path = "Target Support Files/Pods-GladIs-macOS/Pods-GladIs-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		C575F9B6E1E7133B81E7DDB0 /* libPods-GladIs-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-GladIs-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,6 +82,9 @@
 				514201572437B4B40078DB4F /* main.m */,
 				514201592437B4B40078DB4F /* GladIs.entitlements */,
 				8620316C2B85E8E8000E38A9 /* GladIs-macOS-Bridging-Header.h */,
+				862031712B85ED1D000E38A9 /* PDFViewer.swift */,
+				862031732B85ED38000E38A9 /* PDFViewerManager.swift */,
+				862031752B85ED4B000E38A9 /* PDFViewerManager.m */,
 			);
 			path = "GladIs-macOS";
 			sourceTree = "<group>";
@@ -306,6 +315,9 @@
 				514201582437B4B40078DB4F /* main.m in Sources */,
 				8620316E2B85E8E8000E38A9 /* FinderModule.swift in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
+				862031722B85ED1D000E38A9 /* PDFViewer.swift in Sources */,
+				862031762B85ED4B000E38A9 /* PDFViewerManager.m in Sources */,
+				862031742B85ED38000E38A9 /* PDFViewerManager.swift in Sources */,
 				862031702B85E96A000E38A9 /* FinderModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
