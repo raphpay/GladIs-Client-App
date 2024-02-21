@@ -1,7 +1,8 @@
-import { LOCAL_IP_ADDRESS } from "../../../protected-contants";
+// import { LOCAL_IP_ADDRESS } from "../../../protected-contants";
 import HttpMethod from "../model/enums/HttpMethod";
 
-const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
+// const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
+const API_BASE_URL = 'http://localhost:8080/api';
 
 class APIService {
   static async get<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {

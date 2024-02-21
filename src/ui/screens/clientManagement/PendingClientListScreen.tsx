@@ -35,7 +35,6 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const { navigation } = props;
 
   function navigateToCreateClient() {
-    // TODO: Add pending user parameter for when selecting one specific user
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
   }
 
