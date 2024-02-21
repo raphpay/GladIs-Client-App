@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import {
-  Dimensions,
   SafeAreaView,
-  StyleSheet,
   Text,
   TouchableOpacity
 } from 'react-native';
 import FinderModule from '../../../business-logic/modules/FinderModule';
+import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
 
 function PDFScreen(): React.JSX.Element {
@@ -18,7 +17,7 @@ function PDFScreen(): React.JSX.Element {
     setPDFPath(selectedPDF);
   }
 
-  // TODO: Implement a pdf picker
+  // TODO: Add a back button
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={pickPDF}>
@@ -32,18 +31,5 @@ function PDFScreen(): React.JSX.Element {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pdf: {
-    flex: 1,
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
 
 export default PDFScreen;
