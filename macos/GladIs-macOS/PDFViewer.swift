@@ -77,6 +77,7 @@ class PDFViewer: NSView {
   
   @objc
   func pasteboardDidChange(_ notification: Notification) {
+    // TODO: To be improved as it completely blocks other apps from copying
     pasteboard.clearContents()
     pasteboard.setString("", forType: .string)
   }
