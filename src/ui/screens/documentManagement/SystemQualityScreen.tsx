@@ -1,25 +1,135 @@
-import React from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
+  FlatList,
+  Image,
   SafeAreaView,
-  StyleSheet,
-  Text
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
-function SystemQualityScreen(): React.JSX.Element {
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+
+import AppIcon from '../../components/AppIcon';
+import IconButton from '../../components/IconButton';
+import SearchTextInput from '../../components/SearchTextInput';
+
+import backIcon from '../../assets/images/arrow.uturn.left.png';
+import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
+
+interface ISystemQualityItem {
+  id: string,
+  title: string,
+}
+
+type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SystemQualityScreen>;
+
+function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
+  const [searchText, setSearchText] = useState<string>('');
+
+  const { t } = useTranslation();
+  const { navigation } = props;
+
+  const systemQualityItems: ISystemQualityItem[] = [
+    {
+      id: 'qualityManuelID',
+      title: t('systemQuality.qualityManual'),
+    },
+    {
+      id: 'processus1ID',
+      title: `${t('systemQuality.processus')} 1`,
+    },
+    {
+      id: 'processus2ID',
+      title: `${t('systemQuality.processus')} 2`,
+    },
+    {
+      id: 'processus3ID',
+      title: `${t('systemQuality.processus')} 3`,
+    },
+    {
+      id: 'processus4ID',
+      title: `${t('systemQuality.processus')} 4`,
+    },
+    {
+      id: 'processus5ID',
+      title: `${t('systemQuality.processus')} 5`,
+    },
+    {
+      id: 'processus6ID',
+      title: `${t('systemQuality.processus')} 6`,
+    },
+    {
+      id: 'processus7ID',
+      title: `${t('systemQuality.processus')} 7`,
+    },
+  ]
+
+  function navigateBack() {
+    navigation.goBack();
+  }
+
+  function navigateTo(item: ISystemQualityItem) {
+    console.log('navigateTo', item);
+  }
+
+  function SystemQualityFlatListItem(item: ISystemQualityItem) {
+    return (
+      <TouchableOpacity onPress={() => navigateTo(item)}>
+        <View style={styles.processusContainer}>
+          <Text style={styles.categoryTitle}>{item.title}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>System quality</Text>
+      <View style={styles.innerContainer}>
+          <View style={styles.innerComponentsContainer}>
+            <View style={styles.searchInputContainer}>
+              <SearchTextInput
+                searchText={searchText}
+                setSearchText={setSearchText}
+              />
+            </View>
+            <FlatList
+              data={systemQualityItems}
+              numColumns={3}
+              renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
+          <View style={styles.backButtonContainer}>
+            <IconButton
+              title={t('components.buttons.back')}
+              icon={backIcon}
+              onPress={navigateBack}
+             />
+          </View>
+        </View>
+        <View style={styles.topContainer}>
+          <AppIcon style={styles.appIcon} />
+          <View>
+            <View style={styles.navigationHistoryContainer}>
+              <TouchableOpacity onPress={navigateBack}>
+                <Text style={styles.navigationHistory}>
+                  {t('dashboard.title')}
+                </Text>
+              </TouchableOpacity>
+              <Image source={require('../../assets/images/chevron.right.png')}/>
+            </View>
+            <Text style={styles.currentPageTitle}>
+              {t(`modules.`)}
+            </Text>
+          </View>
+        </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default SystemQualityScreen;

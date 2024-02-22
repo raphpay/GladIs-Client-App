@@ -62,6 +62,10 @@
       "title": "Documentation technique"
     }
   },
+  "systemQuality": {
+    "qualityManual": "Manuel Qualité",
+    "processus": "Processus"
+  },
   "documents": {
     "processus": {
       "title": "Processus"

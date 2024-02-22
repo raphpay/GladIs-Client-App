@@ -33,6 +33,19 @@ class APIService {
     }
   }
 
+  static async getPDF(endpoint: string, filename: string): Promise<string> {
+    try {
+      const url = `${API_BASE_URL}/${endpoint}/${filename}.pdf`;
+      const response = await fetch(url, {
+        method: HttpMethod.GET
+      });
+      return response.url;
+    } catch (error) {
+      console.log('Error fetching data:', error);
+      throw error;
+    }
+  }
+
   static async post<T>(endpoint: string, data: any = {}, token?: string): Promise<T> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;
