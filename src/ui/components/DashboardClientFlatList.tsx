@@ -23,7 +23,7 @@ function DashboardClientFlatList(): React.JSX.Element {
   const { t } = useTranslation();
 
   function navigateToModule(module: IModule) {
-    navigation.navigate(NavigationRoutes.CategoriesScreen, { module })
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module })
   }
 
   function FlatListModuleItem(module: IModule) {

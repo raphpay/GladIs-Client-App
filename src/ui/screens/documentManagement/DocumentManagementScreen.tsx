@@ -18,16 +18,16 @@ import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
 import backIcon from '../../assets/images/arrow.uturn.left.png';
-import styles from '../../assets/styles/documentManagement/CategoriesScreenStyles';
+import styles from '../../assets/styles/documentManagement/DocumentManagementScreenStyles';
 
-type CategoriesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.CategoriesScreen>;
+type DocumentManagementScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentManagementScreen>;
 
 interface ISubCategory {
   id: string,
   title: string,
 }
 
-function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
+function DocumentManagementScreen(props: DocumentManagementScreenProps): React.JSX.Element {
   const { module } = props.route.params;
   const { navigation } = props;
 
@@ -52,10 +52,9 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   }
 
   function navigateTo(subCategory: ISubCategory) {
-    navigation.navigate(NavigationRoutes.SubCategoryScreen, {
-      module: module,
-      subCategory: subCategory.title
-    });
+    if (subCategory.id === 'systemQualityID') {
+      navigation.navigate(NavigationRoutes.SystemQualityScreen)
+    }
   }
 
   function SubCategoryFlatListItem(item: ISubCategory) {
@@ -116,4 +115,4 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   );
 }
 
-export default CategoriesScreen;
+export default DocumentManagementScreen;

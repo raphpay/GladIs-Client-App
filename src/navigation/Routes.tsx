@@ -21,10 +21,8 @@ import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
-import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
-import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
-import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
-import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
+import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
+import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
@@ -39,7 +37,8 @@ export type IRootStackParams = {
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
   ClientDashboardScreenFromAdmin: { client?: IUser },
-  CategoriesScreen: { module: IModule },
+  DocumentManagementScreen: { module: IModule },
+  SystemQualityScreen: undefined,
   SubCategoryScreen: { module: IModule, subCategory: string },
   DocumentsScreen: { module: IModule, subCategory: string, documents: string },
   PDFScreen: { document: string },
@@ -117,11 +116,15 @@ function DashboardStack(firstConnection: boolean) {
               options={{headerShown: false}}
             />
             <RootStack.Screen
-              name={NavigationRoutes.CategoriesScreen}
-              component={CategoriesScreen}
+              name={NavigationRoutes.DocumentManagementScreen}
+              component={DocumentManagementScreen}
               options={{headerShown: false}}
             />
             <RootStack.Screen
+              name={NavigationRoutes.SystemQualityScreen}
+              component={SystemQualityScreen}
+            />
+            {/* <RootStack.Screen
               name={NavigationRoutes.SubCategoryScreen}
               component={SubCategoryScreen}
               options={{headerShown: false}}
@@ -134,7 +137,7 @@ function DashboardStack(firstConnection: boolean) {
             <RootStack.Screen
               name={NavigationRoutes.PDFScreen}
               component={PDFScreen}
-            />
+            /> */}
             <ClientManagementStack.Screen
               name={NavigationRoutes.ClientManagementStack}
               component={ClientManagement}

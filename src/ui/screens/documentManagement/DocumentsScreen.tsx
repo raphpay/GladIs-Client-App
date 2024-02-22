@@ -34,7 +34,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   function navigateToCategories() {
-    navigation.navigate(NavigationRoutes.CategoriesScreen, { module: params.module });
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module: params.module });
   }
 
   function navigateBack() {
