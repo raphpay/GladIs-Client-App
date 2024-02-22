@@ -12,6 +12,7 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import { ISubCategory } from '../../../business-logic/model/IModule';
 
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
@@ -21,11 +22,6 @@ import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/DocumentManagementScreenStyles';
 
 type DocumentManagementScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentManagementScreen>;
-
-interface ISubCategory {
-  id: string,
-  title: string,
-}
 
 function DocumentManagementScreen(props: DocumentManagementScreenProps): React.JSX.Element {
   const { module } = props.route.params;
@@ -53,7 +49,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
 
   function navigateTo(subCategory: ISubCategory) {
     if (subCategory.id === 'systemQualityID') {
-      navigation.navigate(NavigationRoutes.SystemQualityScreen)
+      navigation.navigate(NavigationRoutes.SystemQualityScreen, { module })
     }
   }
 

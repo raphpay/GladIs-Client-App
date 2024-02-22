@@ -33,6 +33,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   const { t } = useTranslation();
   const { navigation } = props;
+  const { module } = props.route.params;
 
   const systemQualityItems: ISystemQualityItem[] = [
     {
@@ -71,6 +72,10 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   function navigateBack() {
     navigation.goBack();
+  }
+
+  function navigateToDocumentManagement() {
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module });
   }
 
   function navigateTo(item: ISystemQualityItem) {
@@ -122,9 +127,15 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
+              <TouchableOpacity onPress={navigateToDocumentManagement}>
+                <Text style={styles.navigationHistory}>
+                  {t('categories.documentManagement.title')}
+                </Text>
+              </TouchableOpacity>
+              <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t(`modules.`)}
+              {t('subCategories.systemQuality.title')}
             </Text>
           </View>
         </View>

@@ -38,7 +38,7 @@ export type IRootStackParams = {
   DashboardScreen: undefined,
   ClientDashboardScreenFromAdmin: { client?: IUser },
   DocumentManagementScreen: { module: IModule },
-  SystemQualityScreen: undefined,
+  SystemQualityScreen: { module: IModule },
   SubCategoryScreen: { module: IModule, subCategory: string },
   DocumentsScreen: { module: IModule, subCategory: string, documents: string },
   PDFScreen: { document: string },
@@ -123,6 +123,7 @@ function DashboardStack(firstConnection: boolean) {
             <RootStack.Screen
               name={NavigationRoutes.SystemQualityScreen}
               component={SystemQualityScreen}
+              options={{headerShown: false}}
             />
             {/* <RootStack.Screen
               name={NavigationRoutes.SubCategoryScreen}
