@@ -45,7 +45,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   function navigateToDocument(doc: IDocument) {
-    navigation.navigate(NavigationRoutes.PDFScreen, { document: '' });
+    navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
   // TODO: change styles names
