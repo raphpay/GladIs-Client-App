@@ -48,7 +48,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
-  console.log('props', props );
   // TODO: change styles names
   function DocumentRow(item: IDocument) {
     return (
@@ -71,13 +70,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
+      // TODO: Find a way to customize this
+      // Work with redux to get track of the path ?
       const docs = await DocumentService.getInstance().getDocumentsAtDirectory('Acme.inc/systemQuality/qualityManual/');
       setDocuments(docs);
     }
     init();
   }, []);
-
-  console.log('props', props.route.params );
 
   return (
     <SafeAreaView style={styles.container}>
