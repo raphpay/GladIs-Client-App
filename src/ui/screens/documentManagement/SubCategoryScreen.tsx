@@ -37,11 +37,11 @@ function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
   }
 
   function navigateToDocuments() {
-    navigation.navigate(NavigationRoutes.DocumentsScreen, {
-      module: params.module,
-      subCategory: params.subCategory, 
-      documents: 'processus'
-    })
+    // navigation.navigate(NavigationRoutes.DocumentsScreen, {
+    //   module: params.module,
+    //   subCategory: params.subCategory, 
+    //   documents: 'processus'
+    // })
   }
 
   return (

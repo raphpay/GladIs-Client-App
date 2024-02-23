@@ -43,7 +43,7 @@ export type IRootStackParams = {
   DocumentManagementScreen: { client?: IUser, module: IModule },
   SystemQualityScreen: { client?: IUser, module: IModule },
   SubCategoryScreen: { client?: IUser, module: IModule, subCategory: string },
-  DocumentsScreen: { client?: IUser, module: IModule, subCategory: string },
+  DocumentsScreen: { client?: IUser, module: IModule, previousScreen: string, currentScreen: string },
   PDFScreen: { documentInput: IDocument },
 }
 

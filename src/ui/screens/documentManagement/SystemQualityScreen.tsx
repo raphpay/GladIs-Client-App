@@ -79,7 +79,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   function navigateTo(item: ISystemQualityItem) {
     if (item.id === 'qualityManualID') {
-      navigation.navigate(NavigationRoutes.DocumentsScreen, { client, module, subCategory: 'qualityManual'})
+      navigation.navigate(NavigationRoutes.DocumentsScreen, {
+        client,
+        module,
+        previousScreen: t('categories.systemQuality.title'),
+        currentScreen: t('systemQuality.qualityManual')
+      })
     }
   }
 

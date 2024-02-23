@@ -29,7 +29,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const { t } = useTranslation();
   const { navigation } = props;
-  const { module, subCategory } = props.route.params;
+  const { module, previousScreen, currentScreen } = props.route.params;
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
@@ -48,6 +48,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
+  console.log('props', props );
   // TODO: change styles names
   function DocumentRow(item: IDocument) {
     return (
@@ -75,6 +76,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
     init();
   }, []);
+
+  console.log('props', props.route.params );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -118,14 +121,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
-                  {t(subCategory)}
+                  {previousScreen}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-            {/* {t(`documents.${documents}.title`)} */}
-            docs
+              {currentScreen}
             </Text>
           </View>
         </View>
