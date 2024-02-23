@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { Image, SafeAreaView } from 'react-native';
 import Pdf from 'react-native-pdf';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -34,9 +34,6 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={pickPDF}>
-        <Text>Pick PDF</Text>
-      </TouchableOpacity>
       {
         pdfData ? (
           <Pdf
