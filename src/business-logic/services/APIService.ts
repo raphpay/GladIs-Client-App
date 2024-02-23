@@ -1,4 +1,6 @@
 // import { LOCAL_IP_ADDRESS } from "../../../protected-contants";
+import { Platform } from "react-native";
+import { IDocumentInput } from "../model/IModule";
 import HttpMethod from "../model/enums/HttpMethod";
 
 // const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
@@ -33,19 +35,6 @@ class APIService {
     }
   }
 
-  static async getPDF(endpoint: string, filename: string): Promise<string> {
-    try {
-      const url = `${API_BASE_URL}/${endpoint}/${filename}.pdf`;
-      const response = await fetch(url, {
-        method: HttpMethod.GET
-      });
-      return response.url;
-    } catch (error) {
-      console.log('Error fetching data:', error);
-      throw error;
-    }
-  }
-
   static async post<T>(endpoint: string, data: any = {}, token?: string): Promise<T> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;
@@ -74,6 +63,38 @@ class APIService {
       throw error;
     }
   }
+
+  static async getPDF(data: IDocumentInput): Promise<string> {
+    try {
+        const url = `${API_BASE_URL}/documents/single`;
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+
+        const response = await fetch(url, {
+            method: HttpMethod.POST,
+            headers,
+            body: JSON.stringify(data),
+        });
+
+        const blob = await response.blob();
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64Data = reader.result as string; // Cast result to string
+                const base64String = base64Data.split(',')[1]; // Extract Base64 string after the comma
+                const result = Platform.OS === 'macos' ? base64String : base64Data;
+                resolve(result);
+            };
+            reader.onerror = reject; // Reject promise on error
+            reader.readAsDataURL(blob);
+        });
+    } catch (error) {
+        console.log('Error getting PDF data:', error);
+        throw error;
+    }
+}
 
   static async login<T>(endpoint: string, username: string, password: string): Promise<T> {
     try {

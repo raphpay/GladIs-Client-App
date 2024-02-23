@@ -7,3 +7,8 @@ export interface ISubCategory {
   id: string;
   title: string;
 }
+
+export interface IDocumentInput {
+  name: string,
+  path: string
+}

@@ -1,32 +1,34 @@
-import React, { useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import Pdf from 'react-native-pdf';
 
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import APIService from '../../../business-logic/services/APIService';
+
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 
-function PDFScreen(): React.JSX.Element {
+type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PDFScreen>;
 
-  const [pdfPath, setPDFPath] = useState<string>('');
+function PDFScreen(props: PDFScreenProps): React.JSX.Element {
+
+  const [pdfData, setPDFData] = useState<string>('');
+
+  const { documentInput } = props.route.params;
 
   async function pickPDF() {
-    // try {
-    //   const pickerResult = await DocumentPicker.pickSingle({
-    //     presentationStyle: 'fullScreen',
-    //     copyTo: 'cachesDirectory',
-    //     type: [types.pdf]
-    //   })
-    //   if (pickerResult.fileCopyUri) {
-    //     setPDFPath(pickerResult.fileCopyUri)
-    //   }
-    // } catch (e) {
-    //   console.log('error', e);
-    // }
-    
-    // setPDFPath('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'); // -> Works
-
-    // const test = await APIService.getPDF("documents", "test"); // -> Wokrs too
-    // setPDFPath(test) 
+    const data = await APIService.getPDF(documentInput);
+    setPDFData(data)
   }
+
+  useEffect(() => {
+    async function init() {
+      await pickPDF();
+    }
+    init();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,9 +36,9 @@ function PDFScreen(): React.JSX.Element {
         <Text>Pick PDF</Text>
       </TouchableOpacity>
       {
-        pdfPath && (
+        pdfData && (
           <Pdf
-          source={{uri: pdfPath}}
+          source={{uri: pdfData}}
           onLoadComplete={(numberOfPages: number, filePath: string) => {
               console.log(`Number of pages: ${numberOfPages}`, filePath);
           }}

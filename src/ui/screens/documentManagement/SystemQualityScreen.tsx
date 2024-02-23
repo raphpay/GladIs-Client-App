@@ -13,6 +13,7 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import { IDocumentInput } from '../../../business-logic/model/IModule';
 
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
@@ -37,7 +38,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   const systemQualityItems: ISystemQualityItem[] = [
     {
-      id: 'qualityManuelID',
+      id: 'qualityManualID',
       title: t('systemQuality.qualityManual'),
     },
     {
@@ -79,7 +80,13 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   function navigateTo(item: ISystemQualityItem) {
-    console.log('navigateTo', item);
+    if (item.id === 'qualityManualID') {
+      let documentInput: IDocumentInput = {
+        path: 'client1/systemQuality/qualityManual/',
+        name: 'test.pdf',
+      }
+      navigation.navigate(NavigationRoutes.PDFScreen, { documentInput })
+    }
   }
 
   function SystemQualityFlatListItem(item: ISystemQualityItem) {

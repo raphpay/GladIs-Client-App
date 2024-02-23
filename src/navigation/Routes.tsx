@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
 import AuthenticationResult from '../business-logic/model/AuthenticationResult';
-import IModule from '../business-logic/model/IModule';
+import IModule, { IDocumentInput } from '../business-logic/model/IModule';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import IUser from '../business-logic/model/IUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
@@ -22,6 +22,7 @@ import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
+import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
 import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
@@ -41,7 +42,7 @@ export type IRootStackParams = {
   SystemQualityScreen: { module: IModule },
   SubCategoryScreen: { module: IModule, subCategory: string },
   DocumentsScreen: { module: IModule, subCategory: string, documents: string },
-  PDFScreen: { document: string },
+  PDFScreen: { documentInput: IDocumentInput },
 }
 
 export type IClientManagementParams = {
@@ -134,11 +135,11 @@ function DashboardStack(firstConnection: boolean) {
               name={NavigationRoutes.DocumentsScreen}
               component={DocumentsScreen}
               options={{headerShown: false}}
-            />
+            /> */}
             <RootStack.Screen
               name={NavigationRoutes.PDFScreen}
               component={PDFScreen}
-            /> */}
+            />
             <ClientManagementStack.Screen
               name={NavigationRoutes.ClientManagementStack}
               component={ClientManagement}
