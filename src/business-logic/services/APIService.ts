@@ -1,6 +1,6 @@
 // import { LOCAL_IP_ADDRESS } from "../../../protected-contants";
 import { Platform } from "react-native";
-import { IDocumentInput } from "../model/IModule";
+import { IDocument } from "../model/IModule";
 import HttpMethod from "../model/enums/HttpMethod";
 
 // const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
@@ -64,7 +64,7 @@ class APIService {
     }
   }
 
-  static async getPDF(data: IDocumentInput): Promise<string> {
+  static async getPDF(data: IDocument): Promise<string> {
     try {
         const url = `${API_BASE_URL}/documents/single`;
         const headers: Record<string, string> = {

@@ -13,7 +13,6 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import { IDocumentInput } from '../../../business-logic/model/IModule';
 
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
@@ -31,10 +30,9 @@ type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, Navigat
 
 function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
-
   const { t } = useTranslation();
   const { navigation } = props;
-  const { module } = props.route.params;
+  const { client, module } = props.route.params;
 
   const systemQualityItems: ISystemQualityItem[] = [
     {
@@ -81,11 +79,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   function navigateTo(item: ISystemQualityItem) {
     if (item.id === 'qualityManualID') {
-      let documentInput: IDocumentInput = {
-        path: 'client1/systemQuality/qualityManual/',
-        name: 'test.pdf',
-      }
-      navigation.navigate(NavigationRoutes.PDFScreen, { documentInput })
+      navigation.navigate(NavigationRoutes.DocumentsScreen, { client, module, subCategory: 'qualityManual'})
     }
   }
 

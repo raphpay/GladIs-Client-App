@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
 import AuthenticationResult from '../business-logic/model/AuthenticationResult';
-import IModule, { IDocumentInput } from '../business-logic/model/IModule';
+import IModule, { IDocument } from '../business-logic/model/IModule';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import IUser from '../business-logic/model/IUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
@@ -22,6 +22,7 @@ import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
+import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
 import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
 
@@ -37,12 +38,13 @@ export type IRootStackParams = {
   // Dashboard Stack
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
-  ClientDashboardScreenFromAdmin: { client?: IUser },
-  DocumentManagementScreen: { module: IModule },
-  SystemQualityScreen: { module: IModule },
-  SubCategoryScreen: { module: IModule, subCategory: string },
-  DocumentsScreen: { module: IModule, subCategory: string, documents: string },
-  PDFScreen: { documentInput: IDocumentInput },
+  // TODO: Refactor this with redux
+  ClientDashboardScreenFromAdmin: { client: IUser },
+  DocumentManagementScreen: { client?: IUser, module: IModule },
+  SystemQualityScreen: { client?: IUser, module: IModule },
+  SubCategoryScreen: { client?: IUser, module: IModule, subCategory: string },
+  DocumentsScreen: { client?: IUser, module: IModule, subCategory: string },
+  PDFScreen: { documentInput: IDocument },
 }
 
 export type IClientManagementParams = {
@@ -130,12 +132,12 @@ function DashboardStack(firstConnection: boolean) {
               name={NavigationRoutes.SubCategoryScreen}
               component={SubCategoryScreen}
               options={{headerShown: false}}
-            />
+            /> */}
             <RootStack.Screen
               name={NavigationRoutes.DocumentsScreen}
               component={DocumentsScreen}
               options={{headerShown: false}}
-            /> */}
+            />
             <RootStack.Screen
               name={NavigationRoutes.PDFScreen}
               component={PDFScreen}

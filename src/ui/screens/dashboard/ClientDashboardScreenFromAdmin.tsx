@@ -25,6 +25,7 @@ type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackPara
 
 function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminProps): any {
   const { navigation } = props;
+  const { client } = props.route.params;
   
   const [searchText,setSearchText] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -67,7 +68,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
               setSearchText={setSearchText}
             />
           </View>
-          <DashboardClientFlatList />
+          <DashboardClientFlatList client={client} />
         </View>
         <View style={styles.backButtonContainer}>
           <IconButton

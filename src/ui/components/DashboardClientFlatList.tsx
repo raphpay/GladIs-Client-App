@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -7,23 +8,26 @@ import {
 } from 'react-native';
 
 import IModule from '../../business-logic/model/IModule';
+import IUser from '../../business-logic/model/IUser';
+import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../business-logic/services/ModuleService';
 
+import styles from '../assets/styles/components/DashboardClientFlatList';
 import ContentUnavailableView from './ContentUnavailableView';
 
-import { useNavigation } from '@react-navigation/native';
-import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
-import styles from '../assets/styles/components/DashboardClientFlatList';
+type DashboardClientFlatListProps = {
+  client: IUser
+};
 
-function DashboardClientFlatList(): React.JSX.Element {
+function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
 
   const [modules, setModules] = useState<IModule[]>([]);
-
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const { client } = props;
 
   function navigateToModule(module: IModule) {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module })
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { client, module })
   }
 
   function FlatListModuleItem(module: IModule) {
@@ -42,6 +46,7 @@ function DashboardClientFlatList(): React.JSX.Element {
     init();
   }, []);
 
+  // TODO: Handle ContentUnavailableView
   return (
     <>
     {

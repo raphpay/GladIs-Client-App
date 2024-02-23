@@ -8,7 +8,8 @@ export interface ISubCategory {
   title: string;
 }
 
-export interface IDocumentInput {
+export interface IDocument {
+  id?: string,
   name: string,
   path: string
 }

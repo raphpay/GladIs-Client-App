@@ -24,14 +24,12 @@ import styles from '../../assets/styles/documentManagement/DocumentManagementScr
 type DocumentManagementScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentManagementScreen>;
 
 function DocumentManagementScreen(props: DocumentManagementScreenProps): React.JSX.Element {
-  const { module } = props.route.params;
   const { navigation } = props;
-
+  const { client, module } = props.route.params;
   const [searchText,setSearchText] = useState<string>('');
-  
   const { t } = useTranslation();
 
-
+  console.log('client', client, module );
   const subcategories: ISubCategory[] = [
     {
       id: 'systemQualityID',
@@ -49,7 +47,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
 
   function navigateTo(subCategory: ISubCategory) {
     if (subCategory.id === 'systemQualityID') {
-      navigation.navigate(NavigationRoutes.SystemQualityScreen, { module })
+      navigation.navigate(NavigationRoutes.SystemQualityScreen, { client, module })
     }
   }
 

@@ -1,7 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  FlatList,
   Image,
   SafeAreaView,
   Text,
@@ -11,6 +12,8 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import { IDocument } from '../../../business-logic/model/IModule';
+import DocumentService from '../../../business-logic/services/DocumentService';
 
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
@@ -23,18 +26,17 @@ type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationR
 
 function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
-
+  const [documents, setDocuments] = useState<IDocument[]>([]);
   const { t } = useTranslation();
-
   const { navigation } = props;
-  const { params } = props.route;
+  const { module, subCategory } = props.route.params;
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
   }
 
   function navigateToCategories() {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module: params.module });
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module: module });
   }
 
   function navigateBack() {
@@ -42,9 +44,37 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
-  function navigateToDocument() {
+  function navigateToDocument(doc: IDocument) {
     navigation.navigate(NavigationRoutes.PDFScreen, { document: '' });
   }
+
+  // TODO: change styles names
+  function DocumentRow(item: IDocument) {
+    return (
+      <TouchableOpacity onPress={() => navigateToDocument(item)}>
+        <View style={styles.subCategoryLineContainer}>
+          <View style={styles.subCategoryLineRow}>
+            <Image source={require('../../assets/images/PDF_file_icon.png')}/>
+            <View style={styles.subCategoryTextContainer}>
+              <Text>
+                {item.name}
+              </Text>
+            </View>
+            <Image source={require('../../assets/images/ellipsis.png')}/>
+          </View>
+          <View style={styles.separator}/>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
+  useEffect(() => {
+    async function init() {
+      const docs = await DocumentService.getInstance().getDocumentsAtDirectory('Acme.inc/systemQuality/qualityManual/');
+      setDocuments(docs);
+    }
+    init();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -56,20 +86,11 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
                 setSearchText={setSearchText}
               />
             </View>
-            <TouchableOpacity onPress={navigateToDocument}>
-              <View style={styles.subCategoryLineContainer}>
-                <View style={styles.subCategoryLineRow}>
-                  <Image source={require('../../assets/images/PDF_file_icon.png')}/>
-                  <View style={styles.subCategoryTextContainer}>
-                    <Text>
-                      {t('documents.document.management')}
-                    </Text>
-                  </View>
-                  <Image source={require('../../assets/images/ellipsis.png')}/>
-                </View>
-                <View style={styles.separator}/>
-              </View>
-            </TouchableOpacity>
+            <FlatList
+              data={documents}
+              renderItem={(renderItem) => DocumentRow(renderItem.item)}
+              keyExtractor={(item) => item.id}
+            />
           </View>
           <View style={styles.backButtonContainer}>
             <IconButton
@@ -91,19 +112,20 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToCategories}>
                 <Text style={styles.navigationHistory}>
-                  {t(`modules.${params.module.name}`)}
+                  {t(`modules.${module.name}`)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
-                  {t(params.subCategory)}
+                  {t(subCategory)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-            {t(`documents.${params.documents}.title`)}
+            {/* {t(`documents.${documents}.title`)} */}
+            docs
             </Text>
           </View>
         </View>
