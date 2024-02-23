@@ -19,63 +19,20 @@ import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
 import backIcon from '../../assets/images/arrow.uturn.left.png';
-import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
+import styles from '../../assets/styles/documentManagement/ProcessusScreenStyles';
 
 interface ISystemQualityItem {
   id: string,
   title: string,
-  number?: number,
 }
 
-type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SystemQualityScreen>;
+type ProcessusProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ProcessusScreen>;
 
-function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
+function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
-  const { client, module } = props.route.params;
-
-  const systemQualityItems: ISystemQualityItem[] = [
-    {
-      id: 'qualityManualID',
-      title: t('systemQuality.qualityManual'),
-    },
-    {
-      id: 'processus1ID',
-      title: `${t('systemQuality.processus')} 1`,
-      number: 1,
-    },
-    {
-      id: 'processus2ID',
-      title: `${t('systemQuality.processus')} 2`,
-      number: 2,
-    },
-    {
-      id: 'processus3ID',
-      title: `${t('systemQuality.processus')} 3`,
-      number: 3,
-    },
-    {
-      id: 'processus4ID',
-      title: `${t('systemQuality.processus')} 4`,
-      number: 4,
-    },
-    {
-      id: 'processus5ID',
-      title: `${t('systemQuality.processus')} 5`,
-      number: 5,
-    },
-    {
-      id: 'processus6ID',
-      title: `${t('systemQuality.processus')} 6`,
-      number: 6,
-    },
-    {
-      id: 'processus7ID',
-      title: `${t('systemQuality.processus')} 7`,
-      number: 7,
-    },
-  ]
+  const { processusNumber } = props.route.params;
 
   function navigateBack() {
     navigation.goBack();
@@ -86,19 +43,17 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   function navigateTo(item: ISystemQualityItem) {
-    if (item.id === 'qualityManualID') {
-      navigation.navigate(NavigationRoutes.DocumentsScreen, {
-        client,
-        module,
-        previousScreen: t('categories.systemQuality.title'),
-        currentScreen: t('systemQuality.qualityManual')
-      })
-    } else {
-      navigation.navigate(NavigationRoutes.ProcessusScreen, { client, module, processusNumber: item.number ?? 1})
-    }
+    // if (item.id === 'qualityManualID') {
+    //   navigation.navigate(NavigationRoutes.DocumentsScreen, {
+    //     client,
+    //     module,
+    //     previousScreen: t('categories.systemQuality.title'),
+    //     currentScreen: t('systemQuality.qualityManual')
+    //   })
+    // }
   }
 
-  function SystemQualityFlatListItem(item: ISystemQualityItem) {
+  function ProcessusFlatListItem(item: ISystemQualityItem) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
@@ -119,9 +74,9 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
               />
             </View>
             <FlatList
-              data={systemQualityItems}
+              data={[]}
               numColumns={3}
-              renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
+              renderItem={(renderItem) => ProcessusFlatListItem(renderItem.item)}
               keyExtractor={(item) => item.id}
             />
           </View>
@@ -149,9 +104,15 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
+              <TouchableOpacity onPress={navigateToDocumentManagement}>
+                <Text style={styles.navigationHistory}>
+                  {t('subCategories.systemQuality.title')}
+                </Text>
+              </TouchableOpacity>
+              <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t('subCategories.systemQuality.title')}
+              {`${t('systemQuality.processus')} ${processusNumber}`}
             </Text>
           </View>
         </View>
@@ -159,4 +120,4 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   );
 }
 
-export default SystemQualityScreen;
+export default ProcessusScreen;
