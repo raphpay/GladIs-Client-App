@@ -1,6 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
+  Image,
   SafeAreaView
 } from 'react-native';
 
@@ -9,6 +11,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import APIService from '../../../business-logic/services/APIService';
 
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
 
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
@@ -18,8 +21,8 @@ type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   const [pdfData, setPDFData] = useState<string>('');
-
   const { documentInput } = props.route.params;
+  const { t } = useTranslation();
 
   async function pickPDF() {
     const pdfData = await APIService.getPDF(documentInput);
@@ -33,12 +36,19 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: Add an emoty view
   return (
     <SafeAreaView style={styles.container}>
       {
-        pdfData && (
+        pdfData ? (
           <PDFViewer style={styles.pdf} dataString={pdfData} />
+        ) : (
+          <ContentUnavailableView
+            title={t('document.noDocumentFound.title')}
+            message={t('document.noDocumentFound.message')}
+            image={(
+              <Image source={require('../../assets/images/doc.fill.png')} />
+            )}
+          />
         )
       }
     </SafeAreaView>

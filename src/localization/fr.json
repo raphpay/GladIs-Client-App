@@ -71,7 +71,11 @@
       "title": "Processus"
     },
     "document": {
-      "management": "PRS_M01_Management"
+      "management": "PRS_M01_Management",
+      "noDocumentFound": {
+        "title": "Aucun document trouvé",
+        "message": "Veuillez réessayer plus tard"
+      },
     }
   },
   "components": {

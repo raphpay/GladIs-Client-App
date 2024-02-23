@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { Image, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import Pdf from 'react-native-pdf';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -9,14 +10,15 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import APIService from '../../../business-logic/services/APIService';
 
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PDFScreen>;
 
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   const [pdfData, setPDFData] = useState<string>('');
-
   const { documentInput } = props.route.params;
+  const { t } = useTranslation();
 
   async function pickPDF() {
     const data = await APIService.getPDF(documentInput);
@@ -36,7 +38,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
         <Text>Pick PDF</Text>
       </TouchableOpacity>
       {
-        pdfData && (
+        pdfData ? (
           <Pdf
           source={{uri: pdfData}}
           onLoadComplete={(numberOfPages: number, filePath: string) => {
@@ -52,6 +54,14 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
               console.log(`Link pressed: ${uri}`);
           }}
           style={styles.pdf}/>
+        ) : (
+          <ContentUnavailableView
+            title={t('document.noDocumentFound.title')}
+            message={t('document.noDocumentFound.message')}
+            image={(
+              <Image source={require('../../assets/images/doc.fill.png')} />
+            )}
+          />
         )
       }
     </SafeAreaView>
