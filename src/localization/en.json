@@ -45,41 +45,15 @@
     "module4": "Module 4",
     "module5": "Module 5"
   },
-  "categories": {
-    "documentManagement": {
-      "title": "Document management"
-    },
-    "systemQuality": {
-      "title": "System quality"
-    },
-    "description": "Description"
-  },
-  "subCategories": {
-    "systemQuality": {
-      "title": "System quality"
-    },
-    "technicalDocumentation": {
-      "title": "Technical Documentation"
-    }
+  "documentManagement": {
+    "title": "Document management"
   },
   "systemQuality": {
-    "qualityManual": "Quality Manual",
-    "processes": {
-      "single": "Process",
-      "plural": "Processes"
-    }
+    "title": "System Quality",
+    "qualityManual": "Quality Manual"
   },
-  "documents": {
-    "processes": {
-      "title": "Processes"
-    },
-    "document": {
-      "management": "PRS_M01_Management",
-      "noDocumentFound": {
-        "title": "No document found",
-        "message": "Please try again later"
-      }
-    }
+  "technicalDocumentation": {
+    "title": "Technical Documentation"
   },
   "process": {
     "title": {
@@ -111,12 +85,6 @@
     "logout": {
       "title": "Error logging out",
       "message": "Please try again later"
-    }
-  },
-  "unavailableView": {
-    "adminDashboard": {
-      "title": "No clients",
-      "message": "You have no clients yet, create one to start the adventure."
     }
   }
 }

@@ -45,41 +45,15 @@
     "module4": "Module 4",
     "module5": "Module 5"
   },
-  "categories": {
-    "documentManagement": {
-      "title": "Gestion des documents"
-    },
-    "systemQuality": {
-      "title": "Système qualité"
-    },
-    "description": "Description"
-  },
-  "subCategories": {
-    "systemQuality": {
-      "title": "Système qualité"
-    },
-    "technicalDocumentation": {
-      "title": "Documentation technique"
-    }
+  "documentManagement": {
+    "title": "Gestion des documents"
   },
   "systemQuality": {
+    "title": "Système Qualité",
     "qualityManual": "Manuel Qualité",
-    "processes": {
-      "single": "Processus",
-      "plural": "Processus"
-    }
   },
-  "documents": {
-    "processes": {
-      "title": "Processus"
-    },
-    "document": {
-      "management": "PRS_M01_Management",
-      "noDocumentFound": {
-        "title": "Aucun document trouvé",
-        "message": "Veuillez réessayer plus tard"
-      }
-    }
+  "technicalDocumentation": {
+    "title": "Documentation Technique",
   },
   "process": {
     "title": {
@@ -111,12 +85,6 @@
     "logout": {
       "title": "Erreur lors de la déconnexion",
       "message": "Veuillez réessayer plus tard"
-    }
-  },
-  "unavailableView": {
-    "adminDashboard": {
-      "title": "Pas de clients",
-      "message": "Vous n'avez pas encore de clients, créez-en un pour commencer l'aventure."
     }
   }
 }

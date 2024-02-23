@@ -120,19 +120,19 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToCategories}>
                 <Text style={styles.navigationHistory}>
-                  {t('categories.documentManagement.title')}
+                  {t('documentManagement.title')}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
-                  {t('subCategories.systemQuality.title')}
+                  {t('systemQuality.title')}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {`${t('systemQuality.processes.single')} ${processusNumber}`}
+              {`${t('process.title.single')} ${processusNumber}`}
             </Text>
           </View>
         </View>

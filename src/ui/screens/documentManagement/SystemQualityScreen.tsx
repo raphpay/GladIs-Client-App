@@ -90,7 +90,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         client,
         module,
-        previousScreen: t('categories.systemQuality.title'),
+        previousScreen: t('systemQuality.title'),
         currentScreen: t('systemQuality.qualityManual')
       })
     } else {
@@ -145,13 +145,13 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToDocumentManagement}>
                 <Text style={styles.navigationHistory}>
-                  {t('categories.documentManagement.title')}
+                  {t('documentManagement.title')}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t('subCategories.systemQuality.title')}
+              {t('systemQuality.title')}
             </Text>
           </View>
         </View>

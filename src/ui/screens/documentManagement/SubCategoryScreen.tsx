@@ -21,6 +21,7 @@ import styles from '../../assets/styles/documentManagement/SubCategoryScreenStyl
 
 type SubCategoryScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SubCategoryScreen>;
 
+// TODO: To be removed
 function SubCategoryScreen(props: SubCategoryScreenProps): React.JSX.Element {
   const { params } = props.route;
   const [searchText, setSearchText] = useState<string>('');

@@ -33,11 +33,11 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
   const subcategories: ISubCategory[] = [
     {
       id: 'systemQualityID',
-      title: t('subCategories.systemQuality.title'),
+      title: t('systemQuality.title'),
     },
     {
       id: 'technicalDocumentationID',
-      title: t('subCategories.technicalDocumentation.title'),
+      title: t('technicalDocumentation.title'),
     },
   ]
 
