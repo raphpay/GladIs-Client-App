@@ -64,18 +64,33 @@
   },
   "systemQuality": {
     "qualityManual": "Quality Manual",
-    "processus": "Processus"
+    "processes": {
+      "single": "Process",
+      "plural": "Processes"
+    }
   },
   "documents": {
-    "processus": {
-      "title": "Processus"
+    "processes": {
+      "title": "Processes"
     },
     "document": {
       "management": "PRS_M01_Management",
       "noDocumentFound": {
         "title": "No document found",
         "message": "Please try again later"
-      },
+      }
+    }
+  },
+  "process": {
+    "title": {
+      "single": "Process",
+      "plural": "Processes"
+    },
+    "items": {
+      "processes": "Processes",
+      "procedures": "Procedures",
+      "forms": "Forms",
+      "records": "Records"
     }
   },
   "components": {

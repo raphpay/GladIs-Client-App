@@ -21,7 +21,7 @@ import SearchTextInput from '../../components/SearchTextInput';
 import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/ProcessusScreenStyles';
 
-interface ISystemQualityItem {
+interface IProcessItem {
   id: string,
   title: string,
 }
@@ -33,6 +33,25 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   const { t } = useTranslation();
   const { navigation } = props;
   const { client, module, processusNumber } = props.route.params;
+
+  const processes: IProcessItem[] = [
+    {
+      id: 'processesID',
+      title: t('process.items.processes')
+    },
+    {
+      id: 'proceduresID',
+      title: t('process.items.procedures')
+    },
+    {
+      id: 'formsID',
+      title: t('process.items.forms')
+    },
+    {
+      id: 'recordsID',
+      title: t('process.items.records')
+    },
+  ];
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
@@ -50,18 +69,11 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module });
   }
 
-  function navigateTo(item: ISystemQualityItem) {
-    // if (item.id === 'qualityManualID') {
-    //   navigation.navigate(NavigationRoutes.DocumentsScreen, {
-    //     client,
-    //     module,
-    //     previousScreen: t('categories.systemQuality.title'),
-    //     currentScreen: t('systemQuality.qualityManual')
-    //   })
-    // }
+  function navigateTo(item: IProcessItem) {
+
   }
 
-  function ProcessusFlatListItem(item: ISystemQualityItem) {
+  function ProcessusFlatListItem(item: IProcessItem) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
@@ -82,8 +94,8 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
               />
             </View>
             <FlatList
-              data={[]}
-              numColumns={3}
+              data={processes}
+              numColumns={2}
               renderItem={(renderItem) => ProcessusFlatListItem(renderItem.item)}
               keyExtractor={(item) => item.id}
             />
@@ -120,7 +132,7 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {`${t('systemQuality.processus')} ${processusNumber}`}
+              {`${t('systemQuality.processes.single')} ${processusNumber}`}
             </Text>
           </View>
         </View>

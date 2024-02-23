@@ -42,37 +42,37 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     },
     {
       id: 'processus1ID',
-      title: `${t('systemQuality.processus')} 1`,
+      title: `${t('process.title.single')} 1`,
       number: 1,
     },
     {
       id: 'processus2ID',
-      title: `${t('systemQuality.processus')} 2`,
+      title: `${t('process.title.single')} 2`,
       number: 2,
     },
     {
       id: 'processus3ID',
-      title: `${t('systemQuality.processus')} 3`,
+      title: `${t('process.title.single')} 3`,
       number: 3,
     },
     {
       id: 'processus4ID',
-      title: `${t('systemQuality.processus')} 4`,
+      title: `${t('process.title.single')} 4`,
       number: 4,
     },
     {
       id: 'processus5ID',
-      title: `${t('systemQuality.processus')} 5`,
+      title: `${t('process.title.single')} 5`,
       number: 5,
     },
     {
       id: 'processus6ID',
-      title: `${t('systemQuality.processus')} 6`,
+      title: `${t('process.title.single')} 6`,
       number: 6,
     },
     {
       id: 'processus7ID',
-      title: `${t('systemQuality.processus')} 7`,
+      title: `${t('process.title.single')} 7`,
       number: 7,
     },
   ]

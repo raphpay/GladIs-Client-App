@@ -64,10 +64,13 @@
   },
   "systemQuality": {
     "qualityManual": "Manuel Qualité",
-    "processus": "Processus"
+    "processes": {
+      "single": "Processus",
+      "plural": "Processus"
+    }
   },
   "documents": {
-    "processus": {
+    "processes": {
       "title": "Processus"
     },
     "document": {
@@ -75,7 +78,19 @@
       "noDocumentFound": {
         "title": "Aucun document trouvé",
         "message": "Veuillez réessayer plus tard"
-      },
+      }
+    }
+  },
+  "process": {
+    "title": {
+      "single": "Processus",
+      "plural": "Processus"
+    },
+    "items": {
+      "processes": "Processus",
+      "procedures": "Procédures",
+      "forms": "Formulaires",
+      "records": "Enregistrements"
     }
   },
   "components": {
