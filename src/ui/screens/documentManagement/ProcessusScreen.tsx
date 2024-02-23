@@ -32,7 +32,15 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
-  const { processusNumber } = props.route.params;
+  const { client, module, processusNumber } = props.route.params;
+
+  function navigateToDashboard() {
+    navigation.navigate(NavigationRoutes.DashboardScreen)
+  }
+
+  function navigateToCategories() {
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module: module });
+  }
 
   function navigateBack() {
     navigation.goBack();
@@ -92,19 +100,19 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
           <AppIcon style={styles.appIcon} />
           <View>
             <View style={styles.navigationHistoryContainer}>
-              <TouchableOpacity onPress={navigateBack}>
+              <TouchableOpacity onPress={navigateToDashboard}>
                 <Text style={styles.navigationHistory}>
                   {t('dashboard.title')}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateToDocumentManagement}>
+              <TouchableOpacity onPress={navigateToCategories}>
                 <Text style={styles.navigationHistory}>
                   {t('categories.documentManagement.title')}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateToDocumentManagement}>
+              <TouchableOpacity onPress={navigateBack}>
                 <Text style={styles.navigationHistory}>
                   {t('subCategories.systemQuality.title')}
                 </Text>
