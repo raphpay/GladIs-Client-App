@@ -13,6 +13,8 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { ISubCategory } from '../../../business-logic/model/IModule';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
@@ -25,9 +27,9 @@ type DocumentManagementScreenProps = NativeStackScreenProps<IRootStackParams, Na
 
 function DocumentManagementScreen(props: DocumentManagementScreenProps): React.JSX.Element {
   const { navigation } = props;
-  const { module } = props.route.params;
   const [searchText,setSearchText] = useState<string>('');
   const { t } = useTranslation();
+  const { module } = useAppSelector((state: RootState) => state.appState);
 
   const subcategories: ISubCategory[] = [
     {
@@ -46,7 +48,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
 
   function navigateTo(subCategory: ISubCategory) {
     if (subCategory.id === 'systemQualityID') {
-      navigation.navigate(NavigationRoutes.SystemQualityScreen, { module })
+      navigation.navigate(NavigationRoutes.SystemQualityScreen)
     }
   }
 
@@ -100,7 +102,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t(`modules.${module.name}`)}
+              {t(`modules.${module?.name}`)}
             </Text>
           </View>
         </View>
