@@ -14,6 +14,8 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { IDocument } from '../../../business-logic/model/IModule';
 import DocumentService from '../../../business-logic/services/DocumentService';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
@@ -29,14 +31,15 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const { t } = useTranslation();
   const { navigation } = props;
-  const { module, previousScreen, currentScreen } = props.route.params;
+  const { previousScreen, currentScreen } = props.route.params;
+  const { module } = useAppSelector((state: RootState) => state.appState);
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
   }
 
   function navigateToCategories() {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module: module });
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen);
   }
 
   function navigateBack() {
@@ -114,7 +117,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateToCategories}>
                 <Text style={styles.navigationHistory}>
-                  {t(`modules.${module.name}`)}
+                  {t(`modules.${module?.name}`)}
                 </Text>
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>

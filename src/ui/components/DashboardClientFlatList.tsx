@@ -10,6 +10,8 @@ import {
 import IModule from '../../business-logic/model/IModule';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../business-logic/services/ModuleService';
+import { useAppDispatch } from '../../business-logic/store/hooks';
+import { setModule } from '../../business-logic/store/slices/appStateReducer';
 
 import styles from '../assets/styles/components/DashboardClientFlatList';
 import ContentUnavailableView from './ContentUnavailableView';
@@ -19,9 +21,11 @@ function DashboardClientFlatList(): React.JSX.Element {
   const [modules, setModules] = useState<IModule[]>([]);
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   function navigateToModule(module: IModule) {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module })
+    dispatch(setModule(module));
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen)
   }
 
   function FlatListModuleItem(module: IModule) {

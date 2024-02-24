@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
-import IModule, { IDocument } from '../business-logic/model/IModule';
+import { IDocument } from '../business-logic/model/IModule';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
@@ -39,12 +39,11 @@ export type IRootStackParams = {
   // Dashboard Stack
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
-  // TODO: Refactor this with redux
   ClientDashboardScreenFromAdmin: undefined,
-  DocumentManagementScreen: { module: IModule },
-  SystemQualityScreen: { module: IModule },
-  ProcessusScreen: { module: IModule, processusNumber: number },
-  DocumentsScreen: { module: IModule, previousScreen: string, currentScreen: string },
+  DocumentManagementScreen: undefined,
+  SystemQualityScreen: undefined,
+  ProcessusScreen: { processusNumber: number },
+  DocumentsScreen: { previousScreen: string, currentScreen: string },
   PDFScreen: { documentInput: IDocument },
 }
 

@@ -32,7 +32,7 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
-  const { module, processusNumber } = props.route.params;
+  const { processusNumber } = props.route.params;
 
   const processes: IProcessItem[] = [
     {
@@ -58,7 +58,7 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   }
 
   function navigateToCategories() {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module: module });
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen);
   }
 
   function navigateBack() {
@@ -66,7 +66,7 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   }
 
   function navigateToDocumentManagement() {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module });
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen);
   }
 
   function navigateTo(item: IProcessItem) {
