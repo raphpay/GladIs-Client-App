@@ -21,11 +21,11 @@ import backIcon from '../../assets/images/arrow.uturn.left.png';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardScreenStyles';
 
+
 type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;
 
 function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminProps): any {
   const { navigation } = props;
-  const { client } = props.route.params;
   
   const [searchText,setSearchText] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -68,7 +68,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
               setSearchText={setSearchText}
             />
           </View>
-          <DashboardClientFlatList client={client} />
+          <DashboardClientFlatList />
         </View>
         <View style={styles.backButtonContainer}>
           <IconButton

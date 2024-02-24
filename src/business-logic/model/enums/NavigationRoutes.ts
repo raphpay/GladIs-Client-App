@@ -10,7 +10,6 @@ enum NavigationRoutes {
   DocumentManagementScreen = 'DocumentManagementScreen',
   SystemQualityScreen = 'SystemQualityScreen',
   ProcessusScreen = 'ProcessusScreen',
-  SubCategoryScreen = 'SubCategoryScreen',
   DocumentsScreen = 'DocumentsScreen',
   PDFScreen = 'PDFScreen',
   // Client Creation

@@ -4,15 +4,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
-import AuthenticationResult from '../business-logic/model/AuthenticationResult';
 import IModule, { IDocument } from '../business-logic/model/IModule';
 import IPendingUser from '../business-logic/model/IPendingUser';
-import IUser from '../business-logic/model/IUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
+import UserType from '../business-logic/model/enums/UserType';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
+import UserService from '../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
-import { setFirstConnection } from '../business-logic/store/slices/userReducer';
+import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser, setFirstConnection } from '../business-logic/store/slices/userReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
@@ -40,12 +40,11 @@ export type IRootStackParams = {
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
   // TODO: Refactor this with redux
-  ClientDashboardScreenFromAdmin: { client: IUser },
-  DocumentManagementScreen: { client?: IUser, module: IModule },
-  SystemQualityScreen: { client?: IUser, module: IModule },
-  ProcessusScreen: { client?: IUser, module: IModule, processusNumber: number },
-  SubCategoryScreen: { client?: IUser, module: IModule, subCategory: string },
-  DocumentsScreen: { client?: IUser, module: IModule, previousScreen: string, currentScreen: string },
+  ClientDashboardScreenFromAdmin: undefined,
+  DocumentManagementScreen: { module: IModule },
+  SystemQualityScreen: { module: IModule },
+  ProcessusScreen: { module: IModule, processusNumber: number },
+  DocumentsScreen: { module: IModule, previousScreen: string, currentScreen: string },
   PDFScreen: { documentInput: IDocument },
 }
 
@@ -130,11 +129,6 @@ function DashboardStack(firstConnection: boolean) {
               component={SystemQualityScreen}
               options={{headerShown: false}}
             />
-            {/* <RootStack.Screen
-              name={NavigationRoutes.SubCategoryScreen}
-              component={SubCategoryScreen}
-              options={{headerShown: false}}
-            /> */}
             <RootStack.Screen
               name={NavigationRoutes.ProcessusScreen}
               component={ProcessusScreen}
@@ -181,21 +175,22 @@ export let Routes = () => {
   useEffect(() => {
     async function init() {
       if (token == null) {
-        await AuthenticationService.getInstance()
-          .checkAuthentication()
-          .then((authResult: AuthenticationResult) => {
-            setIsLoggedIn(!!authResult.token);
-            dispatch(setFirstConnection(authResult.firstConnection));
-            setIsFirstConnection(authResult.firstConnection);
-            if (authResult.token != null) {
-              dispatch(setToken(authResult.token));
-            } else {
-              dispatch(removeToken());
-            }
-          })
-          .catch(() => {
-            setIsLoggedIn(false);
-          });
+        const authResult = await AuthenticationService.getInstance().checkAuthentication();
+        setIsLoggedIn(!!authResult.token);
+        dispatch(setFirstConnection(authResult.firstConnection));
+        setIsFirstConnection(authResult.firstConnection);
+        if (authResult.token != null) {
+          dispatch(setToken(authResult.token));
+          const currentUser = await UserService.getInstance().getUserByID(authResult.token.user.id, authResult.token);
+          dispatch(setCurrentUser(currentUser));
+          if (currentUser.userType !== UserType.Admin) {
+            dispatch(setCurrentClient(currentUser));
+          }
+        } else {
+          dispatch(removeToken());
+          dispatch(removeCurrentUser());
+          dispatch(removeCurrentClient());
+        }
       }
     }
     init();

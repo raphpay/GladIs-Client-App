@@ -18,6 +18,8 @@ import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 
@@ -33,7 +35,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
-  const { client, module } = props.route.params;
+  const { module } = props.route.params;
+  const { currentUser } = useAppSelector((state: RootState) => state.users);
 
   const systemQualityItems: ISystemQualityItem[] = [
     {
@@ -88,13 +91,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   function navigateTo(item: ISystemQualityItem) {
     if (item.id === 'qualityManualID') {
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
-        client,
         module,
         previousScreen: t('systemQuality.title'),
         currentScreen: t('systemQuality.qualityManual')
       })
     } else {
-      navigation.navigate(NavigationRoutes.ProcessusScreen, { client, module, processusNumber: item.number ?? 1})
+      navigation.navigate(NavigationRoutes.ProcessusScreen, { module, processusNumber: item.number ?? 1})
     }
   }
 

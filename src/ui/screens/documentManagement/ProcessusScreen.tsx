@@ -32,7 +32,7 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
-  const { client, module, processusNumber } = props.route.params;
+  const { module, processusNumber } = props.route.params;
 
   const processes: IProcessItem[] = [
     {

@@ -8,26 +8,20 @@ import {
 } from 'react-native';
 
 import IModule from '../../business-logic/model/IModule';
-import IUser from '../../business-logic/model/IUser';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../business-logic/services/ModuleService';
 
 import styles from '../assets/styles/components/DashboardClientFlatList';
 import ContentUnavailableView from './ContentUnavailableView';
 
-type DashboardClientFlatListProps = {
-  client: IUser
-};
-
-function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
+function DashboardClientFlatList(): React.JSX.Element {
 
   const [modules, setModules] = useState<IModule[]>([]);
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const { client } = props;
 
   function navigateToModule(module: IModule) {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { client, module })
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen, { module })
   }
 
   function FlatListModuleItem(module: IModule) {

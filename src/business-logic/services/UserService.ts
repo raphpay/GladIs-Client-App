@@ -55,11 +55,14 @@ class UserService {
     }
   }
 
-  async getUserByID(id: string | undefined): Promise<IUser> {
+  async getUserByID(id: string | undefined, token: IToken | undefined): Promise<IUser> {
     try {
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      const user = await APIService.get<IUser>(`${this.baseRoute}/${id}`, castedToken?.value);
+      let usedToken = token;
+      if (!usedToken) {
+        const cachedToken = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
+        usedToken = cachedToken as IToken;
+      }
+      const user = await APIService.get<IUser>(`${this.baseRoute}/${id}`, usedToken?.value);
       return user;
     } catch (error) {
       console.error('Error getting user by id:', id, error);
