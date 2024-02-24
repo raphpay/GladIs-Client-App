@@ -11,17 +11,20 @@ import {
 } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { IDocument } from '../../../business-logic/model/IModule';
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../business-logic/model/enums/UserType';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppIcon from '../../components/AppIcon';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
 import backIcon from '../../assets/images/arrow.uturn.left.png';
+import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -33,7 +36,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { navigation } = props;
   const { previousScreen, currentScreen, documentsPath, processNumber } = props.route.params;
   const { module } = useAppSelector((state: RootState) => state.appState);
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
@@ -72,6 +75,10 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
+  function addDocument() {
+    // TODO: Handle document pick
+  }
+
   useEffect(() => {
     async function init() {
       const docs = await DocumentService.getInstance().getDocumentsAtDirectory(`${currentClient?.companyName ?? ""}/${documentsPath}/`);
@@ -85,16 +92,37 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         <View style={styles.innerContainer}>
           <View style={styles.innerComponentsContainer}>
             <View style={styles.searchInputContainer}>
+              {
+                currentUser?.userType === UserType.Admin && (
+                  <IconButton
+                    title={t('components.buttons.addDocument')}
+                    icon={plusIcon}
+                    onPress={addDocument}
+                  />
+                )
+              }
               <SearchTextInput
                 searchText={searchText}
                 setSearchText={setSearchText}
               />
             </View>
-            <FlatList
-              data={documents}
-              renderItem={(renderItem) => DocumentRow(renderItem.item)}
-              keyExtractor={(item) => item.id}
-            />
+            {
+              documents.length !== 0 ? (
+                <FlatList
+                  data={documents}
+                  renderItem={(renderItem) => DocumentRow(renderItem.item)}
+                  keyExtractor={(item) => item.id}
+                />
+              ) : (
+                <ContentUnavailableView 
+                  title={t('documentsScreen.noDocs.title')}
+                  message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
+                  image={(
+                    <Image source={require('../../assets/images/doc.fill.png')} />
+                  )}
+                />
+              )
+            }
           </View>
           <View style={styles.backButtonContainer}>
             <IconButton

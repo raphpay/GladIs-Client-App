@@ -74,7 +74,14 @@
     "processes": "Processus",
     "procedures": "Procédures",
     "forms": "Formulaires",
-    "records": "Enregistrements"
+    "records": "Enregistrements",
+    "noDocs": {
+      "title": "Aucun document trouvé",
+      "message": {
+        "admin": "Ajoutez un document maintenant",
+        "client": "Veuillez réessayer plus tard"
+      }
+    }
   },
   "components": {
     "searchTextInput": {
@@ -83,7 +90,8 @@
     "buttons": {
       "back": "Retour",
       "addClient": "Ajouter un client",
-      "continue": "Continuer"
+      "continue": "Continuer",
+      "addDocument": "Ajouter un document"
     }
   },
   "errors": {

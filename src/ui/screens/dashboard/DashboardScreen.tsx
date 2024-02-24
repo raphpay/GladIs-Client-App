@@ -37,6 +37,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
 
   useEffect(() => {
      async function init() {
+      // TODO: Get the user by cache or by API ?
       const userID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
       const user = await UserService.getInstance().getUserByID(userID);
       setIsAdmin(user.userType == UserType.Admin);

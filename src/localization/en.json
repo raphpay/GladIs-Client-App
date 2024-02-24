@@ -74,7 +74,14 @@
     "processes": "Processes",
     "procedures": "Procedures",
     "forms": "Forms",
-    "records": "Records"
+    "records": "Records",
+    "noDocs": {
+      "title": "No document found",
+      "message": {
+        "admin": "Add a document now",
+        "client": "Please come back later"
+      }
+    }
   },
   "components": {
     "searchTextInput": {
@@ -83,7 +90,8 @@
     "buttons": {
       "back": "Back",
       "addClient": "Add a client",
-      "continue": "Continue"
+      "continue": "Continue",
+      "addDocument": "Add a document",
     }
   },
   "errors": {
