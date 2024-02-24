@@ -67,6 +67,15 @@
       "records": "Records"
     }
   },
+  "documentsScreen": {
+    "systemQuality": "System Quality",
+    "qualityManual": "Quality Manual",
+    "process": "Process",
+    "processes": "Processes",
+    "procedures": "Procedures",
+    "forms": "Forms",
+    "records": "Records"
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"

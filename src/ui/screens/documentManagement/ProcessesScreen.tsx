@@ -19,37 +19,37 @@ import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
 import backIcon from '../../assets/images/arrow.uturn.left.png';
-import styles from '../../assets/styles/documentManagement/ProcessusScreenStyles';
+import styles from '../../assets/styles/documentManagement/ProcessesScreenStyles';
 
 interface IProcessItem {
   id: string,
   title: string,
 }
 
-type ProcessusProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ProcessusScreen>;
+type ProcessesProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ProcessesScreen>;
 
-function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
+function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
-  const { processusNumber } = props.route.params;
+  const { processNumber } = props.route.params;
 
   const processes: IProcessItem[] = [
     {
       id: 'processesID',
-      title: t('process.items.processes')
+      title: 'processes'
     },
     {
       id: 'proceduresID',
-      title: t('process.items.procedures')
+      title: 'procedures'
     },
     {
       id: 'formsID',
-      title: t('process.items.forms')
+      title: 'forms'
     },
     {
       id: 'recordsID',
-      title: t('process.items.records')
+      title: 'records'
     },
   ];
 
@@ -70,14 +70,19 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   }
 
   function navigateTo(item: IProcessItem) {
-
+    navigation.navigate(NavigationRoutes.DocumentsScreen, {
+      previousScreen: 'process',
+      processNumber: processNumber,
+      currentScreen: item.title,
+      documentsPath: `process${processNumber}/${item.title}`
+    });
   }
 
   function ProcessusFlatListItem(item: IProcessItem) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
-          <Text style={styles.categoryTitle}>{item.title}</Text>
+          <Text style={styles.categoryTitle}>{t(`documentsScreen.${item.title}`)}</Text>
         </View>
       </TouchableOpacity>
     )
@@ -132,7 +137,7 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {`${t('process.title.single')} ${processusNumber}`}
+              {`${t('process.title.single')} ${processNumber}`}
             </Text>
           </View>
         </View>
@@ -140,4 +145,4 @@ function ProcessusScreen(props: ProcessusProps): React.JSX.Element {
   );
 }
 
-export default ProcessusScreen;
+export default ProcessesScreen;

@@ -31,8 +31,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const { t } = useTranslation();
   const { navigation } = props;
-  const { previousScreen, currentScreen } = props.route.params;
+  const { previousScreen, currentScreen, documentsPath, processNumber } = props.route.params;
   const { module } = useAppSelector((state: RootState) => state.appState);
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
@@ -73,9 +74,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
-      // TODO: Find a way to customize this
-      // Work with redux to get track of the path ?
-      const docs = await DocumentService.getInstance().getDocumentsAtDirectory('Acme.inc/systemQuality/qualityManual/');
+      const docs = await DocumentService.getInstance().getDocumentsAtDirectory(`${currentClient?.companyName ?? ""}/${documentsPath}/`);
       setDocuments(docs);
     }
     init();
@@ -122,14 +121,22 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
               <TouchableOpacity onPress={navigateBack}>
-                <Text style={styles.navigationHistory}>
-                  {previousScreen}
-                </Text>
+                {
+                  processNumber ? (
+                    <Text style={styles.navigationHistory}>
+                      {`${t('documentsScreen.process')} ${processNumber}`}
+                    </Text>
+                  ) : (
+                    <Text style={styles.navigationHistory}>
+                      {t(`documentsScreen.${previousScreen}`)}
+                    </Text>
+                  )
+                }
               </TouchableOpacity>
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {currentScreen}
+              {t(`documentsScreen.${currentScreen}`)}
             </Text>
           </View>
         </View>

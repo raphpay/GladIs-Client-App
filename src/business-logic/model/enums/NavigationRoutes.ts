@@ -9,7 +9,7 @@ enum NavigationRoutes {
   ClientDashboardScreenFromAdmin = 'ClientDashboardScreenFromAdmin',
   DocumentManagementScreen = 'DocumentManagementScreen',
   SystemQualityScreen = 'SystemQualityScreen',
-  ProcessusScreen = 'ProcessusScreen',
+  ProcessesScreen = 'ProcessesScreen',
   DocumentsScreen = 'DocumentsScreen',
   PDFScreen = 'PDFScreen',
   // Client Creation
