@@ -15,12 +15,23 @@ class DocumentService {
   }
 
   // READ
-  async getDocumentsAtDirectory(path: string): Promise<IDocument[]> {
+  async getDocumentsAtPath(path: string): Promise<IDocument[]> {
     try {
-      const documents = await APIService.post<IDocument[]>(`${this.baseRoute}/directory`, { path })
+      const url = `${this.baseRoute}/getDocumentsAtPath`;
+      const documents = await APIService.post<IDocument[]>(url, { value: path })
       return documents;
     } catch (error) {
       console.error('Error getting documents at path:', path, error);
+      throw error;
+    }
+  }
+
+  async download(id: string): Promise<any> {
+    try {
+      const url = `${this.baseRoute}/download/${id}`;
+      return await APIService.download(url);
+    } catch (error) {
+      console.error('Error downloading documents at id:', id, error);
       throw error;
     }
   }

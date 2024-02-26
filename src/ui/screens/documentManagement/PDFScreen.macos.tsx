@@ -9,7 +9,7 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import APIService from '../../../business-logic/services/APIService';
+import DocumentService from '../../../business-logic/services/DocumentService';
 
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
@@ -25,7 +25,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const { t } = useTranslation();
 
   async function pickPDF() {
-    const pdfData = await APIService.getPDF(documentInput);
+    const pdfData = await DocumentService.getInstance().download(documentInput.id ?? "");
     setPDFData(pdfData);
   }
 

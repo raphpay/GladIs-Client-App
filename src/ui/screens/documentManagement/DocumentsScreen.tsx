@@ -81,7 +81,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
-      const docs = await DocumentService.getInstance().getDocumentsAtDirectory(`${currentClient?.companyName ?? ""}/${documentsPath}/`);
+      const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+      const docs = await DocumentService.getInstance().getDocumentsAtPath(path);
       setDocuments(docs);
     }
     init();

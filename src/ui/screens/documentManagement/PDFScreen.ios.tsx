@@ -7,7 +7,7 @@ import Pdf from 'react-native-pdf';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import APIService from '../../../business-logic/services/APIService';
+import DocumentService from '../../../business-logic/services/DocumentService';
 
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -21,7 +21,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const { t } = useTranslation();
 
   async function pickPDF() {
-    const data = await APIService.getPDF(documentInput);
+    const data = await DocumentService.getInstance().download(documentInput.id ?? "")
     setPDFData(data)
   }
 
