@@ -53,7 +53,8 @@ class PDFViewer: NSView {
   
   override func viewDidMoveToWindow() {
     super.viewDidMoveToWindow()
-    NotificationCenter.default.addObserver(self, selector: #selector(pasteboardDidChange), name: .NSPasteboardDidChange, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(pasteboardDidChange),
+                                           name: .NSPasteboardDidChange, object: nil)
     self.window?.sharingType = .none
   }
   

@@ -22,7 +22,15 @@ class FinderModule: NSObject {
             panel.allowsMultipleSelection = false
             
             if panel.runModal() == .OK, let url = panel.url {
-                callback([url.absoluteString])
+              do {
+                  let fileData = try Data(contentsOf: url)
+                  // Convert file data to base64 string
+                  let base64String = fileData.base64EncodedString()
+                  callback([base64String])
+              } catch {
+                  print("Error reading file data:", error)
+                  callback([])
+              }
             } else {
                 callback([])
             }
