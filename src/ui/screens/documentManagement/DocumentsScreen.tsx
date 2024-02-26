@@ -4,11 +4,14 @@ import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   Image,
+  NativeModules,
+  Platform,
   SafeAreaView,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import { IDocument } from '../../../business-logic/model/IModule';
@@ -75,8 +78,18 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
-  function addDocument() {
-    // TODO: Handle document pick
+  async function addDocument() {
+    if (Platform.OS !== 'macos') {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
+      // TODO: Convert document to base64 string to upload
+      console.log('doc', doc );
+    } else {
+      const doc = NativeModules.FinderModule.pickPDFFile(async (base64PDFData: string) => {
+        const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+        // TODO: Change the name of the PDF
+        await DocumentService.getInstance().upload(base64PDFData, 'data', path);
+      })
+    }
   }
 
   useEffect(() => {

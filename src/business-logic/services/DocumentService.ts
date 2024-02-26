@@ -35,6 +35,12 @@ class DocumentService {
       throw error;
     }
   }
+
+  async upload(data: string, name: string, path: string): Promise<IDocument> {
+    const params = { name, path, data };
+    const response = await APIService.post<IDocument>('documents', params);
+    return response as IDocument;
+  }
 }
 
 export default DocumentService;

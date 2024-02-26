@@ -156,11 +156,6 @@ class APIService {
       throw error;
     }
   }
-  
-  // UPLOAD
-  static async upload(endpoint: string, params: any = {}): Promise<any> {
-    // TODO
-  }
 }
 
 export default APIService;
