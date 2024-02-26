@@ -78,15 +78,35 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
+  async function getFileBase64FromURI(uri: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fetch(uri)
+        .then(response => response.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64String = reader.result.split(',')[1]; // Extract base64 string from data URL
+            resolve(base64String);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+        .catch(error => reject(error));
+    });
+  }
+
+
   async function addDocument() {
+    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+    // TODO: Change the name of the PDF
+    const name = 'data';
     if (Platform.OS !== 'macos') {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
       // TODO: Convert document to base64 string to upload
-      console.log('doc', doc );
+      const base64Data = await getFileBase64FromURI(doc.uri) as string;
+      await DocumentService.getInstance().upload(base64Data, 'data', path)
     } else {
       const doc = NativeModules.FinderModule.pickPDFFile(async (base64PDFData: string) => {
-        const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-        // TODO: Change the name of the PDF
         await DocumentService.getInstance().upload(base64PDFData, 'data', path);
       })
     }
