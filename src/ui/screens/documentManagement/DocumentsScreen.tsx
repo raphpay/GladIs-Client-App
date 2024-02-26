@@ -8,10 +8,10 @@ import {
   Platform,
   SafeAreaView,
   Text,
+  TextInput,
   TouchableOpacity,
   View
 } from 'react-native';
-import Dialog from 'react-native-dialog';
 import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -131,94 +131,112 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
+  // TODO: Create a separate component for dialog
   return (
     <SafeAreaView style={styles.container}>
-        <View style={styles.innerContainer}>
-          <View style={styles.innerComponentsContainer}>
-            <View style={styles.searchInputContainer}>
-              {
-                currentUser?.userType === UserType.Admin && (
-                  <IconButton
-                    title={t('components.buttons.addDocument')}
-                    icon={plusIcon}
-                    onPress={addDocument}
-                  />
-                )
-              }
-              <SearchTextInput
-                searchText={searchText}
-                setSearchText={setSearchText}
-              />
-            </View>
+      <View style={styles.innerContainer}>
+        <View style={styles.innerComponentsContainer}>
+          <View style={styles.searchInputContainer}>
             {
-              documents.length !== 0 ? (
-                <FlatList
-                  data={documents}
-                  renderItem={(renderItem) => DocumentRow(renderItem.item)}
-                  keyExtractor={(item) => item.id}
-                />
-              ) : (
-                <ContentUnavailableView 
-                  title={t('documentsScreen.noDocs.title')}
-                  message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-                  image={(
-                    <Image source={require('../../assets/images/doc.fill.png')} />
-                  )}
+              currentUser?.userType === UserType.Admin && (
+                <IconButton
+                  title={t('components.buttons.addDocument')}
+                  icon={plusIcon}
+                  onPress={addDocument}
                 />
               )
             }
-          </View>
-          <View style={styles.backButtonContainer}>
-            <IconButton
-              title={t('components.buttons.back')}
-              icon={backIcon}
-              onPress={navigateBack}
+            <SearchTextInput
+              searchText={searchText}
+              setSearchText={setSearchText}
             />
           </View>
+          {
+            documents.length !== 0 ? (
+              <FlatList
+                data={documents}
+                renderItem={(renderItem) => DocumentRow(renderItem.item)}
+                keyExtractor={(item) => item.id}
+              />
+            ) : (
+              <ContentUnavailableView 
+                title={t('documentsScreen.noDocs.title')}
+                message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
+                image={(
+                  <Image source={require('../../assets/images/doc.fill.png')} />
+                )}
+              />
+            )
+          }
         </View>
-        <View style={styles.topContainer}>
-          <AppIcon style={styles.appIcon} />
-          <View>
-            <View style={styles.navigationHistoryContainer}>
-              <TouchableOpacity onPress={navigateToDashboard}>
-                <Text style={styles.navigationHistory}>
-                  {t('dashboard.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateToCategories}>
-                <Text style={styles.navigationHistory}>
-                  {t(`modules.${module?.name}`)}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateBack}>
-                {
-                  processNumber ? (
-                    <Text style={styles.navigationHistory}>
-                      {`${t('documentsScreen.process')} ${processNumber}`}
-                    </Text>
-                  ) : (
-                    <Text style={styles.navigationHistory}>
-                      {t(`documentsScreen.${previousScreen}`)}
-                    </Text>
-                  )
-                }
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-            </View>
-            <Text style={styles.currentPageTitle}>
-              {t(`documentsScreen.${currentScreen}`)}
-            </Text>
+        <View style={styles.backButtonContainer}>
+          <IconButton
+            title={t('components.buttons.back')}
+            icon={backIcon}
+            onPress={navigateBack}
+          />
+        </View>
+      </View>
+      <View style={styles.topContainer}>
+        <AppIcon style={styles.appIcon} />
+        <View>
+          <View style={styles.navigationHistoryContainer}>
+            <TouchableOpacity onPress={navigateToDashboard}>
+              <Text style={styles.navigationHistory}>
+                {t('dashboard.title')}
+              </Text>
+            </TouchableOpacity>
+            <Image source={require('../../assets/images/chevron.right.png')}/>
+            <TouchableOpacity onPress={navigateToCategories}>
+              <Text style={styles.navigationHistory}>
+                {t(`modules.${module?.name}`)}
+              </Text>
+            </TouchableOpacity>
+            <Image source={require('../../assets/images/chevron.right.png')}/>
+            <TouchableOpacity onPress={navigateBack}>
+              {
+                processNumber ? (
+                  <Text style={styles.navigationHistory}>
+                    {`${t('documentsScreen.process')} ${processNumber}`}
+                  </Text>
+                ) : (
+                  <Text style={styles.navigationHistory}>
+                    {t(`documentsScreen.${previousScreen}`)}
+                  </Text>
+                )
+              }
+            </TouchableOpacity>
+            <Image source={require('../../assets/images/chevron.right.png')}/>
           </View>
+          <Text style={styles.currentPageTitle}>
+            {t(`documentsScreen.${currentScreen}`)}
+          </Text>
         </View>
-        <Dialog.Container visible={showDialog}>
-          <Dialog.Title>Testing dialog</Dialog.Title>
-          <Dialog.Description>This is a description test</Dialog.Description>
-          <Dialog.Input value={documentName} onChangeText={setDocumentName} />
-          <Dialog.Button label="Pick a file" onPress={pickAFile}/>
-        </Dialog.Container>
-      </SafeAreaView>
+      </View>
+      {
+        showDialog && (
+          <View style={styles.overlay}>
+            <View style={styles.dialog}>
+              <Text style={styles.title}>Enter Text</Text>
+              <TextInput
+                style={styles.input}
+                value={documentName}
+                onChangeText={setDocumentName}
+                placeholder="Type something..."
+              />
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity onPress={pickAFile}>
+                  <Text>Pick a file</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setShowDialog(false)}>
+                  <Text>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )
+      }
+    </SafeAreaView>
   );
 }
 
