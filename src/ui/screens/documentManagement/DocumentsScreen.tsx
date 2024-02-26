@@ -11,7 +11,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import Dialog from 'react-native-dialog';
 import DocumentPicker from 'react-native-document-picker';
+
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import { IDocument } from '../../../business-logic/model/IModule';
@@ -35,6 +37,8 @@ type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationR
 function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [documents, setDocuments] = useState<IDocument[]>([]);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [documentName, setDocumentName] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
   const { previousScreen, currentScreen, documentsPath, processNumber } = props.route.params;
@@ -58,6 +62,55 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
+  async function getFileBase64FromURI(uri: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fetch(uri)
+        .then(response => response.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64String = reader.result.split(',')[1]; // Extract base64 string from data URL
+            resolve(base64String);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+        .catch(error => reject(error));
+    });
+  }
+
+  async function addDocument() {
+    // TODO: Find an alternative for macos
+    setShowDialog(true);
+  }
+
+  async function pickAFile() {
+    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+    // TODO: Change the name of the PDF
+    const name = documentName;
+    if (Platform.OS !== 'macos') {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
+      // TODO: Convert document to base64 string to upload
+      const base64Data = await getFileBase64FromURI(doc.uri) as string;
+      await DocumentService.getInstance().upload(base64Data, name, path)
+    } else {
+      const doc = NativeModules.FinderModule.pickPDFFile(async (base64PDFData: string) => {
+        await DocumentService.getInstance().upload(base64PDFData, name, path);
+      })
+    }
+    setShowDialog(false);
+  }
+
+  useEffect(() => {
+    async function init() {
+      const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+      const docs = await DocumentService.getInstance().getDocumentsAtPath(path);
+      console.log('docs', docs );
+      setDocuments(docs);
+    }
+    init();
+  }, []);
+
   // TODO: change styles names
   function DocumentRow(item: IDocument) {
     return (
@@ -77,49 +130,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       </TouchableOpacity>
     );
   }
-
-  async function getFileBase64FromURI(uri: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      fetch(uri)
-        .then(response => response.blob())
-        .then(blob => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const base64String = reader.result.split(',')[1]; // Extract base64 string from data URL
-            resolve(base64String);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        })
-        .catch(error => reject(error));
-    });
-  }
-
-
-  async function addDocument() {
-    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    // TODO: Change the name of the PDF
-    const name = 'data';
-    if (Platform.OS !== 'macos') {
-      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
-      // TODO: Convert document to base64 string to upload
-      const base64Data = await getFileBase64FromURI(doc.uri) as string;
-      await DocumentService.getInstance().upload(base64Data, 'data', path)
-    } else {
-      const doc = NativeModules.FinderModule.pickPDFFile(async (base64PDFData: string) => {
-        await DocumentService.getInstance().upload(base64PDFData, 'data', path);
-      })
-    }
-  }
-
-  useEffect(() => {
-    async function init() {
-      const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-      const docs = await DocumentService.getInstance().getDocumentsAtPath(path);
-      setDocuments(docs);
-    }
-    init();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -202,6 +212,12 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             </Text>
           </View>
         </View>
+        <Dialog.Container visible={showDialog}>
+          <Dialog.Title>Testing dialog</Dialog.Title>
+          <Dialog.Description>This is a description test</Dialog.Description>
+          <Dialog.Input value={documentName} onChangeText={setDocumentName} />
+          <Dialog.Button label="Pick a file" onPress={pickAFile}/>
+        </Dialog.Container>
       </SafeAreaView>
   );
 }
