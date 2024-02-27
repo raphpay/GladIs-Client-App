@@ -52,33 +52,36 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
   return (
     <View style={styles.container}>
       <Text style={styles.placeholder}>{placeholder}</Text>
-      <TextInput
-        value={value}
-        onChangeText={onValueChange}
-        keyboardType={keyboardType}
-        style={styles.textInput}
-        secureTextEntry={isSecure}
-        autoCapitalize={autoCapitalize}
-        onSubmitEditing={onSubmitEditing}
-      />
-      {
-        showVisibilityButton && (
-          <>
-            <TouchableOpacity
-              style={styles.visibilityButtonContainer}
-              onPress={toggleVisibility}
-            >
-              {
-                isSecure ? (
-                  <Image source={require('../assets/images/eye.fill.png')} />
-                ) : (
-                  <Image source={require('../assets/images/eye.slash.fill.png')} />
-                )
-              }
-            </TouchableOpacity>
-          </>
-        )
-      }
+      <View style={styles.textInputContainer}>
+        <TextInput
+          value={value}
+          onChangeText={onValueChange}
+          keyboardType={keyboardType}
+          style={styles.textInput}
+          secureTextEntry={isSecure}
+          autoCapitalize={autoCapitalize}
+          onSubmitEditing={onSubmitEditing}
+          placeholder={placeholder}
+        />
+        {
+          showVisibilityButton && (
+            <>
+              <TouchableOpacity
+                style={styles.visibilityButtonContainer}
+                onPress={toggleVisibility}
+              >
+                {
+                  isSecure ? (
+                    <Image source={require('../assets/images/eye.slash.fill.png')} />
+                  ) : (
+                    <Image source={require('../assets/images/eye.fill.png')} />
+                  )
+                }
+              </TouchableOpacity>
+            </>
+          )
+        }
+      </View>
     </View>
   );
 }
