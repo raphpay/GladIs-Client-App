@@ -1,4 +1,5 @@
 import IDocument from '../model/IDocument';
+import IFile from '../model/IFile';
 import APIService from './APIService';
 
 class DocumentService {
@@ -36,8 +37,8 @@ class DocumentService {
     }
   }
 
-  async upload(data: string, name: string, path: string): Promise<IDocument> {
-    const params = { name, path, data };
+  async upload(file: IFile, name: string, path: string): Promise<IDocument> {
+    const params = { name, path, file };
     const response = await APIService.post<IDocument>('documents', params);
     return response as IDocument;
   }

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   Image,
-  NativeModules,
   Platform,
   SafeAreaView,
   Text,
@@ -28,6 +27,8 @@ import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
+import IFile from '../../../business-logic/model/IFile';
+import FinderModule from '../../../business-logic/modules/FinderModule';
 import backIcon from '../../assets/images/arrow.uturn.left.png';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
@@ -80,30 +81,38 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   async function addDocument() {
-    setShowDialog(true);
+    // setShowDialog(true);
+    await pickAFile();
   }
 
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    const name = documentName;
+    // TODO: To be refactored
+    // TODO: Change name
+    const name = `${Date.now()}`;
     if (Platform.OS !== 'macos') {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
       const base64Data = await getFileBase64FromURI(doc.uri) as string;
-      await DocumentService.getInstance().upload(base64Data, name, path)
+      const file: IFile = { data: base64Data, filename: name}
+      await DocumentService.getInstance().upload(file, name, path)
     } else {
-      const doc = NativeModules.FinderModule.pickPDFFile(async (base64PDFData: string) => {
-        await DocumentService.getInstance().upload(base64PDFData, name, path);
-      })
+      const pdfData = await FinderModule.getInstance().pickPDF();
+      const file: IFile = { data: pdfData, filename: name}
+      await DocumentService.getInstance().upload(file, name, path)
     }
     setShowDialog(false);
+    await loadDocuments();
+  }
+
+  async function loadDocuments() {
+    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+    const docs = await DocumentService.getInstance().getDocumentsAtPath(path);
+    setDocuments(docs);
   }
 
   useEffect(() => {
     async function init() {
-      const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-      const docs = await DocumentService.getInstance().getDocumentsAtPath(path);
-      console.log('docs', docs );
-      setDocuments(docs);
+      loadDocuments();
     }
     init();
   }, []);
