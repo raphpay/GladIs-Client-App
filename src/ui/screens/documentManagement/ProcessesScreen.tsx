@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  Image,
   SafeAreaView,
   Text,
   TouchableOpacity,
@@ -13,10 +12,11 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 
-import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
+import TopAppBar from '../../components/TopAppBar';
 
 import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/ProcessesScreenStyles';
@@ -53,12 +53,23 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     },
   ];
 
+  const navigationHistoryItems: INavigationHistoryItem[] = [
+    {
+      title: t('dashboard.title'),
+      action: () => navigateToDashboard()
+    },
+    {
+      title: t('documentManagement.title'),
+      action: () => navigateToDocumentManagement()
+    },
+    {
+      title: t('systemQuality.title'),
+      action: () => navigateBack()
+    }
+  ]
+
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
-  }
-
-  function navigateToCategories() {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen);
   }
 
   function navigateBack() {
@@ -113,34 +124,10 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
              />
           </View>
         </View>
-        <View style={styles.topContainer}>
-          <AppIcon style={styles.appIcon} />
-          <View>
-            <View style={styles.navigationHistoryContainer}>
-              <TouchableOpacity onPress={navigateToDashboard}>
-                <Text style={styles.navigationHistory}>
-                  {t('dashboard.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateToCategories}>
-                <Text style={styles.navigationHistory}>
-                  {t('documentManagement.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateBack}>
-                <Text style={styles.navigationHistory}>
-                  {t('systemQuality.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-            </View>
-            <Text style={styles.currentPageTitle}>
-              {`${t('process.title.single')} ${processNumber}`}
-            </Text>
-          </View>
-        </View>
+        <TopAppBar
+          mainTitle={`${t('process.title.single')} ${processNumber}`}
+          navigationHistoryItems={navigationHistoryItems}
+        />
     </SafeAreaView>
   );
 }
