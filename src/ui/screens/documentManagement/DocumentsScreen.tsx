@@ -7,6 +7,7 @@ import {
   Platform,
   SafeAreaView,
   Text,
+  TextInput,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -81,25 +82,21 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   async function addDocument() {
-    // setShowDialog(true);
-    await pickAFile();
+    setShowDialog(true);
   }
 
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    // TODO: To be refactored
-    // TODO: Change name
-    const name = `${Date.now()}`;
+    const filename = documentName.replace(/\s/g, "_");
+    let data: string = '';
     if (Platform.OS !== 'macos') {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
-      const base64Data = await getFileBase64FromURI(doc.uri) as string;
-      const file: IFile = { data: base64Data, filename: name}
-      await DocumentService.getInstance().upload(file, name, path)
+      data = await getFileBase64FromURI(doc.uri) as string;
     } else {
-      const pdfData = await FinderModule.getInstance().pickPDF();
-      const file: IFile = { data: pdfData, filename: name}
-      await DocumentService.getInstance().upload(file, name, path)
+      data = await FinderModule.getInstance().pickPDF();
     }
+    const file: IFile = { data, filename: filename}
+    await DocumentService.getInstance().upload(file, filename, path)
     setShowDialog(false);
     await loadDocuments();
   }
@@ -224,10 +221,19 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       {
         showDialog && (
           <Dialog
-            title={'Hello'}
+            title={t('components.dialog.addDocument.title')}
+            confirmTitle={t('components.dialog.addDocument.confirmButton')}
             onConfirm={pickAFile}
             onCancel={() => setShowDialog(false)}
-          />
+            isConfirmDisabled={documentName.length === 0}
+          >
+            <TextInput 
+              value={documentName}
+              onChangeText={setDocumentName}
+              placeholder={t('components.dialog.addDocument.placeholder')}
+              style={styles.dialogInput}
+            />
+          </Dialog>
         )
       }
     </SafeAreaView>

@@ -11,6 +11,7 @@ type DialogProps = {
   description?: string;
   confirmTitle?: string;
   cancelTitle?: string;
+  isConfirmDisabled?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
   children?: JSX.Element;
@@ -23,6 +24,7 @@ function Dialog(props: DialogProps): React.JSX.Element {
     description,
     confirmTitle,
     cancelTitle,
+    isConfirmDisabled,
     onConfirm,
     onCancel,
     children,
@@ -34,7 +36,7 @@ function Dialog(props: DialogProps): React.JSX.Element {
         <Text style={styles.title}>{description}</Text>
         {children}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={onConfirm}>
+          <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
             <Text>{confirmTitle ?? "Confirm"}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onCancel}>

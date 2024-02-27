@@ -97,6 +97,13 @@
       "addClient": "Add a client",
       "continue": "Continue",
       "addDocument": "Add a document",
+    },
+    "dialog": {
+      "addDocument": {
+        "title": "Add a document",
+        "confirmButton": "Select a file",
+        "placeholder": "Enter a file name"
+      }
     }
   },
   "errors": {
