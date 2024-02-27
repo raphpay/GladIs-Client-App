@@ -25,6 +25,9 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     paddingRight: 4
   },
+  navigationButtonContainer: {
+    flexDirection: 'row'
+  }
 });
 
 export default styles;

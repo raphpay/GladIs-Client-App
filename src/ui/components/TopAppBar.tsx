@@ -32,11 +32,13 @@ function TopAppBar(props: TopAppBarProps): React.JSX.Element {
     <View style={styles.topContainer}>
       <AppIcon style={styles.appIcon}/>
       <View>
-        {navigationHistoryItems && navigationHistoryItems.map((item) => {
-          return (
-            NavigationButton(item)
-          );})
-        }
+        <View style={styles.navigationButtonContainer}>
+          {navigationHistoryItems && navigationHistoryItems.map((item) => {
+            return (
+              NavigationButton(item)
+            );})
+          }
+        </View>
         <Text style={styles.currentPageTitle}>
           {mainTitle}
         </Text>

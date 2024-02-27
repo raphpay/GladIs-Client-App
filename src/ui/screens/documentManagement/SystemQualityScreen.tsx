@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  Image,
   SafeAreaView,
   Text,
   TouchableOpacity,
@@ -12,11 +11,15 @@ import {
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../business-logic/model/enums/UserType';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 
-import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
+import TopAppBar from '../../components/TopAppBar';
 
 import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
@@ -33,6 +36,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
+  const { currentUser } = useAppSelector((state: RootState) => state.users);
 
   const systemQualityItems: ISystemQualityItem[] = [
     {
@@ -74,14 +78,25 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       title: `${t('process.title.single')} 7`,
       number: 7,
     },
-  ]
+  ];
+
+  const navigationHistoryItems: INavigationHistoryItem[] = [
+    {
+      title: t('dashboard.title'),
+      action: () => navigateToDashboard(),
+    },
+    {
+      title: t('documentManagement.title'),
+      action: () => navigateBack(),
+    },
+  ];
 
   function navigateBack() {
     navigation.goBack();
   }
 
-  function navigateToDocumentManagement() {
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen);
+  function navigateToDashboard() {
+    navigation.navigate(currentUser?.userType == UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
   }
 
   function navigateTo(item: ISystemQualityItem) {
@@ -132,28 +147,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             />
         </View>
       </View>
-      <View style={styles.topContainer}>
-        <AppIcon style={styles.appIcon} />
-        <View>
-          <View style={styles.navigationHistoryContainer}>
-            <TouchableOpacity onPress={navigateBack}>
-              <Text style={styles.navigationHistory}>
-                {t('dashboard.title')}
-              </Text>
-            </TouchableOpacity>
-            <Image source={require('../../assets/images/chevron.right.png')}/>
-            <TouchableOpacity onPress={navigateToDocumentManagement}>
-              <Text style={styles.navigationHistory}>
-                {t('documentManagement.title')}
-              </Text>
-            </TouchableOpacity>
-            <Image source={require('../../assets/images/chevron.right.png')}/>
-          </View>
-          <Text style={styles.currentPageTitle}>
-            {t('systemQuality.title')}
-          </Text>
-        </View>
-      </View>
+      <TopAppBar mainTitle={t('systemQuality.title')} navigationHistoryItems={navigationHistoryItems} />
     </SafeAreaView>
   );
 }
