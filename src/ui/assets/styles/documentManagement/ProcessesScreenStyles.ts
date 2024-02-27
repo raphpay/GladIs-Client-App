@@ -28,13 +28,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row-reverse'
   },
-  moduleContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 75,
-    width: 190,
-    borderRadius: 10
-  },
   backButtonContainer: {
     width: '100%',
     flexDirection: 'row-reverse',

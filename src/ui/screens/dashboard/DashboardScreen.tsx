@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -11,11 +11,11 @@ import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
 
-import AppIcon from '../../components/AppIcon';
 import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
 import DashboardClientFlatList from '../../components/DashboardClientFlatList';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
+import TopAppBar from '../../components/TopAppBar';
 
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardScreenStyles';
@@ -73,12 +73,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
           }
         </View>
       </View>
-      <View style={styles.topContainer}>
-        <AppIcon style={styles.appIcon}/>
-        <Text style={styles.currentPageTitle}>
-          {t('dashboard.title')}
-        </Text>
-      </View>
+      <TopAppBar mainTitle={t('dashboard.adminTitle')}/>
     </SafeAreaView>
   )
 }
