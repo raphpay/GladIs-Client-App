@@ -80,17 +80,14 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   async function addDocument() {
-    // TODO: Find an alternative for macos
     setShowDialog(true);
   }
 
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    // TODO: Change the name of the PDF
     const name = documentName;
     if (Platform.OS !== 'macos') {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
-      // TODO: Convert document to base64 string to upload
       const base64Data = await getFileBase64FromURI(doc.uri) as string;
       await DocumentService.getInstance().upload(base64Data, name, path)
     } else {
@@ -111,14 +108,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: change styles names
   function DocumentRow(item: IDocument) {
     return (
       <TouchableOpacity onPress={() => navigateToDocument(item)}>
-        <View style={styles.subCategoryLineContainer}>
-          <View style={styles.subCategoryLineRow}>
+        <View style={styles.documentLineContainer}>
+          <View style={styles.documentLineRow}>
             <Image source={require('../../assets/images/PDF_file_icon.png')}/>
-            <View style={styles.subCategoryTextContainer}>
+            <View style={styles.documentTextContainer}>
               <Text>
                 {item.name}
               </Text>
@@ -131,7 +127,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
-  // TODO: Create a separate component for dialog
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>

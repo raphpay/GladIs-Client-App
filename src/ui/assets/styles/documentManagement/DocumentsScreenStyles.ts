@@ -59,17 +59,17 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 10,
     padding: 4,
   },
-  subCategoryLineContainer: {
+  documentLineContainer: {
     height: 55,
     width: '100%',
   },
-  subCategoryLineRow: {
+  documentLineRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-  subCategoryTextContainer: {
+  documentTextContainer: {
     flex: 1,
     paddingLeft: 8
   },

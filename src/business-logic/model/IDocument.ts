@@ -1,5 +1,5 @@
 export default interface IDocument {
-  id?: string,
+  id: string,
   name: string,
   path: string
 }
