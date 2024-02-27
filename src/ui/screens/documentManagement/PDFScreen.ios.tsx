@@ -53,8 +53,8 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
           style={styles.pdf}/>
         ) : (
           <ContentUnavailableView
-            title={t('document.noDocumentFound.title')}
-            message={t('document.noDocumentFound.message')}
+            title={t('documentsScreen.noDocs.title')}
+            message={t('documentsScreen.noDocs.message.client')}
             image={(
               <Image source={require('../../assets/images/doc.fill.png')} />
             )}

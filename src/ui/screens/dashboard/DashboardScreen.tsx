@@ -34,10 +34,6 @@ function DashboardScreen(props: DashboardScreenProps): any {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
-  function navigateBack() {
-    navigation.goBack();
-  }
-
   useEffect(() => {
      async function init() {
       // TODO: Get the user by cache or by API ?
