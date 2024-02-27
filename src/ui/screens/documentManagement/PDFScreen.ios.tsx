@@ -1,38 +1,43 @@
-import React, { useState } from 'react';
-import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
-import DocumentPicker, { types } from 'react-native-document-picker';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Image, SafeAreaView } from 'react-native';
 import Pdf from 'react-native-pdf';
 
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import DocumentService from '../../../business-logic/services/DocumentService';
+
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
-function PDFScreen(): React.JSX.Element {
+type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PDFScreen>;
 
-  const [pdfPath, setPDFPath] = useState<string>('');
+function PDFScreen(props: PDFScreenProps): React.JSX.Element {
+
+  const [pdfData, setPDFData] = useState<string>('');
+  const { documentInput } = props.route.params;
+  const { t } = useTranslation();
 
   async function pickPDF() {
-    try {
-      const pickerResult = await DocumentPicker.pickSingle({
-        presentationStyle: 'fullScreen',
-        copyTo: 'cachesDirectory',
-        type: [types.pdf]
-      })
-      if (pickerResult.fileCopyUri) {
-        setPDFPath(pickerResult.fileCopyUri)
-      }
-    } catch (e) {
-      console.log('error', e);
-    }
+    const data = await DocumentService.getInstance().download(documentInput.id ?? "")
+    setPDFData(data)
   }
+
+  useEffect(() => {
+    async function init() {
+      await pickPDF();
+    }
+    init();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={pickPDF}>
-        <Text>Pick PDF</Text>
-      </TouchableOpacity>
       {
-        pdfPath && (
+        pdfData ? (
           <Pdf
-          source={{uri: pdfPath}}
+          source={{uri: pdfData}}
           onLoadComplete={(numberOfPages: number, filePath: string) => {
               console.log(`Number of pages: ${numberOfPages}`, filePath);
           }}
@@ -46,6 +51,14 @@ function PDFScreen(): React.JSX.Element {
               console.log(`Link pressed: ${uri}`);
           }}
           style={styles.pdf}/>
+        ) : (
+          <ContentUnavailableView
+            title={t('documentsScreen.noDocs.title')}
+            message={t('documentsScreen.noDocs.message.client')}
+            image={(
+              <Image source={require('../../assets/images/doc.fill.png')} />
+            )}
+          />
         )
       }
     </SafeAreaView>

@@ -10,6 +10,6 @@
 
 @interface RCT_EXTERN_MODULE(PDFViewerManager, RCTViewManager)
 
-RCT_EXPORT_VIEW_PROPERTY(url, NSString)
+RCT_EXPORT_VIEW_PROPERTY(dataString, NSString)
 
 @end

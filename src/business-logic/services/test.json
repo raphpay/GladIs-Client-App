@@ -1,0 +1,40 @@
+{
+  "_bodyBlob": {
+    "_data": {
+      "__collector": [Object
+      ],
+      "blobId": "6781F6ED-767D-4CBB-AF76-0DCE364292A3",
+      "name": "0215A158-7F76-4B7D-92EF-1959F33FC5C3.pdf",
+      "offset": 0,
+      "size": 118992,
+      "type": "application/pdf"
+    }
+  },
+  "_bodyInit": {
+    "_data": {
+      "__collector": [Object
+      ],
+      "blobId": "6781F6ED-767D-4CBB-AF76-0DCE364292A3",
+      "name": "0215A158-7F76-4B7D-92EF-1959F33FC5C3.pdf",
+      "offset": 0,
+      "size": 118992,
+      "type": "application/pdf"
+    }
+  },
+  "bodyUsed": false,
+  "headers": {
+    "map": {
+      "connection": "keep-alive",
+      "content-length": "118992",
+      "content-type": "application/pdf",
+      "date": "Mon, 26 Feb 2024 15:12:24 GMT",
+      "etag": "\"1708958217.4417706-118992\"",
+      "last-modified": "Mon, 26 Feb 2024 14:36:57 GMT"
+    }
+  },
+  "ok": true,
+  "status": 200,
+  "statusText": "",
+  "type": "default",
+  "url": "http://localhost:8080/api/documents/download/0215A158-7F76-4B7D-92EF-1959F33FC5C3"
+}

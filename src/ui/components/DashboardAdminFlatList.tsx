@@ -3,17 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  Image,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
 
 import IUser from '../../business-logic/model/IUser';
+import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import UserService from '../../business-logic/services/UserService';
+import { useAppDispatch } from '../../business-logic/store/hooks';
+import { setCurrentClient } from '../../business-logic/store/slices/userReducer';
 
 import ContentUnavailableView from './ContentUnavailableView';
 
-import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import styles from '../assets/styles/components/DashboardAdminFlatListStyles';
 
 function DashboardAdminFlatList(): React.JSX.Element {
@@ -21,9 +24,11 @@ function DashboardAdminFlatList(): React.JSX.Element {
   const [clients, setClients] = useState<IUser[]>([]);
 
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
 
   function navigateToClientDashboard(client: IUser) {
-    navigation.navigate(NavigationRoutes.ClientDashboardScreenFromAdmin, { client })
+    dispatch(setCurrentClient(client));
+    navigation.navigate(NavigationRoutes.ClientDashboardScreenFromAdmin)
   }
 
   const { t } = useTranslation();
@@ -53,7 +58,13 @@ function DashboardAdminFlatList(): React.JSX.Element {
     <>
     {
       clients.length === 0 ? (
-        <ContentUnavailableView />
+        <ContentUnavailableView
+          title={t('dashboard.client.noModules.title')}
+          message={t('dashboard.client.noModules.message')}
+          image={(
+            <Image source={require('../assets/images/list.clipboard.png')}/>
+          )}
+        />
       ) : (
         <FlatList
           data={clients}

@@ -18,10 +18,10 @@ class PDFViewer: NSView {
   let pasteboard: NSPasteboard = .general
   var lastChangeCount = 0
   
-  @objc var url: NSString = "" {
+  @objc var dataString: NSString = "" {
     didSet {
-      if let url = URL(string: String(url)) {
-        loadPDF(fromURL: url)
+      if let encodedData = Data(base64Encoded: String(dataString)) {
+        loadPDF(with: encodedData)
       }
     }
   }
@@ -53,7 +53,8 @@ class PDFViewer: NSView {
   
   override func viewDidMoveToWindow() {
     super.viewDidMoveToWindow()
-    NotificationCenter.default.addObserver(self, selector: #selector(pasteboardDidChange), name: .NSPasteboardDidChange, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(pasteboardDidChange),
+                                           name: .NSPasteboardDidChange, object: nil)
     self.window?.sharingType = .none
   }
   
@@ -66,9 +67,9 @@ class PDFViewer: NSView {
     
     addSubview(pdfView)
   }
-
-  func loadPDF(fromURL url: URL) {
-    if let document = PDFDocument(url: url) {
+  
+  func loadPDF(with data: Data) {
+    if let document = PDFDocument(data: data) {
       pdfView.document = document
     } else {
       print("Invalid PDF file")
@@ -78,8 +79,8 @@ class PDFViewer: NSView {
   @objc
   func pasteboardDidChange(_ notification: Notification) {
     // TODO: To be improved as it completely blocks other apps from copying
-    pasteboard.clearContents()
-    pasteboard.setString("", forType: .string)
+//   pasteboard.clearContents()
+//   pasteboard.setString("", forType: .string)
   }
 }
 

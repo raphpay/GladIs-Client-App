@@ -41,12 +41,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     padding: 16
   },
+  navigationHistoryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   // Components
   appIcon: {
     marginLeft: 60,
     marginTop: 16,
   },
   navigationHistory: {
+    paddingLeft: 8,
+    fontSize: 12,
+    fontWeight: '400',
+    paddingRight: 4
+  },
+  currentPageTitle: {
     paddingLeft: 8,
     fontSize: 20,
     fontWeight: '600'

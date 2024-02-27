@@ -1,8 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -20,6 +19,7 @@ import SearchTextInput from '../../components/SearchTextInput';
 import backIcon from '../../assets/images/arrow.uturn.left.png';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/dashboard/DashboardScreenStyles';
+
 
 type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;
 
@@ -48,6 +48,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
     init();
   }, []);
 
+  // TODO: Refactor navigation history component
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -79,9 +80,19 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
       </View>
       <View style={styles.topContainer}>
         <AppIcon style={styles.appIcon}/> 
-        <Text style={styles.navigationHistory}>
-          {t('dashboard.title')}
-        </Text>
+        <View>
+          <View style={styles.navigationHistoryContainer}>
+            <TouchableOpacity onPress={navigateBack}>
+              <Text style={styles.navigationHistory}>
+                {t('dashboard.adminTitle')}
+              </Text>
+            </TouchableOpacity>
+            <Image source={require('../../assets/images/chevron.right.png')}/>
+          </View>
+          <Text style={styles.currentPageTitle}>
+            {t('dashboard.title')}
+          </Text>
+        </View>
       </View>
     </SafeAreaView>
   )

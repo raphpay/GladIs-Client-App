@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../colors/colors';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   // Containers
@@ -48,7 +49,8 @@ const styles = StyleSheet.create({
     width: 148,
     height: 228,
     borderWidth: 1,
-    borderColor: 'black'
+    borderColor: 'black',
+    marginHorizontal: 8,
   },
   categoryImageContainer: {
     height: '75%'
@@ -58,27 +60,17 @@ const styles = StyleSheet.create({
     borderBottomStartRadius: 10,
     borderBottomEndRadius: 10,
     padding: 4,
+    backgroundColor: Colors.inactive,
   },
-  documentLineContainer: {
-    height: 55,
-    width: '100%',
-  },
-  documentLineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  documentTextContainer: {
-    flex: 1,
-    paddingLeft: 8
-  },
-  documentButton: {
-    flexDirection: 'row',
+  processusContainer: {
+    backgroundColor: Colors.inactive,
+    padding: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    width: 250,
+    height: 75,
+    borderRadius: 10,
+    margin: 10,
   },
   // Components
   appIcon: {
@@ -96,45 +88,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600'
   },
-  textInput: {
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
-    width: '30%',
-    padding: 10,
-    margin: 8,
-  },
   categoryTitle: {
-    fontSize: 12
+    fontSize: 12,
+    fontFamily: Fonts.poppinsSemiBold
   },
   categoryDescription: {
     fontSize: 10
-  },
-  letterCircle: {
-    width: 25,
-    height: 25,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  separator: {
-    width: '100%',
-    height: 1,
-    backgroundColor: 'black',
-    margin: 4
-  },
-  actionButton: {
-    width: 60,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dialogInput: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
   },
 });
 

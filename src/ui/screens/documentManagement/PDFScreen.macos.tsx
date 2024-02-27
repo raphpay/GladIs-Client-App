@@ -1,30 +1,54 @@
-import React, { useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  SafeAreaView,
-  Text,
-  TouchableOpacity
+  Image,
+  SafeAreaView
 } from 'react-native';
-import FinderModule from '../../../business-logic/modules/FinderModule';
-import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
+
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import DocumentService from '../../../business-logic/services/DocumentService';
+
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
 
-function PDFScreen(): React.JSX.Element {
+import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 
-  const [pdfPath, setPDFPath] = useState<string>('');
+type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PDFScreen>;
+
+function PDFScreen(props: PDFScreenProps): React.JSX.Element {
+
+  const [pdfData, setPDFData] = useState<string>('');
+  const { documentInput } = props.route.params;
+  const { t } = useTranslation();
 
   async function pickPDF() {
-    const selectedPDF = await FinderModule.getInstance().pickPDF();
-    setPDFPath(selectedPDF);
+    const pdfData = await DocumentService.getInstance().download(documentInput.id ?? "");
+    setPDFData(pdfData);
   }
+
+  useEffect(() => {
+    async function init() {
+      await pickPDF();
+    }
+    init();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={pickPDF}>
-        <Text>Mac OS</Text>
-      </TouchableOpacity>
       {
-        pdfPath && (
-          <PDFViewer style={styles.pdf} pdfURL={pdfPath} />
+        pdfData ? (
+          <PDFViewer style={styles.pdf} dataString={pdfData} />
+        ) : (
+          <ContentUnavailableView
+            title={t('document.noDocumentFound.title')}
+            message={t('document.noDocumentFound.message')}
+            image={(
+              <Image source={require('../../assets/images/doc.fill.png')} />
+            )}
+          />
         )
       }
     </SafeAreaView>

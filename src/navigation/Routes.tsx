@@ -4,15 +4,15 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
-import AuthenticationResult from '../business-logic/model/AuthenticationResult';
-import IModule from '../business-logic/model/IModule';
+import IDocument from '../business-logic/model/IDocument';
 import IPendingUser from '../business-logic/model/IPendingUser';
-import IUser from '../business-logic/model/IUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
+import UserType from '../business-logic/model/enums/UserType';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
+import UserService from '../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
-import { setFirstConnection } from '../business-logic/store/slices/userReducer';
+import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser, setFirstConnection } from '../business-logic/store/slices/userReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
@@ -21,14 +21,16 @@ import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
-import CategoriesScreen from '../ui/screens/documentManagement/CategoriesScreen';
+import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
-import SubCategoryScreen from '../ui/screens/documentManagement/SubCategoryScreen';
+import ProcessesScreen from '../ui/screens/documentManagement/ProcessesScreen';
+import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
+
 
 export type IRootStackParams = {
   // Login Stack
@@ -38,11 +40,12 @@ export type IRootStackParams = {
   // Dashboard Stack
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
-  ClientDashboardScreenFromAdmin: { client?: IUser },
-  CategoriesScreen: { module: IModule },
-  SubCategoryScreen: { module: IModule, subCategory: string },
-  DocumentsScreen: { module: IModule, subCategory: string, documents: string },
-  PDFScreen: { document: string },
+  ClientDashboardScreenFromAdmin: undefined,
+  DocumentManagementScreen: undefined,
+  SystemQualityScreen: undefined,
+  ProcessesScreen: { processNumber: number },
+  DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined,},
+  PDFScreen: { documentInput: IDocument },
 }
 
 export type IClientManagementParams = {
@@ -117,13 +120,18 @@ function DashboardStack(firstConnection: boolean) {
               options={{headerShown: false}}
             />
             <RootStack.Screen
-              name={NavigationRoutes.CategoriesScreen}
-              component={CategoriesScreen}
+              name={NavigationRoutes.DocumentManagementScreen}
+              component={DocumentManagementScreen}
               options={{headerShown: false}}
             />
             <RootStack.Screen
-              name={NavigationRoutes.SubCategoryScreen}
-              component={SubCategoryScreen}
+              name={NavigationRoutes.SystemQualityScreen}
+              component={SystemQualityScreen}
+              options={{headerShown: false}}
+            />
+            <RootStack.Screen
+              name={NavigationRoutes.ProcessesScreen}
+              component={ProcessesScreen}
               options={{headerShown: false}}
             />
             <RootStack.Screen
@@ -167,21 +175,22 @@ export let Routes = () => {
   useEffect(() => {
     async function init() {
       if (token == null) {
-        await AuthenticationService.getInstance()
-          .checkAuthentication()
-          .then((authResult: AuthenticationResult) => {
-            setIsLoggedIn(!!authResult.token);
-            dispatch(setFirstConnection(authResult.firstConnection));
-            setIsFirstConnection(authResult.firstConnection);
-            if (authResult.token != null) {
-              dispatch(setToken(authResult.token));
-            } else {
-              dispatch(removeToken());
-            }
-          })
-          .catch(() => {
-            setIsLoggedIn(false);
-          });
+        const authResult = await AuthenticationService.getInstance().checkAuthentication();
+        setIsLoggedIn(!!authResult.token);
+        dispatch(setFirstConnection(authResult.firstConnection));
+        setIsFirstConnection(authResult.firstConnection);
+        if (authResult.token != null) {
+          dispatch(setToken(authResult.token));
+          const currentUser = await UserService.getInstance().getUserByID(authResult.token.user.id, authResult.token);
+          dispatch(setCurrentUser(currentUser));
+          if (currentUser.userType !== UserType.Admin) {
+            dispatch(setCurrentClient(currentUser));
+          }
+        } else {
+          dispatch(removeToken());
+          dispatch(removeCurrentUser());
+          dispatch(removeCurrentClient());
+        }
       }
     }
     init();

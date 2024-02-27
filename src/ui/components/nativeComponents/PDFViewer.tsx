@@ -6,7 +6,7 @@ import {
 } from 'react-native';
 
 type PDFViewerProps = {
-  pdfURL: string;
+  dataString: string;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -14,10 +14,10 @@ const NativePDFViewer = requireNativeComponent('PDFViewer');
 
 function PDFViewer(props: PDFViewerProps): React.JSX.Element {
 
-  const { pdfURL, style } = props;
+  const { dataString, style } = props;
 
   return (
-    <NativePDFViewer style={style} url={pdfURL} />
+    <NativePDFViewer style={style} dataString={dataString} />
   );
 }
 

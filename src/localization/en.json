@@ -35,7 +35,12 @@
     "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character."
   },
   "dashboard": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "adminTitle": "Main Dashboard",
+    "noModules": {
+      "title": "No modules yet",
+      "message": "Please try again later"
+    }
   },
   "modules": {
     "documentManagement": "Document Management",
@@ -45,29 +50,42 @@
     "module4": "Module 4",
     "module5": "Module 5"
   },
-  "categories": {
-    "documentManagement": {
-      "title": "Document management"
-    },
-    "systemQuality": {
-      "title": "System quality"
-    },
-    "description": "Description"
+  "documentManagement": {
+    "title": "Document management"
   },
-  "subCategories": {
-    "systemQuality": {
-      "title": "System quality"
+  "systemQuality": {
+    "title": "System Quality",
+    "qualityManual": "Quality Manual"
+  },
+  "technicalDocumentation": {
+    "title": "Technical Documentation"
+  },
+  "process": {
+    "title": {
+      "single": "Process",
+      "plural": "Processes"
     },
-    "technicalDocumentation": {
-      "title": "Technical Documentation"
+    "items": {
+      "processes": "Processes",
+      "procedures": "Procedures",
+      "forms": "Forms",
+      "records": "Records"
     }
   },
-  "documents": {
-    "processus": {
-      "title": "Processus"
-    },
-    "document": {
-      "management": "PRS_M01_Management"
+  "documentsScreen": {
+    "systemQuality": "System Quality",
+    "qualityManual": "Quality Manual",
+    "process": "Process",
+    "processes": "Processes",
+    "procedures": "Procedures",
+    "forms": "Forms",
+    "records": "Records",
+    "noDocs": {
+      "title": "No document found",
+      "message": {
+        "admin": "Add a document now",
+        "client": "Please come back later"
+      }
     }
   },
   "components": {
@@ -77,7 +95,15 @@
     "buttons": {
       "back": "Back",
       "addClient": "Add a client",
-      "continue": "Continue"
+      "continue": "Continue",
+      "addDocument": "Add a document",
+    },
+    "dialog": {
+      "addDocument": {
+        "title": "Add a document",
+        "confirmButton": "Select a file",
+        "placeholder": "Enter a file name"
+      }
     }
   },
   "errors": {
@@ -88,12 +114,6 @@
     "logout": {
       "title": "Error logging out",
       "message": "Please try again later"
-    }
-  },
-  "unavailableView": {
-    "adminDashboard": {
-      "title": "No clients",
-      "message": "You have no clients yet, create one to start the adventure."
     }
   }
 }

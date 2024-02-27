@@ -17,7 +17,7 @@ import TextButton from '../../components/TextButton';
 
 import IToken from '../../../business-logic/model/IToken';
 import UserService from '../../../business-logic/services/UserService';
-import { setFirstConnection } from '../../../business-logic/store/slices/userReducer';
+import { setCurrentUser, setFirstConnection } from '../../../business-logic/store/slices/userReducer';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
@@ -39,6 +39,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         dispatch(setToken(token));
         const user = await UserService.getInstance().getUserByID(token.user.id);
         dispatch(setFirstConnection(user.firstConnection));
+        dispatch(setCurrentUser(user));
       })
       .catch(() => {
         Alert.alert(t('errors.login.title'), t('errors.login.message'))

@@ -13,37 +13,33 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 
+import ISubCategory from '../../../business-logic/model/ISubCategory';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
+
 import AppIcon from '../../components/AppIcon';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
 import backIcon from '../../assets/images/arrow.uturn.left.png';
-import styles from '../../assets/styles/documentManagement/CategoriesScreenStyles';
+import styles from '../../assets/styles/documentManagement/DocumentManagementScreenStyles';
 
-type CategoriesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.CategoriesScreen>;
+type DocumentManagementScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentManagementScreen>;
 
-interface ISubCategory {
-  id: string,
-  title: string,
-}
-
-function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
-  const { module } = props.route.params;
+function DocumentManagementScreen(props: DocumentManagementScreenProps): React.JSX.Element {
   const { navigation } = props;
-
   const [searchText,setSearchText] = useState<string>('');
-  
   const { t } = useTranslation();
-
+  const { module } = useAppSelector((state: RootState) => state.appState);
 
   const subcategories: ISubCategory[] = [
     {
       id: 'systemQualityID',
-      title: t('subCategories.systemQuality.title'),
+      title: t('systemQuality.title'),
     },
     {
       id: 'technicalDocumentationID',
-      title: t('subCategories.technicalDocumentation.title'),
+      title: t('technicalDocumentation.title'),
     },
   ]
 
@@ -52,10 +48,9 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   }
 
   function navigateTo(subCategory: ISubCategory) {
-    navigation.navigate(NavigationRoutes.SubCategoryScreen, {
-      module: module,
-      subCategory: subCategory.title
-    });
+    if (subCategory.id === 'systemQualityID') {
+      navigation.navigate(NavigationRoutes.SystemQualityScreen)
+    }
   }
 
   function SubCategoryFlatListItem(item: ISubCategory) {
@@ -108,7 +103,7 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
               <Image source={require('../../assets/images/chevron.right.png')}/>
             </View>
             <Text style={styles.currentPageTitle}>
-              {t(`modules.${module.name}`)}
+              {t(`modules.${module?.name}`)}
             </Text>
           </View>
         </View>
@@ -116,4 +111,4 @@ function CategoriesScreen(props: CategoriesScreenProps): React.JSX.Element {
   );
 }
 
-export default CategoriesScreen;
+export default DocumentManagementScreen;
