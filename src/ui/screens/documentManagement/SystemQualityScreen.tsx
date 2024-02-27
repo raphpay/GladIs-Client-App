@@ -110,50 +110,50 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
-          <View style={styles.innerComponentsContainer}>
-            <View style={styles.searchInputContainer}>
-              <SearchTextInput
-                searchText={searchText}
-                setSearchText={setSearchText}
-              />
-            </View>
-            <FlatList
-              data={systemQualityItems}
-              numColumns={3}
-              renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
-              keyExtractor={(item) => item.id}
+        <View style={styles.innerComponentsContainer}>
+          <View style={styles.searchInputContainer}>
+            <SearchTextInput
+              searchText={searchText}
+              setSearchText={setSearchText}
             />
           </View>
-          <View style={styles.backButtonContainer}>
-            <IconButton
-              title={t('components.buttons.back')}
-              icon={backIcon}
-              onPress={navigateBack}
-             />
-          </View>
+          <FlatList
+            data={systemQualityItems}
+            numColumns={3}
+            renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
+            keyExtractor={(item) => item.id}
+          />
         </View>
-        <View style={styles.topContainer}>
-          <AppIcon style={styles.appIcon} />
-          <View>
-            <View style={styles.navigationHistoryContainer}>
-              <TouchableOpacity onPress={navigateBack}>
-                <Text style={styles.navigationHistory}>
-                  {t('dashboard.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-              <TouchableOpacity onPress={navigateToDocumentManagement}>
-                <Text style={styles.navigationHistory}>
-                  {t('documentManagement.title')}
-                </Text>
-              </TouchableOpacity>
-              <Image source={require('../../assets/images/chevron.right.png')}/>
-            </View>
-            <Text style={styles.currentPageTitle}>
-              {t('systemQuality.title')}
-            </Text>
-          </View>
+        <View style={styles.backButtonContainer}>
+          <IconButton
+            title={t('components.buttons.back')}
+            icon={backIcon}
+            onPress={navigateBack}
+            />
         </View>
+      </View>
+      <View style={styles.topContainer}>
+        <AppIcon style={styles.appIcon} />
+        <View>
+          <View style={styles.navigationHistoryContainer}>
+            <TouchableOpacity onPress={navigateBack}>
+              <Text style={styles.navigationHistory}>
+                {t('dashboard.title')}
+              </Text>
+            </TouchableOpacity>
+            <Image source={require('../../assets/images/chevron.right.png')}/>
+            <TouchableOpacity onPress={navigateToDocumentManagement}>
+              <Text style={styles.navigationHistory}>
+                {t('documentManagement.title')}
+              </Text>
+            </TouchableOpacity>
+            <Image source={require('../../assets/images/chevron.right.png')}/>
+          </View>
+          <Text style={styles.currentPageTitle}>
+            {t('systemQuality.title')}
+          </Text>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }

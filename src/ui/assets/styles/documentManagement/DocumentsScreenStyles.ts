@@ -73,6 +73,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 8
   },
+  documentButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
   // Components
   appIcon: {
     marginLeft: 60,
@@ -115,6 +122,12 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: 'black',
     margin: 4
+  },
+  actionButton: {
+    width: 60,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -110,20 +110,24 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   function DocumentRow(item: IDocument) {
     return (
-      <TouchableOpacity onPress={() => navigateToDocument(item)}>
-        <View style={styles.documentLineContainer}>
-          <View style={styles.documentLineRow}>
-            <Image source={require('../../assets/images/PDF_file_icon.png')}/>
-            <View style={styles.documentTextContainer}>
-              <Text>
-                {item.name}
-              </Text>
+      <View style={styles.documentLineContainer}>
+        <View style={styles.documentLineRow}>
+          <TouchableOpacity onPress={() => navigateToDocument(item)}>
+            <View style={styles.documentButton}>
+              <Image source={require('../../assets/images/PDF_file_icon.png')}/>
+              <View style={styles.documentTextContainer}>
+                <Text>
+                  {item.name}
+                </Text>
+              </View>
             </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionButton}>
             <Image source={require('../../assets/images/ellipsis.png')}/>
-          </View>
-          <View style={styles.separator}/>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+        <View style={styles.separator}/>
+      </View>
     );
   }
 
