@@ -8,12 +8,17 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 8,
   },
+  textInputContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   textInput: {
+    width: '100%',
     borderWidth: 1,
     borderColor: Colors.black,
     borderRadius: 10,
     padding: 15,
-    width: '100%',
     fontSize: Fonts.p
   },
   placeholder: {
@@ -26,7 +31,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     alignItems: 'center',
     right: 8,
-    top: 58,
   },
 });
 
