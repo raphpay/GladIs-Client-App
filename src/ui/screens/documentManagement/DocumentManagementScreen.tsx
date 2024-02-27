@@ -12,7 +12,8 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import { ISubCategory } from '../../../business-logic/model/IModule';
+
+import ISubCategory from '../../../business-logic/model/ISubCategory';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 

@@ -8,7 +8,6 @@ import {
   Platform,
   SafeAreaView,
   Text,
-  TextInput,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -16,7 +15,7 @@ import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import { IDocument } from '../../../business-logic/model/IModule';
+import IDocument from '../../../business-logic/model/IDocument';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import DocumentService from '../../../business-logic/services/DocumentService';
@@ -25,6 +24,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import AppIcon from '../../components/AppIcon';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
 
@@ -215,25 +215,11 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       </View>
       {
         showDialog && (
-          <View style={styles.overlay}>
-            <View style={styles.dialog}>
-              <Text style={styles.title}>Enter Text</Text>
-              <TextInput
-                style={styles.input}
-                value={documentName}
-                onChangeText={setDocumentName}
-                placeholder="Type something..."
-              />
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={pickAFile}>
-                  <Text>Pick a file</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setShowDialog(false)}>
-                  <Text>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+          <Dialog
+            title={'Hello'}
+            onConfirm={pickAFile}
+            onCancel={() => setShowDialog(false)}
+          />
         )
       }
     </SafeAreaView>

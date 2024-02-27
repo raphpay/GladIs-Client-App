@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
-import { IDocument } from '../business-logic/model/IModule';
+import IDocument from '../business-logic/model/IDocument';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
@@ -30,6 +30,7 @@ import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityS
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
+
 
 export type IRootStackParams = {
   // Login Stack

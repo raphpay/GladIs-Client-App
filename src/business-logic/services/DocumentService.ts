@@ -1,4 +1,4 @@
-import { IDocument } from '../model/IModule';
+import IDocument from '../model/IDocument';
 import APIService from './APIService';
 
 class DocumentService {
