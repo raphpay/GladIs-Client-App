@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  Image,
   Text,
   TouchableOpacity,
   View
@@ -57,7 +58,13 @@ function DashboardAdminFlatList(): React.JSX.Element {
     <>
     {
       clients.length === 0 ? (
-        <ContentUnavailableView />
+        <ContentUnavailableView
+          title={t('dashboard.client.noModules.title')}
+          message={t('dashboard.client.noModules.message')}
+          image={(
+            <Image source={require('../assets/images/list.clipboard.png')}/>
+          )}
+        />
       ) : (
         <FlatList
           data={clients}

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  Image,
   Text,
   TouchableOpacity
 } from 'react-native';
@@ -13,8 +14,10 @@ import ModuleService from '../../business-logic/services/ModuleService';
 import { useAppDispatch } from '../../business-logic/store/hooks';
 import { setModule } from '../../business-logic/store/slices/appStateReducer';
 
-import styles from '../assets/styles/components/DashboardClientFlatList';
 import ContentUnavailableView from './ContentUnavailableView';
+
+import styles from '../assets/styles/components/DashboardClientFlatList';
+
 
 function DashboardClientFlatList(): React.JSX.Element {
 
@@ -43,13 +46,18 @@ function DashboardClientFlatList(): React.JSX.Element {
     }
     init();
   }, []);
-
-  // TODO: Handle ContentUnavailableView
+  
   return (
     <>
     {
       modules.length === 0 ? (
-        <ContentUnavailableView />
+        <ContentUnavailableView
+          title={t('dashboard.client.noModules.title')}
+          message={t('dashboard.client.noModules.message')}
+          image={(
+            <Image source={require('../assets/images/list.clipboard.png')}/>
+          )}
+        />
       ) : (
         <FlatList
           data={modules}

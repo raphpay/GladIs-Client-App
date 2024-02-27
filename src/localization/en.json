@@ -35,7 +35,11 @@
     "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character."
   },
   "dashboard": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "noModules": {
+      "title": "No modules yet",
+      "message": "Please try again later"
+    }
   },
   "modules": {
     "documentManagement": "Document Management",
