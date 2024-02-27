@@ -17,7 +17,7 @@ function TopAppBar(props: TopAppBarProps): React.JSX.Element {
 
   function NavigationButton(item: INavigationHistoryItem) {
     return (
-      <View style={styles.navigationHistoryContainer}>
+      <View style={styles.navigationHistoryContainer} key={item.title}>
         <TouchableOpacity onPress={item.action}>
           <Text style={styles.navigationHistory}>
             {item.title}
