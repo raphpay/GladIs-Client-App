@@ -1,8 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, Text, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -35,10 +34,15 @@ function DashboardScreen(props: DashboardScreenProps): any {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
+  function navigateBack() {
+    navigation.goBack();
+  }
+
   useEffect(() => {
      async function init() {
       // TODO: Get the user by cache or by API ?
       const userID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
+      // TODO: Review this warning
       const user = await UserService.getInstance().getUserByID(userID);
       setIsAdmin(user.userType == UserType.Admin);
     }
@@ -74,8 +78,8 @@ function DashboardScreen(props: DashboardScreenProps): any {
         </View>
       </View>
       <View style={styles.topContainer}>
-        <AppIcon style={styles.appIcon}/> 
-        <Text style={styles.navigationHistory}>
+        <AppIcon style={styles.appIcon}/>
+        <Text style={styles.currentPageTitle}>
           {t('dashboard.title')}
         </Text>
       </View>

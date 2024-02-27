@@ -36,6 +36,7 @@
   },
   "dashboard": {
     "title": "Tableau de bord",
+    "adminTitle": "Tableau de bord principal",
     "noModules": {
       "title": "Pas de modules pour le moment",
       "message": "Merci de réessayer plus tard"

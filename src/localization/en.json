@@ -36,6 +36,7 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "adminTitle": "Main Dashboard",
     "noModules": {
       "title": "No modules yet",
       "message": "Please try again later"
