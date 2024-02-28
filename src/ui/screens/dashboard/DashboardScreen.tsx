@@ -70,6 +70,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
         await UserService.getInstance().setUserFirstConnectionToFalse();
         // TODO: Should we remove this ?
         dispatch(setFirstConnection(false));
+        setShowDialog(false);
       } catch (error) {
         console.log('Error changing password', error);
       }
