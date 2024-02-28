@@ -16,7 +16,6 @@ import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUse
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
-import PasswordResetScreen from '../ui/screens/authentification/PasswordResetScreen';
 import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
@@ -36,7 +35,6 @@ export type IRootStackParams = {
   // Login Stack
   LoginScreen: undefined
   SignUpScreen: undefined,
-  PasswordResetScreen: undefined,
   // Dashboard Stack
   FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
@@ -69,11 +67,6 @@ function LoginStack() {
       <RootStack.Screen 
         name={NavigationRoutes.SignUpScreen}
         component={SignUpScreen}
-        options={{headerShown: false}}
-      />
-      <RootStack.Screen 
-        name={NavigationRoutes.PasswordResetScreen}
-        component={PasswordResetScreen}
         options={{headerShown: false}}
       />
     </>
