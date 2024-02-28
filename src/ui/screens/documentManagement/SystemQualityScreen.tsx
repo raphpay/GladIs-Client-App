@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  SafeAreaView,
   Text,
   TouchableOpacity,
   View
@@ -17,11 +16,8 @@ import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import IconButton from '../../components/IconButton';
-import SearchTextInput from '../../components/SearchTextInput';
-import TopAppBar from '../../components/TopAppBar';
+import AppContainer from '../../components/AppContainer';
 
-import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 
 interface ISystemQualityItem {
@@ -123,32 +119,22 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <View style={styles.innerComponentsContainer}>
-          <View style={styles.searchInputContainer}>
-            <SearchTextInput
-              searchText={searchText}
-              setSearchText={setSearchText}
-            />
-          </View>
-          <FlatList
-            data={systemQualityItems}
-            numColumns={3}
-            renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-        <View style={styles.backButtonContainer}>
-          <IconButton
-            title={t('components.buttons.back')}
-            icon={backIcon}
-            onPress={navigateBack}
-            />
-        </View>
-      </View>
-      <TopAppBar mainTitle={t('systemQuality.title')} navigationHistoryItems={navigationHistoryItems} />
-    </SafeAreaView>
+    <AppContainer
+      mainTitle={t('systemQuality.title')}
+      navigationHistoryItems={navigationHistoryItems}
+      searchText={searchText}
+      setSearchText={setSearchText}
+      showBackButton={true}
+      navigateBack={navigateBack}
+      children={(
+        <FlatList
+          data={systemQualityItems}
+          numColumns={3}
+          renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
+          keyExtractor={(item) => item.id}
+        />
+      )}
+    />
   );
 }
 
