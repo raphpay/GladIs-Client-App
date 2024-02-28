@@ -154,7 +154,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   return (
     <AppContainer
-      mainTitle={t(`documentsScreen.${currentScreen}`)}
+      mainTitle={t(currentScreen)}
       navigationHistoryItems={navigationHistoryItems}
       searchText={searchText}
       setSearchText={setSearchText}
