@@ -103,7 +103,14 @@
         "title": "Add a document",
         "confirmButton": "Select a file",
         "placeholder": "Enter a file name"
-      }
+      },
+      "passwordReset": {
+        "title": "Password reset",
+        "confirmButton": "Send",
+        "placeholder": "Email"
+      },
+      "confirm": "OK",
+      "cancel": "Cancel"
     }
   },
   "errors": {

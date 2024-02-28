@@ -103,7 +103,14 @@
         "title": "Ajouter un document",
         "confirmButton": "Selectionner un fichier",
         "placeholder": "Entrer un nom de fichier"
-      }
+      },
+      "passwordReset": {
+        "title": "Réinitialisation du mot de passe",
+        "confirmButton": "Envoyer",
+        "placeholder": "Email"
+      },
+      "confirm": "OK",
+      "cancel": "Annuler"
     }
   },
   "errors": {

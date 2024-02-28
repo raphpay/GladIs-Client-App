@@ -1,23 +1,24 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, SafeAreaView, Text } from 'react-native';
+import { Alert, SafeAreaView, Text, TextInput } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
+import { setCurrentUser, setFirstConnection } from '../../../business-logic/store/slices/userReducer';
 
 import AppIcon from '../../components/AppIcon';
+import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
 
-import IToken from '../../../business-logic/model/IToken';
-import UserService from '../../../business-logic/services/UserService';
-import { setCurrentUser, setFirstConnection } from '../../../business-logic/store/slices/userReducer';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
@@ -25,11 +26,11 @@ type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoute
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { navigation } = props;
 
-  const [identifier, onIdentifierChange] = useState('');
-  const [password, onPasswordChange] = useState('');
-
+  const [identifier, onIdentifierChange] = useState<string>('');
+  const [password, onPasswordChange] = useState<string>('');
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [resetEmail, setResetEmail] = useState<string>('');
   const { t } = useTranslation();
-
   const dispatch = useAppDispatch();
 
   async function login() {
@@ -51,7 +52,11 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   }
 
   function goToPasswordReset() {
-    navigation.navigate(NavigationRoutes.PasswordResetScreen)
+    setShowDialog(true);
+  }
+
+  function sendPasswordResetRequest() {
+    // TODO: Send password request
   }
 
   async function submitLogin() {
@@ -63,33 +68,53 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppIcon />
-      <Text style={styles.title} >{t('login.title')}</Text>
-      <GladisTextInput
-        value={identifier}
-        onValueChange={onIdentifierChange}
-        placeholder={t('login.identifier')}
-        autoCapitalize={'none'}
-      />
-      <GladisTextInput
-        value={password}
-        onValueChange={onPasswordChange}
-        placeholder={t('login.password')}
-        secureTextEntry={true}
-        onSubmitEditing={submitLogin}
-        showVisibilityButton={true}
-        autoCapitalize={'none'}
-      />
-      <TextButton
-        title={t('login.login')}
-        onPress={login}
-        width={'40%'}
-        disabled={isButtonDisabled}
-      />
-      <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
-      <SimpleTextButton title={t('login.forgottenPassword')} onPress={goToPasswordReset} />
-    </SafeAreaView>
+    <>
+      <SafeAreaView style={styles.container}>
+        <AppIcon />
+        <Text style={styles.title} >{t('login.title')}</Text>
+        <GladisTextInput
+          value={identifier}
+          onValueChange={onIdentifierChange}
+          placeholder={t('login.identifier')}
+          autoCapitalize={'none'}
+        />
+        <GladisTextInput
+          value={password}
+          onValueChange={onPasswordChange}
+          placeholder={t('login.password')}
+          secureTextEntry={true}
+          onSubmitEditing={submitLogin}
+          showVisibilityButton={true}
+          autoCapitalize={'none'}
+        />
+        <TextButton
+          title={t('login.login')}
+          onPress={login}
+          width={'40%'}
+          disabled={isButtonDisabled}
+        />
+        <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
+        <SimpleTextButton title={t('login.forgottenPassword')} onPress={goToPasswordReset} />
+      </SafeAreaView>
+      {
+        showDialog && (
+          <Dialog
+            title={t('components.dialog.passwordReset.title')}
+            confirmTitle={t('components.dialog.passwordReset.confirmButton')}
+            isConfirmDisabled={resetEmail.length == 0}
+            onConfirm={sendPasswordResetRequest}
+            onCancel={() => setShowDialog(false)}
+          >
+          <TextInput
+            value={resetEmail}
+            onChangeText={setResetEmail}
+            placeholder={t('components.dialog.passwordReset.placeholder')}
+            style={styles.dialogInput}
+          />
+          </Dialog>
+        )
+      }
+    </>
   );
 }
 

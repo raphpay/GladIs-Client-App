@@ -36,6 +36,13 @@ const styles = StyleSheet.create({
   textButtonText: {
     fontSize: 14,
   },
+  dialogInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+  },
 });
 
 export default styles;

@@ -3,13 +3,16 @@ import { Colors } from '../../colors/colors';
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   dialog: {
     backgroundColor: Colors.white,
+    justifyContent: 'space-between',
     padding: 20,
     borderRadius: 10,
     elevation: 5,

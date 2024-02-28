@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+
 import styles from '../assets/styles/components/DialogStyles';
 
 type DialogProps = {
@@ -17,6 +19,7 @@ type DialogProps = {
   children?: JSX.Element;
 };
 
+// TODO: Check Dialog in other components than LoginScreen
 function Dialog(props: DialogProps): React.JSX.Element {
 
   const {
@@ -29,6 +32,8 @@ function Dialog(props: DialogProps): React.JSX.Element {
     onCancel,
     children,
   } = props;
+  const { t } = useTranslation();
+
   return (
     <View style={styles.overlay}>
       <View style={styles.dialog}>
@@ -36,11 +41,11 @@ function Dialog(props: DialogProps): React.JSX.Element {
         <Text style={styles.title}>{description}</Text>
         {children}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
-            <Text>{confirmTitle ?? "Confirm"}</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={onCancel}>
-            <Text>{cancelTitle ?? "Cancel"}</Text>
+            <Text>{cancelTitle ?? t('components.dialog.cancel')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
+            <Text>{confirmTitle ?? t('components.dialog.confirm')}</Text>
           </TouchableOpacity>
         </View>
       </View>
