@@ -72,7 +72,6 @@ function DashboardScreen(props: DashboardScreenProps): any {
     }
   }
 
-  // TODO: remove firstConnection and password JSON objects from translation files
   function dialogContent() {
     return (
       <>

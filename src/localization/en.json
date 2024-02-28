@@ -7,12 +7,6 @@
     "signUp": "No account yet? Please contact your supplier.",
     "forgottenPassword": "Forgot password?"
   },
-  "passwordReset": {
-    "title": "Password reset",
-    "message": "A mail containing a temporary password will be sent to you.",
-    "email": "Email",
-    "reset": "Reset"
-  },
   "quotation": {
     "title": "Request for quotation",
     "name": "NAME First Name",
@@ -27,12 +21,6 @@
     "users": "Number of potential users",
     "capital": "Sales amount",
     "submit": "Submit"
-  },
-  "firstConnection": {
-    "title": "Modify your password",
-    "temporary": "Temporary password",
-    "new": "New password",
-    "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character."
   },
   "dashboard": {
     "title": "Dashboard",

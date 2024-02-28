@@ -25,7 +25,6 @@ type GladisTextInputProps = {
   editable?: boolean;
 };
 
-// TODO: Check all other GladisTextInput with new props
 function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
 
   const [isSecure, setIsSecure] = useState<boolean>(false);
