@@ -66,7 +66,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
         ) : undefined
       )}
     >
-      <DashboardClientFlatList />
+      <DashboardClientFlatList searchText={searchText} />
     </AppContainer>
   )
 }

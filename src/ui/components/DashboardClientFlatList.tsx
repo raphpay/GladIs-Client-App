@@ -18,13 +18,19 @@ import ContentUnavailableView from './ContentUnavailableView';
 
 import styles from '../assets/styles/components/DashboardClientFlatList';
 
+type DashboardClientFlatListProps = {
+  searchText: string;
+};
 
-function DashboardClientFlatList(): React.JSX.Element {
-
+function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
+  const { searchText } = props;
   const [modules, setModules] = useState<IModule[]>([]);
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const modulesFiltered = modules.filter(module =>
+    module.name.toLowerCase().includes(searchText?.toLowerCase()),
+  );
 
   function navigateToModule(module: IModule) {
     dispatch(setModule(module));
@@ -50,7 +56,7 @@ function DashboardClientFlatList(): React.JSX.Element {
   return (
     <>
     {
-      modules.length === 0 ? (
+      modulesFiltered.length === 0 ? (
         <ContentUnavailableView
           title={t('dashboard.client.noModules.title')}
           message={t('dashboard.client.noModules.message')}
@@ -60,7 +66,7 @@ function DashboardClientFlatList(): React.JSX.Element {
         />
       ) : (
         <FlatList
-          data={modules}
+          data={modulesFiltered}
           numColumns={4}
           renderItem={(renderItem) => FlatListModuleItem(renderItem.item)}
           keyExtractor={(item) => item.id}

@@ -53,7 +53,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
             isAdmin ? (
               <DashboardAdminFlatList searchText={searchText} />
             ) : (
-              <DashboardClientFlatList />
+              <DashboardClientFlatList searchText={searchText} />
             )
           }
       </>
