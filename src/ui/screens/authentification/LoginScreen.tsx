@@ -77,6 +77,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
           onValueChange={onIdentifierChange}
           placeholder={t('login.identifier')}
           autoCapitalize={'none'}
+          width={'70%'}
         />
         <GladisTextInput
           value={password}
@@ -86,6 +87,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
           onSubmitEditing={submitLogin}
           showVisibilityButton={true}
           autoCapitalize={'none'}
+          width={'70%'}
         />
         <TextButton
           title={t('login.login')}
