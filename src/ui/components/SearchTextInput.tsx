@@ -8,6 +8,7 @@ import {
 type SearchTextInputProps = {
   searchText: string;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
+  editable?: boolean,
 };
 
 function SearchTextInput(props: SearchTextInputProps): React.JSX.Element {
@@ -20,6 +21,7 @@ function SearchTextInput(props: SearchTextInputProps): React.JSX.Element {
       onChangeText={props.setSearchText}
       placeholder={t('components.searchTextInput.placeholder')}
       style={styles.textInput}
+      editable={props.editable}
     />
   );
 }

@@ -23,10 +23,11 @@ import styles from '../assets/styles/components/DashboardClientFlatList';
 
 type DashboardClientFlatListProps = {
   searchText: string;
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
-  const { searchText } = props;
+  const { searchText, setShowDialog } = props;
   const [modules, setModules] = useState<IModule[]>([]);
   const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
   const navigation = useNavigation();
@@ -43,7 +44,7 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
       dispatch(setModule(module));
       navigation.navigate(NavigationRoutes.DocumentManagementScreen);
     } else {
-      // TODO: Show dialog
+      setShowDialog && setShowDialog(true);
     }
   }
 

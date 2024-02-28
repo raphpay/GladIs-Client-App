@@ -14,6 +14,7 @@ import AppContainer from '../../components/AppContainer';
 import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
 import DashboardClientFlatList from '../../components/DashboardClientFlatList';
 import Dialog from '../../components/Dialog';
+import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
 
@@ -28,10 +29,23 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const [newPassword, setNewPassword] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const { t } = useTranslation();
 
   function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
+  }
+
+  async function submitPasswordChange() {
+    if (oldPassword.length !== 0 && newPassword.length !== 0) {
+      try {
+        await UserService.getInstance().changePassword(oldPassword, newPassword);
+        await UserService.getInstance().setUserFirstConnectionToFalse();
+        setShowDialog(false);
+      } catch (error) {
+        console.log('Error changing password', error);
+      }
+    }
   }
 
   useEffect(() => {
@@ -53,23 +67,11 @@ function DashboardScreen(props: DashboardScreenProps): any {
             isAdmin ? (
               <DashboardAdminFlatList searchText={searchText} />
             ) : (
-              <DashboardClientFlatList searchText={searchText} />
+              <DashboardClientFlatList searchText={searchText} setShowDialog={setShowErrorDialog}/>
             )
           }
       </>
     );
-  }
-
-  async function submitPasswordChange() {
-    if (oldPassword.length !== 0 && newPassword.length !== 0) {
-      try {
-        await UserService.getInstance().changePassword(oldPassword, newPassword);
-        await UserService.getInstance().setUserFirstConnectionToFalse();
-        setShowDialog(false);
-      } catch (error) {
-        console.log('Error changing password', error);
-      }
-    }
   }
 
   function dialogContent() {
@@ -112,6 +114,23 @@ function DashboardScreen(props: DashboardScreenProps): any {
     );
   }
 
+  function errorDialogContent() {
+    return (
+      <>
+        {
+          showErrorDialog && (
+            <ErrorDialog
+              title={t('errors.modules.title')}
+              description={t('errors.modules.description')}
+              cancelTitle={t('errors.modules.cancelButton')}
+              onCancel={() => setShowErrorDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer 
@@ -130,6 +149,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
         children={appContainerChildren()}
       />
       {dialogContent()}
+      {errorDialogContent()}
     </>
   )
 }
