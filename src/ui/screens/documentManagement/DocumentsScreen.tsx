@@ -24,13 +24,13 @@ import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
+import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
-import AppContainer from '../../components/AppContainer';
-import Dialog from '../../components/Dialog';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
@@ -44,7 +44,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { previousScreen, currentScreen, documentsPath, processNumber } = props.route.params;
   const { module } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
-
+  const documentsFiltered = documents.filter(doc =>
+    doc.name.toLowerCase().includes(searchText.toLowerCase()),
+  );
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
       title: t('dashboard.title'),
@@ -186,9 +188,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       }
     >
       {
-        documents.length !== 0 ? (
+        documentsFiltered.length !== 0 ? (
           <FlatList
-            data={documents}
+            data={documentsFiltered}
             renderItem={(renderItem) => DocumentRow(renderItem.item)}
             keyExtractor={(item) => item.id}
           />
