@@ -19,9 +19,16 @@ import ContentUnavailableView from './ContentUnavailableView';
 
 import styles from '../assets/styles/components/DashboardAdminFlatListStyles';
 
-function DashboardAdminFlatList(): React.JSX.Element {
+type DashboardAdminFlatListProps = {
+  searchText: string;
+};
 
+function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.Element {
+  const { searchText } = props;
   const [clients, setClients] = useState<IUser[]>([]);
+  const clientsFiltered = clients.filter(client =>
+    client.username.toLowerCase().includes(searchText?.toLowerCase()),
+  );
 
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -57,17 +64,17 @@ function DashboardAdminFlatList(): React.JSX.Element {
   return (
     <>
     {
-      clients.length === 0 ? (
+      clientsFiltered.length === 0 ? (
         <ContentUnavailableView
-          title={t('dashboard.client.noModules.title')}
-          message={t('dashboard.client.noModules.message')}
+          title={t('dashboard.noClients.title')}
+          message={t('dashboard.noClients.message')}
           image={(
             <Image source={require('../assets/images/list.clipboard.png')}/>
           )}
         />
       ) : (
         <FlatList
-          data={clients}
+          data={clientsFiltered}
           numColumns={4}
           renderItem={(renderItem) => FlatListClientItem(renderItem.item)}
           keyExtractor={(item) => item.id}

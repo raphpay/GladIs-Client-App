@@ -28,6 +28,10 @@
     "noModules": {
       "title": "No modules yet",
       "message": "Please try again later"
+    },
+    "noClients": {
+      "title": "No clients yet",
+      "message": "Add a client now"
     }
   },
   "modules": {
