@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -12,14 +11,11 @@ import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
 
+import AppContainer from '../../components/AppContainer';
 import DashboardClientFlatList from '../../components/DashboardClientFlatList';
 import IconButton from '../../components/IconButton';
-import SearchTextInput from '../../components/SearchTextInput';
-import TopAppBar from '../../components/TopAppBar';
 
-import backIcon from '../../assets/images/arrow.uturn.left.png';
 import plusIcon from '../../assets/images/plus.png';
-import styles from '../../assets/styles/dashboard/DashboardScreenStyles';
 
 type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;
 
@@ -53,36 +49,26 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <View style={styles.innerComponentsContainer}>
-          <View style={styles.searchInputContainer}>
-            {
-              isAdmin && (
-                <IconButton
-                  title={t('components.buttons.addClient')}
-                  icon={plusIcon}
-                  onPress={navigateToClientList}
-                />
-              )
-            }
-            <SearchTextInput 
-              searchText={searchText}
-              setSearchText={setSearchText}
-            />
-          </View>
-          <DashboardClientFlatList />
-        </View>
-        <View style={styles.backButtonContainer}>
+    <AppContainer 
+      mainTitle={t('dashboard.title')}
+      navigationHistoryItems={navigationHistoryItems}
+      searchText={searchText}
+      setSearchText={setSearchText}
+      showBackButton={true}
+      navigateBack={navigateBack}
+      children={(
+        <DashboardClientFlatList />
+      )}
+      adminButton={(
+        isAdmin ? (
           <IconButton
-            title={t('components.buttons.back')}
-            icon={backIcon}
-            onPress={navigateBack}
+            title={t('components.buttons.addClient')}
+            icon={plusIcon}
+            onPress={navigateToClientList}
           />
-        </View>
-      </View>
-      <TopAppBar mainTitle={t('dashboard.title')} navigationHistoryItems={navigationHistoryItems} />
-    </SafeAreaView>
+        ) : undefined
+      )}
+    />
   )
 }
 
