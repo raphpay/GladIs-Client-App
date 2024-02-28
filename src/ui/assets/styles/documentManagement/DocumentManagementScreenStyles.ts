@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../colors/colors';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   // Containers
@@ -23,7 +24,9 @@ const styles = StyleSheet.create({
   },
   // Components
   categoryTitle: {
-    fontSize: 12
+    fontSize: 12,
+    fontWeight: Fonts.regular,
+    fontFamily: Fonts.poppinsLight,
   },
   categoryDescription: {
     fontSize: 10

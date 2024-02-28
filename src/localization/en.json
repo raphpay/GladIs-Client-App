@@ -1,10 +1,10 @@
 {
   "login": {
-    "title": "Connect to GladIs!",
+    "title": "Connect to GladIs",
     "identifier": "Identifier",
     "password": "Password",
     "login": "Log in",
-    "signUp": "No account yet? Please contact your supplier.",
+    "signUp": "No account yet? Ask for a quotation.",
     "forgottenPassword": "Forgot password?"
   },
   "quotation": {

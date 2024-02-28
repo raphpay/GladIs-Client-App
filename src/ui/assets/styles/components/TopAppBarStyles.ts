@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   topContainer: {
@@ -13,7 +14,8 @@ const styles = StyleSheet.create({
   currentPageTitle: {
     paddingLeft: 8,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: Fonts.semiBold,
+    fontFamily: Fonts.bikoBold
   },
   navigationHistoryContainer: {
     flexDirection: 'row',
@@ -22,7 +24,8 @@ const styles = StyleSheet.create({
   navigationHistory: {
     paddingLeft: 8,
     fontSize: 12,
-    fontWeight: '400',
+    fontWeight: Fonts.regular,
+    fontFamily: Fonts.poppinsLight,
     paddingRight: 4
   },
   navigationButtonContainer: {
