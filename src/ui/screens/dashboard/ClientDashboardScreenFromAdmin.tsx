@@ -56,9 +56,6 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
       setSearchText={setSearchText}
       showBackButton={true}
       navigateBack={navigateBack}
-      children={(
-        <DashboardClientFlatList />
-      )}
       adminButton={(
         isAdmin ? (
           <IconButton
@@ -68,7 +65,9 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
           />
         ) : undefined
       )}
-    />
+    >
+      <DashboardClientFlatList />
+    </AppContainer>
   )
 }
 

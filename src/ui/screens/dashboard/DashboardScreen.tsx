@@ -47,13 +47,6 @@ function DashboardScreen(props: DashboardScreenProps): any {
       mainTitle={t('dashboard.adminTitle')}
       searchText={searchText}
       setSearchText={setSearchText}
-      children={(
-        isAdmin ? (
-          <DashboardAdminFlatList />
-        ) : (
-          <DashboardClientFlatList />
-        )
-      )}
       adminButton={(
         isAdmin ? (
           <IconButton
@@ -63,7 +56,15 @@ function DashboardScreen(props: DashboardScreenProps): any {
           />
         ) : undefined
       )}
-    />
+    >
+      {
+        isAdmin ? (
+          <DashboardAdminFlatList />
+        ) : (
+          <DashboardClientFlatList />
+        )
+      }
+    </AppContainer>
   )
 }
 

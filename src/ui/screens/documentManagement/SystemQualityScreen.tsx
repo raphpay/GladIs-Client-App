@@ -126,15 +126,14 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       setSearchText={setSearchText}
       showBackButton={true}
       navigateBack={navigateBack}
-      children={(
-        <FlatList
-          data={systemQualityItems}
-          numColumns={3}
-          renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
-          keyExtractor={(item) => item.id}
-        />
-      )}
-    />
+    >
+      <FlatList
+        data={systemQualityItems}
+        numColumns={3}
+        renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
+        keyExtractor={(item) => item.id}
+      />
+    </AppContainer>
   );
 }
 

@@ -75,17 +75,16 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
       navigationHistoryItems={navigationHistoryItems}
       searchText={searchText}
       setSearchText={setSearchText}
-      children={(
-        <FlatList
-          data={subcategories}
-          numColumns={2}
-          renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
-          keyExtractor={(item) => item.id}
-        />
-      )}
       showBackButton={true}
       navigateBack={navigateBack}
-    />
+    >
+      <FlatList
+        data={subcategories}
+        numColumns={2}
+        renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
+        keyExtractor={(item) => item.id}
+      />
+    </AppContainer>
   );
 }
 
