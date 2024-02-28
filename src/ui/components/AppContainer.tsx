@@ -25,6 +25,7 @@ type AppContainerProps = {
   children: JSX.Element;
   adminButton?: JSX.Element;
   dialog?: JSX.Element;
+  dialogIsShown?: boolean
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -39,7 +40,8 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     navigateBack,
     children,
     adminButton,
-    dialog
+    dialog,
+    dialogIsShown
   } = props;
   const { t } = useTranslation();
 
@@ -52,6 +54,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
             <SearchTextInput 
               searchText={searchText}
               setSearchText={setSearchText}
+              editable={!dialogIsShown}
             />
           </View>
           {children}

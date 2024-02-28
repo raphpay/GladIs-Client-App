@@ -1,7 +1,9 @@
+import IModule from '../model/IModule';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import CacheKeys from '../model/enums/CacheKeys';
 import UserType from '../model/enums/UserType';
+
 import APIService from './APIService';
 import CacheService from './CacheService';
 
@@ -64,6 +66,21 @@ class UserService {
       }
       const user = await APIService.get<IUser>(`${this.baseRoute}/${id}`, usedToken?.value);
       return user;
+    } catch (error) {
+      console.error('Error getting user by id:', id, error);
+      throw error;
+    }
+  }
+
+  async getUsersModules(id: string | undefined, token: IToken | undefined): Promise<IModule[]> {
+    try {
+      let usedToken = token;
+      if (!usedToken) {
+        const cachedToken = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
+        usedToken = cachedToken as IToken;
+      }
+      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, usedToken?.value);
+      return modules;
     } catch (error) {
       console.error('Error getting user by id:', id, error);
       throw error;

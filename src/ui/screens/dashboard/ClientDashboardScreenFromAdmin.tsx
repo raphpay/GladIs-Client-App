@@ -13,6 +13,7 @@ import UserService from '../../../business-logic/services/UserService';
 
 import AppContainer from '../../components/AppContainer';
 import DashboardClientFlatList from '../../components/DashboardClientFlatList';
+import ErrorDialog from '../../components/ErrorDialog';
 import IconButton from '../../components/IconButton';
 
 import plusIcon from '../../assets/images/plus.png';
@@ -22,6 +23,7 @@ type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackPara
 function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminProps): any {
   const [searchText,setSearchText] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const { navigation } = props;
   const { t } = useTranslation();
   const navigationHistoryItems: INavigationHistoryItem[] = [
@@ -49,25 +51,38 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
   }, []);
 
   return (
-    <AppContainer 
-      mainTitle={t('dashboard.title')}
-      navigationHistoryItems={navigationHistoryItems}
-      searchText={searchText}
-      setSearchText={setSearchText}
-      showBackButton={true}
-      navigateBack={navigateBack}
-      adminButton={(
-        isAdmin ? (
-          <IconButton
-            title={t('components.buttons.addClient')}
-            icon={plusIcon}
-            onPress={navigateToClientList}
+    <>
+      <AppContainer 
+        mainTitle={t('dashboard.title')}
+        navigationHistoryItems={navigationHistoryItems}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showBackButton={true}
+        navigateBack={navigateBack}
+        dialogIsShown={showDialog}
+        adminButton={(
+          isAdmin ? (
+            <IconButton
+              title={t('components.buttons.addClient')}
+              icon={plusIcon}
+              onPress={navigateToClientList}
+            />
+          ) : undefined
+        )}
+      >
+        <DashboardClientFlatList searchText={searchText} setShowDialog={setShowDialog} />
+      </AppContainer>
+      {
+        showDialog && (
+          <ErrorDialog
+            title={t('errors.modules.title')}
+            description={t('errors.modules.description')}
+            cancelTitle={t('errors.modules.cancelButton')}
+            onCancel={() => setShowDialog(false)}
           />
-        ) : undefined
-      )}
-    >
-      <DashboardClientFlatList searchText={searchText} />
-    </AppContainer>
+        )
+      }
+    </>
   )
 }
 

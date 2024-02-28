@@ -120,6 +120,11 @@
     "logout": {
       "title": "Erreur lors de la déconnexion",
       "message": "Veuillez réessayer plus tard"
+    },
+    "modules": {
+      "title": "Ce module ne fait pas partie de votre abonnement",
+      "description": "Veuillez contacter votre fournisseur.",
+      "cancelButton": "OK"
     }
   }
 }

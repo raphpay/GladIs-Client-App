@@ -9,10 +9,13 @@ import {
 } from 'react-native';
 
 import IModule from '../../business-logic/model/IModule';
+import IToken from '../../business-logic/model/IToken';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../business-logic/services/ModuleService';
-import { useAppDispatch } from '../../business-logic/store/hooks';
+import UserService from '../../business-logic/services/UserService';
+import { useAppDispatch, useAppSelector } from '../../business-logic/store/hooks';
 import { setModule } from '../../business-logic/store/slices/appStateReducer';
+import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
 
@@ -20,21 +23,29 @@ import styles from '../assets/styles/components/DashboardClientFlatList';
 
 type DashboardClientFlatListProps = {
   searchText: string;
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
-  const { searchText } = props;
+  const { searchText, setShowDialog } = props;
   const [modules, setModules] = useState<IModule[]>([]);
+  const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const modulesFiltered = modules.filter(module =>
     module.name.toLowerCase().includes(searchText?.toLowerCase()),
   );
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
 
   function navigateToModule(module: IModule) {
-    dispatch(setModule(module));
-    navigation.navigate(NavigationRoutes.DocumentManagementScreen)
+    if (clientModulesIDs.includes(module.id)) {
+      dispatch(setModule(module));
+      navigation.navigate(NavigationRoutes.DocumentManagementScreen);
+    } else {
+      setShowDialog && setShowDialog(true);
+    }
   }
 
   function FlatListModuleItem(module: IModule) {
@@ -48,6 +59,10 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
   useEffect(() => {
     async function init() {
       const apiModules = await ModuleService.getInstance().getModules();
+      const castedToken = token as IToken;
+      const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
+      const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
+      setClientModulesIDs(usersModulesIDs);
       setModules(apiModules);
     }
     init();

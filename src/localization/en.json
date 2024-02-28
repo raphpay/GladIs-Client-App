@@ -120,6 +120,11 @@
     "logout": {
       "title": "Error logging out",
       "message": "Please try again later"
+    },
+    "modules": {
+      "title": "This module is not part of your subscription",
+      "description": "Please contact you provider.",
+      "cancelButton": "OK"
     }
   }
 }
