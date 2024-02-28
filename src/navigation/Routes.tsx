@@ -12,15 +12,13 @@ import AuthenticationService from '../business-logic/services/AuthenticationServ
 import UserService from '../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
-import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser, setFirstConnection } from '../business-logic/store/slices/userReducer';
+import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser } from '../business-logic/store/slices/userReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
-import PasswordResetScreen from '../ui/screens/authentification/PasswordResetScreen';
 import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
-import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
@@ -36,9 +34,7 @@ export type IRootStackParams = {
   // Login Stack
   LoginScreen: undefined
   SignUpScreen: undefined,
-  PasswordResetScreen: undefined,
   // Dashboard Stack
-  FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
   ClientDashboardScreenFromAdmin: undefined,
   DocumentManagementScreen: undefined,
@@ -71,11 +67,6 @@ function LoginStack() {
         component={SignUpScreen}
         options={{headerShown: false}}
       />
-      <RootStack.Screen 
-        name={NavigationRoutes.PasswordResetScreen}
-        component={PasswordResetScreen}
-        options={{headerShown: false}}
-      />
     </>
   )
 }
@@ -97,91 +88,70 @@ function ClientManagement() {
   );
 }
 
-function DashboardStack(firstConnection: boolean) {
+function DashboardStack() {
   return (
     <>
-      {
-        firstConnection ? (
-          <RootStack.Screen
-            name={NavigationRoutes.FirstConnectionScreen}
-            component={FirstConnectionScreen}
-            options={{headerShown: false}}
-          />
-        ) : (
-          <>
-            <RootStack.Screen
-              name={NavigationRoutes.DashboardScreen}
-              component={DashboardScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.ClientDashboardScreenFromAdmin}
-              component={ClientDashboardScreenFromAdmin}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.DocumentManagementScreen}
-              component={DocumentManagementScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.SystemQualityScreen}
-              component={SystemQualityScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.ProcessesScreen}
-              component={ProcessesScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.DocumentsScreen}
-              component={DocumentsScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.PDFScreen}
-              component={PDFScreen}
-            />
-            <ClientManagementStack.Screen
-              name={NavigationRoutes.ClientManagementStack}
-              component={ClientManagement}
-              options={{headerShown: false}}
-            />
-          </>
-        )
-      }
+      <RootStack.Screen
+        name={NavigationRoutes.DashboardScreen}
+        component={DashboardScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.ClientDashboardScreenFromAdmin}
+        component={ClientDashboardScreenFromAdmin}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.DocumentManagementScreen}
+        component={DocumentManagementScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.SystemQualityScreen}
+        component={SystemQualityScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.ProcessesScreen}
+        component={ProcessesScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.DocumentsScreen}
+        component={DocumentsScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.PDFScreen}
+        component={PDFScreen}
+      />
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.ClientManagementStack}
+        component={ClientManagement}
+        options={{headerShown: false}}
+      />
     </>
   )
 }
 
 export let Routes = () => {
-
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isFirstConnection, setIsFirstConnection] = useState<boolean>(false);
-
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { firstConnection } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     setIsLoggedIn(!!token);
   }, [token]);
 
-  useEffect(() => {
-     setIsFirstConnection(firstConnection)
-  }, [firstConnection]);
 
   useEffect(() => {
     async function init() {
       if (token == null) {
-        const authResult = await AuthenticationService.getInstance().checkAuthentication();
-        setIsLoggedIn(!!authResult.token);
-        dispatch(setFirstConnection(authResult.firstConnection));
-        setIsFirstConnection(authResult.firstConnection);
-        if (authResult.token != null) {
-          dispatch(setToken(authResult.token));
-          const currentUser = await UserService.getInstance().getUserByID(authResult.token.user.id, authResult.token);
+        const token = await AuthenticationService.getInstance().checkAuthentication();
+        setIsLoggedIn(!!token);
+        if (token != null) {
+          dispatch(setToken(token));
+          const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
           dispatch(setCurrentUser(currentUser));
           if (currentUser.userType !== UserType.Admin) {
             dispatch(setCurrentClient(currentUser));
@@ -201,7 +171,7 @@ export let Routes = () => {
       <RootStack.Navigator>
         {
           isLoggedIn ? (
-            DashboardStack(isFirstConnection)
+            DashboardStack()
           ) : (
             LoginStack()
           )

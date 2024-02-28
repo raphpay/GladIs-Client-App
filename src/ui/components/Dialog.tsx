@@ -1,9 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+
+import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/DialogStyles';
 
 type DialogProps = {
@@ -29,18 +32,20 @@ function Dialog(props: DialogProps): React.JSX.Element {
     onCancel,
     children,
   } = props;
+  const { t } = useTranslation();
+
   return (
     <View style={styles.overlay}>
       <View style={styles.dialog}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.title}>{description}</Text>
+        <Text style={styles.description}>{description}</Text>
         {children}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
-            <Text>{confirmTitle ?? "Confirm"}</Text>
-          </TouchableOpacity>
           <TouchableOpacity onPress={onCancel}>
-            <Text>{cancelTitle ?? "Cancel"}</Text>
+            <Text style={[styles.buttonText, { color: Colors.danger }]}>{cancelTitle ?? t('components.dialog.cancel')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
+            <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
           </TouchableOpacity>
         </View>
       </View>

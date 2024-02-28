@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
+  DimensionValue,
   Image,
   KeyboardTypeOptions,
   Text,
@@ -15,34 +15,36 @@ type GladisTextInputProps = {
   value: string;
   placeholder: string
   onValueChange: React.Dispatch<React.SetStateAction<string>>;
+  width?: DimensionValue,
   keyboardType?: KeyboardTypeOptions | undefined;
   secureTextEntry?: boolean;
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
   onSubmitEditing?: () => void;
   showVisibilityButton?: boolean;
+  showTitle?: boolean;
+  editable?: boolean;
 };
 
 function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
 
   const [isSecure, setIsSecure] = useState<boolean>(false);
-  const [visibilityIconURI, setVisibilityIconURI] = useState<string>('../assets/images/eye.fill.png');
 
   const {
     value,
     placeholder,
     onValueChange,
+    width,
     keyboardType,
     secureTextEntry,
     autoCapitalize,
     onSubmitEditing,
-    showVisibilityButton
+    showVisibilityButton,
+    showTitle,
+    editable,
   } = props;
-
-  const { t } = useTranslation();
 
   function toggleVisibility() {
     setIsSecure(!isSecure);
-    setVisibilityIconURI(isSecure ? '../assets/images/eye.fill.png' : '../assets/images/eye.slash.fill.png');
   }
 
   useEffect(() => {
@@ -50,8 +52,11 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.placeholder}>{placeholder}</Text>
+    <View style={[styles.container, { width }]}>
+      { showTitle && (
+          <Text style={styles.placeholder}>{placeholder}</Text>
+        )
+      }
       <View style={styles.textInputContainer}>
         <TextInput
           value={value}
@@ -62,6 +67,7 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
           autoCapitalize={autoCapitalize}
           onSubmitEditing={onSubmitEditing}
           placeholder={placeholder}
+          editable={editable ?? true}
         />
         {
           showVisibilityButton && (

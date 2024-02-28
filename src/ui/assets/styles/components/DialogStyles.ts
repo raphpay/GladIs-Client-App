@@ -1,25 +1,34 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Colors } from '../../colors/colors';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   dialog: {
     backgroundColor: Colors.white,
+    justifyContent: 'space-between',
     padding: 20,
     borderRadius: 10,
     elevation: 5,
-    width: '80%',
-    maxHeight: Dimensions.get('window').height * 0.7, // Max height to prevent overflowing on smaller screens
-    maxWidth: Dimensions.get('window').width * 0.7, // Max height to prevent overflowing on smaller screens
+    width: '50%',
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: Fonts.bold,
+    fontFamily: Fonts.bikoBold,
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 14,
+    fontWeight: Fonts.regular,
+    fontFamily: Fonts.poppinsLight,
     marginBottom: 10,
   },
   input: {
@@ -32,6 +41,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  buttonText: {
+    fontSize: 14,
+    fontFamily: Fonts.poppinsSemiBold
   },
 });
 

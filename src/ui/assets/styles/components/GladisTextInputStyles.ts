@@ -4,7 +4,6 @@ import { Fonts } from "../../fonts/fonts";
 
 const styles = StyleSheet.create({
   container: {
-    width: '70%',
     paddingTop: 8,
     paddingBottom: 8,
   },

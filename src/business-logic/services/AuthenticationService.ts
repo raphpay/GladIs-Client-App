@@ -1,6 +1,4 @@
-import AuthenticationResult from '../model/AuthenticationResult';
 import IToken from '../model/IToken';
-import IUser from '../model/IUser';
 import CacheKeys from '../model/enums/CacheKeys';
 import APIService from './APIService';
 import CacheService from './CacheService';
@@ -43,23 +41,21 @@ class AuthenticationService {
   }
 
   // Authentication check
-  async checkAuthentication(): Promise<AuthenticationResult> {
-    let authResult: AuthenticationResult = { token: null, firstConnection: true };
+  async checkAuthentication(): Promise<IToken> {
     try {
       const cachedToken = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserToken) as IToken;
       const token = await APIService.get<IToken>(`${this.baseRoute}/${cachedToken.id}`);
       const cachedUserID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
-      const user = await APIService.get<IUser>(`users/${cachedUserID}`, token.value);
-      authResult.firstConnection = user.firstConnection;
       if (token.user.id === cachedUserID) {
-        authResult.token = token
+        return token
+      } else {
+        throw new Error('The user is not connected')
       }
     } catch (error) {
       console.log('Error checking user authentication status', error);
       throw error;
     }
 
-    return authResult;
   }
 }
 
