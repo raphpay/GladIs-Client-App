@@ -20,6 +20,7 @@ type DialogProps = {
 };
 
 // TODO: Check Dialog in other components than LoginScreen
+// TODO: Change fonts
 function Dialog(props: DialogProps): React.JSX.Element {
 
   const {

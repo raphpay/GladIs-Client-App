@@ -19,7 +19,6 @@ import LoginScreen from '../ui/screens/authentification/LoginScreen';
 import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
-import FirstConnectionScreen from '../ui/screens/dashboard/FirstConnectionScreen';
 import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
@@ -93,57 +92,45 @@ function ClientManagement() {
 function DashboardStack(firstConnection: boolean) {
   return (
     <>
-      {
-        firstConnection ? (
-          <RootStack.Screen
-            name={NavigationRoutes.FirstConnectionScreen}
-            component={FirstConnectionScreen}
-            options={{headerShown: false}}
-          />
-        ) : (
-          <>
-            <RootStack.Screen
-              name={NavigationRoutes.DashboardScreen}
-              component={DashboardScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.ClientDashboardScreenFromAdmin}
-              component={ClientDashboardScreenFromAdmin}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.DocumentManagementScreen}
-              component={DocumentManagementScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.SystemQualityScreen}
-              component={SystemQualityScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.ProcessesScreen}
-              component={ProcessesScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.DocumentsScreen}
-              component={DocumentsScreen}
-              options={{headerShown: false}}
-            />
-            <RootStack.Screen
-              name={NavigationRoutes.PDFScreen}
-              component={PDFScreen}
-            />
-            <ClientManagementStack.Screen
-              name={NavigationRoutes.ClientManagementStack}
-              component={ClientManagement}
-              options={{headerShown: false}}
-            />
-          </>
-        )
-      }
+      <RootStack.Screen
+        name={NavigationRoutes.DashboardScreen}
+        component={DashboardScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.ClientDashboardScreenFromAdmin}
+        component={ClientDashboardScreenFromAdmin}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.DocumentManagementScreen}
+        component={DocumentManagementScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.SystemQualityScreen}
+        component={SystemQualityScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.ProcessesScreen}
+        component={ProcessesScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.DocumentsScreen}
+        component={DocumentsScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.PDFScreen}
+        component={PDFScreen}
+      />
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.ClientManagementStack}
+        component={ClientManagement}
+        options={{headerShown: false}}
+      />
     </>
   )
 }

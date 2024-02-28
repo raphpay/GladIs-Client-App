@@ -109,6 +109,13 @@
         "confirmButton": "Send",
         "placeholder": "Email"
       },
+      "firstConnection": {
+        "title": "Modify your password",
+        "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character.",
+        "temporary": "Temporary password",
+        "new": "New password",
+        "confirmButton": "Confirm"
+      },
       "confirm": "OK",
       "cancel": "Cancel"
     }

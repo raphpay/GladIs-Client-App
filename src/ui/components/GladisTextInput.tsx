@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  DimensionValue,
   Image,
   KeyboardTypeOptions,
   Text,
@@ -15,13 +16,17 @@ type GladisTextInputProps = {
   value: string;
   placeholder: string
   onValueChange: React.Dispatch<React.SetStateAction<string>>;
+  width: DimensionValue,
   keyboardType?: KeyboardTypeOptions | undefined;
   secureTextEntry?: boolean;
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
   onSubmitEditing?: () => void;
   showVisibilityButton?: boolean;
+  showTitle?: boolean;
 };
 
+// TODO: clean this component
+// TODO: Check all other GladisTextInput with new props
 function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
 
   const [isSecure, setIsSecure] = useState<boolean>(false);
@@ -31,11 +36,13 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
     value,
     placeholder,
     onValueChange,
+    width,
     keyboardType,
     secureTextEntry,
     autoCapitalize,
     onSubmitEditing,
-    showVisibilityButton
+    showVisibilityButton,
+    showTitle,
   } = props;
 
   const { t } = useTranslation();
@@ -50,8 +57,11 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.placeholder}>{placeholder}</Text>
+    <View style={[styles.container, { width }]}>
+      { showTitle && (
+          <Text style={styles.placeholder}>{placeholder}</Text>
+        )
+      }
       <View style={styles.textInputContainer}>
         <TextInput
           value={value}
