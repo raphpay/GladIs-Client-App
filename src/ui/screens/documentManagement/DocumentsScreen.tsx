@@ -5,7 +5,6 @@ import {
   FlatList,
   Image,
   Platform,
-  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
@@ -26,14 +25,12 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
-import SearchTextInput from '../../components/SearchTextInput';
-import TopAppBar from '../../components/TopAppBar';
 
-import backIcon from '../../assets/images/arrow.uturn.left.png';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
+import AppContainer from '../../components/AppContainer';
+import Dialog from '../../components/Dialog';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
@@ -154,73 +151,58 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <View style={styles.innerComponentsContainer}>
-          <View style={styles.searchInputContainer}>
-            {
-              currentUser?.userType === UserType.Admin && (
-                <IconButton
-                  title={t('components.buttons.addDocument')}
-                  icon={plusIcon}
-                  onPress={addDocument}
-                />
-              )
-            }
-            <SearchTextInput
-              searchText={searchText}
-              setSearchText={setSearchText}
-            />
-          </View>
-          {
-            documents.length !== 0 ? (
-              <FlatList
-                data={documents}
-                renderItem={(renderItem) => DocumentRow(renderItem.item)}
-                keyExtractor={(item) => item.id}
-              />
-            ) : (
-              <ContentUnavailableView 
-                title={t('documentsScreen.noDocs.title')}
-                message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-                image={(
-                  <Image source={require('../../assets/images/doc.fill.png')} />
-                )}
-              />
-            )
-          }
-        </View>
-        <View style={styles.backButtonContainer}>
+    <AppContainer
+      mainTitle={t(`documentsScreen.${currentScreen}`)}
+      navigationHistoryItems={navigationHistoryItems}
+      searchText={searchText}
+      setSearchText={setSearchText}
+      showBackButton={true}
+      navigateBack={navigateBack}
+      showDialog={showDialog}
+      adminButton={
+        currentUser?.userType == UserType.Admin ? (
           <IconButton
-            title={t('components.buttons.back')}
-            icon={backIcon}
-            onPress={navigateBack}
+            title={t('components.buttons.addDocument')}
+            icon={plusIcon}
+            onPress={addDocument}
           />
-        </View>
-      </View>
-      <TopAppBar 
-        mainTitle={t(`documentsScreen.${currentScreen}`)}
-        navigationHistoryItems={navigationHistoryItems}
-      />
+        ) : undefined
+      }
+      dialog={
+        <Dialog
+          title={t('components.dialog.addDocument.title')}
+          confirmTitle={t('components.dialog.addDocument.confirmButton')}
+          onConfirm={pickAFile}
+          onCancel={() => setShowDialog(false)}
+          isConfirmDisabled={documentName.length === 0}
+        >
+          <TextInput
+            value={documentName}
+            onChangeText={setDocumentName}
+            placeholder={t('components.dialog.addDocument.placeholder')}
+            style={styles.dialogInput}
+          />
+        </Dialog>
+      }
+    >
       {
-        showDialog && (
-          <Dialog
-            title={t('components.dialog.addDocument.title')}
-            confirmTitle={t('components.dialog.addDocument.confirmButton')}
-            onConfirm={pickAFile}
-            onCancel={() => setShowDialog(false)}
-            isConfirmDisabled={documentName.length === 0}
-          >
-            <TextInput 
-              value={documentName}
-              onChangeText={setDocumentName}
-              placeholder={t('components.dialog.addDocument.placeholder')}
-              style={styles.dialogInput}
-            />
-          </Dialog>
+        documents.length !== 0 ? (
+          <FlatList
+            data={documents}
+            renderItem={(renderItem) => DocumentRow(renderItem.item)}
+            keyExtractor={(item) => item.id}
+          />
+        ) : (
+          <ContentUnavailableView 
+            title={t('documentsScreen.noDocs.title')}
+            message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
+            image={(
+              <Image source={require('../../assets/images/doc.fill.png')} />
+            )}
+          />
         )
       }
-    </SafeAreaView>
+    </AppContainer>
   );
 }
 

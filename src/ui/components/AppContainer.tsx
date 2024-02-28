@@ -19,10 +19,12 @@ type AppContainerProps = {
   navigationHistoryItems?: INavigationHistoryItem[];
   searchText: string;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
+  showBackButton?: boolean;
+  showDialog?: boolean;
   navigateBack?: () => void;
   children: JSX.Element;
-  showBackButton?: boolean;
   adminButton?: JSX.Element;
+  dialog?: JSX.Element;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -32,10 +34,12 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     navigationHistoryItems,
     searchText,
     setSearchText,
-    children,
-    navigateBack,
     showBackButton,
-    adminButton
+    showDialog,
+    navigateBack,
+    children,
+    adminButton,
+    dialog
   } = props;
   const { t } = useTranslation();
 
@@ -65,6 +69,9 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
         }
       </View>
       <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} />
+      {
+        showDialog && (dialog)
+      }
     </SafeAreaView>
   );
 }
