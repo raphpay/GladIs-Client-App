@@ -12,7 +12,7 @@ import AuthenticationService from '../business-logic/services/AuthenticationServ
 import UserService from '../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
-import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser, setFirstConnection } from '../business-logic/store/slices/userReducer';
+import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser } from '../business-logic/store/slices/userReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
@@ -35,7 +35,6 @@ export type IRootStackParams = {
   LoginScreen: undefined
   SignUpScreen: undefined,
   // Dashboard Stack
-  FirstConnectionScreen: undefined,
   DashboardScreen: undefined,
   ClientDashboardScreenFromAdmin: undefined,
   DocumentManagementScreen: undefined,
@@ -89,7 +88,7 @@ function ClientManagement() {
   );
 }
 
-function DashboardStack(firstConnection: boolean) {
+function DashboardStack() {
   return (
     <>
       <RootStack.Screen
@@ -136,32 +135,23 @@ function DashboardStack(firstConnection: boolean) {
 }
 
 export let Routes = () => {
-
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [isFirstConnection, setIsFirstConnection] = useState<boolean>(false);
-
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { firstConnection } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     setIsLoggedIn(!!token);
   }, [token]);
 
-  useEffect(() => {
-     setIsFirstConnection(firstConnection)
-  }, [firstConnection]);
 
   useEffect(() => {
     async function init() {
       if (token == null) {
-        const authResult = await AuthenticationService.getInstance().checkAuthentication();
-        setIsLoggedIn(!!authResult.token);
-        dispatch(setFirstConnection(authResult.firstConnection));
-        setIsFirstConnection(authResult.firstConnection);
-        if (authResult.token != null) {
-          dispatch(setToken(authResult.token));
-          const currentUser = await UserService.getInstance().getUserByID(authResult.token.user.id, authResult.token);
+        const token = await AuthenticationService.getInstance().checkAuthentication();
+        setIsLoggedIn(!!token);
+        if (token != null) {
+          dispatch(setToken(token));
+          const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
           dispatch(setCurrentUser(currentUser));
           if (currentUser.userType !== UserType.Admin) {
             dispatch(setCurrentClient(currentUser));
@@ -181,7 +171,7 @@ export let Routes = () => {
       <RootStack.Navigator>
         {
           isLoggedIn ? (
-            DashboardStack(isFirstConnection)
+            DashboardStack()
           ) : (
             LoginStack()
           )

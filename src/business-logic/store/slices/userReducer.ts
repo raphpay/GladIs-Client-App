@@ -2,13 +2,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import IUser from '../../model/IUser';
 
 export interface UserState {
-  firstConnection: boolean;
   currentUser: IUser | undefined,
   currentClient: IUser | undefined,
 }
 
 const initialState: UserState = {
-  firstConnection: true,
   currentUser: undefined,
   currentClient: undefined,
 };
@@ -18,9 +16,6 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
-    setFirstConnection: (state, action: PayloadAction<boolean>) => {
-      state.firstConnection = action.payload;
-    },
     setCurrentUser: (state, action: PayloadAction<IUser>) => {
       state.currentUser = action.payload;
     },
@@ -36,6 +31,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setFirstConnection, setCurrentUser, removeCurrentUser, setCurrentClient, removeCurrentClient } = userSlice.actions;
+export const { setCurrentUser, removeCurrentUser, setCurrentClient, removeCurrentClient } = userSlice.actions;
 
 export default userSlice.reducer;

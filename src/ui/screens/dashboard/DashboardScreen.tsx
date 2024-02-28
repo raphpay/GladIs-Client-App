@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -10,7 +9,6 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
-import { setFirstConnection } from '../../../business-logic/store/slices/userReducer';
 
 import AppContainer from '../../components/AppContainer';
 import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
@@ -31,7 +29,6 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const { t } = useTranslation();
-  const dispatch = useDispatch();
 
   function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
@@ -68,8 +65,6 @@ function DashboardScreen(props: DashboardScreenProps): any {
       try {
         await UserService.getInstance().changePassword(oldPassword, newPassword);
         await UserService.getInstance().setUserFirstConnectionToFalse();
-        // TODO: Should we remove this ?
-        dispatch(setFirstConnection(false));
         setShowDialog(false);
       } catch (error) {
         console.log('Error changing password', error);

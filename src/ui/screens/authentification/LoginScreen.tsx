@@ -11,7 +11,7 @@ import AuthenticationService from '../../../business-logic/services/Authenticati
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
-import { setCurrentUser, setFirstConnection } from '../../../business-logic/store/slices/userReducer';
+import { setCurrentUser } from '../../../business-logic/store/slices/userReducer';
 
 import AppIcon from '../../components/AppIcon';
 import Dialog from '../../components/Dialog';
@@ -39,7 +39,6 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       .then(async (token: IToken) => {
         dispatch(setToken(token));
         const user = await UserService.getInstance().getUserByID(token.user.id);
-        dispatch(setFirstConnection(user.firstConnection));
         dispatch(setCurrentUser(user));
       })
       .catch(() => {
