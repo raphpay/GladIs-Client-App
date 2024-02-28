@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../colors/colors';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   overlay: {
@@ -20,7 +21,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: Fonts.bold,
+    fontFamily: Fonts.bikoBold,
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 14,
+    fontWeight: Fonts.regular,
+    fontFamily: Fonts.poppinsLight,
     marginBottom: 10,
   },
   input: {
@@ -33,6 +41,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  buttonText: {
+    fontSize: 14,
+    fontFamily: Fonts.poppinsSemiBold
   },
 });
 

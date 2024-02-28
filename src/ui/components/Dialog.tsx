@@ -6,6 +6,7 @@ import {
   View
 } from 'react-native';
 
+import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/DialogStyles';
 
 type DialogProps = {
@@ -19,8 +20,7 @@ type DialogProps = {
   children?: JSX.Element;
 };
 
-// TODO: Check Dialog in other components than LoginScreen
-// TODO: Change fonts
+// TODO: Correct dialog interaction with components below
 function Dialog(props: DialogProps): React.JSX.Element {
 
   const {
@@ -39,14 +39,14 @@ function Dialog(props: DialogProps): React.JSX.Element {
     <View style={styles.overlay}>
       <View style={styles.dialog}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.title}>{description}</Text>
+        <Text style={styles.description}>{description}</Text>
         {children}
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={onCancel}>
-            <Text>{cancelTitle ?? t('components.dialog.cancel')}</Text>
+            <Text style={[styles.buttonText, { color: Colors.danger }]}>{cancelTitle ?? t('components.dialog.cancel')}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
-            <Text>{confirmTitle ?? t('components.dialog.confirm')}</Text>
+            <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
           </TouchableOpacity>
         </View>
       </View>
