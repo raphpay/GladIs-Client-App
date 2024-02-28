@@ -29,25 +29,27 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const { t } = useTranslation();
   const { navigation } = props;
   const { processNumber } = props.route.params;
-
   const processes: IProcessItem[] = [
     {
       id: 'processesID',
-      title: 'processes'
+      title: t('documentsScreen.processes')
     },
     {
       id: 'proceduresID',
-      title: 'procedures'
+      title: t('documentsScreen.procedures')
     },
     {
       id: 'formsID',
-      title: 'forms'
+      title: t('documentsScreen.forms')
     },
     {
       id: 'recordsID',
-      title: 'records'
+      title: t('documentsScreen.records')
     },
   ];
+  const processesFiltered = processes.filter(process =>
+    process.title.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
@@ -89,7 +91,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
-          <Text style={styles.categoryTitle}>{t(`documentsScreen.${item.title}`)}</Text>
+          <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
       </TouchableOpacity>
     )
@@ -105,7 +107,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
       navigateBack={navigateBack}
     >
       <FlatList
-        data={processes}
+        data={processesFiltered}
         numColumns={2}
         renderItem={(renderItem) => ProcessusFlatListItem(renderItem.item)}
         keyExtractor={(item) => item.id}

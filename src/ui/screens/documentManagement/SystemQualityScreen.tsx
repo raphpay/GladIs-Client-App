@@ -33,7 +33,6 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const { t } = useTranslation();
   const { navigation } = props;
   const { currentUser } = useAppSelector((state: RootState) => state.users);
-
   const systemQualityItems: ISystemQualityItem[] = [
     {
       id: 'qualityManualID',
@@ -75,6 +74,9 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       number: 7,
     },
   ];
+  const systemQualityItemsFiltered = systemQualityItems.filter(systemQualityItem =>
+    systemQualityItem.title.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
@@ -128,7 +130,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       navigateBack={navigateBack}
     >
       <FlatList
-        data={systemQualityItems}
+        data={systemQualityItemsFiltered}
         numColumns={3}
         renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
         keyExtractor={(item) => item.id}

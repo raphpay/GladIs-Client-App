@@ -28,6 +28,10 @@
     "noModules": {
       "title": "Pas de modules pour le moment",
       "message": "Merci de réessayer plus tard"
+    },
+    "noClients": {
+      "title": "Pas de clients pour le moment",
+      "message": "Ajoutez un client maintenant"
     }
   },
   "modules": {

@@ -24,10 +24,9 @@ type DocumentManagementScreenProps = NativeStackScreenProps<IRootStackParams, Na
 
 function DocumentManagementScreen(props: DocumentManagementScreenProps): React.JSX.Element {
   const { navigation } = props;
-  const [searchText,setSearchText] = useState<string>('');
+  const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { module } = useAppSelector((state: RootState) => state.appState);
-
   const subcategories: ISubCategory[] = [
     {
       id: 'systemQualityID',
@@ -38,6 +37,9 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
       title: t('technicalDocumentation.title'),
     },
   ];
+  const subcategoriesFiltered = subcategories.filter(subCategory =>
+    subCategory.title.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
@@ -79,7 +81,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
       navigateBack={navigateBack}
     >
       <FlatList
-        data={subcategories}
+        data={subcategoriesFiltered}
         numColumns={2}
         renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
         keyExtractor={(item) => item.id}

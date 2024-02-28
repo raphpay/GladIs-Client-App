@@ -29,7 +29,6 @@ import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationS
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
 
-
 export type IRootStackParams = {
   // Login Stack
   LoginScreen: undefined
