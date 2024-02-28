@@ -3,7 +3,6 @@ enum NavigationRoutes {
   LoginScreen = 'LoginScreen',
   SignUpScreen = 'SignUpScreen',
   // Dashboard Stack
-  FirstConnectionScreen = 'FirstConnectionScreen',
   DashboardScreen = 'DashboardScreen',
   ClientDashboardScreenFromAdmin = 'ClientDashboardScreenFromAdmin',
   DocumentManagementScreen = 'DocumentManagementScreen',
