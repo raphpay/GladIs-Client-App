@@ -16,20 +16,21 @@ import DocumentPicker from 'react-native-document-picker';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import IDocument from '../../../business-logic/model/IDocument';
+import IFile from '../../../business-logic/model/IFile';
+import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
+import FinderModule from '../../../business-logic/modules/FinderModule';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import AppIcon from '../../components/AppIcon';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 import SearchTextInput from '../../components/SearchTextInput';
+import TopAppBar from '../../components/TopAppBar';
 
-import IFile from '../../../business-logic/model/IFile';
-import FinderModule from '../../../business-logic/modules/FinderModule';
 import backIcon from '../../assets/images/arrow.uturn.left.png';
 import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
@@ -47,11 +48,26 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { module } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
 
+  const navigationHistoryItems: INavigationHistoryItem[] = [
+    {
+      title: t('dashboard.title'),
+      action: () => navigateToDashboard,
+    },
+    {
+      title: t(`modules.${module?.name}`),
+      action: () => navigateToDocumentManagementScreen()
+    },
+    {
+      title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : t(`documentsScreen.${previousScreen}`),
+      action: () => navigateBack()
+    }
+  ]
+
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
   }
 
-  function navigateToCategories() {
+  function navigateToDocumentManagementScreen() {
     navigation.navigate(NavigationRoutes.DocumentManagementScreen);
   }
 
@@ -182,42 +198,10 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           />
         </View>
       </View>
-      <View style={styles.topContainer}>
-        <AppIcon style={styles.appIcon} />
-        <View>
-          <View style={styles.navigationHistoryContainer}>
-            <TouchableOpacity onPress={navigateToDashboard}>
-              <Text style={styles.navigationHistory}>
-                {t('dashboard.title')}
-              </Text>
-            </TouchableOpacity>
-            <Image source={require('../../assets/images/chevron.right.png')}/>
-            <TouchableOpacity onPress={navigateToCategories}>
-              <Text style={styles.navigationHistory}>
-                {t(`modules.${module?.name}`)}
-              </Text>
-            </TouchableOpacity>
-            <Image source={require('../../assets/images/chevron.right.png')}/>
-            <TouchableOpacity onPress={navigateBack}>
-              {
-                processNumber ? (
-                  <Text style={styles.navigationHistory}>
-                    {`${t('documentsScreen.process')} ${processNumber}`}
-                  </Text>
-                ) : (
-                  <Text style={styles.navigationHistory}>
-                    {t(`documentsScreen.${previousScreen}`)}
-                  </Text>
-                )
-              }
-            </TouchableOpacity>
-            <Image source={require('../../assets/images/chevron.right.png')}/>
-          </View>
-          <Text style={styles.currentPageTitle}>
-            {t(`documentsScreen.${currentScreen}`)}
-          </Text>
-        </View>
-      </View>
+      <TopAppBar 
+        mainTitle={t(`documentsScreen.${currentScreen}`)}
+        navigationHistoryItems={navigationHistoryItems}
+      />
       {
         showDialog && (
           <Dialog
