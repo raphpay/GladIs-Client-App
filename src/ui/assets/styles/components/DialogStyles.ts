@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Colors } from '../../colors/colors';
 
 const styles = StyleSheet.create({
@@ -16,9 +16,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     elevation: 5,
-    width: '80%',
-    maxHeight: Dimensions.get('window').height * 0.7, // Max height to prevent overflowing on smaller screens
-    maxWidth: Dimensions.get('window').width * 0.7, // Max height to prevent overflowing on smaller screens
+    width: '50%',
   },
   title: {
     fontSize: 20,
