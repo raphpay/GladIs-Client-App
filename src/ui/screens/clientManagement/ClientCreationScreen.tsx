@@ -171,13 +171,13 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       </View>
       <ScrollView>
         <Text style={styles.title}>{t('quotation.title')}</Text>
-        <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')}/>
-        <GladisTextInput value={lastName} onValueChange={setLastName} placeholder={t('quotation.lastName')}/>
-        <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')}/>
-        <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')}/>
-        <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')}/>
-        <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')}/>
-        <Text style={styles.subtitle}>{t('quotation.modules.title')}</Text>
+        <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />
+        <GladisTextInput value={lastName} onValueChange={setLastName} placeholder={t('quotation.lastName')} showTitle={true} />
+        <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')} showTitle={true} />
+        <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')} showTitle={true}/>
+        <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')} showTitle={true} />
+        <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')} showTitle={true} />
+        <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
         {modules.map((module) => (
           <ModuleCheckBox
             key={module.id}
@@ -187,9 +187,9 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             isDisabled={pendingUser != null}
           />
         ))}
-        <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')}/>
-        <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')}/>
-        <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')}/>
+        <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')} showTitle={true} />
+        <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')} showTitle={true} />
+        <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')} showTitle={true} />
         <TextButton
           title={t('quotation.submit')}
           onPress={submit}

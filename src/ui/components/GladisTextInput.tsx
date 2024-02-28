@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   DimensionValue,
   Image,
@@ -16,7 +15,7 @@ type GladisTextInputProps = {
   value: string;
   placeholder: string
   onValueChange: React.Dispatch<React.SetStateAction<string>>;
-  width: DimensionValue,
+  width?: DimensionValue,
   keyboardType?: KeyboardTypeOptions | undefined;
   secureTextEntry?: boolean;
   autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined;
@@ -26,12 +25,10 @@ type GladisTextInputProps = {
   editable?: boolean;
 };
 
-// TODO: clean this component
 // TODO: Check all other GladisTextInput with new props
 function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
 
   const [isSecure, setIsSecure] = useState<boolean>(false);
-  const [visibilityIconURI, setVisibilityIconURI] = useState<string>('../assets/images/eye.fill.png');
 
   const {
     value,
@@ -47,11 +44,8 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
     editable,
   } = props;
 
-  const { t } = useTranslation();
-
   function toggleVisibility() {
     setIsSecure(!isSecure);
-    setVisibilityIconURI(isSecure ? '../assets/images/eye.fill.png' : '../assets/images/eye.slash.fill.png');
   }
 
   useEffect(() => {
