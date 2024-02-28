@@ -1,10 +1,10 @@
 {
   "login": {
-    "title": "Se connecter à GladIs!",
+    "title": "Se connecter à GladIs",
     "identifier": "Identifiant",
     "password": "Mot de passe",
     "login": "Se connecter",
-    "signUp": "Pas de compte ? Contactez votre fournisseur.",
+    "signUp": "Pas de compte ? Demandez un devis.",
     "forgottenPassword": "Mot de passe oublié ?"
   },
   "quotation": {

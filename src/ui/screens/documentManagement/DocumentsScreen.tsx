@@ -135,7 +135,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             <View style={styles.documentButton}>
               <Image source={require('../../assets/images/PDF_file_icon.png')}/>
               <View style={styles.documentTextContainer}>
-                <Text>
+                <Text style={styles.documentText}>
                   {item.name}
                 </Text>
               </View>

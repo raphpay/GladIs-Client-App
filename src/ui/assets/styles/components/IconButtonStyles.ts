@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../colors/colors';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   container: {
@@ -19,7 +20,8 @@ const styles = StyleSheet.create({
   textButton: {
     fontSize: 14,
     padding: 4,
-    color: Colors.white
+    color: Colors.white,
+    fontFamily: Fonts.poppinsLight
   },
 });
 

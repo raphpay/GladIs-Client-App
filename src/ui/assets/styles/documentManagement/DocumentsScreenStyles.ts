@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   // Containers
@@ -42,6 +43,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
+  },
+  documentText: {
+    fontFamily: Fonts.poppinsLight,
+    fontWeight: Fonts.regular,
   },
 });
 
