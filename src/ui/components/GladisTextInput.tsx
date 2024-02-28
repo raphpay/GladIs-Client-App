@@ -23,6 +23,7 @@ type GladisTextInputProps = {
   onSubmitEditing?: () => void;
   showVisibilityButton?: boolean;
   showTitle?: boolean;
+  editable?: boolean;
 };
 
 // TODO: clean this component
@@ -43,6 +44,7 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
     onSubmitEditing,
     showVisibilityButton,
     showTitle,
+    editable,
   } = props;
 
   const { t } = useTranslation();
@@ -72,6 +74,7 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
           autoCapitalize={autoCapitalize}
           onSubmitEditing={onSubmitEditing}
           placeholder={placeholder}
+          editable={editable ?? true}
         />
         {
           showVisibilityButton && (

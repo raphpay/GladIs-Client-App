@@ -20,7 +20,6 @@ type DialogProps = {
   children?: JSX.Element;
 };
 
-// TODO: Correct dialog interaction with components below
 function Dialog(props: DialogProps): React.JSX.Element {
 
   const {
