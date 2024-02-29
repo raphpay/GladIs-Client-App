@@ -5,8 +5,8 @@ import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import IArea from '../../../business-logic/model/IArea';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import ISubCategory from '../../../business-logic/model/ISubCategory';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -16,12 +16,13 @@ import AppContainer from '../../components/AppContainer';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 
-type TechnicalDocumentationScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.TechnicalDocumentationScreen>;
+type TechnicalDocAreaScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.TechnicalDocAreaScreen>;
 
-function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps): React.JSX.Element {
+function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
-  const { t } = useTranslation();
   const { navigation } = props;
+  const { area } = props.route.params;
+  const { t } = useTranslation();
   const { currentUser } = useAppSelector((state: RootState) => state.users);
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
@@ -32,73 +33,81 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
       title: t('documentManagement.title'),
       action: () => navigateBack(),
     },
-  ];
-  const areas: IArea[] = [
     {
-      id: 'europeID',
-      name: t('technicalDocumentation.areas.europe')
-    },
-    {
-      id: 'usaID',
-      name: t('technicalDocumentation.areas.usa')
-    },
-    {
-      id: 'canadaID',
-      name: t('technicalDocumentation.areas.canada')
-    },
-    {
-      id: 'australiaID',
-      name: t('technicalDocumentation.areas.australia')
-    },
-    {
-      id: 'brasilID',
-      name: t('technicalDocumentation.areas.brasil')
+      title: t('technicalDocumentation.title'),
+      action: () => navigateToTechnicalDocumentation(),
     }
   ];
-  const areasFiltered = areas.filter(area =>
-    area.name.toLowerCase().includes(searchText.toLowerCase()),
+  const subCategories: ISubCategory[] = [
+    {
+      id: 'regionalAdministrationID',
+      title: t('technicalDocumentation.subCategories.regionalAdministration')
+    },
+    {
+      id: 'submissionContextID',
+      title: t('technicalDocumentation.subCategories.submissionContext')
+    },
+    {
+      id: 'nonClinicalProofID',
+      title: t('technicalDocumentation.subCategories.nonClinicalProof')
+    },
+    {
+      id: 'clinicalProofID',
+      title: t('technicalDocumentation.subCategories.clinicalProof')
+    },
+    {
+      id: 'labellingID',
+      title: t('technicalDocumentation.subCategories.labelling')
+    },
+  ];
+  const subCategoriesFiltered = subCategories.filter(subCategory =>
+    subCategory.title.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   function navigateBack() {
     navigation.goBack();
   }
 
+  function navigateToTechnicalDocumentation() {
+    navigation.navigate(NavigationRoutes.TechnicalDocumentationScreen);
+  }
+
   function navigateToDashboard() {
     navigation.navigate(currentUser?.userType == UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
   }
 
-  function navigateTo(item: IArea) {
-    navigation.navigate(NavigationRoutes.TechnicalDocAreaScreen, { area: item })
+  function navigateTo(item: ISubCategory) {
+    // navigation.navigate(NavigationRoutes.TechnicalDocAreaScreen, { area: item })
   }
 
-  function AreaFlatListItem(item: IArea) {
+  // TODO: refactor this ( present in other screens )
+  function SubCategoryFlatListItem(item: ISubCategory) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
-          <Text style={styles.categoryTitle}>{item.name}</Text>
+          <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
       </TouchableOpacity>
     )
   }
 
-  // TODO: Implement empty view
   return (
     <AppContainer 
-      mainTitle={t('technicalDocumentation.title')}
+      mainTitle={area.name}
       searchText={searchText}
       setSearchText={setSearchText}
-      navigationHistoryItems={navigationHistoryItems}
       showBackButton={true}
       navigateBack={navigateBack}
+      navigationHistoryItems={navigationHistoryItems}
     >
       <FlatList
-        data={areasFiltered}
+        data={subCategoriesFiltered}
         numColumns={3}
-        renderItem={(renderItem) => AreaFlatListItem(renderItem.item)}
+        renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
         keyExtractor={(item) => item.id}
       />
     </AppContainer>
   );
 }
 
-export default TechnicalDocumentationScreen;
+export default TechnicalDocAreaScreen;

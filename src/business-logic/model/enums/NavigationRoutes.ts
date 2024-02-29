@@ -8,6 +8,7 @@ enum NavigationRoutes {
   DocumentManagementScreen = 'DocumentManagementScreen',
   SystemQualityScreen = 'SystemQualityScreen',
   TechnicalDocumentationScreen = 'TechnicalDocumentationScreen',
+  TechnicalDocAreaScreen = 'TechnicalDocAreaScreen',
   ProcessesScreen = 'ProcessesScreen',
   DocumentsScreen = 'DocumentsScreen',
   PDFScreen = 'PDFScreen',

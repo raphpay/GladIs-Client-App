@@ -57,6 +57,13 @@
       "canada": "Canada",
       "australia": "Australia",
       "brasil": "Brasil"
+    },
+    "subCategories": {
+      "regionalAdministration": "Regional Administration",
+      "submissionContext": "Submission Context",
+      "nonClinicalProof": "Non Clinical Proof",
+      "clinicalProof": "Clinical Proof",
+      "labelling": "Labelling"
     }
   },
   "process": {
