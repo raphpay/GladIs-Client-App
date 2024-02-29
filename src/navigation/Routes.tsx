@@ -20,6 +20,7 @@ import LoginScreen from '../ui/screens/authentification/LoginScreen';
 import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
+// Document Management
 import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
 import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
@@ -27,6 +28,9 @@ import ProcessesScreen from '../ui/screens/documentManagement/ProcessesScreen';
 import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
 import TechnicalDocAreaScreen from '../ui/screens/documentManagement/TechnicalDocAreaScreen';
 import TechnicalDocumentationScreen from '../ui/screens/documentManagement/TechnicalDocumentationScreen';
+
+// Tracking
+import TrackingScreen from '../ui/screens/tracking/TrackingScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
@@ -39,6 +43,7 @@ export type IRootStackParams = {
   // Dashboard Stack
   DashboardScreen: undefined,
   ClientDashboardScreenFromAdmin: undefined,
+  // Document Management
   DocumentManagementScreen: undefined,
   SystemQualityScreen: undefined,
   TechnicalDocumentationScreen: undefined,
@@ -46,6 +51,8 @@ export type IRootStackParams = {
   ProcessesScreen: { processNumber: number },
   DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined },
   PDFScreen: { documentInput: IDocument },
+  // Tracking
+  TrackingScreen: undefined,
 }
 
 export type IClientManagementParams = {
@@ -138,6 +145,10 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.PDFScreen}
         component={PDFScreen}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.TrackingScreen}
+        component={TrackingScreen}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientManagementStack}

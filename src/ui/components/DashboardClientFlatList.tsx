@@ -42,7 +42,11 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
       dispatch(setModule(module));
-      navigation.navigate(NavigationRoutes.DocumentManagementScreen);
+      if (module.name == 'documentManagement') {
+        navigation.navigate(NavigationRoutes.DocumentManagementScreen);
+      } else if (module.name == 'tracking') {
+        navigation.navigate(NavigationRoutes.TrackingScreen);
+      }
     } else {
       setShowDialog && setShowDialog(true);
     }
