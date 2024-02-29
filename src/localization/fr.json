@@ -64,6 +64,11 @@
       "nonClinicalProof": "Preuve non clinique",
       "clinicalProof": "Preuve clinique",
       "labelling": "Etiquetage"
+    },
+    "noTabs": {
+      "title": "Pas d'onglets pour cette région pour le moment",
+      "admin": "Créez un onglet maintenant",
+      "client": "Veuillez réessayer plus tard"
     }
   },
   "process": {

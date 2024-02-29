@@ -64,6 +64,11 @@
       "nonClinicalProof": "Non Clinical Proof",
       "clinicalProof": "Clinical Proof",
       "labelling": "Labelling"
+    },
+    "noTabs": {
+      "title": "No tabs for this area yet",
+      "admin": "Create a tab now",
+      "client": "Please try again later"
     }
   },
   "process": {

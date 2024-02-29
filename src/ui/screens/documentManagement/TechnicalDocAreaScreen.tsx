@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -14,6 +14,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 
@@ -88,7 +89,6 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     )
   }
 
-  // TODO: Handle empty list
   return (
     <AppContainer 
       mainTitle={area.name}
@@ -101,7 +101,17 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
       <>
         {
           technicalTabsFiltered.length === 0 ? (
-            <Text>Empty</Text>
+            <ContentUnavailableView
+              title={t('technicalDocumentation.noTabs.title')}
+              message={
+                currentUser?.userType === UserType.Admin ?
+                  t('technicalDocumentation.noTabs.admin') :
+                  t('technicalDocumentation.noTabs.client')
+              }
+              image={(
+                <Image source={require('../../assets/images/list.clipboard.png')}/>
+              )}
+            />
           ) : (
             <FlatList
               data={technicalTabsFiltered}
