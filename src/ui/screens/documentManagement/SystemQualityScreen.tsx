@@ -100,8 +100,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   function navigateTo(item: ISystemQualityItem) {
     if (item.id === 'qualityManualID') {
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
-        previousScreen: 'systemQuality',
-        currentScreen: 'qualityManual',
+        previousScreen: t('systemQuality.title'),
+        currentScreen: t('systemQuality.qualityManual'),
         documentsPath: 'systemQuality/qualityManual',
         processNumber: undefined,
       })

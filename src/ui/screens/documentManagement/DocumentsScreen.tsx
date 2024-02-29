@@ -57,7 +57,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       action: () => navigateToDocumentManagementScreen()
     },
     {
-      title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : t(`documentsScreen.${previousScreen}`),
+      title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
       action: () => navigateBack()
     }
   ]

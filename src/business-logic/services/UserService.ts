@@ -1,4 +1,5 @@
 import IModule from '../model/IModule';
+import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import CacheKeys from '../model/enums/CacheKeys';
@@ -27,6 +28,18 @@ class UserService {
       return createdUser;
     } catch (error) {
       console.error('Error creating user:', error);
+      throw error;
+    }
+  }
+
+  async addTabToUser(clientID: string | undefined, tab: ITechnicalDocTab, token: IToken | null) {
+    try {
+      const castedID = clientID as string;
+      const tabID = tab.id as string;
+      const tokenValue = token?.value as string;
+      const linkedTab = await APIService.post<ITechnicalDocTab>(`${this.baseRoute}/${castedID}/technicalDocumentationTabs/${tabID}`, null, tokenValue);
+    } catch (error) {
+      console.error('Error linking user:', clientID, 'to tab:', tab.name, error);
       throw error;
     }
   }
@@ -72,7 +85,7 @@ class UserService {
     }
   }
 
-  async getUsersModules(id: string | undefined, token: IToken | undefined): Promise<IModule[]> {
+  async getUsersModules(id: string | undefined, token: IToken | null): Promise<IModule[]> {
     try {
       let usedToken = token;
       if (!usedToken) {
@@ -82,7 +95,22 @@ class UserService {
       const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, usedToken?.value);
       return modules;
     } catch (error) {
-      console.error('Error getting user by id:', id, error);
+      console.error('Error getting user\'s modules:', id, error);
+      throw error;
+    }
+  }
+
+  async getUsersTabs(id: string | undefined, token: IToken | null): Promise<ITechnicalDocTab[]> {
+    try {
+      let usedToken = token;
+      if (!usedToken) {
+        const cachedToken = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
+        usedToken = cachedToken as IToken;
+      }
+      const tabs = await APIService.get<ITechnicalDocTab[]>(`${this.baseRoute}/${id}/technicalDocumentationTabs`, usedToken?.value);
+      return tabs;
+    } catch (error) {
+      console.error('Error getting user\'s technical documentation tabs:', id, error);
       throw error;
     }
   }

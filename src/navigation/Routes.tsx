@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { useEffect, useState } from 'react';
 
+import IArea from '../business-logic/model/IArea';
 import IDocument from '../business-logic/model/IDocument';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
@@ -24,6 +25,8 @@ import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
 import ProcessesScreen from '../ui/screens/documentManagement/ProcessesScreen';
 import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
+import TechnicalDocAreaScreen from '../ui/screens/documentManagement/TechnicalDocAreaScreen';
+import TechnicalDocumentationScreen from '../ui/screens/documentManagement/TechnicalDocumentationScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
@@ -38,8 +41,10 @@ export type IRootStackParams = {
   ClientDashboardScreenFromAdmin: undefined,
   DocumentManagementScreen: undefined,
   SystemQualityScreen: undefined,
+  TechnicalDocumentationScreen: undefined,
+  TechnicalDocAreaScreen: { area: IArea },
   ProcessesScreen: { processNumber: number },
-  DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined,},
+  DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined },
   PDFScreen: { documentInput: IDocument },
 }
 
@@ -108,6 +113,16 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SystemQualityScreen}
         component={SystemQualityScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.TechnicalDocumentationScreen}
+        component={TechnicalDocumentationScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.TechnicalDocAreaScreen}
+        component={TechnicalDocAreaScreen}
         options={{headerShown: false}}
       />
       <RootStack.Screen
