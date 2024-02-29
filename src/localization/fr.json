@@ -51,6 +51,13 @@
   },
   "technicalDocumentation": {
     "title": "Documentation Technique",
+    "areas": {
+      "europe": "Europe",
+      "usa": "Etats-Unis",
+      "canada": "Canada",
+      "australia": "Australie",
+      "brasil": "Brésil"
+    }
   },
   "process": {
     "title": {

@@ -50,7 +50,14 @@
     "qualityManual": "Quality Manual"
   },
   "technicalDocumentation": {
-    "title": "Technical Documentation"
+    "title": "Technical Documentation",
+    "areas": {
+      "europe": "Europe",
+      "usa": "United States",
+      "canada": "Canada",
+      "australia": "Australia",
+      "brasil": "Brasil"
+    }
   },
   "process": {
     "title": {

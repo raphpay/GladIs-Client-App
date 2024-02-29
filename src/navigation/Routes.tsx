@@ -24,6 +24,7 @@ import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
 import ProcessesScreen from '../ui/screens/documentManagement/ProcessesScreen';
 import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
+import TechnicalDocumentationScreen from '../ui/screens/documentManagement/TechnicalDocumentationScreen';
 
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
@@ -38,6 +39,7 @@ export type IRootStackParams = {
   ClientDashboardScreenFromAdmin: undefined,
   DocumentManagementScreen: undefined,
   SystemQualityScreen: undefined,
+  TechnicalDocumentationScreen: undefined,
   ProcessesScreen: { processNumber: number },
   DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined,},
   PDFScreen: { documentInput: IDocument },
@@ -108,6 +110,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SystemQualityScreen}
         component={SystemQualityScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.TechnicalDocumentationScreen}
+        component={TechnicalDocumentationScreen}
         options={{headerShown: false}}
       />
       <RootStack.Screen

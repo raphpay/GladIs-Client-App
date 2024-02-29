@@ -55,6 +55,8 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
   function navigateTo(subCategory: ISubCategory) {
     if (subCategory.id === 'systemQualityID') {
       navigation.navigate(NavigationRoutes.SystemQualityScreen)
+    } else if (subCategory.id === 'technicalDocumentationID') {
+      navigation.navigate(NavigationRoutes.TechnicalDocumentationScreen)
     }
   }
 
