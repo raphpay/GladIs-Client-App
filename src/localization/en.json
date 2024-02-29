@@ -36,6 +36,7 @@
   },
   "modules": {
     "documentManagement": "Document Management",
+    "tracking": "Traceability",
     "module1": "Module 1",
     "module2": "Module 2",
     "module3": "Module 3",
