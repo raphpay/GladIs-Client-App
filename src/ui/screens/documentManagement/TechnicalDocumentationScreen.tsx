@@ -35,23 +35,23 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
   ];
   const areas: IArea[] = [
     {
-      id: 'europeID',
+      id: 'europe',
       name: t('technicalDocumentation.areas.europe')
     },
     {
-      id: 'usaID',
+      id: 'usa',
       name: t('technicalDocumentation.areas.usa')
     },
     {
-      id: 'canadaID',
+      id: 'canada',
       name: t('technicalDocumentation.areas.canada')
     },
     {
-      id: 'australiaID',
+      id: 'australia',
       name: t('technicalDocumentation.areas.australia')
     },
     {
-      id: 'brasilID',
+      id: 'brasil',
       name: t('technicalDocumentation.areas.brasil')
     }
   ];

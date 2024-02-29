@@ -1,14 +1,15 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
-import ISubCategory from '../../../business-logic/model/ISubCategory';
+import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentationTab';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
+import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -20,10 +21,12 @@ type TechnicalDocAreaScreenProps = NativeStackScreenProps<IRootStackParams, Navi
 
 function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
+  const [technicalTabs, setTechnicalTabs] = useState<ITechnicalDocTab[]>([]);
   const { navigation } = props;
   const { area } = props.route.params;
   const { t } = useTranslation();
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
       title: t('dashboard.title'),
@@ -38,30 +41,8 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
       action: () => navigateToTechnicalDocumentation(),
     }
   ];
-  const subCategories: ISubCategory[] = [
-    {
-      id: 'regionalAdministrationID',
-      title: t('technicalDocumentation.subCategories.regionalAdministration')
-    },
-    {
-      id: 'submissionContextID',
-      title: t('technicalDocumentation.subCategories.submissionContext')
-    },
-    {
-      id: 'nonClinicalProofID',
-      title: t('technicalDocumentation.subCategories.nonClinicalProof')
-    },
-    {
-      id: 'clinicalProofID',
-      title: t('technicalDocumentation.subCategories.clinicalProof')
-    },
-    {
-      id: 'labellingID',
-      title: t('technicalDocumentation.subCategories.labelling')
-    },
-  ];
-  const subCategoriesFiltered = subCategories.filter(subCategory =>
-    subCategory.title.toLowerCase().includes(searchText.toLowerCase()),
+  const technicalTabsFiltered = technicalTabs.filter(technicalTab =>
+    technicalTab.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   function navigateBack() {
@@ -76,26 +57,38 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     navigation.navigate(currentUser?.userType == UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
   }
 
-  function navigateTo(item: ISubCategory) {
+  function navigateTo(item: ITechnicalDocTab) {
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: area.name,
-      currentScreen: item.title,
+      currentScreen: item.name,
       processNumber: undefined,
-      documentsPath: `technicalDocumentation/${area.name}/${item.title}`
+      documentsPath: `technicalDocumentation/${area.name}/${item.name}`
     });
   }
 
+  useEffect(() => {
+    async function init() {
+      const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
+      const areaTabs = tabs.filter(tab => {
+        return tab.area === area.id.toLowerCase();
+      })
+      setTechnicalTabs(areaTabs);
+    }
+    init();
+  }, []);
+
   // TODO: refactor this ( present in other screens )
-  function SubCategoryFlatListItem(item: ISubCategory) {
+  function TabFlatListItem(item: ITechnicalDocTab) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
-          <Text style={styles.categoryTitle}>{item.title}</Text>
+          <Text style={styles.categoryTitle}>{t(`technicalDocumentation.tab.${item.name}`)}</Text>
         </View>
       </TouchableOpacity>
     )
   }
 
+  // TODO: Handle empty list
   return (
     <AppContainer 
       mainTitle={area.name}
@@ -105,12 +98,20 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
       navigateBack={navigateBack}
       navigationHistoryItems={navigationHistoryItems}
     >
-      <FlatList
-        data={subCategoriesFiltered}
-        numColumns={3}
-        renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
-        keyExtractor={(item) => item.id}
-      />
+      <>
+        {
+          technicalTabsFiltered.length === 0 ? (
+            <Text>Empty</Text>
+          ) : (
+            <FlatList
+              data={technicalTabsFiltered}
+              numColumns={3}
+              renderItem={(renderItem) => TabFlatListItem(renderItem.item)}
+              keyExtractor={(item) => item.id}
+            />
+          )
+        }
+      </>
     </AppContainer>
   );
 }

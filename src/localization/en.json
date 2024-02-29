@@ -58,7 +58,7 @@
       "australia": "Australia",
       "brasil": "Brasil"
     },
-    "subCategories": {
+    "tab": {
       "regionalAdministration": "Regional Administration",
       "submissionContext": "Submission Context",
       "nonClinicalProof": "Non Clinical Proof",

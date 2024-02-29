@@ -58,9 +58,9 @@
       "australia": "Australie",
       "brasil": "Brésil"
     },
-    "subCategories": {
+    "tab": {
       "regionalAdministration": "Administration Régionale",
-      "submissionContext": "Context de la soumission",
+      "submissionContext": "Contexte de la soumission",
       "nonClinicalProof": "Preuve non clinique",
       "clinicalProof": "Preuve clinique",
       "labelling": "Etiquetage"
