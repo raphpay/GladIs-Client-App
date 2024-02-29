@@ -149,6 +149,7 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.TrackingScreen}
         component={TrackingScreen}
+        options={{headerShown: false}}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientManagementStack}
