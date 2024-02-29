@@ -112,6 +112,7 @@
       "addClient": "Add a client",
       "continue": "Continue",
       "addDocument": "Add a document",
+      "addTab": "Add a tab"
     },
     "dialog": {
       "addDocument": {
@@ -130,6 +131,11 @@
         "temporary": "Temporary password",
         "new": "New password",
         "confirmButton": "Confirm"
+      },
+      "technicalDocTab": {
+        "title": "Add a tab to this area",
+        "confirmButton": "Add",
+        "placeholder": "New tab name"
       },
       "confirm": "OK",
       "cancel": "Cancel"

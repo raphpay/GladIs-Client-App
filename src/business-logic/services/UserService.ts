@@ -32,6 +32,18 @@ class UserService {
     }
   }
 
+  async addTabToUser(clientID: string | undefined, tab: ITechnicalDocTab, token: IToken | null) {
+    try {
+      const castedID = clientID as string;
+      const tabID = tab.id as string;
+      const tokenValue = token?.value as string;
+      const linkedTab = await APIService.post<ITechnicalDocTab>(`${this.baseRoute}/${castedID}/technicalDocumentationTabs/${tabID}`, null, tokenValue);
+    } catch (error) {
+      console.error('Error linking user:', clientID, 'to tab:', tab.name, error);
+      throw error;
+    }
+  }
+
   // READ
   async getUsers(): Promise<IUser[]> {
     try {

@@ -111,7 +111,8 @@
       "back": "Retour",
       "addClient": "Ajouter un client",
       "continue": "Continuer",
-      "addDocument": "Ajouter un document"
+      "addDocument": "Ajouter un document",
+      "addTab": "Ajouter un onglet"
     },
     "dialog": {
       "addDocument": {
@@ -130,6 +131,11 @@
         "temporary": "Mot de passe temporaire",
         "new": "Nouveau mot de passe",
         "confirmButton": "Confirmer"
+      },
+      "technicalDocTab": {
+        "title": "Ajouter un onglet à cette région",
+        "confirmButton": "Ajouter",
+        "placeholder": "Nouvel onglet"
       },
       "confirm": "OK",
       "cancel": "Annuler"

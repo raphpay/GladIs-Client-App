@@ -19,6 +19,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
   },
+  dialogInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+  },
 });
 
 export default styles;

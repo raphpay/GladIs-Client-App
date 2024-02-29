@@ -1,21 +1,27 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentationTab';
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
+import CacheService from '../../../business-logic/services/CacheService';
+import TechnicalDocumentationTabService from '../../../business-logic/services/TechnicalDocumentationTabService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialog';
+import IconButton from '../../components/IconButton';
 
+import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 
 type TechnicalDocAreaScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.TechnicalDocAreaScreen>;
@@ -23,6 +29,9 @@ type TechnicalDocAreaScreenProps = NativeStackScreenProps<IRootStackParams, Navi
 function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [technicalTabs, setTechnicalTabs] = useState<ITechnicalDocTab[]>([]);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [newTabName, setNewTabName] = useState<string>('');
   const { navigation } = props;
   const { area } = props.route.params;
   const { t } = useTranslation();
@@ -67,18 +76,38 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     });
   }
 
+  async function addTab() {
+    const newTab: ITechnicalDocTab = {
+      name: newTabName,
+      area: area.id
+    };
+    const createdTab = await TechnicalDocumentationTabService.getInstance().createTab(newTab, token);
+    await UserService.getInstance().addTabToUser(currentClient?.id, createdTab, token);
+    setShowDialog(false);
+  }
+
+  async function getUser() {
+    const userID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
+    const user = await UserService.getInstance().getUserByID(userID);
+    setIsAdmin(user.userType == UserType.Admin);
+  }
+
+  async function getTabs() {
+    const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
+    const areaTabs = tabs.filter(tab => {
+      return tab.area === area.id.toLowerCase();
+    })
+    setTechnicalTabs(areaTabs);
+  }
+
   useEffect(() => {
     async function init() {
-      const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
-      const areaTabs = tabs.filter(tab => {
-        return tab.area === area.id.toLowerCase();
-      })
-      setTechnicalTabs(areaTabs);
+      await getUser();
+      await getTabs();
     }
     init();
   }, []);
 
-  // TODO: refactor this ( present in other screens )
   function TabFlatListItem(item: ITechnicalDocTab) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
@@ -89,22 +118,15 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     )
   }
 
-  return (
-    <AppContainer 
-      mainTitle={area.name}
-      searchText={searchText}
-      setSearchText={setSearchText}
-      showBackButton={true}
-      navigateBack={navigateBack}
-      navigationHistoryItems={navigationHistoryItems}
-    >
+  function appContainerChildren() {
+    return (
       <>
         {
           technicalTabsFiltered.length === 0 ? (
             <ContentUnavailableView
               title={t('technicalDocumentation.noTabs.title')}
               message={
-                currentUser?.userType === UserType.Admin ?
+                isAdmin ?
                   t('technicalDocumentation.noTabs.admin') :
                   t('technicalDocumentation.noTabs.client')
               }
@@ -122,7 +144,48 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
           )
         }
       </>
-    </AppContainer>
+    );
+  }
+
+  return (
+    <>
+      <AppContainer 
+        mainTitle={area.name}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showBackButton={true}
+        navigateBack={navigateBack}
+        navigationHistoryItems={navigationHistoryItems}
+        adminButton={(
+          isAdmin ? (
+            <IconButton
+              title={t('components.buttons.addTab')}
+              icon={plusIcon}
+              onPress={() => setShowDialog(true)}
+            />
+          ) : undefined
+        )}
+        children={appContainerChildren()}
+      />
+      {
+        showDialog && (
+          <Dialog
+            title={t('components.dialog.technicalDocTab.title')}
+            confirmTitle={t('components.dialog.technicalDocTab.confirmButton')}
+            isConfirmDisabled={newTabName.length == 0}
+            onConfirm={addTab}
+            onCancel={() => setShowDialog(false)}
+          >
+            <TextInput
+              value={newTabName}
+              onChangeText={setNewTabName}
+              placeholder={t('components.dialog.technicalDocTab.placeholder')}
+              style={styles.dialogInput}
+            />
+          </Dialog>
+        )
+      }
+    </>
   );
 }
 

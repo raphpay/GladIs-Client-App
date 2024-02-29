@@ -108,12 +108,12 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
             onConfirm={sendPasswordResetRequest}
             onCancel={() => setShowDialog(false)}
           >
-          <TextInput
-            value={resetEmail}
-            onChangeText={setResetEmail}
-            placeholder={t('components.dialog.passwordReset.placeholder')}
-            style={styles.dialogInput}
-          />
+            <TextInput
+              value={resetEmail}
+              onChangeText={setResetEmail}
+              placeholder={t('components.dialog.passwordReset.placeholder')}
+              style={styles.dialogInput}
+            />
           </Dialog>
         )
       }
