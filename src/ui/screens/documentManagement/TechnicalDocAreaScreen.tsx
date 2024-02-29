@@ -77,7 +77,12 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   }
 
   function navigateTo(item: ISubCategory) {
-    // navigation.navigate(NavigationRoutes.TechnicalDocAreaScreen, { area: item })
+    navigation.navigate(NavigationRoutes.DocumentsScreen, {
+      previousScreen: area.name,
+      currentScreen: item.title,
+      processNumber: undefined,
+      documentsPath: `technicalDocumentation/${area.name}/${item.title}`
+    });
   }
 
   // TODO: refactor this ( present in other screens )

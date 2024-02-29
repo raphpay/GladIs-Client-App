@@ -44,7 +44,7 @@ export type IRootStackParams = {
   TechnicalDocumentationScreen: undefined,
   TechnicalDocAreaScreen: { area: IArea },
   ProcessesScreen: { processNumber: number },
-  DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined,},
+  DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined },
   PDFScreen: { documentInput: IDocument },
 }
 
