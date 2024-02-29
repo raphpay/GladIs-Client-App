@@ -65,6 +65,10 @@
       "clinicalProof": "Clinical Proof",
       "labelling": "Labelling"
     },
+    "noAreas": {
+      "title": "No area yet",
+      "message": "Please try again later"
+    },
     "noTabs": {
       "title": "No tabs for this area yet",
       "admin": "Create a tab now",

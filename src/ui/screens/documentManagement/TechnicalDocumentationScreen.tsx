@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -11,6 +11,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 import AppContainer from '../../components/AppContainer';
 
@@ -81,7 +82,6 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
     )
   }
 
-  // TODO: Implement empty view
   return (
     <AppContainer 
       mainTitle={t('technicalDocumentation.title')}
@@ -91,12 +91,24 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
       showBackButton={true}
       navigateBack={navigateBack}
     >
-      <FlatList
-        data={areasFiltered}
-        numColumns={3}
-        renderItem={(renderItem) => AreaFlatListItem(renderItem.item)}
-        keyExtractor={(item) => item.id}
-      />
+      {
+        areasFiltered.length === 0 ? (
+          <ContentUnavailableView
+            title={t('technicalDocumentation.noAreas.title')}
+            message={t('technicalDocumentation.noAreas.message')}
+            image={(
+              <Image source={require('../../assets/images/list.clipboard.png')}/>
+            )}
+          />
+        ) : (
+          <FlatList
+            data={areasFiltered}
+            numColumns={3}
+            renderItem={(renderItem) => AreaFlatListItem(renderItem.item)}
+            keyExtractor={(item) => item.id}
+          />
+        )
+      }
     </AppContainer>
   );
 }

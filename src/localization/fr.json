@@ -65,6 +65,10 @@
       "clinicalProof": "Preuve clinique",
       "labelling": "Etiquetage"
     },
+    "noAreas": {
+      "title": "Pas de régions pour le moment",
+      "message": "Veuillez réessayer plus tard"
+    },
     "noTabs": {
       "title": "Pas d'onglets pour cette région pour le moment",
       "admin": "Créez un onglet maintenant",
