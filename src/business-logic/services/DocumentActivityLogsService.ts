@@ -1,4 +1,5 @@
 import IDocumentActivityLog, { IDocumentActivityLogInput } from '../model/IDocumentActivityLog';
+import IToken from '../model/IToken';
 import APIService from './APIService';
 
 class DocumentActivityLogsService {
@@ -15,10 +16,9 @@ class DocumentActivityLogsService {
   }
 
   // CREATE
-  async recordLog(logInput: IDocumentActivityLogInput) {
+  async recordLog(logInput: IDocumentActivityLogInput, token: IToken | null) {
     try {
-      // TODO: Handle token
-      await APIService.post<IDocumentActivityLog>(this.baseRoute, logInput);
+      await APIService.post<IDocumentActivityLog>(this.baseRoute, logInput, token?.value);
     } catch (error) {
       console.error('Error posting log for client:', logInput.clientID, 'for doc:', logInput.documentID, error);
       throw error;
@@ -26,9 +26,9 @@ class DocumentActivityLogsService {
   }
 
   // READ
-  async getLogsForClient(clientID: string | undefined): Promise<IDocumentActivityLog[]> {
+  async getLogsForClient(clientID: string | undefined, token: IToken | null): Promise<IDocumentActivityLog[]> {
     try {
-      const logs = await APIService.get<IDocumentActivityLog[]>(`${this.baseRoute}/${clientID}`);
+      const logs = await APIService.get<IDocumentActivityLog[]>(`${this.baseRoute}/${clientID}`, token?.value);
       return logs;
     } catch (error) {
       console.error('Error getting logs for client:', clientID, error);

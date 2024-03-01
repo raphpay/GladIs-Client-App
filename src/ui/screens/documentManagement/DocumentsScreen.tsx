@@ -47,6 +47,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { previousScreen, currentScreen, documentsPath, processNumber } = props.route.params;
   const { module } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
@@ -86,7 +87,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       clientID: currentClient?.id as string,
       documentID: doc.id,
     }
-    await DocumentActivityLogsService.getInstance().recordLog(logInput);
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
     navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
@@ -130,7 +131,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       clientID: currentClient?.id as string,
       documentID: createdDocument.id,
     }
-    await DocumentActivityLogsService.getInstance().recordLog(logInput);
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
     setShowDialog(false);
     await loadDocuments();
   }
