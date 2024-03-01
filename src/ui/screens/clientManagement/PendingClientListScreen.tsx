@@ -55,6 +55,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     init();
   }, []);
 
+  // TODO: Change scrollView to flatlist
   return (
     <SafeAreaView style={styles.container}>
        <View style={styles.buttonsContainer}>
@@ -71,7 +72,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
           style={styles.button}
         />
        </View>
-      <ScrollView >
+      <ScrollView>
         {
           pendingUsers.map((user) => (
             <PendingUserRow

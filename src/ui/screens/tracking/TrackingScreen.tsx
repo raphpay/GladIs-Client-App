@@ -11,6 +11,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import styles from '../../assets/styles/tracking/TrackingScreenStyles';
 import AppContainer from '../../components/AppContainer';
 
@@ -26,6 +27,14 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   const logsFiltered = logs.filter(log =>
     log.name.toLowerCase().includes(searchText.toLowerCase()),
   );
+  const navigationHistoryItems: INavigationHistoryItem[] = [
+    {
+      title: t('dashboard.title'),
+      action: () => navigateBack()
+    }
+  ]
+
+
   function navigateBack() {
     navigation.goBack();
   }
@@ -67,6 +76,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
       setSearchText={setSearchText}
       showBackButton={true}
       navigateBack={navigateBack}
+      navigationHistoryItems={navigationHistoryItems}
     >
       <FlatList
         data={logsFiltered}
