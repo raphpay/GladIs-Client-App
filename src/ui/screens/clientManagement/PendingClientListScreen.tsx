@@ -1,34 +1,31 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  View
-} from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
 
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
+import AppContainer from '../../components/AppContainer';
 import IconButton from '../../components/IconButton';
-import PendingUserRow from '../../components/PendingUserRow';
 
-import backIcon from '../../assets/images/arrow.uturn.left.png';
-import plusIcon from '../../assets/images/plus.png';
+import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/clientManagement/PendingClientListScreenStyles';
 
 type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.PendingClientListScreen>;
 
 function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX.Element {
-
   const [pendingUsers, setPendingUsers] = useState<IPendingUser[]>([]);
-
+  const [searchText, setSearchText] = useState<string>('');
+  // TODO: Change all plus icons to remove the warning
+  const plusIcon = require('../../assets/images/plus.png');
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
 
@@ -42,7 +39,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
   }
 
-  function goBack() {
+  function navigateBack() {
     navigation.goBack();
   }
 
@@ -55,35 +52,64 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     init();
   }, []);
 
-  // TODO: Change scrollView to flatlist
+  function PendinguserRow(item: IPendingUser) {
+    const statusColors = {
+      pending: Colors.warning,
+      inReview: Colors.primary,
+      accepted: Colors.green,
+      rejected: Colors.danger,
+    };
+    
+    const getStatusColor = (status: PendingUserStatus) => {
+      return statusColors[status] || 'gray'; // Default color if status is not found
+    };
+    
+    const status = PendingUserStatus.pending;
+    const color = getStatusColor(status);
+    const userFullName = `${item.lastName.toUpperCase()} ${item.firstName}`
+
+    return (
+      <View>
+        <View style={styles.rowContainer}>
+          <TouchableOpacity style={styles.leftContainer} onPress={() => navigateToSpecificClientCreation(item)}>
+            <View style={styles.status}>
+              <View style={[styles.circle, { backgroundColor: color}]}/>
+              <Text style={styles.statusText}>{t(`pendingUserManagement.status.${item.status}`)}</Text>
+            </View>
+            <View>
+              <Text style={styles.companyName}>{item.companyName}</Text>
+              <Text style={styles.userFullName}>{userFullName}</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionButton} onPress={() => console.log('hello')}>
+            <Image source={require('../../assets/images/ellipsis.png')}/>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.separator} />
+      </View>
+    )
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-       <View style={styles.buttonsContainer}>
-        <IconButton
-          title={t('components.buttons.back')}
-          icon={backIcon}
-          onPress={goBack}
-          style={styles.button}
-        />
+    <AppContainer
+      mainTitle='Liste de clients'
+      searchText={searchText}
+      setSearchText={setSearchText}
+      showBackButton={true}
+      navigateBack={navigateBack}
+      adminButton={
         <IconButton
           title={t('components.buttons.addClient')}
           icon={plusIcon}
           onPress={navigateToCreateClient}
-          style={styles.button}
         />
-       </View>
-      <ScrollView>
-        {
-          pendingUsers.map((user) => (
-            <PendingUserRow
-              key={user.id}
-              pendingUser={user}
-              onUserSelect={navigateToSpecificClientCreation}
-            />
-          ))
-        }
-      </ScrollView>
-    </SafeAreaView>
+      }
+    >
+      <FlatList
+        data={pendingUsers}
+        renderItem={(renderItem) => PendinguserRow(renderItem.item)}
+      />
+    </AppContainer>
   );
 }
 

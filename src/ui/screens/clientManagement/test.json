@@ -1,0 +1,13 @@
+{
+  "companyName": "DoeComp",
+  "email": "joe@doecomp.com",
+  "firstName": "John",
+  "id": "A289AABE-73B7-45FA-AAE0-B43BBD5ECA56",
+  "lastName": "Doe",
+  "numberOfEmployees": 12,
+  "numberOfUsers": 3,
+  "phoneNumber": "08019289",
+  "products": "Mouse",
+  "salesAmount": 2500,
+  "status": "pending"
+}

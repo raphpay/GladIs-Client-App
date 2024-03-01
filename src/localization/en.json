@@ -115,6 +115,14 @@
       }
     }
   },
+  "pendingUserManagement": {
+    "status": {
+      "pending": "Pending",
+      "inReview": "In Review",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"

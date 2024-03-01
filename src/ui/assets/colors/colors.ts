@@ -12,6 +12,7 @@ export interface IColors {
   white: string;
   black: string;
   inactive: string;
+  green: string;
   // Add more colors as needed
 }
 
@@ -29,5 +30,6 @@ export const Colors: IColors = {
   white: '#fff',
   black: '#000',
   inactive: '#D9D9D9',
+  green: '#008000'
   // Add more colors as needed
 };
