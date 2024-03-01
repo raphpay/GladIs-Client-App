@@ -1,4 +1,4 @@
-import IDocumentActivityLog from '../model/IDocumentActivityLog';
+import IDocumentActivityLog, { IDocumentActivityLogInput } from '../model/IDocumentActivityLog';
 import APIService from './APIService';
 
 class DocumentActivityLogsService {
@@ -12,6 +12,17 @@ class DocumentActivityLogsService {
       DocumentActivityLogsService.instance = new DocumentActivityLogsService();
     }
     return DocumentActivityLogsService.instance;
+  }
+
+  // CREATE
+  async recordLog(logInput: IDocumentActivityLogInput) {
+    try {
+      // TODO: Handle token
+      await APIService.post<IDocumentActivityLog>(this.baseRoute, logInput);
+    } catch (error) {
+      console.error('Error posting log for client:', logInput.clientID, 'for doc:', logInput.documentID, error);
+      throw error;
+    }
   }
 
   // READ

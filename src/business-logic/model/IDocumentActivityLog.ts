@@ -17,3 +17,11 @@ interface IDocumentID {
 interface IClientID {
   id: string
 }
+
+export interface IDocumentActivityLogInput {
+  action: DocumentLogAction;
+  actorIsAdmin: boolean;
+  actorID: string;
+  clientID: string;
+  documentID: string;
+}

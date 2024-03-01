@@ -15,11 +15,14 @@ import DocumentPicker from 'react-native-document-picker';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import IDocument from '../../../business-logic/model/IDocument';
+import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../business-logic/model/IFile';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../business-logic/modules/FinderModule';
+import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
@@ -111,7 +114,15 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       data = await FinderModule.getInstance().pickPDF();
     }
     const file: IFile = { data, filename: filename}
-    await DocumentService.getInstance().upload(file, filename, path)
+    const createdDocument = await DocumentService.getInstance().upload(file, filename, path);
+    const logInput: IDocumentActivityLogInput = {
+      action: DocumentLogAction.Creation,
+      actorIsAdmin: true,
+      actorID: currentUser?.id as string,
+      clientID: currentClient?.id as string,
+      documentID: createdDocument.id,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput);
     setShowDialog(false);
     await loadDocuments();
   }
