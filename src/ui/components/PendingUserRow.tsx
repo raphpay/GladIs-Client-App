@@ -15,6 +15,7 @@ type PendingUserRowProps = {
   onUserSelect: (user: IPendingUser) => void;
 };
 
+// TODO: Style row
 function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
 
   const { pendingUser, onUserSelect } = props;
