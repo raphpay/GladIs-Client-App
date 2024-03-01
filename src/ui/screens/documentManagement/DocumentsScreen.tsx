@@ -78,7 +78,15 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
-  function navigateToDocument(doc: IDocument) {
+  async function navigateToDocument(doc: IDocument) {
+    const logInput: IDocumentActivityLogInput = {
+      action: DocumentLogAction.Visualisation,
+      actorIsAdmin: currentUser?.userType == UserType.Admin,
+      actorID: currentUser?.id as string,
+      clientID: currentClient?.id as string,
+      documentID: doc.id,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput);
     navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
