@@ -76,6 +76,17 @@
       "client": "Veuillez réessayer plus tard"
     }
   },
+  "tracking": {
+    "actions": {
+      "creation": "Créé le",
+      "modification": "Modifié le",
+      "approbation": "Apprové le",
+      "visualisation": "Visualisé le",
+      "loaded": "Chargé le",
+      "deletion": "Supprimé le",
+      "signature": "Signé le"
+    }
+  },
   "process": {
     "title": {
       "single": "Processus",

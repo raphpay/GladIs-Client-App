@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 import IDocumentActivityLog from '../../../business-logic/model/IDocumentActivityLog';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -11,6 +11,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import styles from '../../assets/styles/tracking/TrackingScreenStyles';
 import AppContainer from '../../components/AppContainer';
 
 type TrackingScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.TrackingScreen>;
@@ -31,17 +32,29 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   useEffect(() => {
     async function init() {
       const clientLogs = await DocumentActivityLogsService.getInstance().getLogsForClient(currentClient?.id);
-      setLogs(clientLogs);
+      setLogs(clientLogs.reverse());
     }
     init();
   }, []);
 
-  // TODO: Style this item
   function LogFlatListItem(item: IDocumentActivityLog) {
+    // TODO integrate isAdmin prop in DocActivityLog
+    const itemDate = new Date(item.actionDate)
+    const formattedDate = itemDate.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    const dateText = `${t(`tracking.actions.${item.action}`)} ${formattedDate}`
+
     return (
       <TouchableOpacity>
-        <Text>item = {item.name}</Text>
-        <Text>action= {item.action}</Text>
+        <View style={styles.logContainer}>
+          <Text style={styles.logName}>{item.name}</Text>
+          <Text style={styles.actor}>{item.actorUsername}</Text>
+          <Text style={styles.date}>{dateText}</Text>
+        </View>
+        <View style={styles.separator} />
       </TouchableOpacity>
     );
   }

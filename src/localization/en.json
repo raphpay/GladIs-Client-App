@@ -76,6 +76,17 @@
       "client": "Please try again later"
     }
   },
+  "tracking": {
+    "actions": {
+      "creation": "Created on",
+      "modification": "Modified on",
+      "approbation": "Approved on",
+      "visualisation": "Visualised on",
+      "loaded": "Loaded on",
+      "deletion": "Deleted on",
+      "signature": "Signed on"
+    }
+  },
   "process": {
     "title": {
       "single": "Process",
