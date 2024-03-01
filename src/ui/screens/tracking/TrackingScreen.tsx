@@ -38,7 +38,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   }, []);
 
   function LogFlatListItem(item: IDocumentActivityLog) {
-    // TODO integrate isAdmin prop in DocActivityLog
+    const actorName = item.actorIsAdmin ? 'MD Consulting' : item.actorUsername;
     const itemDate = new Date(item.actionDate)
     const formattedDate = itemDate.toLocaleDateString("fr-FR", {
       day: "2-digit",
@@ -51,7 +51,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
       <TouchableOpacity>
         <View style={styles.logContainer}>
           <Text style={styles.logName}>{item.name}</Text>
-          <Text style={styles.actor}>{item.actorUsername}</Text>
+          <Text style={styles.actor}>{actorName}</Text>
           <Text style={styles.date}>{dateText}</Text>
         </View>
         <View style={styles.separator} />

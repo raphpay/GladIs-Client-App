@@ -8,6 +8,7 @@ export default interface IDocumentActivityLog {
   documentID: IDocumentID;
   clientID: IClientID;
   action: DocumentLogAction;
+  actorIsAdmin: boolean;
 }
 
 interface IDocumentID {
