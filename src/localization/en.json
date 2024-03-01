@@ -36,6 +36,7 @@
   },
   "modules": {
     "documentManagement": "Document Management",
+    "tracking": "Traceability",
     "module1": "Module 1",
     "module2": "Module 2",
     "module3": "Module 3",
@@ -73,6 +74,17 @@
       "title": "No tabs for this area yet",
       "admin": "Create a tab now",
       "client": "Please try again later"
+    }
+  },
+  "tracking": {
+    "actions": {
+      "creation": "Created on",
+      "modification": "Modified on",
+      "approbation": "Approved on",
+      "visualisation": "Visualised on",
+      "loaded": "Loaded on",
+      "deletion": "Deleted on",
+      "signature": "Signed on"
     }
   },
   "process": {

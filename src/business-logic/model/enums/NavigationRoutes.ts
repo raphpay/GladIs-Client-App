@@ -5,6 +5,7 @@ enum NavigationRoutes {
   // Dashboard Stack
   DashboardScreen = 'DashboardScreen',
   ClientDashboardScreenFromAdmin = 'ClientDashboardScreenFromAdmin',
+  // Document Management
   DocumentManagementScreen = 'DocumentManagementScreen',
   SystemQualityScreen = 'SystemQualityScreen',
   TechnicalDocumentationScreen = 'TechnicalDocumentationScreen',
@@ -12,6 +13,8 @@ enum NavigationRoutes {
   ProcessesScreen = 'ProcessesScreen',
   DocumentsScreen = 'DocumentsScreen',
   PDFScreen = 'PDFScreen',
+  // Tracking
+  TrackingScreen = 'TrackingScreen',
   // Client Creation
   ClientManagementStack = 'ClientManagementStack',
   PendingClientListScreen = 'PendingClientListScreen',

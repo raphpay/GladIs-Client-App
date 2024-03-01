@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 97.61,
     resizeMode: 'contain'
-  }
+  },
 });
 
 export default styles;

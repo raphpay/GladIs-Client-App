@@ -38,9 +38,14 @@ class DocumentService {
   }
 
   async upload(file: IFile, name: string, path: string): Promise<IDocument> {
-    const params = { name, path, file };
-    const response = await APIService.post<IDocument>('documents', params);
-    return response as IDocument;
+    try {
+      const params = { name, path, file };
+      const response = await APIService.post<IDocument>('documents', params);
+      return response as IDocument;
+    } catch (error) {
+      console.error('Error downloading document', name, 'at path', path, error);
+      throw error;
+    }
   }
 }
 
