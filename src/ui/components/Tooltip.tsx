@@ -1,15 +1,16 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Colors } from '../assets/colors/colors';
 
 type TooltipProps = {
+  isVisible: boolean;
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   children: JSX.Element;
   popover: JSX.Element;
 };
 
 const Tooltip = (props: TooltipProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-  const { children, popover } = props;
+  const { isVisible, setIsVisible, children, popover } = props;
   const fadeAnimation = useRef(new Animated.Value(0)).current;
 
   function toggleTooltip() {
@@ -36,6 +37,7 @@ const Tooltip = (props: TooltipProps) => {
   );
 };
 
+// TODO: create style file
 const styles = StyleSheet.create({
   container: {
     position: 'relative',

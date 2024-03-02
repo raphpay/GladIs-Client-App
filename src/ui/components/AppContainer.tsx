@@ -1,9 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  View
-} from 'react-native';
+import { SafeAreaView, TouchableWithoutFeedback, View } from 'react-native';
 
 import INavigationHistoryItem from '../../business-logic/model/INavigationHistoryItem';
 
@@ -25,7 +22,8 @@ type AppContainerProps = {
   children: JSX.Element;
   adminButton?: JSX.Element;
   dialog?: JSX.Element;
-  dialogIsShown?: boolean
+  dialogIsShown?: boolean;
+  hideTooltip?: () => void
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -41,41 +39,44 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     children,
     adminButton,
     dialog,
-    dialogIsShown
+    dialogIsShown,
+    hideTooltip
   } = props;
   const { t } = useTranslation();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <View style={styles.innerComponentsContainer}>
-          <View style={styles.searchInputContainer}>
-            {adminButton}
-            <SearchTextInput 
-              searchText={searchText}
-              setSearchText={setSearchText}
-              editable={!dialogIsShown}
-            />
-          </View>
-          {children}
-        </View>
-        {
-          showBackButton && (
-            <View style={styles.backButtonContainer}>
-              <IconButton
-                title={t('components.buttons.back')}
-                icon={backIcon}
-                onPress={navigateBack}
-              />
+    <TouchableWithoutFeedback onPress={hideTooltip}>
+      <SafeAreaView style={styles.container}>
+          <View style={styles.innerContainer}>
+            <View style={styles.innerComponentsContainer}>
+              <View style={styles.searchInputContainer}>
+                {adminButton}
+                <SearchTextInput 
+                  searchText={searchText}
+                  setSearchText={setSearchText}
+                  editable={!dialogIsShown}
+                />
+              </View>
+              {children}
             </View>
-          )
-        }
-      </View>
-      <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} />
-      {
-        showDialog && (dialog)
-      }
-    </SafeAreaView>
+            {
+              showBackButton && (
+                <View style={styles.backButtonContainer}>
+                  <IconButton
+                    title={t('components.buttons.back')}
+                    icon={backIcon}
+                    onPress={navigateBack}
+                  />
+                </View>
+              )
+            }
+          </View>
+          <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} />
+          {
+            showDialog && (dialog)
+          }
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 

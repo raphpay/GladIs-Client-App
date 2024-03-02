@@ -25,10 +25,13 @@ type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementPara
 function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX.Element {
   const [pendingUsers, setPendingUsers] = useState<IPendingUser[]>([]);
   const [searchText, setSearchText] = useState<string>('');
+  // TODO: Make this available everywhere on the component
+  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
   // TODO: Change all plus icons to remove the warning
   const plusIcon = require('../../assets/images/plus.png');
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
+  // TODO: filter pending users
 
   const { navigation } = props;
 
@@ -42,6 +45,11 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   function navigateBack() {
     navigation.goBack();
+  }
+
+  async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {
+    await PendingUserService.getInstance().updatePendingUserStatus(pendingUser, token, status);
+    setIsTooltipVisible(!isTooltipVisible);
   }
 
   useEffect(() => {
@@ -69,7 +77,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     const color = getStatusColor(status);
     const userFullName = `${item.lastName.toUpperCase()} ${item.firstName}`;
 
-    // TODO: add actions to tooltip
+    // TODO: Change the circle color and the title
     return (
       <View>
         <View style={styles.rowContainer}>
@@ -83,7 +91,9 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               <Text style={styles.userFullName}>{userFullName}</Text>
             </View>
           </TouchableOpacity>
-          <Tooltip 
+          <Tooltip
+            isVisible={isTooltipVisible}
+            setIsVisible={setIsTooltipVisible}
             children={(
               <View style={styles.tooltipIconContainer}>
                 <Image source={require('../../assets/images/ellipsis.png')}/>
@@ -91,19 +101,16 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
             )}
             popover={(
               <View style={styles.popover}>
-                <TouchableOpacity style={styles.popoverButton}>
+                <TouchableOpacity style={styles.popoverButton} onPress={() => navigateToSpecificClientCreation(item)}>
                   <Text>{t('components.tooltip.open')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.popoverButton}>
+                <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(item, PendingUserStatus.pending)}>
                   <Text>{t('components.tooltip.status.pending')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.popoverButton}>
+                <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(item, PendingUserStatus.inReview)}>
                   <Text>{t('components.tooltip.status.inReview')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.popoverButton}>
-                  <Text>{t('components.tooltip.status.accepted')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.popoverButton}>
+                <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(item, PendingUserStatus.rejected)}>
                   <Text>{t('components.tooltip.status.rejected')}</Text>
                 </TouchableOpacity>
               </View>
@@ -114,6 +121,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     )
   }
 
+  // TODO: translate the title
   return (
     <AppContainer
       mainTitle='Liste de clients'
@@ -121,6 +129,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       setSearchText={setSearchText}
       showBackButton={true}
       navigateBack={navigateBack}
+      hideTooltip={() => setIsTooltipVisible(false)}
       adminButton={
         <IconButton
           title={t('components.buttons.addClient')}
