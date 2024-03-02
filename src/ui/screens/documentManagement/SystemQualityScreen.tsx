@@ -120,6 +120,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     )
   }
 
+  // TODO: add empty view
   return (
     <AppContainer
       mainTitle={t('systemQuality.title')}

@@ -19,6 +19,7 @@ import Tooltip from '../../components/Tooltip';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/clientManagement/PendingClientListScreenStyles';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.PendingClientListScreen>;
 
@@ -31,7 +32,9 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const plusIcon = require('../../assets/images/plus.png');
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
-  // TODO: filter pending users for search
+  const pendingUsersFiltered = pendingUsers.filter(pendingUser =>
+    pendingUser.companyName.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   const { navigation } = props;
 
@@ -67,7 +70,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     init();
   }, []);
 
-  function PendinguserRow(item: IPendingUser) {
+  function PendingUserRow(item: IPendingUser) {
     const statusColors = {
       pending: Colors.warning,
       inReview: Colors.primary,
@@ -126,6 +129,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   }
 
   // TODO: translate the title
+  // TODO: translate empty view
   return (
     <AppContainer
       mainTitle='Liste de clients'
@@ -142,10 +146,23 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
         />
       }
     >
-      <FlatList
-        data={pendingUsers}
-        renderItem={(renderItem) => PendinguserRow(renderItem.item)}
-      />
+      {
+        pendingUsersFiltered.length === 0 ? (
+          <ContentUnavailableView 
+            title={t('documentsScreen.noDocs.title')}
+            message={t('')}
+            image={(
+              <Image source={require('../../assets/images/doc.fill.png')} />
+            )}
+          />
+         ) : (
+          <FlatList
+            data={pendingUsersFiltered}
+            renderItem={(renderItem) => PendingUserRow(renderItem.item)}
+            keyExtractor={(item) => item.id}
+          />
+         )
+      }
     </AppContainer>
   );
 }
