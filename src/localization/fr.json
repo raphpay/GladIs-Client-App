@@ -116,11 +116,16 @@
     }
   },
   "pendingUserManagement": {
+    "title": "Liste de clients en attente",
     "status": {
       "pending": "En attente",
       "inReview": "En cours",
       "accepted": "Accepté",
       "rejected": "Refusé"
+    },
+    "noPendingUsers": {
+      "title": "Aucun utilisateur en attente pour le moment",
+      "message": "Revenez plus tard, ou enregistrez-en un maintenant"
     }
   },
   "components": {

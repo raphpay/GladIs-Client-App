@@ -26,7 +26,6 @@ type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementPara
 function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX.Element {
   const [pendingUsers, setPendingUsers] = useState<IPendingUser[]>([]);
   const [searchText, setSearchText] = useState<string>('');
-  // TODO: Make this available everywhere on the component
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
   // TODO: Change all plus icons to remove the warning
   const plusIcon = require('../../assets/images/plus.png');
@@ -128,11 +127,9 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     )
   }
 
-  // TODO: translate the title
-  // TODO: translate empty view
   return (
     <AppContainer
-      mainTitle='Liste de clients'
+      mainTitle={t('pendingUserManagement.title')}
       searchText={searchText}
       setSearchText={setSearchText}
       showBackButton={true}
@@ -149,8 +146,8 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       {
         pendingUsersFiltered.length === 0 ? (
           <ContentUnavailableView 
-            title={t('documentsScreen.noDocs.title')}
-            message={t('')}
+            title={t('pendingUserManagement.noPendingUsers.title')}
+            message={t('pendingUserManagement.noPendingUsers.message')}
             image={(
               <Image source={require('../../assets/images/doc.fill.png')} />
             )}

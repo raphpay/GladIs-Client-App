@@ -116,11 +116,16 @@
     }
   },
   "pendingUserManagement": {
+    "title": "Pending users list",
     "status": {
       "pending": "Pending",
       "inReview": "In Review",
       "accepted": "Accepted",
       "rejected": "Rejected"
+    },
+    "noPendingUsers": {
+      "title": "No pending users for now",
+      "message": "Come back later, or create one now"
     }
   },
   "components": {
