@@ -23,7 +23,6 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const [pendingUsers, setPendingUsers] = useState<IPendingUser[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
-  // TODO: Change all plus icons to remove the warning
   const plusIcon = require('../../assets/images/plus.png');
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();

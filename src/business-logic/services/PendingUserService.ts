@@ -115,6 +115,16 @@ class PendingUserService {
       throw error;
     }
   }
+
+  // DELETE
+  async removePendingUser(id: string | undefined, token: IToken | null) {
+    try {
+      await APIService.delete(`${this.baseRoute}/${id}`, token?.value);
+    } catch (error) {
+      console.error('Error deleting pending user', id, error);
+      throw error;
+    }
+  }
 }
 
 export default PendingUserService;

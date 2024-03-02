@@ -72,11 +72,9 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const module = modules.find(module => module.id === id) as IModule;
       selectedModules.push(module);
     }
-    await PendingUserService.getInstance()
-      .askForSignUp(newPendingUser, selectedModules)
-      .then(() => {
-        navigation.goBack();
-      });
+    // TODO: remove thens in the application
+    await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+    navigation.goBack();
   }
 
   async function convertPendingUser() {
@@ -94,13 +92,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       status: PendingUserStatus.pending
     }
     const castedToken = token as IToken;
-    await PendingUserService.getInstance()
-      .convertPendingUserToUser(newPendingUser, castedToken)
-      .then(async (newUser) => {
-        const castedUser = pendingUser as IPendingUser;
-        await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
-        navigation.goBack();
-      });
+    await PendingUserService.getInstance().convertPendingUserToUser(newPendingUser, castedToken)
+    const castedUser = pendingUser as IPendingUser;
+    await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
+    await PendingUserService.getInstance().removePendingUser(castedUser.id, token);
+    navigation.goBack();
   }
 
   function toggleCheckbox(module: IModule) {

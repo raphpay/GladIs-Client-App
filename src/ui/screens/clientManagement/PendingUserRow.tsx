@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import IPendingUser from '../../../business-logic/model/IPendingUser';
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -18,7 +19,6 @@ import Tooltip from '../../components/Tooltip';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/clientManagement/PendingUserRowStyles';
-
 
 type PendingUserRowProps = {
   pendingUser: IPendingUser;
@@ -55,6 +55,7 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
     await updateFlatList()
   }
 
+  // TODO: Remove pending user with tooltip action
   return (
     <View>
       <View style={styles.rowContainer}>
