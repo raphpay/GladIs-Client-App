@@ -22,9 +22,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse'
   },
   backButtonContainer: {
-    width: '100%',
+    alignItems: 'center',
     flexDirection: 'row-reverse',
-    padding: 16
   },
 });
 

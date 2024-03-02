@@ -13,14 +13,15 @@ import styles from '../assets/styles/components/AppContainerStyles';
 type AppContainerProps = {
   mainTitle: string;
   navigationHistoryItems?: INavigationHistoryItem[];
-  searchText: string;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
+  searchText?: string;
+  setSearchText?: React.Dispatch<React.SetStateAction<string>>;
   showBackButton?: boolean;
   showDialog?: boolean;
   navigateBack?: () => void;
   children: JSX.Element;
   adminButton?: JSX.Element;
   dialog?: JSX.Element;
+  additionalButton?: JSX.Element;
   dialogIsShown?: boolean;
   hideTooltip?: () => void
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,6 +43,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     dialogIsShown,
     hideTooltip,
     setShowDialog,
+    additionalButton
   } = props;
   const { t } = useTranslation();
 
@@ -65,17 +67,20 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
               </View>
               {children}
             </View>
-            {
-              showBackButton && (
-                <View style={styles.backButtonContainer}>
+            <View style={styles.backButtonContainer}>
+              {
+                showBackButton && (
                   <IconButton
                     title={t('components.buttons.back')}
                     icon={backIcon}
                     onPress={navigateBack}
                   />
-                </View>
-              )
-            }
+                )
+              }
+              {
+                additionalButton && (additionalButton)
+              }
+            </View>
           </View>
           <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} />
           {

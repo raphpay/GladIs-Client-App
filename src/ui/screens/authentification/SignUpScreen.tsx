@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  SafeAreaView,
   ScrollView,
   Text,
   View
@@ -17,8 +16,8 @@ import PendingUserStatus from '../../../business-logic/model/enums/PendingUserSt
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 
+import AppContainer from '../../components/AppContainer';
 import GladisTextInput from '../../components/GladisTextInput';
-import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
@@ -78,7 +77,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     return selectedModules.includes(module);
   }
 
-  function goBack() {
+  function navigateBack() {
     navigation.goBack();
   }
 
@@ -95,14 +94,21 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <IconButton
-          title={t('components.buttons.back')}
-          icon={backIcon}
-          onPress={goBack}
-        />
-      </View>
+    <AppContainer
+      mainTitle={t('quotation.title')}
+      showBackButton={true}
+      navigateBack={navigateBack}
+      additionalButton={(
+        <View style={styles.sendButtonContainer}>
+          <TextButton
+            width={'100%'}
+            title={t('quotation.submit')}
+            onPress={submit}
+            disabled={isButtonDisabled}
+          />
+        </View>
+      )}
+    >
       <ScrollView>
         <Text style={styles.title}>{t('quotation.title')}</Text>
         <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />
@@ -124,13 +130,8 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')} showTitle={true} />
         <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')} showTitle={true} />
         <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')} showTitle={true} />
-        <TextButton
-          title={t('quotation.submit')}
-          onPress={submit}
-          disabled={isButtonDisabled}
-        />
       </ScrollView>
-    </SafeAreaView>
+    </AppContainer>
   );
 }
 
