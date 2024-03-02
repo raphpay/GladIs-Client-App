@@ -93,11 +93,13 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     init();
   }, []);
 
+  // TODO: hide search text
   return (
     <AppContainer
       mainTitle={t('quotation.title')}
       showBackButton={true}
       navigateBack={navigateBack}
+      showSearchText={false}
       additionalButton={(
         <View style={styles.sendButtonContainer}>
           <TextButton
@@ -110,7 +112,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       )}
     >
       <ScrollView>
-        <Text style={styles.title}>{t('quotation.title')}</Text>
         <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />
         <GladisTextInput value={lastName} onValueChange={setLastName} placeholder={t('quotation.lastName')} showTitle={true} />
         <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')} showTitle={true} />

@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   backButtonContainer: {
     alignItems: 'center',
     flexDirection: 'row-reverse',
+    paddingHorizontal: 16
   },
 });
 

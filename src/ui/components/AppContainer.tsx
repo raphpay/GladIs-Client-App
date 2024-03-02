@@ -25,6 +25,7 @@ type AppContainerProps = {
   dialogIsShown?: boolean;
   hideTooltip?: () => void
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
+  showSearchText: boolean;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -43,7 +44,8 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     dialogIsShown,
     hideTooltip,
     setShowDialog,
-    additionalButton
+    additionalButton,
+    showSearchText
   } = props;
   const { t } = useTranslation();
 
@@ -59,11 +61,15 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
             <View style={styles.innerComponentsContainer}>
               <View style={styles.searchInputContainer}>
                 {adminButton}
-                <SearchTextInput 
-                  searchText={searchText}
-                  setSearchText={setSearchText}
-                  editable={!dialogIsShown}
-                />
+                {
+                  showSearchText && (
+                    <SearchTextInput 
+                      searchText={searchText}
+                      setSearchText={setSearchText}
+                      editable={!dialogIsShown}
+                    />
+                  )
+                }
               </View>
               {children}
             </View>
