@@ -8,7 +8,6 @@ import IconButton from './IconButton';
 import SearchTextInput from './SearchTextInput';
 import TopAppBar from './TopAppBar';
 
-import backIcon from '../assets/images/arrow.uturn.left.png';
 import styles from '../assets/styles/components/AppContainerStyles';
 
 type AppContainerProps = {
@@ -27,7 +26,7 @@ type AppContainerProps = {
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
-
+  const backIcon = require('../assets/images/arrow.uturn.left.png');
   const {
     mainTitle,
     navigationHistoryItems,

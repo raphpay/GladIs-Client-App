@@ -20,7 +20,6 @@ import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 
@@ -28,7 +27,7 @@ type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams,
 
 // TODO: Change title
 function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
-
+  
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -40,7 +39,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [employees, setEmployees] = useState<string>('');
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
-
+  const backIcon = require('../../assets/images/arrow.uturn.left.png');
+  
   const { navigation } = props;
   const { pendingUser } = props.route.params;
   const { token } = useAppSelector((state: RootState) => state.tokens);
