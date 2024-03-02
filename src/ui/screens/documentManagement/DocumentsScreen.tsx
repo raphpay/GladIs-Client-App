@@ -32,7 +32,6 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 
-import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -42,6 +41,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [documentName, setDocumentName] = useState<string>('');
+  const plusIcon = require('../../assets/images/plus.png');
   const { t } = useTranslation();
   const { navigation } = props;
   const { previousScreen, currentScreen, documentsPath, processNumber } = props.route.params;

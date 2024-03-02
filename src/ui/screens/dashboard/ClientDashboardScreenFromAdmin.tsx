@@ -16,14 +16,13 @@ import DashboardClientFlatList from '../../components/DashboardClientFlatList';
 import ErrorDialog from '../../components/ErrorDialog';
 import IconButton from '../../components/IconButton';
 
-import plusIcon from '../../assets/images/plus.png';
-
 type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;
 
 function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminProps): any {
   const [searchText,setSearchText] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const plusIcon = require('../../assets/images/plus.png');
   const { navigation } = props;
   const { t } = useTranslation();
   const navigationHistoryItems: INavigationHistoryItem[] = [
