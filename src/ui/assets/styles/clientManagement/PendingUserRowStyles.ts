@@ -50,6 +50,10 @@ const styles = StyleSheet.create({
   },
   popoverButton: {
     marginVertical: 4
+  },
+  tooltipButtonText: {
+    fontSize: 12,
+    fontFamily: Fonts.poppinsLight
   }
 });
 

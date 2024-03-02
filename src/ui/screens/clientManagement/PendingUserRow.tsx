@@ -70,7 +70,6 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
     setShowDialog(true);
   }
 
-  // TODO: Add font
   return (
     <View style={styles.rowContainer}>
       <TouchableOpacity style={styles.leftContainer} onPress={() => navigateToSpecificClientCreation(pendingUser)}>
@@ -94,22 +93,22 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
         popover={(
           <View style={styles.popover}>
             <TouchableOpacity style={styles.popoverButton} onPress={() => navigateToSpecificClientCreation(pendingUser)}>
-              <Text>{t('components.tooltip.open')}</Text>
+              <Text style={styles.tooltipButtonText}>{t('components.tooltip.open')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.pending)}>
-              <Text>{t('components.tooltip.pendingUserManagement.status.pending')}</Text>
+              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.pending')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.inReview)}>
-              <Text>{t('components.tooltip.pendingUserManagement.status.inReview')}</Text>
+              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.inReview')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected)}>
-              <Text>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
+              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected)}>
-              <Text>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
+              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.popoverButton} onPress={showAlert}>
-              <Text>{t('components.tooltip.pendingUserManagement.delete')}</Text>
+              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.delete')}</Text>
             </TouchableOpacity>
           </View>
         )}
