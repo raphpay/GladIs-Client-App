@@ -179,6 +179,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       searchText={searchText}
       setSearchText={setSearchText}
       showBackButton={true}
+      showSearchText={true}
       navigateBack={navigateBack}
       showDialog={showDialog}
       adminButton={

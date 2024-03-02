@@ -9,6 +9,7 @@
   },
   "quotation": {
     "title": "Demande de devis",
+    "adminTitle": "Créer un utilisateur en attente",
     "name": "NOM Prénom",
     "firstName": "Prénom",
     "lastName": "NOM",

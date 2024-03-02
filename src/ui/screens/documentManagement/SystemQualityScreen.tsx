@@ -128,6 +128,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       searchText={searchText}
       setSearchText={setSearchText}
       showBackButton={true}
+      showSearchText={true}
       navigateBack={navigateBack}
     >
       <FlatList

@@ -9,6 +9,7 @@
   },
   "quotation": {
     "title": "Request for quotation",
+    "adminTitle": "Create a pending user",
     "name": "NAME First Name",
     "firstName": "First Name",
     "lastName": "NAME",

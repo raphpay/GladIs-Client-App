@@ -75,6 +75,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
       searchText={searchText}
       setSearchText={setSearchText}
       showBackButton={true}
+      showSearchText={true}
       navigateBack={navigateBack}
       navigationHistoryItems={navigationHistoryItems}
     >

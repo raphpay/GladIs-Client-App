@@ -37,7 +37,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [employees, setEmployees] = useState<string>('');
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
-  const backIcon = require('../../assets/images/arrow.uturn.left.png');
 
   const { navigation } = props;
 
@@ -93,7 +92,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: hide search text
   return (
     <AppContainer
       mainTitle={t('quotation.title')}
