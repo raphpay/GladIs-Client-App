@@ -115,6 +115,19 @@
       }
     }
   },
+  "pendingUserManagement": {
+    "title": "Liste de clients en attente",
+    "status": {
+      "pending": "En attente",
+      "inReview": "En cours",
+      "accepted": "Accepté",
+      "rejected": "Refusé"
+    },
+    "noPendingUsers": {
+      "title": "Aucun utilisateur en attente pour le moment",
+      "message": "Revenez plus tard, ou enregistrez-en un maintenant"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"
@@ -149,8 +162,24 @@
         "confirmButton": "Ajouter",
         "placeholder": "Nouvel onglet"
       },
+      "pendingUserManagement": {
+        "title": "Etes-vous sûr de vouloir supprimer cet utilisateur ?",
+        "description": "La suppression est définitive."
+      },
       "confirm": "OK",
       "cancel": "Annuler"
+    },
+    "tooltip": {
+      "open": "Ouvrir",
+      "pendingUserManagement": {
+        "status": {
+          "pending": "Passer à En Attente",
+          "inReview": "Passer à En Revue",
+          "accepted": "Passer à Accepté",
+          "rejected": "Passer à Refusé"
+        },
+        "delete": "Supprimer"
+      }
     }
   },
   "errors": {

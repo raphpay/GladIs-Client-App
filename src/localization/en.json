@@ -115,6 +115,19 @@
       }
     }
   },
+  "pendingUserManagement": {
+    "title": "Pending users list",
+    "status": {
+      "pending": "Pending",
+      "inReview": "In Review",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "noPendingUsers": {
+      "title": "No pending users for now",
+      "message": "Come back later, or create one now"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"
@@ -149,8 +162,24 @@
         "confirmButton": "Add",
         "placeholder": "New tab name"
       },
+      "pendingUserManagement": {
+        "title": "Are you sure you want to delete this user ?",
+        "description": "The deletion is definitive."
+      },
       "confirm": "OK",
       "cancel": "Cancel"
+    },
+    "tooltip": {
+      "open": "Open",
+      "pendingUserManagement": {
+        "status": {
+          "pending": "Update status to Pending",
+          "inReview": "Update status to In Review",
+          "accepted": "Update status to Accepted",
+          "rejected": "Update status to Rejected"
+        },
+        "delete": "Delete"
+      }
     }
   },
   "errors": {

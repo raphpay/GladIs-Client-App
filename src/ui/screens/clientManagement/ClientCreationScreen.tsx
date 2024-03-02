@@ -20,7 +20,6 @@ import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 
@@ -28,7 +27,7 @@ type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams,
 
 // TODO: Change title
 function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
-
+  
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -40,7 +39,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [employees, setEmployees] = useState<string>('');
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
-
+  const backIcon = require('../../assets/images/arrow.uturn.left.png');
+  
   const { navigation } = props;
   const { pendingUser } = props.route.params;
   const { token } = useAppSelector((state: RootState) => state.tokens);
@@ -72,11 +72,9 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const module = modules.find(module => module.id === id) as IModule;
       selectedModules.push(module);
     }
-    await PendingUserService.getInstance()
-      .askForSignUp(newPendingUser, selectedModules)
-      .then(() => {
-        navigation.goBack();
-      });
+    // TODO: remove thens in the application
+    await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+    navigation.goBack();
   }
 
   async function convertPendingUser() {
@@ -94,13 +92,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       status: PendingUserStatus.pending
     }
     const castedToken = token as IToken;
-    await PendingUserService.getInstance()
-      .convertPendingUserToUser(newPendingUser, castedToken)
-      .then(async (newUser) => {
-        const castedUser = pendingUser as IPendingUser;
-        await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
-        navigation.goBack();
-      });
+    await PendingUserService.getInstance().convertPendingUserToUser(newPendingUser, castedToken)
+    const castedUser = pendingUser as IPendingUser;
+    await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
+    await PendingUserService.getInstance().removePendingUser(castedUser.id, token);
+    navigation.goBack();
   }
 
   function toggleCheckbox(module: IModule) {

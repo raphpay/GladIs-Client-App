@@ -119,6 +119,31 @@ class APIService {
     }
   }
 
+  // DELETE
+  static async delete(endpoint: string, token?: string) {
+    try {
+      const url = `${API_BASE_URL}/${endpoint}`;
+      const headers: Record<string, string> = {};
+  
+      // Include token in headers if provided
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+  
+      const response = await fetch(url, {
+        method: HttpMethod.DELETE,
+        headers,
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+    } catch (error) {
+      console.log('Error deleting data:', error);
+      throw error;
+    }
+  }  
+
   // DOWNLOAD
   static async download(endpoint: string): Promise<any> {
     try {

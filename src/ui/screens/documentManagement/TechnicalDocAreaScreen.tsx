@@ -21,7 +21,6 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 
-import plusIcon from '../../assets/images/plus.png';
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 
 type TechnicalDocAreaScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.TechnicalDocAreaScreen>;
@@ -32,6 +31,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [newTabName, setNewTabName] = useState<string>('');
+  const plusIcon = require('../../assets/images/plus.png');
   const { navigation } = props;
   const { area } = props.route.params;
   const { t } = useTranslation();

@@ -106,12 +106,22 @@ class PendingUserService {
   }
 
   // UPDATE
-  async updatePendingUserStatus(pendingUser: IPendingUser, token: IToken, status: string) {
+  async updatePendingUserStatus(pendingUser: IPendingUser, token: IToken | null, status: string) {
     try {
       const id = pendingUser.id as string;
-      await APIService.put(`${this.baseRoute}/${id}/status`, { "type": status }, token.value);
+      await APIService.put(`${this.baseRoute}/${id}/status`, { "type": status }, token?.value);
     } catch (error) {
       console.error('Error updating pending user status', pendingUser, status, error);
+      throw error;
+    }
+  }
+
+  // DELETE
+  async removePendingUser(id: string | undefined, token: IToken | null) {
+    try {
+      await APIService.delete(`${this.baseRoute}/${id}`, token?.value);
+    } catch (error) {
+      console.error('Error deleting pending user', id, error);
       throw error;
     }
   }

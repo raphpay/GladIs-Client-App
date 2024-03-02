@@ -22,7 +22,6 @@ import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import backIcon from '../../assets/images/arrow.uturn.left.png';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
@@ -39,6 +38,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [employees, setEmployees] = useState<string>('');
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
+  const backIcon = require('../../assets/images/arrow.uturn.left.png');
 
   const { navigation } = props;
 

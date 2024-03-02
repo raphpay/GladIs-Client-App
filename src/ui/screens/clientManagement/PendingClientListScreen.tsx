@@ -1,11 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  SafeAreaView,
-  ScrollView,
-  View
-} from 'react-native';
+import { FlatList, Image } from 'react-native';
 
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
@@ -16,21 +12,26 @@ import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
+import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
-import PendingUserRow from '../../components/PendingUserRow';
-
-import backIcon from '../../assets/images/arrow.uturn.left.png';
-import plusIcon from '../../assets/images/plus.png';
-import styles from '../../assets/styles/clientManagement/PendingClientListScreenStyles';
+import PendingUserRow from './PendingUserRow';
 
 type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.PendingClientListScreen>;
 
 function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX.Element {
-
   const [pendingUsers, setPendingUsers] = useState<IPendingUser[]>([]);
-
+  const [searchText, setSearchText] = useState<string>('');
+  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [selectedPendingUser, setSelectedPendingUser] = useState<IPendingUser | undefined>(undefined);
+  const plusIcon = require('../../assets/images/plus.png');
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
+  const pendingUsersFiltered = pendingUsers.filter(pendingUser =>
+    pendingUser.companyName.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   const { navigation } = props;
 
@@ -38,52 +39,91 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
   }
 
-  function navigateToSpecificClientCreation(client: IPendingUser) {
-    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
+  function navigateBack() {
+    navigation.goBack();
   }
 
-  function goBack() {
-    navigation.goBack();
+  async function getPendingUsers() {
+    const castedToken = token as IToken;
+    const users = await PendingUserService.getInstance().getUsers(castedToken);
+    setPendingUsers(users);
+  }
+
+  async function removePendingUser() {
+    await PendingUserService.getInstance().removePendingUser(selectedPendingUser?.id, token);
+    await getPendingUsers();
+    setShowDialog(false);
   }
 
   useEffect(() => {
     async function init() {
-      const castedToken = token as IToken;
-      const users = await PendingUserService.getInstance().getUsers(castedToken);
-      setPendingUsers(users);
+      await getPendingUsers();
     }
     init();
   }, []);
 
-  // TODO: Change scrollView to flatlist
+  function dialogContent() {
+    return (
+      <>
+        {
+          showDialog && (
+            <Dialog
+              title={t('components.dialog.pendingUserManagement.title')}
+              description={t('components.dialog.pendingUserManagement.description')}
+              onConfirm={removePendingUser}
+              onCancel={() => setShowDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
-    <SafeAreaView style={styles.container}>
-       <View style={styles.buttonsContainer}>
-        <IconButton
-          title={t('components.buttons.back')}
-          icon={backIcon}
-          onPress={goBack}
-          style={styles.button}
-        />
+    <AppContainer
+      mainTitle={t('pendingUserManagement.title')}
+      searchText={searchText}
+      setSearchText={setSearchText}
+      showBackButton={true}
+      navigateBack={navigateBack}
+      hideTooltip={() => setIsTooltipVisible(false)}
+      showDialog={showDialog}
+      dialog={dialogContent()}
+      setShowDialog={setShowDialog}
+      adminButton={
         <IconButton
           title={t('components.buttons.addClient')}
           icon={plusIcon}
           onPress={navigateToCreateClient}
-          style={styles.button}
         />
-       </View>
-      <ScrollView>
-        {
-          pendingUsers.map((user) => (
-            <PendingUserRow
-              key={user.id}
-              pendingUser={user}
-              onUserSelect={navigateToSpecificClientCreation}
-            />
-          ))
-        }
-      </ScrollView>
-    </SafeAreaView>
+      }
+    >
+      {
+        pendingUsersFiltered.length === 0 ? (
+          <ContentUnavailableView 
+            title={t('pendingUserManagement.noPendingUsers.title')}
+            message={t('pendingUserManagement.noPendingUsers.message')}
+            image={(
+              <Image source={require('../../assets/images/doc.fill.png')} />
+            )}
+          />
+         ) : (
+          <FlatList
+            data={pendingUsersFiltered}
+            renderItem={(renderItem) =>
+              <PendingUserRow 
+                pendingUser={renderItem.item}
+                isTooltipVisible={isTooltipVisible}
+                setIsTooltipVisible={setIsTooltipVisible}
+                updateFlatList={getPendingUsers}
+                setShowDialog={setShowDialog}
+                setSelectedPendingUser={setSelectedPendingUser}
+              />}
+            keyExtractor={(item) => item.id}
+          />
+         )
+      }
+    </AppContainer>
   );
 }
 

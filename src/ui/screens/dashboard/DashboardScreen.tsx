@@ -18,7 +18,6 @@ import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
 
-import plusIcon from '../../assets/images/plus.png';
 
 type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
 
@@ -30,6 +29,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+  const plusIcon = require('../../assets/images/plus.png');
   const { t } = useTranslation();
 
   function navigateToClientList() {
