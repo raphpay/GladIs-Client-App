@@ -159,6 +159,15 @@
       },
       "confirm": "OK",
       "cancel": "Annuler"
+    },
+    "tooltip": {
+      "open": "Ouvrir",
+      "status": {
+        "pending": "Passer à En Attente",
+        "inReview": "Passer à En Revue",
+        "accepted": "Passer à Accepté",
+        "rejected": "Passer à Refusé"
+      }
     }
   },
   "errors": {

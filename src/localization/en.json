@@ -159,6 +159,15 @@
       },
       "confirm": "OK",
       "cancel": "Cancel"
+    },
+    "tooltip": {
+      "open": "Open",
+      "status": {
+        "pending": "Update status to Pending",
+        "inReview": "Update status to In Review",
+        "accepted": "Update status to Accepted",
+        "rejected": "Update status to Rejected"
+      }
     }
   },
   "errors": {

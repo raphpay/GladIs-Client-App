@@ -15,6 +15,7 @@ import { IClientManagementParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
 import IconButton from '../../components/IconButton';
+import Tooltip from '../../components/Tooltip';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/clientManagement/PendingClientListScreenStyles';
@@ -66,8 +67,9 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     
     const status = PendingUserStatus.pending;
     const color = getStatusColor(status);
-    const userFullName = `${item.lastName.toUpperCase()} ${item.firstName}`
+    const userFullName = `${item.lastName.toUpperCase()} ${item.firstName}`;
 
+    // TODO: add actions to tooltip
     return (
       <View>
         <View style={styles.rowContainer}>
@@ -81,11 +83,33 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               <Text style={styles.userFullName}>{userFullName}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={() => console.log('hello')}>
-            <Image source={require('../../assets/images/ellipsis.png')}/>
-          </TouchableOpacity>
+          <Tooltip 
+            children={(
+              <View style={styles.tooltipIconContainer}>
+                <Image source={require('../../assets/images/ellipsis.png')}/>
+              </View>
+            )}
+            popover={(
+              <View style={styles.popover}>
+                <TouchableOpacity style={styles.popoverButton}>
+                  <Text>{t('components.tooltip.open')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.popoverButton}>
+                  <Text>{t('components.tooltip.status.pending')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.popoverButton}>
+                  <Text>{t('components.tooltip.status.inReview')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.popoverButton}>
+                  <Text>{t('components.tooltip.status.accepted')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.popoverButton}>
+                  <Text>{t('components.tooltip.status.rejected')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         </View>
-        <View style={styles.separator} />
       </View>
     )
   }

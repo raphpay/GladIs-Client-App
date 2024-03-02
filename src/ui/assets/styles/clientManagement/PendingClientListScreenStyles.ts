@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 1,
     backgroundColor: 'black',
-    margin: 4
+    margin: 4,
   },
   statusText: {
     fontSize: 12,
@@ -69,6 +69,34 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  tooltip: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'gray',
+  },
+  tooltipContainer: {
+    position: 'relative',
+    zIndex: 1,
+  },
+  tooltipIconContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popover: {
+    justifyContent: 'space-between',
+    width: '500%',
+    marginHorizontal: 4,
+  },
+  popoverButton: {
+    marginVertical: 4
   }
 });
 
