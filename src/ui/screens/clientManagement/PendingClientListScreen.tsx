@@ -31,7 +31,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const plusIcon = require('../../assets/images/plus.png');
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
-  // TODO: filter pending users
+  // TODO: filter pending users for search
 
   const { navigation } = props;
 
@@ -50,13 +50,19 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {
     await PendingUserService.getInstance().updatePendingUserStatus(pendingUser, token, status);
     setIsTooltipVisible(!isTooltipVisible);
+    // Update the flatlist
+    await getPendingUsers();
+  }
+
+  async function getPendingUsers() {
+    const castedToken = token as IToken;
+    const users = await PendingUserService.getInstance().getUsers(castedToken);
+    setPendingUsers(users);
   }
 
   useEffect(() => {
     async function init() {
-      const castedToken = token as IToken;
-      const users = await PendingUserService.getInstance().getUsers(castedToken);
-      setPendingUsers(users);
+      await getPendingUsers();
     }
     init();
   }, []);
@@ -73,11 +79,9 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       return statusColors[status] || 'gray'; // Default color if status is not found
     };
     
-    const status = PendingUserStatus.pending;
-    const color = getStatusColor(status);
+    const color = getStatusColor(item.status);
     const userFullName = `${item.lastName.toUpperCase()} ${item.firstName}`;
 
-    // TODO: Change the circle color and the title
     return (
       <View>
         <View style={styles.rowContainer}>
