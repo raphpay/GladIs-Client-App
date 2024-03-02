@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
@@ -24,7 +24,6 @@ import AppContainer from '../../components/AppContainer';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
-// TODO: Change title
 function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
   
   const [firstName, setFirstName] = useState<string>('');
@@ -132,7 +131,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
-  function goBack() {
+  function navigateBack() {
     navigation.goBack();
   }
 
@@ -156,45 +155,21 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   
 
   return (
-    // <SafeAreaView style={styles.container}>
-    //   <View style={styles.backButtonContainer}>
-    //     <IconButton
-    //       title={t('components.buttons.back')}
-    //       icon={backIcon}
-    //       onPress={goBack}
-    //     />
-    //   </View>
-      // <ScrollView>
-      //   <Text style={styles.title}>{t('quotation.title')}</Text>
-      //   <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />
-      //   <GladisTextInput value={lastName} onValueChange={setLastName} placeholder={t('quotation.lastName')} showTitle={true} />
-      //   <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')} showTitle={true} />
-      //   <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')} showTitle={true}/>
-      //   <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')} showTitle={true} />
-      //   <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')} showTitle={true} />
-      //   <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
-      //   {modules.map((module) => (
-      //     <ModuleCheckBox
-      //       key={module.id}
-      //       module={module}
-      //       isSelected={isModuleSelected(module)}
-      //       onSelectModule={() => toggleCheckbox(module)}
-      //       isDisabled={pendingUser != null}
-      //     />
-      //   ))}
-      //   <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')} showTitle={true} />
-      //   <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')} showTitle={true} />
-      //   <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')} showTitle={true} />
-      //   <TextButton
-      //     title={t('quotation.submit')}
-      //     onPress={submit}
-      //     disabled={isButtonDisabled}
-      //   />
-      // </ScrollView>
-    // </SafeAreaView>
     <AppContainer
       mainTitle={t('quotation.adminTitle')}
+      showBackButton={true}
+      navigateBack={navigateBack}
       showSearchText={false}
+      additionalButton={(
+        <View style={styles.sendButtonContainer}>
+          <TextButton
+            width={'100%'}
+            title={t('quotation.submit')}
+            onPress={submit}
+            disabled={isButtonDisabled}
+          />
+        </View>
+      )}
     >
       <ScrollView>
         <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />

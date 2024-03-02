@@ -16,6 +16,10 @@ const styles = StyleSheet.create({
   },
   backButtonContainer: {
     flexDirection: 'row-reverse',
+  },
+  sendButtonContainer: {
+    width: '30%',
+    paddingHorizontal: 10,
   }
 });
 
