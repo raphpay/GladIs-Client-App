@@ -162,16 +162,23 @@
         "confirmButton": "Add",
         "placeholder": "New tab name"
       },
+      "pendingUserManagement": {
+        "title": "Are you sure you want to delete this user ?",
+        "description": "The deletion is definitive."
+      },
       "confirm": "OK",
       "cancel": "Cancel"
     },
     "tooltip": {
       "open": "Open",
-      "status": {
-        "pending": "Update status to Pending",
-        "inReview": "Update status to In Review",
-        "accepted": "Update status to Accepted",
-        "rejected": "Update status to Rejected"
+      "pendingUserManagement": {
+        "status": {
+          "pending": "Update status to Pending",
+          "inReview": "Update status to In Review",
+          "accepted": "Update status to Accepted",
+          "rejected": "Update status to Rejected"
+        },
+        "delete": "Delete"
       }
     }
   },

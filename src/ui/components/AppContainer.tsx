@@ -23,6 +23,7 @@ type AppContainerProps = {
   dialog?: JSX.Element;
   dialogIsShown?: boolean;
   hideTooltip?: () => void
+  setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -39,12 +40,18 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     adminButton,
     dialog,
     dialogIsShown,
-    hideTooltip
+    hideTooltip,
+    setShowDialog,
   } = props;
   const { t } = useTranslation();
 
+  function closeAll() {
+    hideTooltip && hideTooltip();
+    setShowDialog && setShowDialog(false)
+  }
+
   return (
-    <TouchableWithoutFeedback onPress={hideTooltip}>
+    <TouchableWithoutFeedback onPress={closeAll}>
       <SafeAreaView style={styles.container}>
           <View style={styles.innerContainer}>
             <View style={styles.innerComponentsContainer}>

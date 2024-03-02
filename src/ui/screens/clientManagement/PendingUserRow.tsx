@@ -25,12 +25,21 @@ type PendingUserRowProps = {
   isTooltipVisible: boolean;
   setIsTooltipVisible: React.Dispatch<React.SetStateAction<boolean>>;
   updateFlatList: () => Promise<void>;
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedPendingUser: React.Dispatch<React.SetStateAction<IPendingUser | undefined>>;
 };
 
 function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
   const { t } = useTranslation();
   const navigation = useNavigation()
-  const { pendingUser, isTooltipVisible, setIsTooltipVisible, updateFlatList } = props;
+  const {
+    pendingUser,
+    isTooltipVisible,
+    setIsTooltipVisible,
+    updateFlatList,
+    setShowDialog,
+    setSelectedPendingUser,
+  } = props;
   const statusColors = {
     pending: Colors.warning,
     inReview: Colors.primary,
@@ -55,46 +64,56 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
     await updateFlatList()
   }
 
-  // TODO: Remove pending user with tooltip action
+  function showAlert() {
+    setIsTooltipVisible(false);
+    setSelectedPendingUser(pendingUser);
+    setShowDialog(true);
+  }
+
+  // TODO: Add font
   return (
-    <View>
-      <View style={styles.rowContainer}>
-        <TouchableOpacity style={styles.leftContainer} onPress={() => navigateToSpecificClientCreation(pendingUser)}>
-          <View style={styles.status}>
-            <View style={[styles.circle, { backgroundColor: color}]}/>
-            <Text style={styles.statusText}>{t(`pendingUserManagement.status.${pendingUser.status}`)}</Text>
+    <View style={styles.rowContainer}>
+      <TouchableOpacity style={styles.leftContainer} onPress={() => navigateToSpecificClientCreation(pendingUser)}>
+        <View style={styles.status}>
+          <View style={[styles.circle, { backgroundColor: color}]}/>
+          <Text style={styles.statusText}>{t(`pendingUserManagement.status.${pendingUser.status}`)}</Text>
+        </View>
+        <View>
+          <Text style={styles.companyName}>{pendingUser.companyName}</Text>
+          <Text style={styles.userFullName}>{userFullName}</Text>
+        </View>
+      </TouchableOpacity>
+      <Tooltip
+        isVisible={isTooltipVisible}
+        setIsVisible={setIsTooltipVisible}
+        children={(
+          <View style={styles.tooltipIconContainer}>
+            <Image source={require('../../assets/images/ellipsis.png')}/>
           </View>
-          <View>
-            <Text style={styles.companyName}>{pendingUser.companyName}</Text>
-            <Text style={styles.userFullName}>{userFullName}</Text>
+        )}
+        popover={(
+          <View style={styles.popover}>
+            <TouchableOpacity style={styles.popoverButton} onPress={() => navigateToSpecificClientCreation(pendingUser)}>
+              <Text>{t('components.tooltip.open')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.pending)}>
+              <Text>{t('components.tooltip.pendingUserManagement.status.pending')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.inReview)}>
+              <Text>{t('components.tooltip.pendingUserManagement.status.inReview')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected)}>
+              <Text>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected)}>
+              <Text>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.popoverButton} onPress={showAlert}>
+              <Text>{t('components.tooltip.pendingUserManagement.delete')}</Text>
+            </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-        <Tooltip
-          isVisible={isTooltipVisible}
-          setIsVisible={setIsTooltipVisible}
-          children={(
-            <View style={styles.tooltipIconContainer}>
-              <Image source={require('../../assets/images/ellipsis.png')}/>
-            </View>
-          )}
-          popover={(
-            <View style={styles.popover}>
-              <TouchableOpacity style={styles.popoverButton} onPress={() => navigateToSpecificClientCreation(pendingUser)}>
-                <Text>{t('components.tooltip.open')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.pending)}>
-                <Text>{t('components.tooltip.status.pending')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.inReview)}>
-                <Text>{t('components.tooltip.status.inReview')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected)}>
-                <Text>{t('components.tooltip.status.rejected')}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      </View>
+        )}
+      />
     </View>
   );
 }

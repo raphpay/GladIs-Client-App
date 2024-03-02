@@ -162,16 +162,23 @@
         "confirmButton": "Ajouter",
         "placeholder": "Nouvel onglet"
       },
+      "pendingUserManagement": {
+        "title": "Etes-vous sûr de vouloir supprimer cet utilisateur ?",
+        "description": "La suppression est définitive."
+      },
       "confirm": "OK",
       "cancel": "Annuler"
     },
     "tooltip": {
       "open": "Ouvrir",
-      "status": {
-        "pending": "Passer à En Attente",
-        "inReview": "Passer à En Revue",
-        "accepted": "Passer à Accepté",
-        "rejected": "Passer à Refusé"
+      "pendingUserManagement": {
+        "status": {
+          "pending": "Passer à En Attente",
+          "inReview": "Passer à En Revue",
+          "accepted": "Passer à Accepté",
+          "rejected": "Passer à Refusé"
+        },
+        "delete": "Supprimer"
       }
     }
   },

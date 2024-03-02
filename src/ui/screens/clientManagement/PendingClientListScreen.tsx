@@ -14,6 +14,7 @@ import { IClientManagementParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 import PendingUserRow from './PendingUserRow';
 
@@ -23,6 +24,8 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const [pendingUsers, setPendingUsers] = useState<IPendingUser[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [selectedPendingUser, setSelectedPendingUser] = useState<IPendingUser | undefined>(undefined);
   const plusIcon = require('../../assets/images/plus.png');
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
@@ -46,12 +49,35 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     setPendingUsers(users);
   }
 
+  async function removePendingUser() {
+    await PendingUserService.getInstance().removePendingUser(selectedPendingUser?.id, token);
+    await getPendingUsers();
+    setShowDialog(false);
+  }
+
   useEffect(() => {
     async function init() {
       await getPendingUsers();
     }
     init();
   }, []);
+
+  function dialogContent() {
+    return (
+      <>
+        {
+          showDialog && (
+            <Dialog
+              title={t('components.dialog.pendingUserManagement.title')}
+              description={t('components.dialog.pendingUserManagement.description')}
+              onConfirm={removePendingUser}
+              onCancel={() => setShowDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
 
   return (
     <AppContainer
@@ -61,6 +87,9 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       showBackButton={true}
       navigateBack={navigateBack}
       hideTooltip={() => setIsTooltipVisible(false)}
+      showDialog={showDialog}
+      dialog={dialogContent()}
+      setShowDialog={setShowDialog}
       adminButton={
         <IconButton
           title={t('components.buttons.addClient')}
@@ -87,6 +116,8 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
                 isTooltipVisible={isTooltipVisible}
                 setIsTooltipVisible={setIsTooltipVisible}
                 updateFlatList={getPendingUsers}
+                setShowDialog={setShowDialog}
+                setSelectedPendingUser={setSelectedPendingUser}
               />}
             keyExtractor={(item) => item.id}
           />
