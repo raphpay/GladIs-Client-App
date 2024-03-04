@@ -1,11 +1,10 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, SafeAreaView, Text, TextInput } from 'react-native';
+import { SafeAreaView, Text, TextInput } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
@@ -15,6 +14,7 @@ import { setCurrentUser } from '../../../business-logic/store/slices/userReducer
 
 import AppIcon from '../../components/AppIcon';
 import Dialog from '../../components/Dialog';
+import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
@@ -25,25 +25,29 @@ type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoute
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { navigation } = props;
-
+  
   const [identifier, onIdentifierChange] = useState<string>('');
   const [password, onPasswordChange] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [resetEmail, setResetEmail] = useState<string>('');
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+  const [errorTitle, setErrorTitle] = useState<string>('');
+  const [errorDescription, setErrorDescription] = useState<string>('');
+  
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   async function login() {
-    await AuthenticationService.getInstance()
-      .login(identifier, password)
-      .then(async (token: IToken) => {
-        dispatch(setToken(token));
-        const user = await UserService.getInstance().getUserByID(token.user.id);
-        dispatch(setCurrentUser(user));
-      })
-      .catch(() => {
-        Alert.alert(t('errors.login.title'), t('errors.login.message'))
-      });
+    try {
+      const token = await AuthenticationService.getInstance().login(identifier, password);
+      dispatch(setToken(token));
+      const user = await UserService.getInstance().getUserByID(token.user.id);
+      dispatch(setCurrentUser(user));
+    } catch (error) {
+      setErrorTitle(t('errors.login.title'));
+      setErrorDescription(t('errors.login.message'));
+      setShowErrorDialog(true);
+    }
   }
 
   function goToSignUp() {
@@ -77,7 +81,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
           placeholder={t('login.identifier')}
           autoCapitalize={'none'}
           width={'70%'}
-          editable={!showDialog}
+          editable={!showDialog && !showErrorDialog}
         />
         <GladisTextInput
           value={password}
@@ -88,7 +92,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
           showVisibilityButton={true}
           autoCapitalize={'none'}
           width={'70%'}
-          editable={!showDialog}
+          editable={!showDialog && !showErrorDialog}
         />
         <TextButton
           title={t('login.login')}
@@ -115,6 +119,16 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
               style={styles.dialogInput}
             />
           </Dialog>
+        )
+      }
+      {
+        showErrorDialog && (
+          <ErrorDialog
+            title={errorTitle}
+            description={errorDescription}
+            cancelTitle={t('errors.modules.cancelButton')}
+            onCancel={() => setShowErrorDialog(false)}
+          />
         )
       }
     </>
