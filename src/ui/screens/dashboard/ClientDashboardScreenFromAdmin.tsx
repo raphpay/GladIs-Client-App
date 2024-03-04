@@ -51,12 +51,13 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
 
   return (
     <>
-      <AppContainer 
+      <AppContainer
         mainTitle={t('dashboard.title')}
         navigationHistoryItems={navigationHistoryItems}
         searchText={searchText}
         setSearchText={setSearchText}
         showBackButton={true}
+        showSearchText={true}
         navigateBack={navigateBack}
         dialogIsShown={showDialog}
         adminButton={(

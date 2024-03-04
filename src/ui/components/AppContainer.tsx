@@ -13,17 +13,19 @@ import styles from '../assets/styles/components/AppContainerStyles';
 type AppContainerProps = {
   mainTitle: string;
   navigationHistoryItems?: INavigationHistoryItem[];
-  searchText: string;
-  setSearchText: React.Dispatch<React.SetStateAction<string>>;
+  searchText?: string;
+  setSearchText?: React.Dispatch<React.SetStateAction<string>>;
   showBackButton?: boolean;
   showDialog?: boolean;
   navigateBack?: () => void;
   children: JSX.Element;
   adminButton?: JSX.Element;
   dialog?: JSX.Element;
+  additionalButton?: JSX.Element;
   dialogIsShown?: boolean;
   hideTooltip?: () => void
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
+  showSearchText: boolean;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -42,6 +44,8 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     dialogIsShown,
     hideTooltip,
     setShowDialog,
+    additionalButton,
+    showSearchText
   } = props;
   const { t } = useTranslation();
 
@@ -57,25 +61,32 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
             <View style={styles.innerComponentsContainer}>
               <View style={styles.searchInputContainer}>
                 {adminButton}
-                <SearchTextInput 
-                  searchText={searchText}
-                  setSearchText={setSearchText}
-                  editable={!dialogIsShown}
-                />
+                {
+                  showSearchText && (
+                    <SearchTextInput 
+                      searchText={searchText}
+                      setSearchText={setSearchText}
+                      editable={!dialogIsShown}
+                    />
+                  )
+                }
               </View>
               {children}
             </View>
-            {
-              showBackButton && (
-                <View style={styles.backButtonContainer}>
+            <View style={styles.backButtonContainer}>
+              {
+                showBackButton && (
                   <IconButton
                     title={t('components.buttons.back')}
                     icon={backIcon}
                     onPress={navigateBack}
                   />
-                </View>
-              )
-            }
+                )
+              }
+              {
+                additionalButton && (additionalButton)
+              }
+            </View>
           </View>
           <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} />
           {

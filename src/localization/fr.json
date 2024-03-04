@@ -9,6 +9,7 @@
   },
   "quotation": {
     "title": "Demande de devis",
+    "adminTitle": "Créer un utilisateur en attente",
     "name": "NOM Prénom",
     "firstName": "Prénom",
     "lastName": "NOM",
@@ -190,6 +191,20 @@
     "logout": {
       "title": "Erreur lors de la déconnexion",
       "message": "Veuillez réessayer plus tard"
+    },
+    "signup": {
+      "email": {
+        "title": "L'email est invalide",
+        "description": "Veuillez vérifier le format de votre email"
+      },
+      "phoneNumber": {
+        "title": "Le numéro de téléphone est invalide",
+        "description": "Veuillez vérifier le format de votre numéro de téléphone. Il doit s'agit d'un numéro français"
+      },
+      "phoneAndEmail": {
+        "title": "L'email et le numéro de téléphone sont invalides",
+        "description": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agit d'un numéro français"
+      }
     },
     "modules": {
       "title": "Ce module ne fait pas partie de votre abonnement",

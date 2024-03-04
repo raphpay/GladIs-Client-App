@@ -2,6 +2,7 @@ import IModule from '../model/IModule';
 import IPendingUser from '../model/IPendingUser';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
+import { extractValidationErrors } from '../model/ValidationError';
 import CacheKeys from '../model/enums/CacheKeys';
 import APIService from './APIService';
 import CacheService from './CacheService';
@@ -22,11 +23,12 @@ class PendingUserService {
   async convertPendingUserToUser(pendingUser: IPendingUser, token: IToken): Promise<IUser> {
     try {
       const id = pendingUser.id as string;
-      const newUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, {}, token.value);
+      const newUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, pendingUser, token.value);
       return newUser;
     } catch (error) {
-      console.log('Error converting pending user:', pendingUser, 'to user', error);
-      throw error;
+      const errorKeys = extractValidationErrors(error.message)
+      console.log('Error converting pending user:', pendingUser, 'to user', errorKeys);
+      throw errorKeys;
     }
   }
 
@@ -35,8 +37,9 @@ class PendingUserService {
       const userAdded = await APIService.post<IPendingUser>(this.baseRoute, pendingUser);
       await this.addModulesToPendingUser(modules, userAdded);
     } catch (error) {
-      console.log('Error asking for sign up for user', pendingUser, error);
-      throw error;
+      const errorKeys = extractValidationErrors(error.message)
+      console.log('Error asking for sign up for user', pendingUser, errorKeys);
+      throw errorKeys;
     }
   }
 

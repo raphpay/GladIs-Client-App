@@ -9,6 +9,7 @@
   },
   "quotation": {
     "title": "Request for quotation",
+    "adminTitle": "Create a pending user",
     "name": "NAME First Name",
     "firstName": "First Name",
     "lastName": "NAME",
@@ -190,6 +191,20 @@
     "logout": {
       "title": "Error logging out",
       "message": "Please try again later"
+    },
+    "signup": {
+      "email": {
+        "title": "Email is invalid",
+        "description": "Please verify your email format"
+      },
+      "phoneNumber": {
+        "title": "Phone number is invalid",
+        "description": "Please verify your phone number format. It should be a french phone"
+      },
+      "phoneAndEmail": {
+        "title": "Email and phone number are invalid",
+        "description": "Please verify your email and phone number format. It should be a french phone"
+      }
     },
     "modules": {
       "title": "This module is not part of your subscription",
