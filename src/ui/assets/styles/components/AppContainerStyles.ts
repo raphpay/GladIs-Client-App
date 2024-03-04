@@ -10,6 +10,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 104,
     backgroundColor: Colors.light,
+    shadowColor: Colors.black,
+    shadowOffset: {width: -2, height: -4},
+    shadowOpacity: 0.6,
+    shadowRadius: 3,
   },
   innerComponentsContainer: {
     flex: 1,

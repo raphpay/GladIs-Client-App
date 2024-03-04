@@ -18,6 +18,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 5,
     width: '50%',
+    shadowColor: Colors.black,
+    zIndex: 20,
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   title: {
     fontSize: 20,

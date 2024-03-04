@@ -8,8 +8,12 @@ const styles = StyleSheet.create({
     height: 150,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
     backgroundColor: Colors.light,
+    shadowColor: Colors.black,
+    zIndex: 20,
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   image: {
     width: 150,
