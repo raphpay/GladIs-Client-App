@@ -129,6 +129,9 @@
       "message": "Come back later, or create one now"
     }
   },
+  "settings": {
+    "title": "Settings"
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"

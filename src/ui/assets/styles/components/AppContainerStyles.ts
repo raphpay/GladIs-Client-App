@@ -6,9 +6,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primary
   },
+  upperContainer: {
+    height: 104,
+    width: '100%',
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    backgroundColor: Colors.primary
+  },
   innerContainer: {
     flex: 1,
-    marginTop: 104,
     backgroundColor: Colors.light,
     shadowColor: Colors.black,
     shadowOffset: {width: -2, height: -4},

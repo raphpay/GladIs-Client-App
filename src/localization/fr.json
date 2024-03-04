@@ -116,6 +116,9 @@
       }
     }
   },
+  "settings": {
+    "title": "Réglages"
+  },
   "pendingUserManagement": {
     "title": "Liste de clients en attente",
     "status": {
