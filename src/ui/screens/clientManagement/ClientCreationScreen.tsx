@@ -21,6 +21,7 @@ import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 import AppContainer from '../../components/AppContainer';
+import ErrorDialog from '../../components/ErrorDialog';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
@@ -37,8 +38,9 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [employees, setEmployees] = useState<string>('');
   const [users, setUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
-  const backIcon = require('../../assets/images/arrow.uturn.left.png');
-  
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+  const [errorTitle, setErrorTitle] = useState<string>('');
+  const [errorDescription, setErrorDescription] = useState<string>('');
   const { navigation } = props;
   const { pendingUser } = props.route.params;
   const { token } = useAppSelector((state: RootState) => state.tokens);
@@ -71,8 +73,25 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       selectedModules.push(module);
     }
     // TODO: remove thens in the application
-    await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
-    navigation.goBack();
+    try {
+      await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+      navigation.goBack();
+    } catch (error) {
+      const errorKeys: string[] = error as string[];
+      if (errorKeys.includes('email.invalid')) {
+        if (errorKeys.includes('phoneNumber.invalid')) {
+          setErrorTitle(t('errors.signup.phoneAndEmail.title'));
+          setErrorDescription(t('errors.signup.phoneAndEmail.description'));
+        } else {
+          setErrorTitle(t('errors.signup.email.title'));
+          setErrorDescription(t('errors.signup.email.description'));
+        }
+      } else if (errorKeys.includes('phoneNumber.invalid')) {
+        setErrorTitle(t('errors.signup.phoneNumber.title'));
+        setErrorDescription(t('errors.signup.phoneNumber.description'));
+      }
+      setShowErrorDialog(true);
+    }
   }
 
   async function convertPendingUser() {
@@ -155,49 +174,61 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   
 
   return (
-    <AppContainer
-      mainTitle={t('quotation.adminTitle')}
-      showBackButton={true}
-      navigateBack={navigateBack}
-      showSearchText={false}
-      additionalButton={(
-        <View style={styles.sendButtonContainer}>
+    <>
+      <AppContainer
+        mainTitle={t('quotation.adminTitle')}
+        showBackButton={true}
+        navigateBack={navigateBack}
+        showSearchText={false}
+        additionalButton={(
+          <View style={styles.sendButtonContainer}>
+            <TextButton
+              width={'100%'}
+              title={t('quotation.submit')}
+              onPress={submit}
+              disabled={isButtonDisabled}
+            />
+          </View>
+        )}
+      >
+        <ScrollView>
+          <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />
+          <GladisTextInput value={lastName} onValueChange={setLastName} placeholder={t('quotation.lastName')} showTitle={true} />
+          <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')} showTitle={true} />
+          <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')} showTitle={true}/>
+          <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')} showTitle={true} />
+          <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')} showTitle={true} />
+          <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
+          {modules.map((module) => (
+            <ModuleCheckBox
+              key={module.id}
+              module={module}
+              isSelected={isModuleSelected(module)}
+              onSelectModule={() => toggleCheckbox(module)}
+              isDisabled={pendingUser != null}
+            />
+          ))}
+          <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')} showTitle={true} />
+          <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')} showTitle={true} />
+          <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')} showTitle={true} />
           <TextButton
-            width={'100%'}
             title={t('quotation.submit')}
             onPress={submit}
             disabled={isButtonDisabled}
           />
-        </View>
-      )}
-    >
-      <ScrollView>
-        <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />
-        <GladisTextInput value={lastName} onValueChange={setLastName} placeholder={t('quotation.lastName')} showTitle={true} />
-        <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')} showTitle={true} />
-        <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')} showTitle={true}/>
-        <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')} showTitle={true} />
-        <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')} showTitle={true} />
-        <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
-        {modules.map((module) => (
-          <ModuleCheckBox
-            key={module.id}
-            module={module}
-            isSelected={isModuleSelected(module)}
-            onSelectModule={() => toggleCheckbox(module)}
-            isDisabled={pendingUser != null}
+        </ScrollView>
+      </AppContainer>
+      {
+        showErrorDialog && (
+          <ErrorDialog
+            title={errorTitle}
+            description={errorDescription}
+            cancelTitle={t('errors.modules.cancelButton')}
+            onCancel={() => setShowErrorDialog(false)}
           />
-        ))}
-        <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')} showTitle={true} />
-        <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')} showTitle={true} />
-        <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')} showTitle={true} />
-        <TextButton
-          title={t('quotation.submit')}
-          onPress={submit}
-          disabled={isButtonDisabled}
-        />
-      </ScrollView>
-    </AppContainer>
+        )
+      }
+    </>
   );
 }
 
