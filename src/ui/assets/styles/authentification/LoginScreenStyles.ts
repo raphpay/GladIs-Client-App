@@ -12,6 +12,9 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: Fonts.bikoBold
   },
+  appIcon: {
+    marginBottom: 10,
+  },
   textInput: {
     borderWidth: 1,
     borderColor: Colors.black,
