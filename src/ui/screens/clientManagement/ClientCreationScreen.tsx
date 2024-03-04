@@ -26,7 +26,6 @@ import ErrorDialog from '../../components/ErrorDialog';
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
 function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
-  
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -78,20 +77,24 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       navigation.goBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
-      if (errorKeys.includes('email.invalid')) {
-        if (errorKeys.includes('phoneNumber.invalid')) {
-          setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-          setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-        } else {
-          setErrorTitle(t('errors.signup.email.title'));
-          setErrorDescription(t('errors.signup.email.description'));
-        }
-      } else if (errorKeys.includes('phoneNumber.invalid')) {
-        setErrorTitle(t('errors.signup.phoneNumber.title'));
-        setErrorDescription(t('errors.signup.phoneNumber.description'));
-      }
-      setShowErrorDialog(true);
+      showError(errorKeys);
     }
+  }
+
+  function showError(errorKeys: string []) {
+    if (errorKeys.includes('email.invalid')) {
+      if (errorKeys.includes('phoneNumber.invalid')) {
+        setErrorTitle(t('errors.signup.phoneAndEmail.title'));
+        setErrorDescription(t('errors.signup.phoneAndEmail.description'));
+      } else {
+        setErrorTitle(t('errors.signup.email.title'));
+        setErrorDescription(t('errors.signup.email.description'));
+      }
+    } else if (errorKeys.includes('phoneNumber.invalid')) {
+      setErrorTitle(t('errors.signup.phoneNumber.title'));
+      setErrorDescription(t('errors.signup.phoneNumber.description'));
+    }
+    setShowErrorDialog(true);
   }
 
   async function convertPendingUser() {
@@ -109,11 +112,16 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       status: PendingUserStatus.pending
     }
     const castedToken = token as IToken;
-    await PendingUserService.getInstance().convertPendingUserToUser(newPendingUser, castedToken)
-    const castedUser = pendingUser as IPendingUser;
-    await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
-    await PendingUserService.getInstance().removePendingUser(castedUser.id, token);
-    navigation.goBack();
+    try {
+      await PendingUserService.getInstance().convertPendingUserToUser(newPendingUser, castedToken)
+      const castedUser = pendingUser as IPendingUser;
+      await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
+      await PendingUserService.getInstance().removePendingUser(castedUser.id, token);
+      navigation.goBack(); 
+    } catch (error) {
+      const errorKeys = error as string[];
+      showError(errorKeys);
+    }
   }
 
   function toggleCheckbox(module: IModule) {
@@ -192,12 +200,42 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         )}
       >
         <ScrollView>
-          <GladisTextInput value={firstName} onValueChange={setFirstName} placeholder={t('quotation.firstName')} showTitle={true} />
-          <GladisTextInput value={lastName} onValueChange={setLastName} placeholder={t('quotation.lastName')} showTitle={true} />
-          <GladisTextInput value={phoneNumber} onValueChange={setPhoneNumber} placeholder={t('quotation.phone')} showTitle={true} />
-          <GladisTextInput value={companyName} onValueChange={setCompanyName} placeholder={t('quotation.companyName')} showTitle={true}/>
-          <GladisTextInput value={email} onValueChange={setEmail} placeholder={t('quotation.email')} showTitle={true} />
-          <GladisTextInput value={products} onValueChange={setProducts} placeholder={t('quotation.products')} showTitle={true} />
+          <GladisTextInput
+            value={firstName}
+            onValueChange={setFirstName}
+            placeholder={t('quotation.firstName')} showTitle={true}
+            editable={!showErrorDialog}
+          />
+          <GladisTextInput
+            value={lastName}
+            onValueChange={setLastName}
+            placeholder={t('quotation.lastName')} showTitle={true}
+            editable={!showErrorDialog}
+          />
+          <GladisTextInput
+            value={phoneNumber}
+            onValueChange={setPhoneNumber}
+            placeholder={t('quotation.phone')} showTitle={true}
+            editable={!showErrorDialog}
+          />
+          <GladisTextInput
+            value={companyName}
+            onValueChange={setCompanyName}
+            placeholder={t('quotation.companyName')} showTitle={true}
+            editable={!showErrorDialog}
+          />
+          <GladisTextInput
+            value={email}
+            onValueChange={setEmail}
+            placeholder={t('quotation.email')} showTitle={true}
+            editable={!showErrorDialog}
+          />
+          <GladisTextInput
+            value={products}
+            onValueChange={setProducts}
+            placeholder={t('quotation.products')} showTitle={true}
+            editable={!showErrorDialog}
+          />
           <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
           {modules.map((module) => (
             <ModuleCheckBox
@@ -208,9 +246,24 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
               isDisabled={pendingUser != null}
             />
           ))}
-          <GladisTextInput value={employees} onValueChange={setEmployees} placeholder={t('quotation.employees')} showTitle={true} />
-          <GladisTextInput value={users} onValueChange={setUsers} placeholder={t('quotation.users')} showTitle={true} />
-          <GladisTextInput value={sales} onValueChange={setSales} placeholder={t('quotation.capital')} showTitle={true} />
+          <GladisTextInput
+            value={employees}
+            onValueChange={setEmployees}
+            placeholder={t('quotation.employees')} showTitle={true}
+            editable={!showErrorDialog}
+          />
+          <GladisTextInput
+            value={users}
+            onValueChange={setUsers}
+            placeholder={t('quotation.users')} showTitle={true}
+            editable={!showErrorDialog}
+          />
+          <GladisTextInput
+            value={sales}
+            onValueChange={setSales}
+            placeholder={t('quotation.capital')} showTitle={true}
+            editable={!showErrorDialog}
+          />
           <TextButton
             title={t('quotation.submit')}
             onPress={submit}
