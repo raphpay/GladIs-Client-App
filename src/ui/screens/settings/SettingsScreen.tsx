@@ -1,15 +1,22 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  SafeAreaView,
-  StyleSheet
+  StyleSheet,
+  Text
 } from 'react-native';
 
+import AppContainer from '../../components/AppContainer';
+
 function SettingsScreen(): React.JSX.Element {
+  const { t } = useTranslation();
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Add your components here */}
-    </SafeAreaView>
+    <AppContainer
+      mainTitle={t('settings.title')}
+      showSearchText={false}
+    >
+      <Text>Hello</Text>
+    </AppContainer>
   );
 }
 

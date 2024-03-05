@@ -91,6 +91,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       dialog={dialogContent()}
       setShowDialog={setShowDialog}
       showSearchText={true}
+      showSettings={true}
       adminButton={
         <IconButton
           title={t('components.buttons.addClient')}

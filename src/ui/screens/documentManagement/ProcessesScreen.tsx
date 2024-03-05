@@ -105,6 +105,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
       setSearchText={setSearchText}
       showBackButton={true}
       showSearchText={true}
+      showSettings={true}
       navigateBack={navigateBack}
     >
       <FlatList

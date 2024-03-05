@@ -40,6 +40,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
         showSearchText={true}
         navigateBack={navigateBack}
         dialogIsShown={showDialog}
+        showSettings={true}
       >
         <DashboardClientFlatList searchText={searchText} setShowDialog={setShowDialog} />
       </AppContainer>

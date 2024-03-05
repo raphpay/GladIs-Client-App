@@ -90,6 +90,7 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
       navigationHistoryItems={navigationHistoryItems}
       showBackButton={true}
       showSearchText={true}
+      showSettings={true}
       navigateBack={navigateBack}
     >
       {

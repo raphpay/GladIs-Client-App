@@ -155,6 +155,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
         setSearchText={setSearchText}
         showBackButton={true}
         showSearchText={true}
+        showSettings={true}
         navigateBack={navigateBack}
         navigationHistoryItems={navigationHistoryItems}
         adminButton={(

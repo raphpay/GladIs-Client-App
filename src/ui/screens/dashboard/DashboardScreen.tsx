@@ -138,6 +138,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
         searchText={searchText}
         setSearchText={setSearchText}
         showSearchText={true}
+        showSettings={true}
         adminButton={(
           isAdmin ? (
             <IconButton

@@ -29,6 +29,7 @@ type AppContainerProps = {
   hideTooltip?: () => void
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
   showSearchText: boolean;
+  showSettings: boolean;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -50,7 +51,8 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     hideTooltip,
     setShowDialog,
     additionalButton,
-    showSearchText
+    showSearchText,
+    showSettings
   } = props;
 
   const { t } = useTranslation();
@@ -69,13 +71,17 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     <TouchableWithoutFeedback onPress={closeAll}>
       <SafeAreaView style={styles.container}>
         <View style={styles.upperContainer}>
-          <IconButton 
-            title={t('settings.title')}
-            icon={settingsIcon}
-            onPress={navigateToSettings}
-            backgroundColor={Colors.white}
-            textColor={Colors.black}
-          />
+          {
+            showSettings && (
+              <IconButton 
+              title={t('settings.title')}
+              icon={settingsIcon}
+              onPress={navigateToSettings}
+              backgroundColor={Colors.white}
+              textColor={Colors.black}
+            />
+            )
+          }
         </View>
         <View style={styles.innerContainer}>
           <View style={styles.innerComponentsContainer}>
