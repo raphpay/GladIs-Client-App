@@ -32,6 +32,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 
+import Utils from '../../../business-logic/utils/Utils';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -91,23 +92,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
-  async function getFileBase64FromURI(uri: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      fetch(uri)
-        .then(response => response.blob())
-        .then(blob => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const base64String = reader.result.split(',')[1]; // Extract base64 string from data URL
-            resolve(base64String);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        })
-        .catch(error => reject(error));
-    });
-  }
-
   async function addDocument() {
     setShowDialog(true);
   }
@@ -118,7 +102,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     let data: string = '';
     if (Platform.OS !== 'macos') {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
-      data = await getFileBase64FromURI(doc.uri) as string;
+      data = await Utils.getFileBase64FromURI(doc.uri) as string;
     } else {
       data = await FinderModule.getInstance().pickPDF();
     }

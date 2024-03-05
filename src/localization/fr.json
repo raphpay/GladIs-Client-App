@@ -134,6 +134,9 @@
       "message": "Revenez plus tard, ou enregistrez-en un maintenant"
     }
   },
+  "signUpScreen": {
+    "pickLogo": "Chosissez un logo"
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"

@@ -2,23 +2,30 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
+  Platform,
   ScrollView,
   Text,
   View
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import IFile from '../../../business-logic/model/IFile';
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
+import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
@@ -41,9 +48,12 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
+  const [logoURI, setLogoURI] = useState<string | undefined>(undefined);
+  
   const { navigation } = props;
-
   const { t } = useTranslation();
+
+  const downloadIcon = require('../../assets/images/square.and.arrow.down.png')
 
   async function submit() {
     const pendingUser: IPendingUser = {
@@ -95,6 +105,18 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   function navigateBack() {
     navigation.goBack();
+  }
+
+  async function pickLogo() {
+    if (Platform.OS !== 'macos') {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images })
+      setLogoURI(doc.uri);
+      const data = await Utils.getFileBase64FromURI(doc.uri) as string;
+      const filename = `${companyName}-logo`;
+      const path = `${companyName ?? ""}/logo/`;
+      const file: IFile = { data, filename }
+      const createdDocument = await DocumentService.getInstance().upload(file, filename, path);
+    }
   }
 
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
@@ -193,6 +215,19 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             placeholder={t('quotation.capital')} showTitle={true}
             editable={!showErrorDialog}
           />
+          <View style={styles.logoContainer}>
+            <IconButton
+              title={t('signUpScreen.pickLogo')}
+              icon={downloadIcon}
+              onPress={pickLogo}
+              style={styles.logoButton}
+            />
+            {
+              logoURI && (
+                <Image style={styles.logo} source={{uri: logoURI}}/>
+              )
+            }
+          </View>
         </ScrollView>
       </AppContainer>
       {

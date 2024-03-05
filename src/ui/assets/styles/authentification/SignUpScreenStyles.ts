@@ -9,6 +9,18 @@ const styles = StyleSheet.create({
   sendButtonContainer: {
     width: '30%',
     paddingHorizontal: 10,
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logoButton: {
+    width: '25%',
+    marginRight: 20,
+  },
+  logo: {
+    width: 100,
+    height: 100,
   }
 });
 
