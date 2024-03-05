@@ -85,6 +85,10 @@
       "loaded": "Chargé le",
       "deletion": "Supprimé le",
       "signature": "Signé le"
+    },
+    "noLogs": {
+      "title": "Pas de suivi de documents pour le moment",
+      "message": "Revenez plus tard"
     }
   },
   "process": {

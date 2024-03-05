@@ -85,6 +85,10 @@
       "loaded": "Loaded on",
       "deletion": "Deleted on",
       "signature": "Signed on"
+    },
+    "noLogs": {
+      "title": "No document logs for now",
+      "message": "Come back later"
     }
   },
   "process": {
