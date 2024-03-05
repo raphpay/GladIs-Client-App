@@ -44,11 +44,19 @@
     "module5": "Module 5"
   },
   "documentManagement": {
-    "title": "Gestion des documents"
+    "title": "Gestion des documents",
+    "noSubCategories": {
+      "title": "Pas de sous-catégorie pour le moment",
+      "message": "Veuillez réessayer plus tard"
+    }
   },
   "systemQuality": {
     "title": "Système Qualité",
     "qualityManual": "Manuel Qualité",
+    "noItems": {
+      "title": "Pas de sous-catégorie pour le moment",
+      "message": "Veuillez réessayer plus tard"
+    }
   },
   "technicalDocumentation": {
     "title": "Documentation Technique",
@@ -101,6 +109,10 @@
       "procedures": "Procédures",
       "forms": "Formulaires",
       "records": "Enregistrements"
+    },
+    "noItems": {
+      "title": "Pas de processus pour le moment",
+      "message": "Veuillez réessayer plus tard"
     }
   },
   "documentsScreen": {
