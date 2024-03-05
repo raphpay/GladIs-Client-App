@@ -8,8 +8,9 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppDispatch } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
+import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
@@ -29,6 +30,7 @@ interface ISettingsAction {
 function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { navigation } = props;
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
 
   const [oldPassword, setOldPassword] = useState<string>('');
@@ -76,7 +78,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
   async function logout() {
     try {
-      await AuthenticationService.getInstance().logout()
+      await AuthenticationService.getInstance().logout(token)
       dispatch(removeToken())
     } catch (error) {
       setShowErrorDialog(true);
