@@ -189,7 +189,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         navigateBack={navigateBack}
         showSearchText={false}
         showSettings={false}
-        additionalButton={(
+        additionalComponent={(
           <View style={styles.sendButtonContainer}>
             <TextButton
               width={'100%'}

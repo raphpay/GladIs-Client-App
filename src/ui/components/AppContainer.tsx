@@ -24,7 +24,7 @@ type AppContainerProps = {
   children: JSX.Element;
   adminButton?: JSX.Element;
   dialog?: JSX.Element;
-  additionalButton?: JSX.Element;
+  additionalComponent?: JSX.Element;
   dialogIsShown?: boolean;
   hideTooltip?: () => void
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,7 +50,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     dialogIsShown,
     hideTooltip,
     setShowDialog,
-    additionalButton,
+    additionalComponent,
     showSearchText,
     showSettings
   } = props;
@@ -110,7 +110,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
               )
             }
             {
-              additionalButton && (additionalButton)
+              additionalComponent && (additionalComponent)
             }
           </View>
         </View>
