@@ -117,7 +117,8 @@
     }
   },
   "settings": {
-    "title": "Réglages"
+    "title": "Réglages",
+    "modifyPassword": "Modifier le mot de passe"
   },
   "pendingUserManagement": {
     "title": "Liste de clients en attente",
