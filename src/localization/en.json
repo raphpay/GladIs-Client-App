@@ -134,9 +134,6 @@
     "modifyPassword": "Modify password",
     "logout": "Log out"
   },
-  "signUpScreen": {
-    "pickLogo": "Chosissez un logo"
-  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"
