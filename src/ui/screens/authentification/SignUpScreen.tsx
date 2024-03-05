@@ -49,6 +49,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
   const [logoURI, setLogoURI] = useState<string | undefined>(undefined);
+  const [logoData, setLogoData] = useState<string>('');
   
   const { navigation } = props;
   const { t } = useTranslation();
@@ -70,6 +71,10 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     }
     try {
       await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
+      const filename = `${companyName}-logo.png`;
+      const path = `${companyName ?? ""}/logo/`;
+      const file: IFile = { data: logoData, filename }
+      await DocumentService.getInstance().upload(file, filename, path);
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -112,11 +117,9 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images })
       setLogoURI(doc.uri);
       const data = await Utils.getFileBase64FromURI(doc.uri) as string;
-      const filename = `${companyName}-logo`;
-      const path = `${companyName ?? ""}/logo/`;
-      const file: IFile = { data, filename }
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, path);
+      setLogoData(data);
     }
+    // TODO: Continue for macos
   }
 
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
