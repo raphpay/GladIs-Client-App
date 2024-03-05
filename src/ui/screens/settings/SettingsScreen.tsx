@@ -1,3 +1,4 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -5,17 +6,31 @@ import {
   Text
 } from 'react-native';
 
+import { IRootStackParams } from '../../../navigation/Routes';
+
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+
 import AppContainer from '../../components/AppContainer';
 
-function SettingsScreen(): React.JSX.Element {
+type SettingsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SettingsScreen>;
+
+function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const { t } = useTranslation();
+  const { navigation } = props;
+
+  function navigateBack() {
+    navigation.goBack()
+  }
 
   return (
     <AppContainer
       mainTitle={t('settings.title')}
       showSearchText={false}
+      showSettings={false}
+      showBackButton={true}
+      navigateBack={navigateBack}
     >
-      <Text>Hello</Text>
+      <Text>Settings screen</Text>
     </AppContainer>
   );
 }

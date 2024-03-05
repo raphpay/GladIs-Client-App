@@ -157,6 +157,7 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SettingsScreen}
         component={SettingsScreen}
+        options={{headerShown: false}}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientManagementStack}
