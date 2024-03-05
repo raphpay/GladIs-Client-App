@@ -214,5 +214,9 @@
       "description": "Please contact you provider.",
       "cancelButton": "OK"
     }
+  },
+  "legal": {
+    "appName": "GladIs",
+    "developer": "Developed by TwinPaw"
   }
 }

@@ -2,14 +2,15 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  StyleSheet,
-  Text
+  Text,
+  View
 } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 
+import styles from '../../assets/styles/settings/SettingsScreenStyles';
 import AppContainer from '../../components/AppContainer';
 
 type SettingsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SettingsScreen>;
@@ -22,6 +23,16 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     navigation.goBack()
   }
 
+  function additionalMentions() {
+    // TODO: Add app version number to API
+    return (
+      <View style={styles.additionalMentions}>
+        <Text style={styles.mentionText}>{t('legal.appName')} v 0.1.0</Text>
+        <Text style={styles.mentionText}>{t('legal.developer')}</Text>
+      </View>
+    )
+  }
+
   return (
     <AppContainer
       mainTitle={t('settings.title')}
@@ -29,18 +40,11 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       showSettings={false}
       showBackButton={true}
       navigateBack={navigateBack}
+      additionalComponent={additionalMentions()}
     >
       <Text>Settings screen</Text>
     </AppContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default SettingsScreen;
