@@ -98,7 +98,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    const filename = documentName.replace(/\s/g, "_");
+    const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
     let data: string = '';
     if (Platform.OS !== 'macos') {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
@@ -106,7 +106,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     } else {
       data = await FinderModule.getInstance().pickPDF();
     }
-    const file: IFile = { data, filename: filename}
+    const file: IFile = { data, filename }
     const createdDocument = await DocumentService.getInstance().upload(file, filename, path);
     const logInput: IDocumentActivityLogInput = {
       action: DocumentLogAction.Creation,
