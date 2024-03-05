@@ -1,19 +1,21 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+
+import { IRootStackParams } from '../../../navigation/Routes';
 
 import IDocumentActivityLog from '../../../business-logic/model/IDocumentActivityLog';
+import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import { IRootStackParams } from '../../../navigation/Routes';
-
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
-import styles from '../../assets/styles/tracking/TrackingScreenStyles';
 import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
+
+import styles from '../../assets/styles/tracking/TrackingScreenStyles';
 
 type TrackingScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.TrackingScreen>;
 
@@ -80,11 +82,25 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
       navigateBack={navigateBack}
       navigationHistoryItems={navigationHistoryItems}
     >
-      <FlatList
-        data={logsFiltered}
-        renderItem={(renderItem) => LogFlatListItem(renderItem.item)}
-        keyExtractor={(item) => item.id}
-      />
+      <>
+        {
+          logsFiltered && logsFiltered.length === 0 ? (
+            <ContentUnavailableView
+              title={t('tracking.noLogs.title')}
+              message={t('tracking.noLogs.message')}
+              image={(
+                <Image source={require('../../assets/images/list.clipboard.png')}/>
+              )}
+            />
+          ) : (
+            <FlatList
+              data={logsFiltered}
+              renderItem={(renderItem) => LogFlatListItem(renderItem.item)}
+              keyExtractor={(item) => item.id}
+            />
+          )
+        }
+      </>
     </AppContainer>
   );
 }

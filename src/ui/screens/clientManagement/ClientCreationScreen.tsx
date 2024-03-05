@@ -162,8 +162,10 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     navigation.goBack();
   }
 
-  const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
-    email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
+  const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 ||
+    companyName.length === 0 || email.length === 0 ||
+    (products && products.length === 0) || (employees && employees.length === 0) ||
+    (users && users.length === 0) || (sales && sales.length === 0);
 
   useEffect(() => {
     async function init() {

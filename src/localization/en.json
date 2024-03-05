@@ -45,11 +45,19 @@
     "module5": "Module 5"
   },
   "documentManagement": {
-    "title": "Document management"
+    "title": "Document management",
+    "noSubCategories": {
+      "title": "No sub categories",
+      "message": "Please try again later"
+    }
   },
   "systemQuality": {
     "title": "System Quality",
-    "qualityManual": "Quality Manual"
+    "qualityManual": "Quality Manual",
+    "noItems": {
+      "title": "No sub items for now",
+      "message": "Please try again later"
+    }
   },
   "technicalDocumentation": {
     "title": "Technical Documentation",
@@ -86,6 +94,10 @@
       "loaded": "Loaded on",
       "deletion": "Deleted on",
       "signature": "Signed on"
+    },
+    "noLogs": {
+      "title": "No document logs for now",
+      "message": "Come back later"
     }
   },
   "process": {
@@ -98,6 +110,10 @@
       "procedures": "Procedures",
       "forms": "Forms",
       "records": "Records"
+    },
+    "noItems": {
+      "title": "No process for now",
+      "message": "Please try again later"
     }
   },
   "documentsScreen": {

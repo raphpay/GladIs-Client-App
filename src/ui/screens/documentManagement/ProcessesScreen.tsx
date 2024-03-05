@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  Image,
   Text,
   TouchableOpacity,
   View
@@ -14,6 +15,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 
 import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 import styles from '../../assets/styles/documentManagement/ProcessesScreenStyles';
 
@@ -108,12 +110,24 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
       showSettings={true}
       navigateBack={navigateBack}
     >
-      <FlatList
-        data={processesFiltered}
-        numColumns={2}
-        renderItem={(renderItem) => ProcessusFlatListItem(renderItem.item)}
-        keyExtractor={(item) => item.id}
-      />
+      {
+        processesFiltered && processesFiltered.length === 0 ? (
+          <ContentUnavailableView
+            title={t('process.noItems.title')}
+            message={t('process.noItems.message')}
+            image={(
+              <Image source={require('../../assets/images/list.clipboard.png')}/>
+            )}
+          />
+        ) : (
+          <FlatList
+            data={processesFiltered}
+            numColumns={2}
+            renderItem={(renderItem) => ProcessusFlatListItem(renderItem.item)}
+            keyExtractor={(item) => item.id}
+          />
+        )
+      }
     </AppContainer>
   );
 }
