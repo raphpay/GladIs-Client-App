@@ -182,6 +182,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       showSearchText={true}
       navigateBack={navigateBack}
       showDialog={showDialog}
+      showSettings={true}
       adminButton={
         currentUser?.userType == UserType.Admin ? (
           <IconButton

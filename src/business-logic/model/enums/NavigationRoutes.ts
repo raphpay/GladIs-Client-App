@@ -19,6 +19,8 @@ enum NavigationRoutes {
   ClientManagementStack = 'ClientManagementStack',
   PendingClientListScreen = 'PendingClientListScreen',
   ClientCreationScreen = 'ClientCreationScreen',
+  // Settings
+  SettingsScreen = 'SettingsScreen',
 }
 
 export default NavigationRoutes;

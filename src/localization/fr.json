@@ -116,6 +116,11 @@
       }
     }
   },
+  "settings": {
+    "title": "Réglages",
+    "modifyPassword": "Modifier le mot de passe",
+    "logout": "Déconnexion"
+  },
   "pendingUserManagement": {
     "title": "Liste de clients en attente",
     "status": {
@@ -167,6 +172,10 @@
         "title": "Etes-vous sûr de vouloir supprimer cet utilisateur ?",
         "description": "La suppression est définitive."
       },
+      "logout": {
+        "title": "Voulez-vous vraiment vous déconnecter ?",
+        "confirmButton": "Oui"
+      },
       "confirm": "OK",
       "cancel": "Annuler"
     },
@@ -211,5 +220,9 @@
       "description": "Veuillez contacter votre fournisseur.",
       "cancelButton": "OK"
     }
+  },
+  "legal": {
+    "appName": "GladIs",
+    "developer": "Developpé par TwinPaw"
   }
 }

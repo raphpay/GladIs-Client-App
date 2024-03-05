@@ -30,8 +30,9 @@ class AuthenticationService {
   }
 
   // Logout
-  async logout() {
+  async logout(token: IToken | null) {
     try {
+      await APIService.delete(`${this.baseRoute}/${token?.id}`);
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserID);
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserToken);
     } catch (error) {

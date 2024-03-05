@@ -116,7 +116,8 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         showBackButton={true}
         navigateBack={navigateBack}
         showSearchText={false}
-        additionalButton={(
+        showSettings={false}
+        additionalComponent={(
           <View style={styles.sendButtonContainer}>
             <TextButton
               width={'100%'}

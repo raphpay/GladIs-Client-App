@@ -28,13 +28,14 @@ import ProcessesScreen from '../ui/screens/documentManagement/ProcessesScreen';
 import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';
 import TechnicalDocAreaScreen from '../ui/screens/documentManagement/TechnicalDocAreaScreen';
 import TechnicalDocumentationScreen from '../ui/screens/documentManagement/TechnicalDocumentationScreen';
-
 // Tracking
 import TrackingScreen from '../ui/screens/tracking/TrackingScreen';
-
+// Client Management
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
+// Settings
+import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -53,6 +54,8 @@ export type IRootStackParams = {
   PDFScreen: { documentInput: IDocument },
   // Tracking
   TrackingScreen: undefined,
+  // Settings
+  SettingsScreen: undefined,
 }
 
 export type IClientManagementParams = {
@@ -149,6 +152,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.TrackingScreen}
         component={TrackingScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.SettingsScreen}
+        component={SettingsScreen}
         options={{headerShown: false}}
       />
       <ClientManagementStack.Screen

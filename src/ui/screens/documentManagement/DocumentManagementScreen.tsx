@@ -81,6 +81,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
       setSearchText={setSearchText}
       showBackButton={true}
       showSearchText={true}
+      showSettings={true}
       navigateBack={navigateBack}
     >
       <FlatList
