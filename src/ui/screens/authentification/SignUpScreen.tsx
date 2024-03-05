@@ -57,6 +57,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const downloadIcon = require('../../assets/images/square.and.arrow.down.png')
 
   async function submit() {
+    const logoPath = logoData && `${companyName ?? ""}/logo/`;
     const pendingUser: IPendingUser = {
       firstName,
       lastName,
@@ -67,7 +68,8 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       numberOfEmployees: parseInt(employees),
       numberOfUsers: parseInt(users),
       salesAmount: parseFloat(sales),
-      status: PendingUserStatus.pending
+      status: PendingUserStatus.pending,
+      logoPath: logoPath,
     }
     try {
       await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);

@@ -12,6 +12,7 @@ export default interface IPendingUser {
   numberOfEmployees?: number | null;
   numberOfUsers?: number | null;
   salesAmount?: number | null;
-  modules?: IModule[]; // Define Module type if it's not already defined
+  modules?: IModule[];
   status: PendingUserStatus;
+  logoPath?: string;
 }

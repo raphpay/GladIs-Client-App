@@ -8,6 +8,7 @@ import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -15,13 +16,13 @@ import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
+import AppContainer from '../../components/AppContainer';
+import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
-import AppContainer from '../../components/AppContainer';
-import ErrorDialog from '../../components/ErrorDialog';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
@@ -40,8 +41,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
+  const [imageData, setImageData] = useState<string | undefined>(undefined);
+
   const { navigation } = props;
   const { pendingUser } = props.route.params;
+
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
 
@@ -162,12 +166,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     navigation.goBack();
   }
 
-  const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
-    email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
-
-  useEffect(() => {
-    async function init() {
-      const apiModules = await ModuleService.getInstance().getModules();  
+  async function getModules() {
+    const apiModules = await ModuleService.getInstance().getModules();  
       setModules(apiModules);
       if (pendingUser?.id != null) {
         const pendingUsersModulesIDs = await PendingUserService.getInstance().getPendingUsersModulesIDs(pendingUser.id);
@@ -175,13 +175,28 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       } else {
         setSelectedModulesIDs([]);
       }
+  }
+
+  async function getLogo() {
+    const logoPath = await DocumentService.getInstance().getDocumentsAtPath(pendingUser?.logoPath);
+    if (logoPath && logoPath.length !== 0) {
+      const data = await DocumentService.getInstance().download(logoPath[0].id);
+      setImageData(data);
+    }
+  }
+
+  const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
+    email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
+
+  useEffect(() => {
+    async function init() {
+      await getModules();
       setDefaultValues();
+      getLogo();
     }
     init();
   }, []);
   
-
-  // TODO: handle image
   return (
     <>
       <AppContainer
@@ -190,6 +205,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         navigateBack={navigateBack}
         showSearchText={false}
         showSettings={false}
+        appIconData={imageData}
         additionalComponent={(
           <View style={styles.sendButtonContainer}>
             <TextButton

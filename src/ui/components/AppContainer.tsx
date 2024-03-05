@@ -30,6 +30,7 @@ type AppContainerProps = {
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
   showSearchText: boolean;
   showSettings: boolean;
+  appIconData?: string;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -52,7 +53,8 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     setShowDialog,
     additionalComponent,
     showSearchText,
-    showSettings
+    showSettings,
+    appIconData
   } = props;
 
   const { t } = useTranslation();
@@ -114,7 +116,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
             }
           </View>
         </View>
-        <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} />
+        <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} appIconData={appIconData}/>
         {
           showDialog && (dialog)
         }

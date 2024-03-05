@@ -10,10 +10,11 @@ import styles from '../assets/styles/components/TopAppBarStyles';
 type TopAppBarProps = {
   mainTitle: string;
   navigationHistoryItems?: INavigationHistoryItem[];
+  appIconData?: string;
 };
 
 function TopAppBar(props: TopAppBarProps): React.JSX.Element {
-  const { mainTitle, navigationHistoryItems } = props;
+  const { mainTitle, navigationHistoryItems, appIconData } = props;
 
   function NavigationButton(item: INavigationHistoryItem) {
     return (
@@ -30,7 +31,7 @@ function TopAppBar(props: TopAppBarProps): React.JSX.Element {
 
   return (
     <View style={styles.topContainer}>
-      <AppIcon style={styles.appIcon}/>
+      <AppIcon style={styles.appIcon} imageData={appIconData} />
       <View>
         <View style={styles.navigationButtonContainer}>
           {navigationHistoryItems && navigationHistoryItems.map((item) => {
