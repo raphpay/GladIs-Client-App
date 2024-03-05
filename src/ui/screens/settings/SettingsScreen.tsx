@@ -1,23 +1,22 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
+import { useAppDispatch } from '../../../business-logic/store/hooks';
+import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
+import ErrorDialog from '../../components/ErrorDialog';
 
 type SettingsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SettingsScreen>;
 
@@ -30,22 +29,34 @@ interface ISettingsAction {
 function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { navigation } = props;
+  const dispatch = useAppDispatch();
 
   const [oldPassword, setOldPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState<boolean>(false);
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+
 
   const settingsActions: ISettingsAction[] = [
     {
       id: 'changePasswordId',
       title: t('settings.modifyPassword'),
       action: () => showModifyPasswordDialog()
-    }
+    },
+    {
+      id: 'logoutID',
+      title: t('settings.logout'),
+      action: () => displayLogoutDialog()
+    },
   ];
-
 
   function showModifyPasswordDialog() {
     setShowDialog(true);
+  }
+
+  function displayLogoutDialog() {
+    setShowLogoutDialog(true);
   }
 
   function navigateBack() {
@@ -60,6 +71,15 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       } catch (error) {
         console.log('Error changing password', error);
       }
+    }
+  }
+
+  async function logout() {
+    try {
+      await AuthenticationService.getInstance().logout()
+      dispatch(removeToken())
+    } catch (error) {
+      setShowErrorDialog(true);
     }
   }
 
@@ -113,6 +133,40 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     );
   }
 
+  function logoutDialog() {
+    return (
+      <>
+        {
+          showLogoutDialog && (
+            <Dialog 
+              title={t('components.dialog.logout.title')}
+              confirmTitle={t('components.dialog.logout.confirmButton')}
+              onConfirm={logout}
+              onCancel={() => setShowLogoutDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function errorDialog() {
+    return (
+      <>
+        {
+          showErrorDialog && (
+            <ErrorDialog
+              title={t('errors.logout.title')}
+              description={t('errors.logout.message')}
+              cancelTitle={t('errors.modules.cancelButton')}
+              onCancel={() => setShowErrorDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   function SettingsActionFlatListItem(item: ISettingsAction) {
     return (
       <TouchableOpacity style={styles.actionContainer} onPress={item.action}>
@@ -139,6 +193,8 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
         />
       </AppContainer>
       {dialogContent()}
+      {logoutDialog()}
+      {errorDialog()}
     </>
   );
 }

@@ -32,6 +32,7 @@ class AuthenticationService {
   // Logout
   async logout() {
     try {
+      // TODO: remove token on the API too
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserID);
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserToken);
     } catch (error) {

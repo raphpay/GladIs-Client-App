@@ -118,7 +118,8 @@
   },
   "settings": {
     "title": "Réglages",
-    "modifyPassword": "Modifier le mot de passe"
+    "modifyPassword": "Modifier le mot de passe",
+    "logout": "Déconnexion"
   },
   "pendingUserManagement": {
     "title": "Liste de clients en attente",
@@ -170,6 +171,10 @@
       "pendingUserManagement": {
         "title": "Etes-vous sûr de vouloir supprimer cet utilisateur ?",
         "description": "La suppression est définitive."
+      },
+      "logout": {
+        "title": "Voulez-vous vraiment vous déconnecter ?",
+        "confirmButton": "Oui"
       },
       "confirm": "OK",
       "cancel": "Annuler"
