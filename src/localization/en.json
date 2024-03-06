@@ -192,6 +192,7 @@
         "title": "Do you really want to logout ?",
         "confirmButton": "Yes"
       },
+      "addEmployee": "Add employee",
       "confirm": "OK",
       "cancel": "Cancel"
     },

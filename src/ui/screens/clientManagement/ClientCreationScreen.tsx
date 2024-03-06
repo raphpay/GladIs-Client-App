@@ -228,20 +228,18 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     init();
   }, []);
 
-  // TODO: add font
   function PotentialEmployeeFlatListItem(item: IPotentialEmployee) {
     return (
-      <Text>{item.firstName} {item.lastName}</Text>
+      <Text style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
     )
   }
 
-  // TODO: add translation
   function dialogContent() {
     return (
       showDialog && (
         (
           <Dialog
-            title='Add employees'
+            title={t('dialog.addEmployee')}
             onConfirm={addEmployee}
             onCancel={() => setShowDialog(false)}
           >

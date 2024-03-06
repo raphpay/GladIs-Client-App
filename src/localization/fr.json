@@ -192,6 +192,7 @@
         "title": "Voulez-vous vraiment vous déconnecter ?",
         "confirmButton": "Oui"
       },
+      "addEmployee": "Ajouter un employé",
       "confirm": "OK",
       "cancel": "Annuler"
     },
