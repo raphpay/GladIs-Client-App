@@ -17,6 +17,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
+import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
@@ -25,7 +26,6 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
@@ -150,6 +150,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     init();
   }, []);
 
+  // TODO: add font
   function PotentialEmployeeFlatListItem(item: IPotentialEmployee) {
     return (
       <Text>{item.firstName} {item.lastName}</Text>

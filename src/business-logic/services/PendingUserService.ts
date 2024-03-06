@@ -1,5 +1,6 @@
 import IModule from '../model/IModule';
 import IPendingUser from '../model/IPendingUser';
+import IPotentialEmployee from '../model/IPotentialEmployee';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import { extractValidationErrors } from '../model/ValidationError';
@@ -44,7 +45,6 @@ class PendingUserService {
     }
   }
 
-
   async createPermanentUser(pendingUser: IPendingUser, token: IToken): Promise<IUser> {
     let newUser: IUser;
     try {
@@ -58,7 +58,6 @@ class PendingUserService {
   }
 
   private async addModulesToPendingUser(modules: IModule[], pendingUser: IPendingUser) {
-
     for (const module of modules) {
       const userID = pendingUser.id as string;
       const moduleID = module.id as string;
@@ -105,6 +104,16 @@ class PendingUserService {
       return moduleIDs;
     } catch (error) {
       console.error('Error getting pending user\'s modules for id:', id, error);
+      throw error;
+    }
+  }
+
+  async getPotentialEmployees(id: string | undefined, token: IToken | null): Promise<IPotentialEmployee[]> {
+    try {
+      const employees = await APIService.get<IPotentialEmployee[]>(`${this.baseRoute}/${id}/employees`, token?.value)
+      return employees;
+    } catch (error) {
+      console.error('Error getting pending user\'s employees for id:', id, error);
       throw error;
     }
   }
