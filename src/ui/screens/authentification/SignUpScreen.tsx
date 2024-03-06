@@ -12,6 +12,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
+import IPotentialEmployee from '../../../business-logic/model/IPotentialUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import ModuleService from '../../../business-logic/services/ModuleService';
@@ -25,16 +26,6 @@ import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
-
-// TODO: To be exported
-interface IPotentialEmployee {
-  id: string;
-  firstName: string;
-  lastName: string;
-  companyName: string;
-  // Always check if pendingUserID is not null
-  pendingUserID?: string
-}
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
 
