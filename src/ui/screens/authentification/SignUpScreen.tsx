@@ -12,7 +12,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
-import IPotentialEmployee from '../../../business-logic/model/IPotentialUser';
+import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import ModuleService from '../../../business-logic/services/ModuleService';
@@ -25,6 +25,7 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
@@ -77,7 +78,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       status: PendingUserStatus.pending
     }
     try {
-      await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
+      const createdUser = await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
+      for (const employee of potentialEmployees) {
+        employee.pendingUserID = createdUser.id
+        await PotentialEmployeeService.getInstance().create(employee);
+      }
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -115,9 +120,22 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
-  function addEmployee() {
-    // TODO: Add API method
-    console.log('hello', potentialEmployeeFirstName, potentialEmployeeLastName, potentialEmployees);
+  async function addEmployee() {
+    if (potentialEmployees.length !== parseInt(numberOfUsers)) {
+      const newEmployee: IPotentialEmployee = {
+        firstName: potentialEmployeeFirstName,
+        lastName: potentialEmployeeLastName,
+        companyName: companyName
+      };
+      potentialEmployees.push(newEmployee)
+      setPotentialEmployeeFirstName('');
+      setPotentialEmployeeLastName('');
+      if (potentialEmployees.length === parseInt(numberOfUsers)) {
+        await submit();
+      }
+    } else {
+      await submit();
+    }
   }
 
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
@@ -138,6 +156,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     )
   }
 
+  // TODO: Add translation
   function dialogContent() {
     return (
       showDialog && (
@@ -149,12 +168,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           >
             <>
               {
-                potentialEmployees && (
+                potentialEmployees && potentialEmployees.length !== 0 && (
                   <FlatList
                     data={potentialEmployees}
-                    numColumns={4}
                     renderItem={(renderItem) => PotentialEmployeeFlatListItem(renderItem.item)}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.id ?? "id"}
                   />
                 )
               }

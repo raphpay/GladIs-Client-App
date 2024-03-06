@@ -32,10 +32,11 @@ class PendingUserService {
     }
   }
 
-  async askForSignUp(pendingUser: IPendingUser, modules: IModule[]) {
+  async askForSignUp(pendingUser: IPendingUser, modules: IModule[]): Promise<IPendingUser> {
     try {
       const userAdded = await APIService.post<IPendingUser>(this.baseRoute, pendingUser);
       await this.addModulesToPendingUser(modules, userAdded);
+      return userAdded;
     } catch (error) {
       const errorKeys = extractValidationErrors(error.message)
       console.log('Error asking for sign up for user', pendingUser, errorKeys);
