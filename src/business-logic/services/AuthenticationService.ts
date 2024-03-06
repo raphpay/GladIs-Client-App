@@ -36,6 +36,7 @@ class AuthenticationService {
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserID);
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserToken);
     } catch (error) {
+      // TODO: Remove all console.error
       console.error('Error logging user out', error);
       throw error;
     }

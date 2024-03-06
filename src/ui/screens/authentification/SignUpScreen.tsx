@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  FlatList,
   ScrollView,
   Text,
   View
@@ -11,12 +12,15 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
+import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
+import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 
 import AppContainer from '../../components/AppContainer';
+import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
@@ -35,15 +39,30 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [products, setProducts] = useState<string>('');
   const [modules, setModules] = useState<IModule[]>([]);
   const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
-  const [employees, setEmployees] = useState<string>('');
-  const [users, setUsers] = useState<string>('');
+  const [numberOfEmployees, setNumberOfEmployees] = useState<string>('');
+  const [numberOfUsers, setNumberOfUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
+
+  // Potential employee
+  const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
+  const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
+  const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
+
   const { navigation } = props;
 
   const { t } = useTranslation();
+
+  async function addEmployeesBeforeSubmit() {
+    if (parseInt(numberOfUsers) > 0) {
+      setShowDialog(true);
+    } else {
+      submit()
+    }
+  }
 
   async function submit() {
     const pendingUser: IPendingUser = {
@@ -53,13 +72,17 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       companyName,
       email,
       products,
-      numberOfEmployees: parseInt(employees),
-      numberOfUsers: parseInt(users),
+      numberOfEmployees: parseInt(numberOfEmployees),
+      numberOfUsers: parseInt(numberOfUsers),
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     }
     try {
-      await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
+      const createdUser = await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
+      for (const employee of potentialEmployees) {
+        employee.pendingUserID = createdUser.id
+        await PotentialEmployeeService.getInstance().create(employee);
+      }
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -97,8 +120,26 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
+  async function addEmployee() {
+    if (potentialEmployees.length !== parseInt(numberOfUsers)) {
+      const newEmployee: IPotentialEmployee = {
+        firstName: potentialEmployeeFirstName,
+        lastName: potentialEmployeeLastName,
+        companyName: companyName
+      };
+      potentialEmployees.push(newEmployee)
+      setPotentialEmployeeFirstName('');
+      setPotentialEmployeeLastName('');
+      if (potentialEmployees.length === parseInt(numberOfUsers)) {
+        await submit();
+      }
+    } else {
+      await submit();
+    }
+  }
+
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
-    email.length === 0 || products.length === 0 || employees.length === 0 || users.length === 0 || sales.length === 0;
+    email.length === 0 || products.length === 0 || numberOfEmployees.length === 0 || numberOfUsers.length === 0 || sales.length === 0;
 
   useEffect(() => {
     async function init() {
@@ -109,6 +150,61 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     init();
   }, []);
 
+  function PotentialEmployeeFlatListItem(item: IPotentialEmployee) {
+    return (
+      <Text style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
+    )
+  }
+
+  function dialogContent() {
+    return (
+      showDialog && (
+        (
+          <Dialog
+            title={t('dialog.addEmployee')}
+            onConfirm={addEmployee}
+            onCancel={() => setShowDialog(false)}
+          >
+            <>
+              {
+                potentialEmployees && potentialEmployees.length !== 0 && (
+                  <FlatList
+                    data={potentialEmployees}
+                    renderItem={(renderItem) => PotentialEmployeeFlatListItem(renderItem.item)}
+                    keyExtractor={(item) => item.id ?? "id"}
+                  />
+                )
+              }
+              <GladisTextInput 
+                value={potentialEmployeeFirstName}
+                onValueChange={setPotentialEmployeeFirstName}
+                placeholder={t('quotation.firstName')}
+              />
+              <GladisTextInput 
+                value={potentialEmployeeLastName}
+                onValueChange={setPotentialEmployeeLastName}
+                placeholder={t('quotation.lastName')}
+              />
+            </>
+          </Dialog>
+        )
+      )
+    )
+  }
+
+  function errorDialog() {
+    return (
+      showErrorDialog && (
+        <ErrorDialog
+          title={errorTitle}
+          description={errorDescription}
+          cancelTitle={t('errors.modules.cancelButton')}
+          onCancel={() => setShowErrorDialog(false)}
+        />
+      )
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -117,12 +213,13 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         navigateBack={navigateBack}
         showSearchText={false}
         showSettings={false}
+        dialogIsShown={showDialog}
         additionalComponent={(
           <View style={styles.sendButtonContainer}>
             <TextButton
               width={'100%'}
               title={t('quotation.submit')}
-              onPress={submit}
+              onPress={addEmployeesBeforeSubmit}
               disabled={isButtonDisabled}
             />
           </View>
@@ -133,37 +230,37 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             value={firstName}
             onValueChange={setFirstName}
             placeholder={t('quotation.firstName')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
           <GladisTextInput
             value={lastName}
             onValueChange={setLastName}
             placeholder={t('quotation.lastName')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
             />
           <GladisTextInput
             value={phoneNumber}
             onValueChange={setPhoneNumber}
             placeholder={t('quotation.phone')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
           <GladisTextInput
             value={companyName}
             onValueChange={setCompanyName}
             placeholder={t('quotation.companyName')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
           <GladisTextInput
             value={email}
             onValueChange={setEmail}
             placeholder={t('quotation.email')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
           <GladisTextInput
             value={products}
             onValueChange={setProducts}
             placeholder={t('quotation.products')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
           <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
           {modules.map((module) => (
@@ -176,35 +273,27 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             />
           ))}
           <GladisTextInput
-            value={employees}
-            onValueChange={setEmployees}
+            value={numberOfEmployees}
+            onValueChange={setNumberOfEmployees}
             placeholder={t('quotation.employees')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
           <GladisTextInput
-            value={users}
-            onValueChange={setUsers}
+            value={numberOfUsers}
+            onValueChange={setNumberOfUsers}
             placeholder={t('quotation.users')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
           <GladisTextInput
             value={sales}
             onValueChange={setSales}
             placeholder={t('quotation.capital')} showTitle={true}
-            editable={!showErrorDialog}
+            editable={!showErrorDialog && !showDialog}
           />
         </ScrollView>
       </AppContainer>
-      {
-        showErrorDialog && (
-          <ErrorDialog
-            title={errorTitle}
-            description={errorDescription}
-            cancelTitle={t('errors.modules.cancelButton')}
-            onCancel={() => setShowErrorDialog(false)}
-          />
-        )
-      }
+      {dialogContent()}
+      {errorDialog()}
     </>
   );
 }

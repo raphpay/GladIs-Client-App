@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
   sendButtonContainer: {
     width: '30%',
     paddingHorizontal: 10,
+  },
+  employeeText: {
+    fontSize: 12,
+    fontFamily: Fonts.poppinsLight
   }
 });
 

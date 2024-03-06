@@ -1,27 +1,30 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { FlatList, ScrollView, Text, View } from 'react-native';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
+import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
+import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
+import AppContainer from '../../components/AppContainer';
+import Dialog from '../../components/Dialog';
+import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
-import AppContainer from '../../components/AppContainer';
-import ErrorDialog from '../../components/ErrorDialog';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
 
@@ -35,11 +38,18 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [modules, setModules] = useState<IModule[]>([]);
   const [selectedModulesIDs, setSelectedModulesIDs] = useState<string[]>([]);
   const [employees, setEmployees] = useState<string>('');
-  const [users, setUsers] = useState<string>('');
+  const [numberOfUsers, setNumberOfUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
+
+  // Potential employee
+  const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
+  const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
+  const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
+
   const { navigation } = props;
   const { pendingUser } = props.route.params;
   const { token } = useAppSelector((state: RootState) => state.tokens);
@@ -62,7 +72,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       email,
       products,
       numberOfEmployees: parseInt(employees),
-      numberOfUsers: parseInt(users),
+      numberOfUsers: parseInt(numberOfUsers),
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     };
@@ -73,7 +83,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
     // TODO: remove thens in the application
     try {
-      await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+      const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+      for (const employee of potentialEmployees) {
+        employee.pendingUserID = createdUser.id
+        await PotentialEmployeeService.getInstance().create(employee);
+      }
       navigation.goBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -107,7 +121,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       email,
       products,
       numberOfEmployees: parseInt(employees),
-      numberOfUsers: parseInt(users),
+      numberOfUsers: parseInt(numberOfUsers),
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     }
@@ -152,7 +166,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const employees = pendingUser.numberOfEmployees as number;
       setEmployees(employees.toString());
       const users = pendingUser.numberOfUsers as number;
-      setUsers(users.toString());
+      setNumberOfUsers(users.toString());
       const salesAmount = pendingUser.salesAmount as number;
       setSales(salesAmount.toString());
     }
@@ -162,10 +176,42 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     navigation.goBack();
   }
 
+  async function addEmployeesBeforeSubmit() {
+    if (parseInt(numberOfUsers) > 0) {
+      if (pendingUser !== null) {
+        const employees = await PendingUserService.getInstance().getPotentialEmployees(pendingUser?.id, token);
+        setPotentialEmployees(employees)
+      }
+      setShowDialog(true);
+    } else {
+      await submit();
+    }
+  }
+
+  async function addEmployee() {
+    const employees = potentialEmployees;
+    if (employees.length !== parseInt(numberOfUsers)) {
+      const newEmployee: IPotentialEmployee = {
+        firstName: potentialEmployeeFirstName,
+        lastName: potentialEmployeeLastName,
+        companyName: companyName
+      };
+      employees.push(newEmployee);
+      setPotentialEmployees(employees);
+      setPotentialEmployeeFirstName('');
+      setPotentialEmployeeLastName('');
+      if (employees.length === parseInt(numberOfUsers)) {
+        await submit();
+      }
+    } else {
+      await submit();
+    }
+  }
+
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 ||
     companyName.length === 0 || email.length === 0 ||
     (products && products.length === 0) || (employees && employees.length === 0) ||
-    (users && users.length === 0) || (sales && sales.length === 0);
+    (numberOfUsers && numberOfUsers.length === 0) || (sales && sales.length === 0);
 
   useEffect(() => {
     async function init() {
@@ -181,6 +227,61 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
     init();
   }, []);
+
+  function PotentialEmployeeFlatListItem(item: IPotentialEmployee) {
+    return (
+      <Text style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
+    )
+  }
+
+  function dialogContent() {
+    return (
+      showDialog && (
+        (
+          <Dialog
+            title={t('dialog.addEmployee')}
+            onConfirm={addEmployee}
+            onCancel={() => setShowDialog(false)}
+          >
+            <>
+              {
+                potentialEmployees && potentialEmployees.length !== 0 && (
+                  <FlatList
+                    data={potentialEmployees}
+                    renderItem={(renderItem) => PotentialEmployeeFlatListItem(renderItem.item)}
+                    keyExtractor={(item) => item.id ?? "id"}
+                  />
+                )
+              }
+              <GladisTextInput 
+                value={potentialEmployeeFirstName}
+                onValueChange={setPotentialEmployeeFirstName}
+                placeholder={t('quotation.firstName')}
+              />
+              <GladisTextInput 
+                value={potentialEmployeeLastName}
+                onValueChange={setPotentialEmployeeLastName}
+                placeholder={t('quotation.lastName')}
+              />
+            </>
+          </Dialog>
+        )
+      )
+    )
+  }
+
+  function errorDialog() {
+    return (
+      showErrorDialog && (
+        <ErrorDialog
+          title={errorTitle}
+          description={errorDescription}
+          cancelTitle={t('errors.modules.cancelButton')}
+          onCancel={() => setShowErrorDialog(false)}
+        />
+      )
+    );
+  }
   
 
   return (
@@ -196,7 +297,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             <TextButton
               width={'100%'}
               title={t('quotation.submit')}
-              onPress={submit}
+              onPress={addEmployeesBeforeSubmit}
               disabled={isButtonDisabled}
             />
           </View>
@@ -256,8 +357,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             editable={!showErrorDialog}
           />
           <GladisTextInput
-            value={users}
-            onValueChange={setUsers}
+            value={numberOfUsers}
+            onValueChange={setNumberOfUsers}
             placeholder={t('quotation.users')} showTitle={true}
             editable={!showErrorDialog}
           />
@@ -267,6 +368,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             placeholder={t('quotation.capital')} showTitle={true}
             editable={!showErrorDialog}
           />
+          {/* TODO: remove this button  */}
           <TextButton
             title={t('quotation.submit')}
             onPress={submit}
@@ -274,16 +376,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
           />
         </ScrollView>
       </AppContainer>
-      {
-        showErrorDialog && (
-          <ErrorDialog
-            title={errorTitle}
-            description={errorDescription}
-            cancelTitle={t('errors.modules.cancelButton')}
-            onCancel={() => setShowErrorDialog(false)}
-          />
-        )
-      }
+      {dialogContent()}
+      {errorDialog()}
     </>
   );
 }

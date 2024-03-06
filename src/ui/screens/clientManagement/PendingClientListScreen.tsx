@@ -79,6 +79,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     )
   }
 
+  // TODO: check dialog={dialogContent()}
   return (
     <AppContainer
       mainTitle={t('pendingUserManagement.title')}
