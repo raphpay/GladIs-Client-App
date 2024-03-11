@@ -345,7 +345,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             placeholder={t('quotation.capital')} showTitle={true}
             editable={!showErrorDialog}
           />
-          <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
+          {
+            pendingUser == null && (
+              <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
+            )
+          }
           {
             potentialEmployees.length > 0 && (
               <>
