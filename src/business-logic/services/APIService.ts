@@ -163,7 +163,6 @@ class APIService {
     }
   }
 
-  // DELETE
   /**
    * Sends a DELETE request to the specified endpoint.
    * @param endpoint - The API endpoint to send the request to.
@@ -194,7 +193,6 @@ class APIService {
     }
   }  
 
-  // DOWNLOAD
   /**
    * Sends a GET request to download a file from the specified endpoint.
    * @param endpoint - The API endpoint to send the request to.
