@@ -27,6 +27,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const [oldPassword, setOldPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [dialogDescription, setDialogDescription] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const plusIcon = require('../../assets/images/plus.png');
@@ -38,12 +39,20 @@ function DashboardScreen(props: DashboardScreenProps): any {
 
   async function submitPasswordChange() {
     if (oldPassword.length !== 0 && newPassword.length !== 0) {
-      try {
-        await UserService.getInstance().changePassword(oldPassword, newPassword);
-        await UserService.getInstance().setUserFirstConnectionToFalse();
-        setShowDialog(false);
-      } catch (error) {
-        console.log('Error changing password', error);
+      if (oldPassword === newPassword) {
+        setDialogDescription(t('errors.password.samePassword'));
+      } else {
+        try {
+          await UserService.getInstance().changePassword(oldPassword, newPassword);
+          await UserService.getInstance().setUserFirstConnectionToFalse();
+          setShowDialog(false);
+        } catch (error) {
+          const errorMessage = error.message as string;
+          if (errorMessage) {
+            setDialogDescription(t(`errors.${errorMessage}`));
+          }
+          console.log('Error changing password', error);
+        }
       }
     }
   }
@@ -55,6 +64,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
       // TODO: Review this warning
       const user = await UserService.getInstance().getUserByID(userID);
       setIsAdmin(user.userType == UserType.Admin);
+      setDialogDescription(t('components.dialog.firstConnection.description'))
       setShowDialog(user.firstConnection);
     }
     init();
@@ -81,7 +91,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
           showDialog && (
             <Dialog
               title={t('components.dialog.firstConnection.title')}
-              description={t('components.dialog.firstConnection.description')}
+              description={dialogDescription}
               confirmTitle={t('components.dialog.firstConnection.confirmButton')}
               isConfirmDisabled={oldPassword.length === 0 || newPassword.length === 0}
               onConfirm={submitPasswordChange}
