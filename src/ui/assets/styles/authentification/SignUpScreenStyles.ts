@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   },
   employeesTitle: {
     fontSize: 14,
-    fontFamily: Fonts.poppinsLight,
+    fontFamily: Fonts.poppinsSemiBold
   },
   employeeText: {
     fontSize: 12,

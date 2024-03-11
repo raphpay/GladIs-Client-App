@@ -7,11 +7,13 @@ import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
 import IToken from '../../../business-logic/model/IToken';
+import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
+import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -79,6 +81,15 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     setShowErrorDialog(true);
   }
 
+  function retrieveSelectedModules(): IModule[] {
+    const selectedModules: IModule[] = [];
+    for (const id of selectedModulesIDs) {
+      const module = modules.find(module => module.id === id) as IModule;
+      selectedModules.push(module);
+    }
+    return selectedModules;
+  }
+
   async function createPendingUser() {
     const newPendingUser: IPendingUser = {
       firstName,
@@ -92,18 +103,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     };
-    const selectedModules: IModule[] = [];
-    for (const id of selectedModulesIDs) {
-      const module = modules.find(module => module.id === id) as IModule;
-      selectedModules.push(module);
-    }
+    const selectedModules = retrieveSelectedModules();
     // TODO: remove thens in the application
     try {
       const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
-      for (const employee of potentialEmployees) {
-        employee.pendingUserID = createdUser.id
-        await PotentialEmployeeService.getInstance().create(employee);
-      }
+      await createEmployees(createdUser.id as string);
       navigation.goBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -111,26 +115,46 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
-  async function convertPendingUser() {
-    const newPendingUser: IPendingUser = {
-      id: pendingUser?.id,
-      firstName,
-      lastName,
-      phoneNumber,
-      companyName,
-      email,
-      products,
-      numberOfEmployees: parseInt(employees),
-      numberOfUsers: parseInt(numberOfUsers),
-      salesAmount: parseFloat(sales),
-      status: PendingUserStatus.pending
+  async function createEmployees(pendingUserID: string) {
+    // Update all employees with pendingUserID
+    const updatedPotentialEmployees = potentialEmployees.map(employee => {
+      return {
+        ...employee,
+        pendingUserID,
+      };
+    });
+    for (const employee of updatedPotentialEmployees) {
+      if (employee.pendingUserID !== null) {
+        try {
+          await PotentialEmployeeService.getInstance().create(employee)
+        } catch (error) {
+          console.log('Error creating employee', employee, error);
+        }
+      }
     }
+  }
+
+  async function convertEmployeesToUser(): Promise<IUser[]> {
+    const newUsers: IUser[] = [];
+    for (const employee of potentialEmployees) {
+      const newUserEmployee = await PotentialEmployeeService.getInstance().convertToUser(employee.id as string, token);
+      newUsers.push(newUserEmployee);
+    }
+    return newUsers;
+  }
+
+  async function convertPendingUser() {
+    const id = pendingUser?.id as string;
     const castedToken = token as IToken;
     try {
-      await PendingUserService.getInstance().convertPendingUserToUser(newPendingUser, castedToken)
-      const castedUser = pendingUser as IPendingUser;
-      await PendingUserService.getInstance().updatePendingUserStatus(castedUser, castedToken, PendingUserStatus.accepted);
-      await PendingUserService.getInstance().removePendingUser(castedUser.id, token);
+      // 1 Convert manager
+      const createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
+      // 2 Convert employees
+      const createdEmployees = await convertEmployeesToUser();
+      // 3 Add manager to employees
+      for (const employee of createdEmployees) {
+        await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
+      }
       navigation.goBack(); 
     } catch (error) {
       const errorKeys = error as string[];
@@ -138,6 +162,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
+  // TODO: Check managerID and employee id
   function toggleCheckbox(module: IModule) {
     setSelectedModulesIDs((prevSelectedObjectsIDs) => {
       const moduleID = module.id as string;
@@ -176,45 +201,13 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     navigation.goBack();
   }
 
-  async function addEmployeesBeforeSubmit() {
-    if (parseInt(numberOfUsers) > 0) {
-      if (pendingUser !== null) {
-        const employees = await PendingUserService.getInstance().getPotentialEmployees(pendingUser?.id, token);
-        setPotentialEmployees(employees)
-      }
-      setShowDialog(true);
-    } else {
-      await submit();
-    }
-  }
-
-  async function addEmployee() {
-    const employees = potentialEmployees;
-    if (employees.length !== parseInt(numberOfUsers)) {
-      const newEmployee: IPotentialEmployee = {
-        firstName: potentialEmployeeFirstName,
-        lastName: potentialEmployeeLastName,
-        companyName: companyName
-      };
-      employees.push(newEmployee);
-      setPotentialEmployees(employees);
-      setPotentialEmployeeFirstName('');
-      setPotentialEmployeeLastName('');
-      if (employees.length === parseInt(numberOfUsers)) {
-        await submit();
-      }
-    } else {
-      await submit();
-    }
-  }
-
   const isButtonDisabled = !firstName || !lastName || !phoneNumber ||
     !companyName || !email ||
     (products && !products.length) || (employees && !employees.length) ||
     (numberOfUsers && !numberOfUsers.length) || (sales && !sales.length);
-
-  useEffect(() => {
-    async function init() {
+  
+  async function loadModules() {
+    try {
       const apiModules = await ModuleService.getInstance().getModules();  
       setModules(apiModules);
       if (pendingUser?.id != null) {
@@ -223,14 +216,34 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       } else {
         setSelectedModulesIDs([]);
       }
+    } catch (error) {
+      console.log('Error loading modules', error);
+    }
+  }
+
+  async function loadEmployees() {
+    if (pendingUser != null) {
+      try {
+        const employees = await PendingUserService.getInstance().getPotentialEmployees(pendingUser?.id, token);
+        setPotentialEmployees(employees);
+      } catch (error) {
+        console.log('Error loading employees', error);
+      }
+    }
+  }
+
+  useEffect(() => {
+    async function init() {
+      await loadModules();
+      await loadEmployees();
       setDefaultValues();
     }
     init();
   }, []);
 
-  function PotentialEmployeeFlatListItem(item: IPotentialEmployee) {
+  function PotentialEmployeeFlatListItem(item: IPotentialEmployee, index: number) {
     return (
-      <Text style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
+      <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
     )
   }
 
@@ -261,7 +274,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             <TextButton
               width={'100%'}
               title={t('quotation.submit')}
-              onPress={addEmployeesBeforeSubmit}
+              onPress={submit}
               disabled={isButtonDisabled}
             />
           </View>

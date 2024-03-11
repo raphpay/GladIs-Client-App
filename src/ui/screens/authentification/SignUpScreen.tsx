@@ -70,7 +70,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       const createdUser = await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
       const id = createdUser.id as string;
       await createEmployees(id);
-      setShowDialog(false)
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];

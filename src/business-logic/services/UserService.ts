@@ -142,6 +142,15 @@ class UserService {
     }
   }
 
+  async addManagerToUser(userID: string, managerID: string, token: IToken | null) {
+    try {
+      await APIService.put(`${this.baseRoute}/${userID}/addManager/${managerID}`, null, token?.value as string);
+    } catch (error) {
+      console.error('Error adding manager to user', error);
+      throw error;
+    }
+  }
+
   // DELETE
 }
 

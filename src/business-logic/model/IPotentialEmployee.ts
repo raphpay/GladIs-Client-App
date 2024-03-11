@@ -1,3 +1,4 @@
+
 export default interface IPotentialEmployee {
   id?: string;
   firstName: string;
@@ -5,6 +6,11 @@ export default interface IPotentialEmployee {
   email: string;
   phoneNumber: string;
   companyName: string;
+  pendingUser?: IPendingUserID; // Used once the employee is created
   // Always check if pendingUserID is not null
-  pendingUserID?: string
+  pendingUserID?: string;
 } 
+
+interface IPendingUserID {
+  id: string
+}
