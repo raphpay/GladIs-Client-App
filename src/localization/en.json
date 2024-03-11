@@ -21,7 +21,11 @@
     "employees": "Number of employees",
     "users": "Number of potential users",
     "capital": "Sales amount",
-    "submit": "Submit"
+    "submit": "Submit",
+    "employee": {
+      "title": "Current registered employees",
+      "create": "Create Employee"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -238,8 +242,7 @@
       "phoneAndEmail": {
         "title": "Email and phone number are invalid",
         "description": "Please verify your email and phone number format. It should be a french phone"
-      },
-      "employee": "Current registered employees",
+      }
     },
     "modules": {
       "title": "This module is not part of your subscription",

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
@@ -17,8 +17,8 @@ import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
+import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
-import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
@@ -63,6 +63,22 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
+  function showError(errorKeys: string []) {
+    if (errorKeys.includes('email.invalid')) {
+      if (errorKeys.includes('phoneNumber.invalid')) {
+        setErrorTitle(t('errors.signup.phoneAndEmail.title'));
+        setErrorDescription(t('errors.signup.phoneAndEmail.description'));
+      } else {
+        setErrorTitle(t('errors.signup.email.title'));
+        setErrorDescription(t('errors.signup.email.description'));
+      }
+    } else if (errorKeys.includes('phoneNumber.invalid')) {
+      setErrorTitle(t('errors.signup.phoneNumber.title'));
+      setErrorDescription(t('errors.signup.phoneNumber.description'));
+    }
+    setShowErrorDialog(true);
+  }
+
   async function createPendingUser() {
     const newPendingUser: IPendingUser = {
       firstName,
@@ -93,22 +109,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const errorKeys: string[] = error as string[];
       showError(errorKeys);
     }
-  }
-
-  function showError(errorKeys: string []) {
-    if (errorKeys.includes('email.invalid')) {
-      if (errorKeys.includes('phoneNumber.invalid')) {
-        setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-        setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-      } else {
-        setErrorTitle(t('errors.signup.email.title'));
-        setErrorDescription(t('errors.signup.email.description'));
-      }
-    } else if (errorKeys.includes('phoneNumber.invalid')) {
-      setErrorTitle(t('errors.signup.phoneNumber.title'));
-      setErrorDescription(t('errors.signup.phoneNumber.description'));
-    }
-    setShowErrorDialog(true);
   }
 
   async function convertPendingUser() {
@@ -208,10 +208,10 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
-  const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 ||
-    companyName.length === 0 || email.length === 0 ||
-    (products && products.length === 0) || (employees && employees.length === 0) ||
-    (numberOfUsers && numberOfUsers.length === 0) || (sales && sales.length === 0);
+  const isButtonDisabled = !firstName || !lastName || !phoneNumber ||
+    !companyName || !email ||
+    (products && !products.length) || (employees && !employees.length) ||
+    (numberOfUsers && !numberOfUsers.length) || (sales && !sales.length);
 
   useEffect(() => {
     async function init() {
@@ -231,42 +231,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   function PotentialEmployeeFlatListItem(item: IPotentialEmployee) {
     return (
       <Text style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
-    )
-  }
-
-  function dialogContent() {
-    return (
-      showDialog && (
-        (
-          <Dialog
-            title={t('dialog.addEmployee')}
-            onConfirm={addEmployee}
-            onCancel={() => setShowDialog(false)}
-          >
-            <>
-              {
-                potentialEmployees && potentialEmployees.length !== 0 && (
-                  <FlatList
-                    data={potentialEmployees}
-                    renderItem={(renderItem) => PotentialEmployeeFlatListItem(renderItem.item)}
-                    keyExtractor={(item) => item.id ?? "id"}
-                  />
-                )
-              }
-              <GladisTextInput 
-                value={potentialEmployeeFirstName}
-                onValueChange={setPotentialEmployeeFirstName}
-                placeholder={t('quotation.firstName')}
-              />
-              <GladisTextInput 
-                value={potentialEmployeeLastName}
-                onValueChange={setPotentialEmployeeLastName}
-                placeholder={t('quotation.lastName')}
-              />
-            </>
-          </Dialog>
-        )
-      )
     )
   }
 
@@ -368,15 +332,28 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             placeholder={t('quotation.capital')} showTitle={true}
             editable={!showErrorDialog}
           />
-          {/* TODO: remove this button  */}
-          <TextButton
-            title={t('quotation.submit')}
-            onPress={submit}
-            disabled={isButtonDisabled}
-          />
+          <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
+          {
+            potentialEmployees.length > 0 && (
+              <>
+                <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
+                {potentialEmployees.map((employee, index) => (
+                  PotentialEmployeeFlatListItem(employee, index)
+                ))}
+              </>
+            )
+          }
         </ScrollView>
       </AppContainer>
-      {dialogContent()}
+      {
+        <AddEmployeeDialog
+          showDialog={showDialog}
+          setShowDialog={setShowDialog}
+          companyName={companyName}
+          potentialEmployees={potentialEmployees}
+          setPotentialEmployees={setPotentialEmployees}
+        />
+      }
       {errorDialog()}
     </>
   );

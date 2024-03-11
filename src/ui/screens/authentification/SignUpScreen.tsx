@@ -243,11 +243,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             placeholder={t('quotation.capital')} showTitle={true}
             editable={!showErrorDialog && !showDialog}
           />
-          <TextButton width={'30%'} title={'Create Employee'} onPress={() => setShowDialog(true)} />
+          <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
           {
             potentialEmployees.length > 0 && (
               <>
-                <Text style={styles.employeesTitle}>{t('signUp.employees')}</Text>
+                <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
                 {potentialEmployees.map((employee, index) => (
                   PotentialEmployeeFlatListItem(employee, index)
                 ))}

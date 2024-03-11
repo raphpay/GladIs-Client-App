@@ -21,7 +21,11 @@
     "employees": "Nombre d'employés",
     "users": "Nombre d'utilisateurs potentiels",
     "capital": "Chiffre d'affaires",
-    "submit": "Envoyer"
+    "submit": "Envoyer",
+    "employee": {
+      "title": "Employés enregistrés",
+      "create": "Créer un employé",
+    }
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -238,8 +242,7 @@
       "phoneAndEmail": {
         "title": "L'email et le numéro de téléphone sont invalides",
         "description": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agit d'un numéro français"
-      },
-      "employee": "Employés enregistrés"
+      }
     },
     "modules": {
       "title": "Ce module ne fait pas partie de votre abonnement",
