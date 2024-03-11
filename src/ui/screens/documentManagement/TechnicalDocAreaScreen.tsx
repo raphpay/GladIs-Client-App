@@ -176,6 +176,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
             confirmTitle={t('components.dialog.technicalDocTab.confirmButton')}
             isConfirmDisabled={newTabName.length == 0}
             onConfirm={addTab}
+            isCancelAvailable={true}
             onCancel={() => setShowDialog(false)}
           >
             <TextInput

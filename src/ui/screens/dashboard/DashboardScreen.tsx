@@ -86,6 +86,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
               isConfirmDisabled={oldPassword.length === 0 || newPassword.length === 0}
               onConfirm={submitPasswordChange}
               onCancel={() => setShowDialog(false)}
+              isCancelAvailable={false}
             >
               <>
                 <GladisTextInput 

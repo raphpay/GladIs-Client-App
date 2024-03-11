@@ -197,6 +197,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           title={t('components.dialog.addDocument.title')}
           confirmTitle={t('components.dialog.addDocument.confirmButton')}
           onConfirm={pickAFile}
+          isCancelAvailable={true}
           onCancel={() => setShowDialog(false)}
           isConfirmDisabled={documentName.length === 0}
         >
