@@ -21,7 +21,11 @@
     "employees": "Nombre d'employés",
     "users": "Nombre d'utilisateurs potentiels",
     "capital": "Chiffre d'affaires",
-    "submit": "Envoyer"
+    "submit": "Envoyer",
+    "employee": {
+      "title": "Employés enregistrés",
+      "create": "Créer un employé",
+    }
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -192,7 +196,15 @@
         "title": "Voulez-vous vraiment vous déconnecter ?",
         "confirmButton": "Oui"
       },
-      "addEmployee": "Ajouter un employé",
+      "addEmployee": {
+        "title": "Ajouter un employé",
+        "errors": {
+          "fillAll": "Veuillez remplir toutes les informations.",
+          "invalidPhoneAndEmail": "Veuillez vérifier l'addresse mail et le numéro de téléphone",
+          "invalidEmail": "Veuillez vérifier l'addresse mail",
+          "invalidPhone": "Veuillez vérifier le numéro de téléphone"
+        }
+      },
       "confirm": "OK",
       "cancel": "Annuler"
     },

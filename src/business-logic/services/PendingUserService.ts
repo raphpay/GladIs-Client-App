@@ -21,14 +21,13 @@ class PendingUserService {
   }
 
   // CREATE
-  async convertPendingUserToUser(pendingUser: IPendingUser, token: IToken): Promise<IUser> {
+  async convertPendingUserToUser(id: string, token: IToken): Promise<IUser> {
     try {
-      const id = pendingUser.id as string;
-      const newUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, pendingUser, token.value);
+      const newUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, null, token.value);
       return newUser;
     } catch (error) {
       const errorKeys = extractValidationErrors(error.message)
-      console.log('Error converting pending user:', pendingUser, 'to user', errorKeys);
+      console.log('Error converting pending user:', id, 'to user', errorKeys);
       throw errorKeys;
     }
   }

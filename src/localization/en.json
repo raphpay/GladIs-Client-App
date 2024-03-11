@@ -21,7 +21,11 @@
     "employees": "Number of employees",
     "users": "Number of potential users",
     "capital": "Sales amount",
-    "submit": "Submit"
+    "submit": "Submit",
+    "employee": {
+      "title": "Current registered employees",
+      "create": "Create Employee"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -192,7 +196,15 @@
         "title": "Do you really want to logout ?",
         "confirmButton": "Yes"
       },
-      "addEmployee": "Add employee",
+      "addEmployee": {
+        "title": "Add employee",
+        "errors": {
+          "fillAll": "Please fill all informations fields.",
+          "invalidPhoneAndEmail": "Please verify the email address and the phone number",
+          "invalidEmail": "Please verify the email address",
+          "invalidPhone": "Please verify the phone number"
+        }
+      },
       "confirm": "OK",
       "cancel": "Cancel"
     },

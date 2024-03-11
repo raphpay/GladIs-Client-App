@@ -62,7 +62,7 @@ class UserService {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
       const users = await APIService.get<IUser[]>(this.baseRoute, castedToken.value);
-      const clients = users.filter((user) => user.userType !== UserType.Admin);
+      const clients = users.filter((user) => user.userType !== UserType.Admin && user.userType !== UserType.Employee);
       return clients;
     } catch (error) {
       console.error('Error getting clients', error);
@@ -138,6 +138,15 @@ class UserService {
       await APIService.put(`${this.baseRoute}/${castedUserID}/setFirstConnectionToFalse`, null, castedToken.value);
     } catch (error) {
       console.log('Error changing user first connection parameter', error);
+      throw error;
+    }
+  }
+
+  async addManagerToUser(userID: string, managerID: string, token: IToken | null) {
+    try {
+      await APIService.put(`${this.baseRoute}/${userID}/addManager/${managerID}`, null, token?.value as string);
+    } catch (error) {
+      console.error('Error adding manager to user', error);
       throw error;
     }
   }
