@@ -44,6 +44,18 @@ class UserService {
     }
   }
 
+  async addModules(id: string, modules: IModule[], token: IToken | null) {
+    for (const module of modules) {
+      const moduleID = module.id as string;
+      try {
+        await APIService.post(`${this.baseRoute}/${id}/modules/${moduleID}`, null, token?.value as string)
+      } catch (error) {
+        console.log('Error adding module', moduleID, 'to user', id, error);
+        throw error;
+      }
+    }
+  }
+
   // READ
   async getUsers(): Promise<IUser[]> {
     try {

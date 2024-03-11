@@ -149,6 +149,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     try {
       // 1 Convert manager
       const createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
+      const selectedModules = retrieveSelectedModules();
+      await UserService.getInstance().addModules(createdUser.id as string, selectedModules, castedToken)
       // 2 Convert employees
       const createdEmployees = await convertEmployeesToUser();
       // 3 Add manager to employees
@@ -162,7 +164,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
-  // TODO: Check managerID and employee id
   function toggleCheckbox(module: IModule) {
     setSelectedModulesIDs((prevSelectedObjectsIDs) => {
       const moduleID = module.id as string;
