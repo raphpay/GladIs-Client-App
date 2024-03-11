@@ -82,7 +82,7 @@ class APIService {
             }
         }
         throw new Error(errorMessage);
-    }
+      }
 
       return await response.json() as T;
     } catch (error) {
@@ -153,7 +153,15 @@ class APIService {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        let errorMessage = `HTTP error! Status: ${response.status}`;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const responseData = await response.json();
+            if (responseData && responseData.reason) {
+                errorMessage = responseData.reason;
+            }
+        }
+        throw new Error(errorMessage);
       }
 
       return await response.json();

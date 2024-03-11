@@ -85,6 +85,7 @@ function AddEmployeeDialog(props: AddEmployeeDialogProps): React.JSX.Element {
           title={t('dialog.addEmployee')}
           description={dialogDescription}
           onConfirm={addEmployee}
+          isCancelAvailable={true}
           onCancel={() => setShowDialog(false)}
         >
           <>
