@@ -62,7 +62,7 @@ class UserService {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
       const users = await APIService.get<IUser[]>(this.baseRoute, castedToken.value);
-      const clients = users.filter((user) => user.userType !== UserType.Admin);
+      const clients = users.filter((user) => user.userType !== UserType.Admin && user.userType !== UserType.Employee);
       return clients;
     } catch (error) {
       console.error('Error getting clients', error);
