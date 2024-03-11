@@ -3,11 +3,19 @@ import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import APIService from './APIService';
 
+/**
+ * Service class for managing potential employees.
+ */
 class PotentialEmployeeService {
   private static instance: PotentialEmployeeService | null = null;
   private baseRoute = 'potentialEmployees';
+
   private constructor() {}
 
+  /**
+   * Returns the singleton instance of the PotentialEmployeeService class.
+   * @returns The singleton instance of the PotentialEmployeeService class.
+   */
   static getInstance(): PotentialEmployeeService {
     if (!PotentialEmployeeService.instance) {
       PotentialEmployeeService.instance = new PotentialEmployeeService();
@@ -15,7 +23,10 @@ class PotentialEmployeeService {
     return PotentialEmployeeService.instance;
   }
 
-  // CREATE
+  /**
+   * Creates a new potential employee.
+   * @param employee - The potential employee object to create.
+   */
   async create(employee: IPotentialEmployee) {
     try {
       await APIService.post<IPotentialEmployee>(this.baseRoute, employee);
@@ -25,6 +36,12 @@ class PotentialEmployeeService {
     }
   }
 
+  /**
+   * Converts a potential employee to a user.
+   * @param id - The ID of the potential employee to convert.
+   * @param token - The authentication token for the request.
+   * @returns The created user object.
+   */
   async convertToUser(id: string, token: IToken | null): Promise<IUser> {
     try {
       const createdUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, null, token.value as string);
