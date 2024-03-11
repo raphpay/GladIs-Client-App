@@ -8,12 +8,19 @@ import UserType from '../model/enums/UserType';
 import APIService from './APIService';
 import CacheService from './CacheService';
 
+/**
+ * Represents a service for managing user-related operations.
+ */
 class UserService {
   private static instance: UserService | null = null;
   private baseRoute = 'users';
 
   private constructor() {}
 
+  /**
+   * Returns the singleton instance of the UserService class.
+   * @returns The singleton instance of the UserService class.
+   */
   static getInstance(): UserService {
     if (!UserService.instance) {
       UserService.instance = new UserService();
@@ -22,6 +29,13 @@ class UserService {
   }
 
   // CREATE
+
+  /**
+   * Creates a new user.
+   * @param user - The user object to create.
+   * @returns A promise that resolves to the created user.
+   * @throws If an error occurs while creating the user.
+   */
   async createUser(user: IUser): Promise<IUser> {
     try {
       const createdUser = await APIService.post<IUser>(this.baseRoute, user);
@@ -32,6 +46,13 @@ class UserService {
     }
   }
 
+  /**
+   * Adds a technical documentation tab to a user.
+   * @param clientID - The ID of the client user.
+   * @param tab - The technical documentation tab to add.
+   * @param token - The authentication token.
+   * @throws If an error occurs while adding the tab to the user.
+   */
   async addTabToUser(clientID: string | undefined, tab: ITechnicalDocTab, token: IToken | null) {
     try {
       const castedID = clientID as string;
@@ -44,6 +65,13 @@ class UserService {
     }
   }
 
+  /**
+   * Adds modules to a user.
+   * @param id - The ID of the user.
+   * @param modules - The modules to add.
+   * @param token - The authentication token.
+   * @throws If an error occurs while adding the modules to the user.
+   */
   async addModules(id: string, modules: IModule[], token: IToken | null) {
     for (const module of modules) {
       const moduleID = module.id as string;
@@ -57,6 +85,12 @@ class UserService {
   }
 
   // READ
+
+  /**
+   * Retrieves all users.
+   * @returns A promise that resolves to an array of users.
+   * @throws If an error occurs while retrieving the users.
+   */
   async getUsers(): Promise<IUser[]> {
     try {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
@@ -69,6 +103,11 @@ class UserService {
     }
   }
 
+  /**
+   * Retrieves all clients.
+   * @returns A promise that resolves to an array of clients.
+   * @throws If an error occurs while retrieving the clients.
+   */
   async getClients(): Promise<IUser[]> {
     try {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
@@ -82,6 +121,13 @@ class UserService {
     }
   }
 
+  /**
+   * Retrieves a user by ID.
+   * @param id - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the user.
+   * @throws If an error occurs while retrieving the user.
+   */
   async getUserByID(id: string | undefined, token: IToken | undefined): Promise<IUser> {
     try {
       let usedToken = token;
@@ -97,6 +143,13 @@ class UserService {
     }
   }
 
+  /**
+   * Retrieves the modules of a user.
+   * @param id - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to an array of modules.
+   * @throws If an error occurs while retrieving the user's modules.
+   */
   async getUsersModules(id: string | undefined, token: IToken | null): Promise<IModule[]> {
     try {
       let usedToken = token;
@@ -112,6 +165,13 @@ class UserService {
     }
   }
 
+  /**
+   * Retrieves the technical documentation tabs of a user.
+   * @param id - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to an array of technical documentation tabs.
+   * @throws If an error occurs while retrieving the user's technical documentation tabs.
+   */
   async getUsersTabs(id: string | undefined, token: IToken | null): Promise<ITechnicalDocTab[]> {
     try {
       let usedToken = token;
@@ -128,6 +188,13 @@ class UserService {
   }
 
   // UPDATE
+
+  /**
+   * Changes the password of the current user.
+   * @param currentPassword - The current password.
+   * @param newPassword - The new password.
+   * @throws If an error occurs while changing the user's password.
+   */
   async changePassword(currentPassword: string, newPassword: string) {
     try {
       const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
@@ -141,6 +208,10 @@ class UserService {
     }
   }
 
+  /**
+   * Sets the first connection parameter of the current user to false.
+   * @throws If an error occurs while changing the user's first connection parameter.
+   */
   async setUserFirstConnectionToFalse() {
     try {
       const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
@@ -154,6 +225,13 @@ class UserService {
     }
   }
 
+  /**
+   * Adds a manager to a user.
+   * @param userID - The ID of the user.
+   * @param managerID - The ID of the manager.
+   * @param token - The authentication token.
+   * @throws If an error occurs while adding the manager to the user.
+   */
   async addManagerToUser(userID: string, managerID: string, token: IToken | null) {
     try {
       await APIService.put(`${this.baseRoute}/${userID}/addManager/${managerID}`, null, token?.value as string);
