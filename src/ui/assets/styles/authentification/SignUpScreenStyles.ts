@@ -10,6 +10,10 @@ const styles = StyleSheet.create({
     width: '30%',
     paddingHorizontal: 10,
   },
+  employeesTitle: {
+    fontSize: 14,
+    fontFamily: Fonts.poppinsLight,
+  },
   employeeText: {
     fontSize: 12,
     fontFamily: Fonts.poppinsLight,

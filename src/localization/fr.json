@@ -192,7 +192,15 @@
         "title": "Voulez-vous vraiment vous déconnecter ?",
         "confirmButton": "Oui"
       },
-      "addEmployee": "Ajouter un employé",
+      "addEmployee": {
+        "title": "Ajouter un employé",
+        "errors": {
+          "fillAll": "Veuillez remplir toutes les informations.",
+          "invalidPhoneAndEmail": "Veuillez vérifier l'addresse mail et le numéro de téléphone",
+          "invalidEmail": "Veuillez vérifier l'addresse mail",
+          "invalidPhone": "Veuillez vérifier le numéro de téléphone"
+        }
+      },
       "confirm": "OK",
       "cancel": "Annuler"
     },
@@ -230,7 +238,8 @@
       "phoneAndEmail": {
         "title": "L'email et le numéro de téléphone sont invalides",
         "description": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agit d'un numéro français"
-      }
+      },
+      "employee": "Employés enregistrés"
     },
     "modules": {
       "title": "Ce module ne fait pas partie de votre abonnement",

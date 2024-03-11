@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   ScrollView,
   Text,
   View
@@ -19,8 +18,8 @@ import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 
+import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
-import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
@@ -48,21 +47,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [errorDescription, setErrorDescription] = useState<string>('');
 
   // Potential employee
-  const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
-  const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
 
   const { navigation } = props;
 
   const { t } = useTranslation();
-
-  async function addEmployeesBeforeSubmit() {
-    if (parseInt(numberOfUsers) > 0) {
-      setShowDialog(true);
-    } else {
-      submit()
-    }
-  }
 
   async function submit() {
     const pendingUser: IPendingUser = {
@@ -79,10 +68,9 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     }
     try {
       const createdUser = await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
-      for (const employee of potentialEmployees) {
-        employee.pendingUserID = createdUser.id
-        await PotentialEmployeeService.getInstance().create(employee);
-      }
+      const id = createdUser.id as string;
+      await createEmployees(id);
+      setShowDialog(false)
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -99,6 +87,25 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         setErrorDescription(t('errors.signup.phoneNumber.description'));
       }
       setShowErrorDialog(true);
+    }
+  }
+
+  async function createEmployees(pendingUserID: string) {
+    // Update all employees with pendingUserID
+    const updatedPotentialEmployees = potentialEmployees.map(employee => {
+      return {
+        ...employee,
+        pendingUserID,
+      };
+    });
+    for (const employee of updatedPotentialEmployees) {
+      if (employee.pendingUserID !== null) {
+        try {
+          await PotentialEmployeeService.getInstance().create(employee)
+        } catch (error) {
+          console.log('Error creating employee', employee, error);
+        }
+      }
     }
   }
 
@@ -120,24 +127,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
-  async function addEmployee() {
-    if (potentialEmployees.length !== parseInt(numberOfUsers)) {
-      const newEmployee: IPotentialEmployee = {
-        firstName: potentialEmployeeFirstName,
-        lastName: potentialEmployeeLastName,
-        companyName: companyName
-      };
-      potentialEmployees.push(newEmployee)
-      setPotentialEmployeeFirstName('');
-      setPotentialEmployeeLastName('');
-      if (potentialEmployees.length === parseInt(numberOfUsers)) {
-        await submit();
-      }
-    } else {
-      await submit();
-    }
-  }
-
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
     email.length === 0 || products.length === 0 || numberOfEmployees.length === 0 || numberOfUsers.length === 0 || sales.length === 0;
 
@@ -150,45 +139,9 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     init();
   }, []);
 
-  function PotentialEmployeeFlatListItem(item: IPotentialEmployee) {
+  function PotentialEmployeeFlatListItem(item: IPotentialEmployee, index: number) {
     return (
-      <Text style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
-    )
-  }
-
-  function dialogContent() {
-    return (
-      showDialog && (
-        (
-          <Dialog
-            title={t('dialog.addEmployee')}
-            onConfirm={addEmployee}
-            onCancel={() => setShowDialog(false)}
-          >
-            <>
-              {
-                potentialEmployees && potentialEmployees.length !== 0 && (
-                  <FlatList
-                    data={potentialEmployees}
-                    renderItem={(renderItem) => PotentialEmployeeFlatListItem(renderItem.item)}
-                    keyExtractor={(item) => item.id ?? "id"}
-                  />
-                )
-              }
-              <GladisTextInput 
-                value={potentialEmployeeFirstName}
-                onValueChange={setPotentialEmployeeFirstName}
-                placeholder={t('quotation.firstName')}
-              />
-              <GladisTextInput 
-                value={potentialEmployeeLastName}
-                onValueChange={setPotentialEmployeeLastName}
-                placeholder={t('quotation.lastName')}
-              />
-            </>
-          </Dialog>
-        )
-      )
+      <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
     )
   }
 
@@ -219,7 +172,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             <TextButton
               width={'100%'}
               title={t('quotation.submit')}
-              onPress={addEmployeesBeforeSubmit}
+              onPress={submit}
               disabled={isButtonDisabled}
             />
           </View>
@@ -290,9 +243,28 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             placeholder={t('quotation.capital')} showTitle={true}
             editable={!showErrorDialog && !showDialog}
           />
+          <TextButton width={'30%'} title={'Create Employee'} onPress={() => setShowDialog(true)} />
+          {
+            potentialEmployees.length > 0 && (
+              <>
+                <Text style={styles.employeesTitle}>{t('signUp.employees')}</Text>
+                {potentialEmployees.map((employee, index) => (
+                  PotentialEmployeeFlatListItem(employee, index)
+                ))}
+              </>
+            )
+          }
         </ScrollView>
       </AppContainer>
-      {dialogContent()}
+      {
+        <AddEmployeeDialog
+          showDialog={showDialog}
+          setShowDialog={setShowDialog}
+          companyName={companyName}
+          potentialEmployees={potentialEmployees}
+          setPotentialEmployees={setPotentialEmployees}
+        />
+      }
       {errorDialog()}
     </>
   );

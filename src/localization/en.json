@@ -192,7 +192,15 @@
         "title": "Do you really want to logout ?",
         "confirmButton": "Yes"
       },
-      "addEmployee": "Add employee",
+      "addEmployee": {
+        "title": "Add employee",
+        "errors": {
+          "fillAll": "Please fill all informations fields.",
+          "invalidPhoneAndEmail": "Please verify the email address and the phone number",
+          "invalidEmail": "Please verify the email address",
+          "invalidPhone": "Please verify the phone number"
+        }
+      },
       "confirm": "OK",
       "cancel": "Cancel"
     },
@@ -230,7 +238,8 @@
       "phoneAndEmail": {
         "title": "Email and phone number are invalid",
         "description": "Please verify your email and phone number format. It should be a french phone"
-      }
+      },
+      "employee": "Current registered employees",
     },
     "modules": {
       "title": "This module is not part of your subscription",
