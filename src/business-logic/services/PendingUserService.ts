@@ -44,18 +44,6 @@ class PendingUserService {
     }
   }
 
-  async createPermanentUser(pendingUser: IPendingUser, token: IToken): Promise<IUser> {
-    let newUser: IUser;
-    try {
-      const userID = pendingUser.id as string;
-      newUser = await APIService.post<IUser>(`${this.baseRoute}/${userID}/convertToUser`, {}, token.value)
-      return newUser
-    } catch (error) {
-      console.log('Error converting pending user', pendingUser, 'to user', error);
-      throw error;
-    }
-  }
-
   private async addModulesToPendingUser(modules: IModule[], pendingUser: IPendingUser) {
     for (const module of modules) {
       const userID = pendingUser.id as string;
