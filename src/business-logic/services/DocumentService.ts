@@ -16,7 +16,7 @@ class DocumentService {
   }
 
   // READ
-  async getDocumentsAtPath(path: string | undefined): Promise<IDocument[]> {
+  async getDocumentsAtPath(path: string): Promise<IDocument[]> {
     try {
       const url = `${this.baseRoute}/getDocumentsAtPath`;
       const documents = await APIService.post<IDocument[]>(url, { value: path })
