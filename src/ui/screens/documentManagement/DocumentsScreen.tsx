@@ -123,7 +123,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       data = await FinderModule.getInstance().pickPDF();
     }
     const file: IFile = { data, filename: filename}
-    const createdDocument = await DocumentService.getInstance().upload(file, filename, path);
+    const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
     const logInput: IDocumentActivityLogInput = {
       action: DocumentLogAction.Creation,
       actorIsAdmin: true,
@@ -138,7 +138,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   async function loadDocuments() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    const docs = await DocumentService.getInstance().getDocumentsAtPath(path);
+    const docs = await DocumentService.getInstance().getDocumentsAtPath(path, token);
     setDocuments(docs);
   }
 
