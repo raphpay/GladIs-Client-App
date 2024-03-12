@@ -30,7 +30,6 @@ type AppContainerProps = {
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
   showSearchText: boolean;
   showSettings: boolean;
-  logo?: string;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -54,7 +53,6 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     additionalComponent,
     showSearchText,
     showSettings,
-    logo,
   } = props;
 
   const { t } = useTranslation();
@@ -118,7 +116,6 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
         </View>
         <TopAppBar
           mainTitle={mainTitle}
-          logo={logo}
           navigationHistoryItems={navigationHistoryItems}
         />
         {

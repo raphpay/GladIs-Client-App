@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   StyleProp,
@@ -7,23 +7,51 @@ import {
 } from 'react-native';
 
 
+import DocumentService from '../../business-logic/services/DocumentService';
+import { useAppSelector } from '../../business-logic/store/hooks';
+import { RootState } from '../../business-logic/store/store';
 import styles from '../assets/styles/components/AppIconStyles';
 
 type AppIconProps = {
-  logo?: string;
   style?: StyleProp<ViewStyle>;
 };
 
 function AppIcon(props: AppIconProps): React.JSX.Element {
 
-  const { logo, style } = props;
+  const { style } = props;
+
+  const [logoURI, setLogoURI] = useState<string>('');
+
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+
+  async function loadLogo() {
+    if (currentClient) {
+      const company = currentClient.companyName;
+      const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+      const logo = docs[0];
+      if (logo && logo.id) {
+        const logoData = await DocumentService.getInstance().download(logo.id, token);
+        setLogoURI(`data:image/png;base64,${logoData}`);
+      }
+    } else {
+      setLogoURI('');
+    }
+  }
+
+  useEffect(() => {
+    async function init() {
+      await loadLogo();
+    }
+    init();
+  }, [currentClient]);
 
   return (
     <View style={[styles.container, style]}>
       {
-        logo ? (
+        logoURI ? (
           <Image
-            source={{uri: logo}}
+            source={{uri: logoURI}}
             style={styles.logo}
           />
         ) : (

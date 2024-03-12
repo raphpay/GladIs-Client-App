@@ -304,7 +304,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         navigateBack={navigateBack}
         showSearchText={false}
         showSettings={false}
-        logo={logoURI}
         additionalComponent={(
           <View style={styles.sendButtonContainer}>
             <TextButton
