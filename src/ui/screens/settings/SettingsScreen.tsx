@@ -106,6 +106,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
               confirmTitle={t('components.dialog.firstConnection.confirmButton')}
               isConfirmDisabled={oldPassword.length === 0 || newPassword.length === 0}
               onConfirm={submitPasswordChange}
+              isCancelAvailable={true}
               onCancel={() => setShowDialog(false)}
             >
               <>
@@ -144,6 +145,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
               title={t('components.dialog.logout.title')}
               confirmTitle={t('components.dialog.logout.confirmButton')}
               onConfirm={logout}
+              isCancelAvailable={true}
               onCancel={() => setShowLogoutDialog(false)}
             />
           )

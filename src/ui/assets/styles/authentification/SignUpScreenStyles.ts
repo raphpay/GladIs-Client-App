@@ -10,17 +10,13 @@ const styles = StyleSheet.create({
     width: '30%',
     paddingHorizontal: 10,
   },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  employeesTitle: {
+    fontSize: 14,
+    fontFamily: Fonts.poppinsSemiBold
   },
-  logoButton: {
-    width: '25%',
-    marginRight: 20,
-  },
-  logo: {
-    width: 100,
-    height: 100,
+  employeeText: {
+    fontSize: 12,
+    fontFamily: Fonts.poppinsLight,
   }
 });
 

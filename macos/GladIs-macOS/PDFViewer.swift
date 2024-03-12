@@ -59,11 +59,10 @@ class PDFViewer: NSView {
   }
   
   func setupPDFView() {
-    pdfView = PDFView(frame: self.bounds)
+    pdfView = PDFView(frame: NSRect(origin: .zero, size: .zero))
     pdfView.autoresizingMask = [.width, .height]
     
     pdfView.autoScales = true
-    pdfView.acceptsDraggedFiles = true
     
     addSubview(pdfView)
   }

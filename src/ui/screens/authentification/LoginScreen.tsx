@@ -110,6 +110,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
             confirmTitle={t('components.dialog.passwordReset.confirmButton')}
             isConfirmDisabled={resetEmail.length == 0}
             onConfirm={sendPasswordResetRequest}
+            isCancelAvailable={true}
             onCancel={() => setShowDialog(false)}
           >
             <TextInput

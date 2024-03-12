@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  Image,
   Text,
   TouchableOpacity,
   View
@@ -17,6 +18,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 import styles from '../../assets/styles/documentManagement/DocumentManagementScreenStyles';
 
@@ -84,12 +86,26 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
       showSettings={true}
       navigateBack={navigateBack}
     >
-      <FlatList
-        data={subcategoriesFiltered}
-        numColumns={2}
-        renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
-        keyExtractor={(item) => item.id}
-      />
+      <>
+        {
+          subcategories && subcategories.length === 0 ? (
+            <ContentUnavailableView
+              title={t('documentManagement.noSubCategories.title')}
+              message={t('documentManagement.noSubCategories.message')}
+              image={(
+                <Image source={require('../../assets/images/list.clipboard.png')}/>
+              )}
+            />
+          ) : (
+            <FlatList
+              data={subcategoriesFiltered}
+              numColumns={2}
+              renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
+              keyExtractor={(item) => item.id}
+            />
+          )
+        }
+      </>
     </AppContainer>
   );
 }

@@ -21,7 +21,11 @@
     "employees": "Nombre d'employés",
     "users": "Nombre d'utilisateurs potentiels",
     "capital": "Chiffre d'affaires",
-    "submit": "Envoyer"
+    "submit": "Envoyer",
+    "employee": {
+      "title": "Employés enregistrés",
+      "create": "Créer un employé",
+    }
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -45,11 +49,19 @@
     "module5": "Module 5"
   },
   "documentManagement": {
-    "title": "Gestion des documents"
+    "title": "Gestion des documents",
+    "noSubCategories": {
+      "title": "Pas de sous-catégorie pour le moment",
+      "message": "Veuillez réessayer plus tard"
+    }
   },
   "systemQuality": {
     "title": "Système Qualité",
     "qualityManual": "Manuel Qualité",
+    "noItems": {
+      "title": "Pas de sous-catégorie pour le moment",
+      "message": "Veuillez réessayer plus tard"
+    }
   },
   "technicalDocumentation": {
     "title": "Documentation Technique",
@@ -86,6 +98,10 @@
       "loaded": "Chargé le",
       "deletion": "Supprimé le",
       "signature": "Signé le"
+    },
+    "noLogs": {
+      "title": "Pas de suivi de documents pour le moment",
+      "message": "Revenez plus tard"
     }
   },
   "process": {
@@ -98,6 +114,10 @@
       "procedures": "Procédures",
       "forms": "Formulaires",
       "records": "Enregistrements"
+    },
+    "noItems": {
+      "title": "Pas de processus pour le moment",
+      "message": "Veuillez réessayer plus tard"
     }
   },
   "documentsScreen": {
@@ -133,9 +153,6 @@
       "title": "Aucun utilisateur en attente pour le moment",
       "message": "Revenez plus tard, ou enregistrez-en un maintenant"
     }
-  },
-  "signUpScreen": {
-    "pickLogo": "Chosissez un logo"
   },
   "components": {
     "searchTextInput": {
@@ -179,6 +196,15 @@
         "title": "Voulez-vous vraiment vous déconnecter ?",
         "confirmButton": "Oui"
       },
+      "addEmployee": {
+        "title": "Ajouter un employé",
+        "errors": {
+          "fillAll": "Veuillez remplir toutes les informations.",
+          "invalidPhoneAndEmail": "Veuillez vérifier l'addresse mail et le numéro de téléphone",
+          "invalidEmail": "Veuillez vérifier l'addresse mail",
+          "invalidPhone": "Veuillez vérifier le numéro de téléphone"
+        }
+      },
       "confirm": "OK",
       "cancel": "Annuler"
     },
@@ -217,6 +243,16 @@
         "title": "L'email et le numéro de téléphone sont invalides",
         "description": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agit d'un numéro français"
       }
+    },
+    "password": {
+      "current": {
+        "invalid": "Le mot de passe actuel est incorrect"
+      },
+      "samePassword": "Le nouveau mot de passe doit être différent de l'ancien",
+      "invalidLength": "Le mot de passe doit contenir au moins 12 caractères",
+      "missingUppercase": "Le mot de passe doit contenir au moins une majuscule",
+      "missingDigit": "Le mot de passe doit contenir au moins un chiffre",
+      "missingSpecialCharacter": "Le mot de passe doit contenir au moins un caractère spécial parmi !@#$%^&*.()"
     },
     "modules": {
       "title": "Ce module ne fait pas partie de votre abonnement",

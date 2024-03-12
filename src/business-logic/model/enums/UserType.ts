@@ -1,7 +1,7 @@
 enum UserType {
   Client = 'client',
   Admin = 'admin',
-  Premium = 'premium',
+  Employee = 'employee',
 }
 
 export default UserType;

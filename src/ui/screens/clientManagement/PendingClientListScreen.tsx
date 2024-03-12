@@ -71,6 +71,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               title={t('components.dialog.pendingUserManagement.title')}
               description={t('components.dialog.pendingUserManagement.description')}
               onConfirm={removePendingUser}
+              isCancelAvailable={true}
               onCancel={() => setShowDialog(false)}
             />
           )
@@ -79,6 +80,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     )
   }
 
+  // TODO: check dialog={dialogContent()}
   return (
     <AppContainer
       mainTitle={t('pendingUserManagement.title')}

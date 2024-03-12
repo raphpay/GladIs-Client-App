@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
+  Image,
   Text,
   TouchableOpacity,
   View
@@ -17,6 +18,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 
@@ -132,12 +134,24 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       showSettings={true}
       navigateBack={navigateBack}
     >
-      <FlatList
-        data={systemQualityItemsFiltered}
-        numColumns={3}
-        renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
-        keyExtractor={(item) => item.id}
-      />
+      {
+        systemQualityItemsFiltered && systemQualityItemsFiltered.length === 0 ? (
+          <ContentUnavailableView
+            title={t('systemQuality.noItems.title')}
+            message={t('systemQuality.noItems.message')}
+            image={(
+              <Image source={require('../../assets/images/list.clipboard.png')}/>
+            )}
+          />
+        ) : (
+          <FlatList
+            data={systemQualityItemsFiltered}
+            numColumns={3}
+            renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
+            keyExtractor={(item) => item.id}
+          />
+        )
+      }
     </AppContainer>
   );
 }

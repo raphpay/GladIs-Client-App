@@ -21,7 +21,11 @@
     "employees": "Number of employees",
     "users": "Number of potential users",
     "capital": "Sales amount",
-    "submit": "Submit"
+    "submit": "Submit",
+    "employee": {
+      "title": "Current registered employees",
+      "create": "Create Employee"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -45,11 +49,19 @@
     "module5": "Module 5"
   },
   "documentManagement": {
-    "title": "Document management"
+    "title": "Document management",
+    "noSubCategories": {
+      "title": "No sub categories",
+      "message": "Please try again later"
+    }
   },
   "systemQuality": {
     "title": "System Quality",
-    "qualityManual": "Quality Manual"
+    "qualityManual": "Quality Manual",
+    "noItems": {
+      "title": "No sub items for now",
+      "message": "Please try again later"
+    }
   },
   "technicalDocumentation": {
     "title": "Technical Documentation",
@@ -86,6 +98,10 @@
       "loaded": "Loaded on",
       "deletion": "Deleted on",
       "signature": "Signed on"
+    },
+    "noLogs": {
+      "title": "No document logs for now",
+      "message": "Come back later"
     }
   },
   "process": {
@@ -98,6 +114,10 @@
       "procedures": "Procedures",
       "forms": "Forms",
       "records": "Records"
+    },
+    "noItems": {
+      "title": "No process for now",
+      "message": "Please try again later"
     }
   },
   "documentsScreen": {
@@ -133,9 +153,6 @@
     "title": "Settings",
     "modifyPassword": "Modify password",
     "logout": "Log out"
-  },
-  "signUpScreen": {
-    "pickLogo": "Chosissez un logo"
   },
   "components": {
     "searchTextInput": {
@@ -179,6 +196,15 @@
         "title": "Do you really want to logout ?",
         "confirmButton": "Yes"
       },
+      "addEmployee": {
+        "title": "Add employee",
+        "errors": {
+          "fillAll": "Please fill all informations fields.",
+          "invalidPhoneAndEmail": "Please verify the email address and the phone number",
+          "invalidEmail": "Please verify the email address",
+          "invalidPhone": "Please verify the phone number"
+        }
+      },
       "confirm": "OK",
       "cancel": "Cancel"
     },
@@ -217,6 +243,16 @@
         "title": "Email and phone number are invalid",
         "description": "Please verify your email and phone number format. It should be a french phone"
       }
+    },
+    "password": {
+      "current": {
+        "invalid": "Current Password is invalid"
+      },
+      "samePassword": "The new password should be different from the current one",
+      "invalidLength": "The password should contain at least 12 characters",
+      "missingUppercase": "The password should contain at least one uppercased letter",
+      "missingDigit": "The password should contain at least one digit",
+      "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
     },
     "modules": {
       "title": "This module is not part of your subscription",
