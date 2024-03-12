@@ -1,5 +1,6 @@
 import IDocument from '../model/IDocument';
 import IFile from '../model/IFile';
+import IToken from '../model/IToken';
 import APIService from './APIService';
 
 /**
@@ -28,10 +29,10 @@ class DocumentService {
    * @returns A promise that resolves to an array of documents.
    * @throws If an error occurs while retrieving the documents.
    */
-  async getDocumentsAtPath(path: string): Promise<IDocument[]> {
+  async getDocumentsAtPath(path: string, token: IToken | null): Promise<IDocument[]> {
     try {
       const url = `${this.baseRoute}/getDocumentsAtPath`;
-      const documents = await APIService.post<IDocument[]>(url, { value: path })
+      const documents = await APIService.post<IDocument[]>(url, { value: path }, token?.value as string);
       return documents;
     } catch (error) {
       console.error('Error getting documents at path:', path, error);
@@ -45,10 +46,10 @@ class DocumentService {
    * @returns A promise that resolves to the downloaded document.
    * @throws If an error occurs while downloading the document.
    */
-  async download(id: string): Promise<any> {
+  async download(id: string, token: IToken | null): Promise<any> {
     try {
       const url = `${this.baseRoute}/download/${id}`;
-      return await APIService.download(url);
+      return await APIService.download(url, token?.value as string);
     } catch (error) {
       console.error('Error downloading document at id:', id, error);
       throw error;
@@ -63,10 +64,10 @@ class DocumentService {
    * @returns A promise that resolves to the uploaded document.
    * @throws If an error occurs while uploading the document.
    */
-  async upload(file: IFile, name: string, path: string): Promise<IDocument> {
+  async upload(file: IFile, name: string, path: string, token: IToken | null): Promise<IDocument> {
     try {
       const params = { name, path, file };
-      const response = await APIService.post<IDocument>('documents', params);
+      const response = await APIService.post<IDocument>('documents', params, token?.value as string);
       return response as IDocument;
     } catch (error) {
       console.error('Error uploading document', name, 'at path', path, error);

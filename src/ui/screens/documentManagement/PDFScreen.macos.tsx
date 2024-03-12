@@ -11,6 +11,8 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import DocumentService from '../../../business-logic/services/DocumentService';
 
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
 
@@ -23,10 +25,11 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const [pdfData, setPDFData] = useState<string>('');
   const { documentInput } = props.route.params;
   const { t } = useTranslation();
+  const { token } = useAppSelector((state: RootState) => state.tokens);
 
   async function pickPDF() {
-    const pdfData = await DocumentService.getInstance().download(documentInput.id ?? "");
-    setPDFData(pdfData);
+    const data = await DocumentService.getInstance().download(documentInput.id as string, token)
+    setPDFData(data);
   }
 
   useEffect(() => {
