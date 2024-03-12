@@ -20,6 +20,12 @@ const styles = StyleSheet.create({
     height: 97.61,
     resizeMode: 'contain'
   },
+  logo: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+    borderRadius: 10,
+  },
 });
 
 export default styles;

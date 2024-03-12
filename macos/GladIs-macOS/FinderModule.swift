@@ -36,6 +36,31 @@ class FinderModule: NSObject {
             }
         }
     }
+
+    @objc
+    func pickImage(_ callback: @escaping RCTResponseSenderBlock) {
+        DispatchQueue.main.async {
+            let panel = NSOpenPanel()
+            panel.allowedFileTypes = ["jpg", "jpeg", "png", "heic", "heif"]
+            panel.canChooseFiles = true
+            panel.canChooseDirectories = false
+            panel.allowsMultipleSelection = false
+            
+            if panel.runModal() == .OK, let url = panel.url {
+              do {
+                  let fileData = try Data(contentsOf: url)
+                  // Convert file data to base64 string
+                  let base64String = fileData.base64EncodedString()
+                  callback([base64String])
+              } catch {
+                  print("Error reading file data:", error)
+                  callback([])
+              }
+            } else {
+                callback([])
+            }
+        }
+    }
     
     @objc
     static func requiresMainQueueSetup() -> Bool {

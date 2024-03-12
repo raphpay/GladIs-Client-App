@@ -52,7 +52,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     setShowDialog,
     additionalComponent,
     showSearchText,
-    showSettings
+    showSettings,
   } = props;
 
   const { t } = useTranslation();
@@ -114,7 +114,10 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
             }
           </View>
         </View>
-        <TopAppBar mainTitle={mainTitle} navigationHistoryItems={navigationHistoryItems} />
+        <TopAppBar
+          mainTitle={mainTitle}
+          navigationHistoryItems={navigationHistoryItems}
+        />
         {
           showDialog && (dialog)
         }

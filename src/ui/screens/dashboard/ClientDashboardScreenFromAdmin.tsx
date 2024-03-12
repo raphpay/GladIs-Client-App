@@ -6,6 +6,8 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import { useAppDispatch } from '../../../business-logic/store/hooks';
+import { removeCurrentClient } from '../../../business-logic/store/slices/userReducer';
 
 import AppContainer from '../../components/AppContainer';
 import DashboardClientFlatList from '../../components/DashboardClientFlatList';
@@ -17,7 +19,11 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
   const [searchText,setSearchText] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const { navigation } = props;
+
   const { t } = useTranslation();
+
+  const dispatch = useAppDispatch();
+
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
       title: t('dashboard.adminTitle'),
@@ -26,6 +32,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
   ]
 
   function navigateBack() {
+    dispatch(removeCurrentClient());
     navigation.goBack();
   }
 

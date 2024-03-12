@@ -23,6 +23,7 @@ type GladisTextInputProps = {
   showVisibilityButton?: boolean;
   showTitle?: boolean;
   editable?: boolean;
+  autoCorrect?: boolean;
 };
 
 function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
@@ -41,6 +42,7 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
     showVisibilityButton,
     showTitle,
     editable,
+    autoCorrect
   } = props;
 
   function toggleVisibility() {
@@ -68,6 +70,7 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
           onSubmitEditing={onSubmitEditing}
           placeholder={placeholder}
           editable={editable ?? true}
+          autoCorrect={autoCorrect ?? false}
         />
         {
           showVisibilityButton && (

@@ -4,11 +4,15 @@ import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   clientContainer: {
-    width: 190,
+    width: 150,
     height: 150,
-    backgroundColor: Colors.primary,
     margin: 8,
     borderRadius: 10,
+  },
+  logo: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
   clientLogo: {
     height: '75%',

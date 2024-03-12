@@ -28,7 +28,17 @@ const styles = StyleSheet.create({
   employeeText: {
     fontSize: 12,
     fontFamily: Fonts.poppinsLight
-  }
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logo: {
+    marginHorizontal: 50,
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+  },
 });
 
 export default styles;

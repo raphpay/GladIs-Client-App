@@ -1,8 +1,10 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, Platform, ScrollView, Text, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
+import IFile from '../../../business-logic/model/IFile';
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
@@ -10,12 +12,15 @@ import IToken from '../../../business-logic/model/IToken';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import FinderModule from '../../../business-logic/modules/FinderModule';
+import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
@@ -42,15 +47,16 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [employees, setEmployees] = useState<string>('');
   const [numberOfUsers, setNumberOfUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
+  // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
-
   // Potential employee
-  const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
-  const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
+  // Logo
+  const [imageData, setImageData] = useState<string>('');
+  const [logoURI, setLogoURI] = useState<string>('');
 
   const { navigation } = props;
   const { pendingUser } = props.route.params;
@@ -108,6 +114,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     try {
       const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
       await createEmployees(createdUser.id as string);
+      await uploadLogo();
       navigation.goBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -157,6 +164,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       for (const employee of createdEmployees) {
         await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
       }
+      await uploadLogo();
       navigation.goBack(); 
     } catch (error) {
       const errorKeys = error as string[];
@@ -202,6 +210,30 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     navigation.goBack();
   }
 
+  async function addLogo() {
+    if (Platform.OS === 'macos') {
+      const data = await FinderModule.getInstance().pickImage();
+      setImageData(data);
+      setLogoURI(`data:image/png;base64,${data}`);
+    } else {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
+      const data = await Utils.getFileBase64FromURI(doc.uri) as string;
+      setImageData(data);
+      setLogoURI(doc.uri);
+    }
+  }
+
+  async function uploadLogo() {
+    if (imageData) {
+      const fileName = 'logo.png';
+      const file: IFile = {
+        data: imageData,
+        filename: fileName
+      }
+      await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
+    }
+  }
+
   const isButtonDisabled = !firstName || !lastName || !phoneNumber ||
     !companyName || !email ||
     (products && !products.length) || (employees && !employees.length) ||
@@ -233,10 +265,19 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
+  async function loadLogo() {
+    const company = pendingUser?.companyName as string;
+    const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+    const logo = docs[0];
+    const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+    Platform.OS === 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) : setLogoURI(logoData);
+  }
+
   useEffect(() => {
     async function init() {
       await loadModules();
       await loadEmployees();
+      await loadLogo();
       setDefaultValues();
     }
     init();
@@ -361,6 +402,14 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
               </>
             )
           }
+          <View style={styles.logoContainer}>
+            <TextButton width={'30%'} title={t('quotation.logo.modify')} onPress={addLogo} />
+            {
+              logoURI && (
+                <Image source={{uri: logoURI}} style={styles.logo}/>
+              )
+            }
+          </View>
         </ScrollView>
       </AppContainer>
       {

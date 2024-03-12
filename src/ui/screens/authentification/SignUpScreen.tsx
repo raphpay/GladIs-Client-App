@@ -2,21 +2,28 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
+  Platform,
   ScrollView,
   Text,
   View
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import IFile from '../../../business-logic/model/IFile';
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import FinderModule from '../../../business-logic/modules/FinderModule';
+import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
@@ -41,13 +48,16 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [numberOfEmployees, setNumberOfEmployees] = useState<string>('');
   const [numberOfUsers, setNumberOfUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
+  // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
-
   // Potential employee
   const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
+  // Logo
+  const [imageData, setImageData] = useState<string>('');
+  const [logoURI, setLogoURI] = useState<string>('');
 
   const { navigation } = props;
 
@@ -68,6 +78,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     }
     try {
       const createdUser = await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
+      await uploadLogo();
       const id = createdUser.id as string;
       await createEmployees(id);
       navigateBack();
@@ -86,6 +97,17 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         setErrorDescription(t('errors.signup.phoneNumber.description'));
       }
       setShowErrorDialog(true);
+    }
+  }
+
+  async function uploadLogo() {
+    if (imageData) {
+      const fileName = 'logo.png';
+      const file: IFile = {
+        data: imageData,
+        filename: fileName
+      }
+      await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
     }
   }
 
@@ -124,6 +146,19 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   function navigateBack() {
     navigation.goBack();
+  }
+
+  async function addLogo() {
+    if (Platform.OS === 'macos') {
+      const data = await FinderModule.getInstance().pickImage();
+      setImageData(data);
+      setLogoURI(`data:image/png;base64,${data}`);
+    } else {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
+      const data = await Utils.getFileBase64FromURI(doc.uri);
+      setImageData(data);
+      setLogoURI(doc.uri);
+    }
   }
 
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
@@ -253,6 +288,14 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
               </>
             )
           }
+          <View style={styles.logoContainer}>
+            <TextButton width={'30%'} title={t('quotation.logo.add')} onPress={addLogo} />
+            {
+              logoURI && (
+                <Image source={{uri: logoURI}} style={styles.logo}/>
+              )
+            }
+          </View>
         </ScrollView>
       </AppContainer>
       {

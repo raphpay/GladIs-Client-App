@@ -74,6 +74,17 @@ class DocumentService {
       throw error;
     }
   }
+
+  async uploadLogo(file: IFile, name: string, path: string): Promise<IDocument> {
+    try {
+      const params = { name, path, file };
+      const response = await APIService.post<IDocument>(`${this.baseRoute}/logo`, params);
+      return response as IDocument;
+    } catch (error) {
+      console.error('Error uploading logo', name, 'at path', path, error);
+      throw error;
+    }
+  }
 }
 
 export default DocumentService;
