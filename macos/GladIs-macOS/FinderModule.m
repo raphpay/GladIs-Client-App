@@ -11,5 +11,6 @@
 @interface RCT_EXTERN_MODULE(FinderModule, NSObject)
 
 RCT_EXTERN_METHOD(pickPDFFile: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(pickImage: (RCTResponseSenderBlock)callback)
 
 @end

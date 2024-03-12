@@ -32,6 +32,18 @@ class FinderModule {
       });
     });
   }
+
+  /**
+   * Picks an image using the FinderModule.
+   * @returns A promise that resolves to the path of the picked image.
+   */
+  async pickImage(): Promise<string> {
+    return new Promise((resolve) => {
+      NativeModules.FinderModule.pickImage((res: any) => {
+        resolve(res as string);
+      });
+    });
+  }
 }
 
 export default FinderModule;
