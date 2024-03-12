@@ -115,6 +115,22 @@ class Utils {
     data = await this.blobToData(blob);
     return data;
   }
+
+  /**
+   * Changes the MIME type of a base64 string.
+   * @param base64String - The base64 string to modify.
+   * @param newMimeType - The new MIME type to set.
+   * @returns The modified base64 string with the new MIME type.
+   */
+  static changeMimeType(base64String: string, newMimeType: string): string {
+    const mimeTypeRegex = /^data:(.*?);base64,(.*)$/;
+    const matches = base64String.match(mimeTypeRegex);
+    if (matches && matches.length === 3) {
+      const [, mimeType, data] = matches;
+      return `data:${newMimeType};base64,${data}`;
+    }
+    return base64String;
+  }
 }
 
 export default Utils;

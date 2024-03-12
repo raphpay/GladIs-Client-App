@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, SafeAreaView } from 'react-native';
+import { Image, Platform, SafeAreaView } from 'react-native';
 import Pdf from 'react-native-pdf';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -10,6 +10,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -25,7 +26,10 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
-      const data = await DocumentService.getInstance().download(documentInput.id as string, token)
+      let data = await DocumentService.getInstance().download(documentInput.id as string, token);
+      if (Platform.OS === 'android') {
+        data = Utils.changeMimeType(data, 'application/pdf');
+      }
       setPDFData(data)
     }
     init();
