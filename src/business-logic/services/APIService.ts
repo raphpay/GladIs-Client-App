@@ -207,11 +207,12 @@ class APIService {
    * @returns A Promise that resolves to the downloaded file data.
    * @throws An error if the request fails.
    */
-  static async download(endpoint: string): Promise<any> {
+  static async download(endpoint: string, token: string): Promise<any> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       };
 
       const response = await fetch(url, {
@@ -229,9 +230,8 @@ class APIService {
           const reader = new FileReader();
           reader.onload = () => {
               const base64Data = reader.result as string; // Cast result to string
-              // console.log('base64Data',base64Data );
               const base64String = base64Data.split(',')[1]; // Extract Base64 string after the comma
-              const result = Platform.OS === 'macos' ? base64Data : base64Data;
+              const result = Platform.OS === 'macos' ? base64String : base64Data;
               resolve(result);
           };
           reader.onerror = reject; // Reject promise on error
