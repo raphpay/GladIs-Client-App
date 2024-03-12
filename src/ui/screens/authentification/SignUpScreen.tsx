@@ -282,7 +282,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
             )
           }
           <View style={styles.logoContainer}>
-            <TextButton width={'30%'} title={t('quotation.logo')} onPress={addLogo} />
+            <TextButton width={'30%'} title={t('quotation.logo.add')} onPress={addLogo} />
             {
               logoURI && (
                 <Image source={{uri: logoURI}} style={styles.logo}/>

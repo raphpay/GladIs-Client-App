@@ -26,7 +26,10 @@
       "title": "Employés enregistrés",
       "create": "Créer un employé",
     },
-    "logo": "Ajouter un logo"
+    "logo": {
+      "add": "Ajouter un logo",
+      "modify": "Modifier le logo"
+    }
   },
   "dashboard": {
     "title": "Tableau de bord",

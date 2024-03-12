@@ -26,7 +26,10 @@
       "title": "Current registered employees",
       "create": "Create Employee"
     },
-    "logo": "Add a logo"
+    "logo": {
+      "add": "Add a logo",
+      "modify": "Modify the logo"
+    }
   },
   "dashboard": {
     "title": "Dashboard",
