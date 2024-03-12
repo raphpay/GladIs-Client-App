@@ -26,6 +26,7 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import DocumentService from '../../../business-logic/services/DocumentService';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
@@ -42,15 +43,15 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [employees, setEmployees] = useState<string>('');
   const [numberOfUsers, setNumberOfUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
+  // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
-
   // Potential employee
-  const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
-  const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
+  // Logo
+  const [logoURI, setLogoURI] = useState<string>('');
 
   const { navigation } = props;
   const { pendingUser } = props.route.params;
@@ -233,10 +234,19 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
+  async function loadLogo() {
+    const company = pendingUser?.companyName as string;
+    const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+    const logo = docs[0];
+    const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+    setLogoURI(`data:image/png;base64,${logoData}`);
+  }
+
   useEffect(() => {
     async function init() {
       await loadModules();
       await loadEmployees();
+      await loadLogo();
       setDefaultValues();
     }
     init();
@@ -270,6 +280,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         navigateBack={navigateBack}
         showSearchText={false}
         showSettings={false}
+        logo={logoURI}
         additionalComponent={(
           <View style={styles.sendButtonContainer}>
             <TextButton

@@ -25,7 +25,8 @@
     "employee": {
       "title": "Current registered employees",
       "create": "Create Employee"
-    }
+    },
+    "logo": "Add a logo"
   },
   "dashboard": {
     "title": "Dashboard",
