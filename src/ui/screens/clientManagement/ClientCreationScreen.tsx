@@ -181,7 +181,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }, []);
   
 
-  // TODO: handle image
   return (
     <>
       <AppContainer
