@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Platform, ScrollView, Text, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
 import IFile from '../../../business-logic/model/IFile';
 import IModule from '../../../business-logic/model/IModule';
@@ -12,12 +13,14 @@ import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import FinderModule from '../../../business-logic/modules/FinderModule';
+import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
@@ -28,7 +31,6 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import DocumentService from '../../../business-logic/services/DocumentService';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
@@ -213,6 +215,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const data = await FinderModule.getInstance().pickImage();
       setImageData(data);
       setLogoURI(`data:image/png;base64,${data}`);
+    } else {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
+      const data = await Utils.getFileBase64FromURI(doc.uri) as string;
+      setImageData(data);
+      setLogoURI(doc.uri);
     }
   }
 
@@ -263,7 +270,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
     const logo = docs[0];
     const logoData = await DocumentService.getInstance().download(logo.id as string, token);
-    setLogoURI(`data:image/png;base64,${logoData}`);
+    Platform.OS === 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) : setLogoURI(logoData);
   }
 
   useEffect(() => {

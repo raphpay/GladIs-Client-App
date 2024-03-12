@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Image,
+  Platform,
   Text,
   TouchableOpacity,
   View
@@ -39,7 +40,7 @@ function FlatListClientItem(props: FlatListClientItemProps): React.JSX.Element {
     const logo = docs[0];
     if (logo && logo.id) {
       const logoData = await DocumentService.getInstance().download(logo.id as string, token);
-      setLogoURI(`data:image/png;base64,${logoData}`);
+      Platform.OS == 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) :  setLogoURI(logoData);
     }
   }
 

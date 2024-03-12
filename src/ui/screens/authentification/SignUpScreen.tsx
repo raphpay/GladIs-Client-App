@@ -8,6 +8,7 @@ import {
   Text,
   View
 } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -22,6 +23,7 @@ import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
@@ -151,6 +153,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       const data = await FinderModule.getInstance().pickImage();
       setImageData(data);
       setLogoURI(`data:image/png;base64,${data}`);
+    } else {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
+      const data = await Utils.getFileBase64FromURI(doc.uri) as string;
+      setImageData(data);
+      setLogoURI(doc.uri);
     }
   }
 

@@ -24,6 +24,28 @@ class Utils {
     const isValid: boolean = regex.test(input);
     return isValid;
   }
+  
+  /**
+   * Checks if a password is valid.
+   * @param input - The password to validate.
+   * @returns A boolean indicating whether the password is valid or not.
+   */
+  static async getFileBase64FromURI(uri: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      fetch(uri)
+        .then(response => response.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64String = (reader.result as string).split(',')[1]; // Extract base64 string from data URL
+            resolve(base64String);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        })
+        .catch(error => reject(error));
+    });
+  }
 }
 
 export default Utils;

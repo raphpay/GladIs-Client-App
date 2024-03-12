@@ -26,6 +26,7 @@ import DocumentActivityLogsService from '../../../business-logic/services/Docume
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -91,23 +92,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
   }
 
-  async function getFileBase64FromURI(uri: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      fetch(uri)
-        .then(response => response.blob())
-        .then(blob => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const base64String = reader.result.split(',')[1]; // Extract base64 string from data URL
-            resolve(base64String);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        })
-        .catch(error => reject(error));
-    });
-  }
-
   async function addDocument() {
     setShowDialog(true);
   }
@@ -118,7 +102,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     let data: string = '';
     if (Platform.OS !== 'macos') {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
-      data = await getFileBase64FromURI(doc.uri) as string;
+      data = await Utils.getFileBase64FromURI(doc.uri) as string;
     } else {
       data = await FinderModule.getInstance().pickPDF();
     }
