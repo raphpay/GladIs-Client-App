@@ -6,7 +6,6 @@ const styles = StyleSheet.create({
   clientContainer: {
     width: 150,
     height: 150,
-    backgroundColor: Colors.primary,
     margin: 8,
     borderRadius: 10,
   },

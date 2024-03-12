@@ -11,6 +11,7 @@ import DocumentService from '../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../business-logic/store/hooks';
 import { RootState } from '../../business-logic/store/store';
 
+import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/FlatListClientItemStyles';
 
 type FlatListClientItemProps = {
@@ -25,12 +26,21 @@ function FlatListClientItem(props: FlatListClientItemProps): React.JSX.Element {
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
+  const clientContainerStyles = () => {
+    return {
+      ...styles.clientContainer,
+      backgroundColor: logoURI ? '' : Colors.primary,
+    };
+  }
+  
   async function loadLogo() {
     const company = client.companyName as string;
     const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
     const logo = docs[0];
-    const logoData = await DocumentService.getInstance().download(logo.id as string, token);
-    setLogoURI(`data:image/png;base64,${logoData}`);
+    if (logo && logo.id) {
+      const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+      setLogoURI(`data:image/png;base64,${logoData}`);
+    }
   }
 
   useEffect(() => {
@@ -41,7 +51,7 @@ function FlatListClientItem(props: FlatListClientItemProps): React.JSX.Element {
   }, []);
 
   return (
-    <TouchableOpacity onPress={() => onPress(client)} style={styles.clientContainer}>
+    <TouchableOpacity onPress={() => onPress(client)} style={clientContainerStyles()}>
         <View style={styles.clientLogo}>
           {
             logoURI && (
