@@ -155,7 +155,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       setLogoURI(`data:image/png;base64,${data}`);
     } else {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
-      const data = await Utils.getFileBase64FromURI(doc.uri) as string;
+      const data = await Utils.getFileBase64FromURI(doc.uri);
       setImageData(data);
       setLogoURI(doc.uri);
     }
