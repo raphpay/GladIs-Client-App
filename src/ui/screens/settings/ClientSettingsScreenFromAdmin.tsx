@@ -1,23 +1,32 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import FinderModule from '../../../business-logic/modules/FinderModule';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
+import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 
+import { format } from 'date-fns';
+import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
+import IFile from '../../../business-logic/model/IFile';
+import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
+import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
+import DocumentService from '../../../business-logic/services/DocumentService';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
-import ErrorDialog from '../../components/ErrorDialog';
 
 type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
 
@@ -32,7 +41,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   const { t } = useTranslation();
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
 
   const [oldPassword, setOldPassword] = useState<string>('');
@@ -40,7 +49,8 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
-
+  const [showBillDialog, setShowBillDialog] = useState<boolean>(false);
+  const [documentName, setDocumentName] = useState<string>('');
 
   const settingsActions: ISettingsAction[] = [
     {
@@ -50,29 +60,50 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       isActionDisabled: true,
     },
     {
-      id: 'changePasswordId',
-      title: t('settings.modifyPassword'),
-      action: () => showModifyPasswordDialog(),
-      isActionDisabled: false
+      id: 'clientInfos',
+      title: `${t('settings.clientSettings.clientInfos')} ${currentClient?.username}`,
+      action: () => {},
+      isActionDisabled: true,
     },
     {
-      id: 'logoutID',
-      title: t('settings.logout'),
-      action: () => displayLogoutDialog(),
-      isActionDisabled: false
-    },
+      id: 'addBillID',
+      title: t('settings.clientSettings.addBill'),
+      action: () => displayBillDialog(),
+      isActionDisabled: false,
+    }
   ];
-
-  function showModifyPasswordDialog() {
-    setShowDialog(true);
-  }
-
-  function displayLogoutDialog() {
-    setShowLogoutDialog(true);
-  }
 
   function navigateBack() {
     navigation.goBack()
+  }
+
+  function displayBillDialog() {
+    setShowBillDialog(true);
+  }
+
+  async function addBill() {
+    if (currentClient) {
+      const path = `${currentClient.companyName}/bills/`;
+      const filename = documentName.replace(/\s/g, "_");
+      let data: string = '';
+      if (Platform.OS !== 'macos') {
+        const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
+        data = await Utils.getFileBase64FromURI(doc.uri) as string;
+      } else {
+        data = await FinderModule.getInstance().pickPDF();
+      }
+      const file: IFile = { data, filename: filename}
+      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Creation,
+        actorIsAdmin: true,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: createdDocument.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      setShowBillDialog(false);
+    }
   }
 
   async function submitPasswordChange() {
@@ -93,6 +124,38 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     } catch (error) {
       setShowErrorDialog(true);
     }
+  }
+
+  useEffect(() => {
+    const today = new Date();
+    const formatedDate = format(today, 'dd_MM_yyyy');
+    setDocumentName(formatedDate);
+  }, []);
+
+  function billDialog() {
+    return (
+      <>
+        {
+          showBillDialog && (
+            <Dialog
+              title={t('components.dialog.addDocument.title')}
+              confirmTitle={t('components.dialog.addDocument.confirmButton')}
+              onConfirm={addBill}
+              isCancelAvailable={true}
+              onCancel={() => setShowBillDialog(false)}
+              isConfirmDisabled={documentName.length === 0}
+            >
+              <TextInput
+                value={documentName}
+                onChangeText={setDocumentName}
+                placeholder={t('components.dialog.addDocument.placeholder')}
+                style={styles.dialogInput}
+              />
+            </Dialog>
+          )
+        }
+      </>
+    )
   }
 
   function additionalMentions() {
@@ -213,6 +276,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       {dialogContent()}
       {logoutDialog()}
       {errorDialog()}
+      {billDialog()}
     </>
   );
 }

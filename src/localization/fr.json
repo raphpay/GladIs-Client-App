@@ -144,6 +144,8 @@
     "title": "Réglages",
     "clientSettings": {
       "title": "Réglages client",
+      "clientInfos": "Réglages de :",
+      "addBill": "Ajouter une facture",
     },
     "userInfos": "Connecté en tant que",
     "modifyPassword": "Modifier le mot de passe",

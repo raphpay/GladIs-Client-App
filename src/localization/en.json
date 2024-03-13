@@ -157,6 +157,8 @@
     "title": "Settings",
     "clientSettings": {
       "title": "Client settings",
+      "clientInfos": "Settings of :",
+      "addBill": "Add a bill",
     },
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
