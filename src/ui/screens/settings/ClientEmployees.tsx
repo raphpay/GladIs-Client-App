@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import {
   FlatList,
   Image,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View
@@ -27,7 +26,7 @@ import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
 
-import { Fonts } from '../../assets/fonts/fonts';
+import styles from '../../assets/styles/settings/ClientEmployeesStyles';
 
 type ClientEmployeesProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientEmployees>;
 
@@ -81,26 +80,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     init();
   }, []);
 
-  function EmployeeRow(item: IUser) {
-    return (
-      <View style={styles.documentLineContainer}>
-        <View style={styles.documentLineRow}>
-          <View style={styles.documentButton}>
-            <View style={styles.documentTextContainer}>
-              <Text style={styles.documentText}>
-                {item.firstName} {item.lastName}
-              </Text>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.actionButton}>
-            <Image source={ellipsisIcon}/>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.separator}/>
-      </View>
-    );
-  }
-
   function isContactDetailsValid(): boolean {
     let isValid: boolean = true;
     const isPhoneValid = Utils.isPhoneValid(potentialEmployeePhoneNumber);
@@ -149,6 +128,26 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
       setPotentialEmployeePhoneNumber('');
       setShowDialog(false);
     }
+  }
+
+  function EmployeeRow(item: IUser) {
+    return (
+      <View style={styles.employeeLineContainer}>
+        <View style={styles.employeeLineRow}>
+          <View style={styles.employeeButton}>
+            <View style={styles.employeeTextContainer}>
+              <Text style={styles.employeeText}>
+                {item.firstName} {item.lastName}
+              </Text>
+            </View>
+          </View>
+          <TouchableOpacity style={styles.actionButton}>
+            <Image source={ellipsisIcon}/>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.separator}/>
+      </View>
+    );
   }
 
   const dialogContent = () => {
@@ -228,60 +227,5 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     </AppContainer>
   );
 }
-
-// TODO: Correct styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  // Containers
-  documentLineContainer: {
-    height: 55,
-    width: '100%',
-  },
-  documentLineRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-  },
-  documentTextContainer: {
-    flex: 1,
-    paddingLeft: 8
-  },
-  // Components
-  documentButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '100%',
-  },
-  separator: {
-    width: '100%',
-    height: 1,
-    backgroundColor: 'black',
-    margin: 4
-  },
-  actionButton: {
-    width: 60,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dialogInput: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
-  documentText: {
-    fontFamily: Fonts.poppinsLight,
-    fontWeight: Fonts.regular,
-  },
-});
 
 export default ClientEmployees;
