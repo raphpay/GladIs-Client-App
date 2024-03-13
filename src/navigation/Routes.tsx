@@ -35,6 +35,7 @@ import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationS
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
 // Settings
+import ClientSettingsScreenFromAdmin from '../ui/screens/settings/ClientSettingsScreenFromAdmin';
 import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 
 export type IRootStackParams = {
@@ -56,6 +57,7 @@ export type IRootStackParams = {
   TrackingScreen: undefined,
   // Settings
   SettingsScreen: undefined,
+  ClientSettingsScreenFromAdmin: undefined,
 }
 
 export type IClientManagementParams = {
@@ -157,6 +159,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SettingsScreen}
         component={SettingsScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.ClientSettingsScreenFromAdmin}
+        component={ClientSettingsScreenFromAdmin}
         options={{headerShown: false}}
       />
       <ClientManagementStack.Screen

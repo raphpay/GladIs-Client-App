@@ -155,6 +155,7 @@
   },
   "settings": {
     "title": "Settings",
+    "clientSettings": "Client settings",
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
     "logout": "Log out"
