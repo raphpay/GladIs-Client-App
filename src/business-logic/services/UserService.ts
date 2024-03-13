@@ -36,9 +36,9 @@ class UserService {
    * @returns A promise that resolves to the created user.
    * @throws If an error occurs while creating the user.
    */
-  async createUser(user: IUser): Promise<IUser> {
+  async createUser(user: IUser, token: IToken | null): Promise<IUser> {
     try {
-      const createdUser = await APIService.post<IUser>(this.baseRoute, user);
+      const createdUser = await APIService.post<IUser>(this.baseRoute, user, token?.value as string);
       return createdUser;
     } catch (error) {
       console.error('Error creating user:', error);
@@ -182,7 +182,17 @@ class UserService {
       const tabs = await APIService.get<ITechnicalDocTab[]>(`${this.baseRoute}/${id}/technicalDocumentationTabs`, usedToken?.value);
       return tabs;
     } catch (error) {
-      console.error('Error getting user\'s technical documentation tabs:', id, error);
+      console.log('Error getting user\'s technical documentation tabs:', id, error);
+      throw error;
+    }
+  }
+
+  async getClientEmployees(clientID: string, token: IToken | null): Promise<IUser[]> {
+    try {
+      const employees = await APIService.get<IUser[]>(`${this.baseRoute}/${clientID}/employees`, token?.value as string);
+      return employees;
+    } catch (error) {
+      console.log('Error getting client employees', error);
       throw error;
     }
   }

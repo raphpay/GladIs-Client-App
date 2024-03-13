@@ -82,7 +82,7 @@ function AddEmployeeDialog(props: AddEmployeeDialogProps): React.JSX.Element {
     <>
       {showDialog  && (
         <Dialog
-          title={t('dialog.addEmployee')}
+          title={t('components.dialog.addEmployee.title')}
           description={dialogDescription}
           onConfirm={addEmployee}
           isCancelAvailable={true}
