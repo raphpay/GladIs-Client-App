@@ -106,7 +106,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         currentScreen: t('systemQuality.qualityManual'),
         documentsPath: 'systemQuality/qualityManual',
         processNumber: undefined,
-      })
+      });
     } else {
       navigation.navigate(NavigationRoutes.ProcessesScreen, { processNumber: item.number ?? 1})
     }
