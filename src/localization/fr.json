@@ -146,7 +146,8 @@
       "title": "Réglages client",
       "clientInfos": "Réglages de :",
       "addBill": "Ajouter une facture",
-      "bills": "Factures"
+      "bills": "Factures",
+      "employees": "Employés"
     },
     "userInfos": "Connecté en tant que",
     "modifyPassword": "Modifier le mot de passe",

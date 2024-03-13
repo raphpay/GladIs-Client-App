@@ -22,6 +22,7 @@ enum NavigationRoutes {
   // Settings
   SettingsScreen = 'SettingsScreen',
   ClientSettingsScreenFromAdmin = 'ClientSettingsScreenFromAdmin',
+  ClientEmployees = 'ClientEmployees',
 }
 
 export default NavigationRoutes;

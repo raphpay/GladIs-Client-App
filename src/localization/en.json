@@ -159,7 +159,8 @@
       "title": "Client settings",
       "clientInfos": "Settings of :",
       "addBill": "Add a bill",
-      "bills": "Bills"
+      "bills": "Bills",
+      "employees": "Employees"
     },
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",

@@ -48,12 +48,17 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       action: () => navigateToBills(),
       isActionDisabled: false,
     },
+    {
+      id: 'employeesID',
+      title: t('settings.clientSettings.employees'),
+      action: () => navigateToEmployees(),
+      isActionDisabled: false,
+    },
   ];
 
   function navigateBack() {
     navigation.goBack()
   }
-
 
   function navigateToBills() {
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
@@ -63,6 +68,10 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       processNumber: undefined,
       hideModulesRoute: true,
     });
+  }
+
+  function navigateToEmployees() {
+    navigation.navigate(NavigationRoutes.ClientEmployees);
   }
 
   function additionalMentions() {

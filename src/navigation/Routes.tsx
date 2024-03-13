@@ -35,6 +35,7 @@ import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationS
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
 // Settings
+import ClientEmployees from '../ui/screens/settings/ClientEmployees';
 import ClientSettingsScreenFromAdmin from '../ui/screens/settings/ClientSettingsScreenFromAdmin';
 import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 
@@ -64,6 +65,7 @@ export type IRootStackParams = {
   // Settings
   SettingsScreen: undefined,
   ClientSettingsScreenFromAdmin: undefined,
+  ClientEmployees: undefined,
 }
 
 export type IClientManagementParams = {
@@ -170,6 +172,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.ClientSettingsScreenFromAdmin}
         component={ClientSettingsScreenFromAdmin}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.ClientEmployees}
+        component={ClientEmployees}
         options={{headerShown: false}}
       />
       <ClientManagementStack.Screen
