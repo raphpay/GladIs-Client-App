@@ -105,7 +105,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
           {
             showSettings &&  showClientSettingsScreen && (
               <IconButton 
-                title={t('settings.clientSettings')}
+                title={t('settings.clientSettings.title')}
                 icon={settingsIcon}
                 onPress={navigateToClientSettings}
                 backgroundColor={Colors.white}

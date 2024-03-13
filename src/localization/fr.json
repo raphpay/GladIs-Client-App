@@ -142,7 +142,9 @@
   },
   "settings": {
     "title": "Réglages",
-    "clientSettings": "Réglages client",
+    "clientSettings": {
+      "title": "Réglages client",
+    },
     "userInfos": "Connecté en tant que",
     "modifyPassword": "Modifier le mot de passe",
     "logout": "Déconnexion"

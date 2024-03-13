@@ -155,10 +155,12 @@
   },
   "settings": {
     "title": "Settings",
-    "clientSettings": "Client settings",
+    "clientSettings": {
+      "title": "Client settings",
+    },
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
-    "logout": "Log out"
+    "logout": "Log out",
   },
   "components": {
     "searchTextInput": {
