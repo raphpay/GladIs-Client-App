@@ -30,6 +30,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     marginHorizontal: 4
   },
+  text: {
+    fontSize: 14,
+    color: Colors.primary,
+    margin: 4
+  }
 });
 
 export default styles;
