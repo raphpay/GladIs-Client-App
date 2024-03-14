@@ -250,7 +250,13 @@
   "errors": {
     "login": {
       "title": "Error Logging in",
-      "message": "Please verify your credentials"
+      "message": "Please verify your credentials",
+      "account": {
+        "blocked": {
+          "title": "Account blocked",
+          "message": "Please contact your provider"
+        }
+      }
     },
     "logout": {
       "title": "Error logging out",
