@@ -219,7 +219,6 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     )
   }
 
-  console.log('', token?.value );
   return (
     <>
       <AppContainer

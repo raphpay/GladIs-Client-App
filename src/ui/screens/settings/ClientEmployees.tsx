@@ -25,6 +25,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
+import Tooltip from '../../components/Tooltip';
 
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
 
@@ -33,11 +34,15 @@ type ClientEmployeesProps = NativeStackScreenProps<IRootStackParams, NavigationR
 function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogDescription, setDialogDescription] = useState<string>('');
   const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
   const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployeeEmail, setPotentialEmployeeEmail] = useState<string>('');
   const [potentialEmployeePhoneNumber, setPotentialEmployeePhoneNumber] = useState<string>('');
+  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
+  const [isModifyingEmployee, setIsModifiyingEmployee] = useState<boolean>(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<IUser>();
 
   const [employees, setEmployees] = useState<IUser[]>([]);
   const employeesFiltered = employees.filter(employee =>
@@ -73,13 +78,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   }
 
-  useEffect(() => {
-    async function init() {
-      await loadEmployees();
-    }
-    init();
-  }, []);
-
   function isContactDetailsValid(): boolean {
     let isValid: boolean = true;
     const isPhoneValid = Utils.isPhoneValid(potentialEmployeePhoneNumber);
@@ -104,6 +102,14 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         isFilled = true;
     }
     return isFilled;
+  }
+
+  async function addOrModifyEmployee() {
+    if (isModifyingEmployee) {
+      await modifyEmployee(selectedEmployee as IUser);
+    } else {
+      await addEmployee();
+    }
   }
   
   async function addEmployee() {
@@ -130,6 +136,54 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   }
 
+  async function modifyEmployee(employee: IUser) {
+    if (isFormFilled() && isContactDetailsValid() && currentClient) {
+      const modifiedEmployee: IUser = {
+        id: employee.id,
+        firstName: potentialEmployeeFirstName,
+        lastName: potentialEmployeeLastName,
+        email: potentialEmployeeEmail,
+        phoneNumber: potentialEmployeePhoneNumber,
+        companyName: currentClient?.companyName || '',
+        userType: UserType.Employee,
+      }
+      await UserService.getInstance().updateUser(modifiedEmployee, token);
+      await loadEmployees();
+      setPotentialEmployeeFirstName('');
+      setPotentialEmployeeLastName('');
+      setPotentialEmployeeEmail('');
+      setPotentialEmployeePhoneNumber('');
+      setShowDialog(false);
+    }
+  }
+
+  function showModifyEmployeeDialog(employee: IUser) {
+    setIsModifiyingEmployee(true);
+    setSelectedEmployee(employee);
+    setShowDialog(true);
+    setPotentialEmployeeFirstName(employee.firstName);
+    setPotentialEmployeeLastName(employee.lastName);
+    setPotentialEmployeeEmail(employee.email);
+    setPotentialEmployeePhoneNumber(employee.phoneNumber);
+    setDialogTitle(t('components.dialog.modifyEmployee.title'));
+    setDialogDescription(t('components.dialog.modifyEmployee.description'));
+  }
+
+  function showAddEmployeeDialog() {
+    setShowDialog(true);
+    setIsModifiyingEmployee(false);
+    setDialogTitle(t('components.dialog.addEmployee.title'));
+    setDialogDescription(t('components.dialog.addEmployee.description'));
+  }
+
+  useEffect(() => {
+    async function init() {
+      await loadEmployees();
+    }
+    init();
+  }, []);
+
+  // TODO: Create tooltip line component
   function EmployeeRow(item: IUser) {
     return (
       <View style={styles.employeeLineContainer}>
@@ -141,9 +195,22 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.actionButton}>
-            <Image source={ellipsisIcon}/>
-          </TouchableOpacity>
+          <Tooltip
+            isVisible={isTooltipVisible}
+            setIsVisible={setIsTooltipVisible}
+            children={(
+              <View style={styles.tooltipIconContainer}>
+                <Image source={require('../../assets/images/ellipsis.png')}/>
+              </View>
+            )}
+            popover={(
+              <View style={styles.popover}>
+                <TouchableOpacity style={styles.popoverButton} onPress={() => showModifyEmployeeDialog(item)}>
+                  <Text style={styles.tooltipButtonText}>{t('components.tooltip.modify')}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         </View>
         <View style={styles.separator}/>
       </View>
@@ -153,9 +220,9 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const dialogContent = () => {
     return (
       <Dialog
-        title={t('components.dialog.addEmployee.title')}
+        title={dialogTitle}
         description={dialogDescription}
-        onConfirm={addEmployee}
+        onConfirm={addOrModifyEmployee}
         isCancelAvailable={true}
         onCancel={() => setShowDialog(false)}
       >
@@ -199,11 +266,12 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
       setShowDialog={setShowDialog}
       dialogIsShown={showDialog}
       dialog={dialogContent()}
+      hideTooltip={() => setIsTooltipVisible(false)}
       adminButton={
         <IconButton
           title={t('components.buttons.addEmployee')}
           icon={plusIcon}
-          onPress={() => setShowDialog(true)}
+          onPress={showAddEmployeeDialog}
         />
       }
     >

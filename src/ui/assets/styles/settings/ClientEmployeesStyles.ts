@@ -49,6 +49,25 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.poppinsLight,
     fontWeight: Fonts.regular,
   },
+  // tooltip
+  tooltipIconContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popover: {
+    justifyContent: 'space-between',
+    width: '500%',
+    marginHorizontal: 4,
+  },
+  popoverButton: {
+    marginVertical: 4
+  },
+  tooltipButtonText: {
+    fontSize: 12,
+    fontFamily: Fonts.poppinsLight
+  }
 });
 
 export default styles;

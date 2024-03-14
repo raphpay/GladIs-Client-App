@@ -208,6 +208,15 @@ class UserService {
   }
 
   // UPDATE
+  async updateUser(user: IUser, token: IToken | null): Promise<void> {
+    try {
+      await APIService.put(`${this.baseRoute}/${user.id}/updateInfos/`, user, token?.value as string);
+    } catch (error) {
+      console.error('Error updating user:', user, error);
+      throw error;
+    }
+  }
+
   /**
    * Changes the password of the current user.
    * @param currentPassword - The current password.
