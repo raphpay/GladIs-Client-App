@@ -84,6 +84,7 @@ class UserService {
     }
   }
 
+  
   async removeModuleFromClient(id: string, moduleID: string, token: IToken | null): Promise<IModule[]> {
     try {
       const remaningModules = await APIService.post<IModule[]>(`${this.baseRoute}/${id}/remove/modules/${moduleID}`, null, token?.value as string);
@@ -197,6 +198,12 @@ class UserService {
     }
   }
 
+  /**
+   * Retrieves the employees of a user.
+   * @param id - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to an array of employees.
+   */
   async getClientEmployees(clientID: string, token: IToken | null): Promise<IUser[]> {
     try {
       const employees = await APIService.get<IUser[]>(`${this.baseRoute}/${clientID}/employees`, token?.value as string);
@@ -208,6 +215,11 @@ class UserService {
   }
 
   // UPDATE
+  /**
+   * Updates the user.
+   * @param user - The user to update.
+   * @param token - The authentication token.
+   */
   async updateUser(user: IUser, token: IToken | null): Promise<void> {
     try {
       await APIService.put(`${this.baseRoute}/${user.id}/updateInfos/`, user, token?.value as string);
@@ -269,6 +281,11 @@ class UserService {
     }
   }
 
+  /**
+   * Blocks a user.
+   * @param clientID - The ID of the user to block.
+   * @param token - The authentication token.
+   */
   async blockUser(clientID: string, token: IToken | null) {
     try {
       await APIService.put(`${this.baseRoute}/${clientID}/block`, null, token?.value as string);
@@ -278,6 +295,11 @@ class UserService {
     }
   }
 
+  /**
+   * Unblocks a user.
+   * @param clientID - The ID of the user to unblock.
+   * @param token - The authentication token.
+   */
   async unblockUser(clientID: string, token: IToken | null) {
     try {
       await APIService.put(`${this.baseRoute}/${clientID}/unblock`, null, token?.value as string);

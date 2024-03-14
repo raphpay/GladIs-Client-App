@@ -60,7 +60,12 @@ class AuthenticationService {
     }
   }
 
-  // TODO: Add documentation
+  /**
+   * Gets the authentication token for the user.
+   * @param adminToken - The admin token for authentication.
+   * @returns A Promise that resolves to the authentication token.
+   * @throws If an error occurs during the token retrieval process.
+   */
   async getTokens(adminToken: IToken | null) {
     try {
       const tokens = await APIService.get<IToken[]>(this.baseRoute, adminToken?.value);
@@ -71,6 +76,13 @@ class AuthenticationService {
     }
   }
 
+  /**
+   * Removes the authentication token for the user.
+   * @param userID - The ID of the user.
+   * @param adminToken - The admin token for authentication.
+   * @throws If an error occurs during the token removal process.
+   * @returns A Promise that resolves when the token is removed.
+   */
   async removeTokenForUser(userID: string, adminToken: IToken | null) {
     try {
       const tokens = await this.getTokens(adminToken);
