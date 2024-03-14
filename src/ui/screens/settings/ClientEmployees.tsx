@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  Image,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 
@@ -21,11 +19,10 @@ import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
-import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
-import Tooltip from '../../components/Tooltip';
+import Tooltip, { ITooltipAction } from '../../components/Tooltip';
 
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
 
@@ -64,6 +61,17 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     {
       title: t('settings.title'),
       action: () => navigateBack()
+    }
+  ];
+
+  const popoverActions: ITooltipAction[] = [
+    {
+      title: t('components.tooltip.modify'),
+      onPress: () => showModifyEmployeeDialog(selectedEmployee as IUser)
+    },
+    {
+      title: t('components.buttons.delete'),
+      onPress: () => console.log('delete')
     }
   ];
 
@@ -159,14 +167,15 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
 
   function showModifyEmployeeDialog(employee: IUser) {
     setIsModifiyingEmployee(true);
-    setSelectedEmployee(employee);
     setShowDialog(true);
-    setPotentialEmployeeFirstName(employee.firstName);
-    setPotentialEmployeeLastName(employee.lastName);
-    setPotentialEmployeeEmail(employee.email);
-    setPotentialEmployeePhoneNumber(employee.phoneNumber);
-    setDialogTitle(t('components.dialog.modifyEmployee.title'));
-    setDialogDescription(t('components.dialog.modifyEmployee.description'));
+    if (employee) {
+      setPotentialEmployeeFirstName(employee.firstName);
+      setPotentialEmployeeLastName(employee.lastName);
+      setPotentialEmployeeEmail(employee.email);
+      setPotentialEmployeePhoneNumber(employee.phoneNumber);
+      setDialogTitle(t('components.dialog.modifyEmployee.title'));
+      setDialogDescription(t('components.dialog.modifyEmployee.description'));
+    }
   }
 
   function showAddEmployeeDialog() {
@@ -183,7 +192,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: Create tooltip line component
   function EmployeeRow(item: IUser) {
     return (
       <View style={styles.employeeLineContainer}>
@@ -198,18 +206,9 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
           <Tooltip
             isVisible={isTooltipVisible}
             setIsVisible={setIsTooltipVisible}
-            children={(
-              <View style={styles.tooltipIconContainer}>
-                <Image source={require('../../assets/images/ellipsis.png')}/>
-              </View>
-            )}
-            popover={(
-              <View style={styles.popover}>
-                <TouchableOpacity style={styles.popoverButton} onPress={() => showModifyEmployeeDialog(item)}>
-                  <Text style={styles.tooltipButtonText}>{t('components.tooltip.modify')}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            popoverActions={popoverActions}
+            selectedItem={item}
+            setSelectedItem={setSelectedEmployee}
           />
         </View>
         <View style={styles.separator}/>
@@ -276,21 +275,11 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
       }
     >
       {
-        employeesFiltered.length === 0 ? (
-          <ContentUnavailableView
-            title={t('settings.clientSettings.noEmployees.title')}
-            message={t('settings.clientSettings.noEmployees.message')}
-            image={(
-              <Image source={personIcon}/>
-            )}
-          />
-        ) : (
-          <FlatList
-            data={employeesFiltered}
-            renderItem={(renderItem) => EmployeeRow(renderItem.item)}
-            keyExtractor={(item) => item.id}
-          />
-        )
+        <FlatList
+          data={employeesFiltered}
+          renderItem={(renderItem) => EmployeeRow(renderItem.item)}
+          keyExtractor={(item) => item.id}
+        />
       }
     </AppContainer>
   );
