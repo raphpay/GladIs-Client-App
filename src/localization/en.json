@@ -223,9 +223,9 @@
           "invalidPhone": "Please verify the phone number"
         }
       },
-      "addModule": {
-        "title": "Add a module",
-        "confirmButton": "Add"
+      "removeModule": {
+        "title": "Are you sure you want to remove this module ?",
+        "description": "The module will be removed from the client's subscription."
       },
       "confirm": "OK",
       "cancel": "Cancel"

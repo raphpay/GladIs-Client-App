@@ -89,8 +89,8 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   function dialogContent() {
     return (
       <Dialog
-        title={t('components.dialog.addModule.title')}
-        confirmTitle={t('components.dialog.addModule.confirmButton')}
+        title={t('components.dialog.removeModule.title')}
+        description={t('components.dialog.removeModule.description')}
         onConfirm={removeModuleFromClient}
         isCancelAvailable={true}
         onCancel={() => setShowDialog(false)}
