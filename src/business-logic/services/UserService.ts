@@ -138,7 +138,7 @@ class UserService {
    * @returns A promise that resolves to the user.
    * @throws If an error occurs while retrieving the user.
    */
-  async getUserByID(id: string | undefined, token: IToken | undefined): Promise<IUser> {
+  async getUserByID(id: string | undefined, token: IToken | null): Promise<IUser> {
     try {
       let usedToken = token;
       if (!usedToken) {
@@ -208,7 +208,6 @@ class UserService {
   }
 
   // UPDATE
-
   /**
    * Changes the password of the current user.
    * @param currentPassword - The current password.
@@ -257,6 +256,24 @@ class UserService {
       await APIService.put(`${this.baseRoute}/${userID}/addManager/${managerID}`, null, token?.value as string);
     } catch (error) {
       console.error('Error adding manager to user', error);
+      throw error;
+    }
+  }
+
+  async blockUser(clientID: string, token: IToken | null) {
+    try {
+      await APIService.put(`${this.baseRoute}/${clientID}/block`, null, token?.value as string);
+    } catch (error) {
+      console.log('Error blocking client', error);
+      throw error;
+    }
+  }
+
+  async unblockUser(clientID: string, token: IToken | null) {
+    try {
+      await APIService.put(`${this.baseRoute}/${clientID}/unblock`, null, token?.value as string);
+    } catch (error) {
+      console.log('Error unblocking client', error);
       throw error;
     }
   }

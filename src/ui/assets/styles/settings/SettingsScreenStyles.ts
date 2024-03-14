@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 10,
     left: 0,
+    zIndex: -1
   },
   mentionText: {
     fontSize: 10,

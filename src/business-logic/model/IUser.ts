@@ -17,4 +17,5 @@ export default interface IUser {
   firstConnection?: boolean;
   userType: UserType;
   modules?: IModule[];
+  isBlocked?: boolean;
 }

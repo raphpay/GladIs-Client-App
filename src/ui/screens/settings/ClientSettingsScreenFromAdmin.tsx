@@ -1,15 +1,21 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
+import { changeClientBlockedStatus } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
+import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
@@ -25,9 +31,23 @@ interface ISettingsAction {
 
 function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps): React.JSX.Element {
   const { t } = useTranslation();
+
   const { navigation } = props;
+
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+  const dispatch = useDispatch();
+
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+  const [showBlockDialog, setShowBlockDialog] = useState<boolean>(false);
+  const [blockTitle, setBlockTitle] = useState<string>('');
+
+  const navigationHistoryItems: INavigationHistoryItem[] = [
+    {
+      title: t('dashboard.title'),
+      action: () => navigateBack()
+    }
+  ];
 
   const settingsActions: ISettingsAction[] = [
     {
@@ -58,6 +78,12 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       id: 'modulesID',
       title: t('settings.clientSettings.modules'),
       action: () => navigateToModules(),
+      isActionDisabled: false,
+    },
+    {
+      id: 'blockClientID',
+      title: blockTitle,
+      action: () => setShowBlockDialog(true),
       isActionDisabled: false,
     },
   ];
@@ -94,6 +120,56 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     )
   }
 
+  async function toggleClientBlock() {
+    try {
+      if (currentClient?.isBlocked) {
+        // Unblock the client and its employees
+        await UserService.getInstance().unblockUser(currentClient?.id as string, token);
+        const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+        if (employees && employees.length !== 0) {
+          for (const employee of employees) {
+            await UserService.getInstance().blockUser(employee.id as string, token);
+            await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+          }
+        }
+        dispatch(changeClientBlockedStatus(false));
+      } else {
+        // Block the client and its employees
+        await UserService.getInstance().blockUser(currentClient?.id as string, token);
+        await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+        const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+        if (employees && employees.length !== 0) {
+          for (const employee of employees) {
+            await UserService.getInstance().blockUser(employee.id as string, token);
+            await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+          }
+        }
+        dispatch(changeClientBlockedStatus(true));
+      }
+      setShowBlockDialog(false);
+      reloadBlockTitle();
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+
+  function reloadBlockTitle() {
+    currentClient?.isBlocked ? setBlockTitle(t('settings.clientSettings.unblockClient')) : setBlockTitle(t('settings.clientSettings.blockClient'));
+  }
+
+  async function loadClientIsBlocked() {
+    const client = await UserService.getInstance().getUserByID(currentClient?.id as string, token);
+    dispatch(changeClientBlockedStatus(client.isBlocked as boolean || false));
+    reloadBlockTitle();
+  }
+
+  useEffect(() => {
+    async function init() {
+      await loadClientIsBlocked();
+    }
+    init();
+  }, []);
+
   function errorDialog() {
     return (
       <>
@@ -104,6 +180,25 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
               description={t('errors.logout.message')}
               cancelTitle={t('errors.modules.cancelButton')}
               onCancel={() => setShowErrorDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+
+  // TODO: Add translation
+  function blockDialog() {
+    return (
+      <>
+        {
+          showBlockDialog && (
+            <Dialog
+              title='Are you sure you want to block this client?'
+              isCancelAvailable={true}
+              onConfirm={toggleClientBlock}
+              onCancel={() => setShowBlockDialog(false)}
             />
           )
         }
@@ -124,6 +219,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     )
   }
 
+  console.log('', token?.value );
   return (
     <>
       <AppContainer
@@ -133,6 +229,8 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
         showBackButton={true}
         navigateBack={navigateBack}
         additionalComponent={additionalMentions()}
+        dialogIsShown={showErrorDialog || showBlockDialog}
+        navigationHistoryItems={navigationHistoryItems}
       >
         <FlatList
           data={settingsActions}
@@ -140,6 +238,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
           keyExtractor={(item) => item.id}
         />
       </AppContainer>
+      {blockDialog()}
       {errorDialog()}
     </>
   );

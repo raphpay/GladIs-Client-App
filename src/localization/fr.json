@@ -153,6 +153,8 @@
         "message": "Ajoutez un employé maintenant"
       },
       "modules": "Modules",
+      "blockClient": "Bloquer le client",
+      "unblockClient": "Débloquer le client",
     },
     "userInfos": "Connecté en tant que",
     "modifyPassword": "Modifier le mot de passe",

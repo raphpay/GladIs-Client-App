@@ -60,6 +60,35 @@ class AuthenticationService {
     }
   }
 
+  // TODO: Add documentation
+  async getTokens(adminToken: IToken | null) {
+    try {
+      const tokens = await APIService.get<IToken[]>(this.baseRoute, adminToken?.value);
+      return tokens;
+    } catch (error) {
+      console.error('Error getting tokens', error);
+      throw error;
+    }
+  }
+
+  async removeTokenForUser(userID: string, adminToken: IToken | null) {
+    try {
+      const tokens = await this.getTokens(adminToken);
+      if (tokens && tokens.length !== 0) {
+        for (const token of tokens) {
+          if (token.user.id === userID) {
+            await APIService.delete(`${this.baseRoute}/${token.id}`);
+          } else {
+            console.log('User is not authenticated, no need to remove its token');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error removing token for user', error);
+      throw error;
+    }
+  }
+
   /**
    * Checks the authentication status of the user.
    * @returns A Promise that resolves to the authentication token.

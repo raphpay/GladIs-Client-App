@@ -27,10 +27,15 @@ export const userSlice = createSlice({
     },
     removeCurrentClient: (state) => {
       state.currentClient = undefined
+    },
+    changeClientBlockedStatus: (state, action: PayloadAction<boolean>) => {
+      if (state.currentClient) {
+        state.currentClient.isBlocked = action.payload;
+      }
     }
   },
 });
 
-export const { setCurrentUser, removeCurrentUser, setCurrentClient, removeCurrentClient } = userSlice.actions;
+export const { setCurrentUser, removeCurrentUser, setCurrentClient, removeCurrentClient, changeClientBlockedStatus } = userSlice.actions;
 
 export default userSlice.reducer;
