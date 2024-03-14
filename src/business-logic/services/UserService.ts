@@ -84,6 +84,16 @@ class UserService {
     }
   }
 
+  async removeModuleFromClient(id: string, moduleID: string, token: IToken | null): Promise<IModule[]> {
+    try {
+      const remaningModules = await APIService.post<IModule[]>(`${this.baseRoute}/${id}/remove/modules/${moduleID}`, null, token?.value as string);
+      return remaningModules;
+    } catch (error) {
+      console.error('Error removing module from client', error);
+      throw error;
+    }
+  }
+
   // READ
 
   /**

@@ -54,6 +54,12 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       action: () => navigateToEmployees(),
       isActionDisabled: false,
     },
+    {
+      id: 'modulesID',
+      title: t('settings.clientSettings.modules'),
+      action: () => navigateToModules(),
+      isActionDisabled: false,
+    },
   ];
 
   function navigateBack() {
@@ -72,6 +78,10 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
   function navigateToEmployees() {
     navigation.navigate(NavigationRoutes.ClientEmployees);
+  }
+
+  function navigateToModules() {
+    navigation.navigate(NavigationRoutes.ClientModules);
   }
 
   function additionalMentions() {
