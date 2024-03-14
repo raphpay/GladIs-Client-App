@@ -2,7 +2,7 @@ import IModule from "./IModule";
 import UserType from "./enums/UserType";
 
 export default interface IUser {
-  id: string;
+  id?: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
@@ -12,9 +12,10 @@ export default interface IUser {
   numberOfEmployees?: number | null;
   numberOfUsers?: number | null;
   salesAmount?: number | null;
-  username: string;
-  password: string;
-  firstConnection: boolean;
+  username?: string;
+  password?: string;
+  firstConnection?: boolean;
   userType: UserType;
   modules?: IModule[];
+  isBlocked?: boolean;
 }

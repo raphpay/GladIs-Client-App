@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Image,
   Text,
   TouchableOpacity,
   View
@@ -15,7 +14,7 @@ import PendingUserService from '../../../business-logic/services/PendingUserServ
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import Tooltip from '../../components/Tooltip';
+import Tooltip, { ITooltipAction } from '../../components/Tooltip';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/clientManagement/PendingUserRowStyles';
@@ -53,6 +52,29 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
   const userFullName = `${pendingUser.lastName.toUpperCase()} ${pendingUser.firstName}`;
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
+  const popoverActions: ITooltipAction[] = [
+    {
+      title: t('components.tooltip.open'),
+      onPress: () => navigateToSpecificClientCreation(pendingUser),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.status.pending'),
+      onPress: () => updatePendingUserStatus(pendingUser, PendingUserStatus.pending),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.status.inReview'),
+      onPress: () => updatePendingUserStatus(pendingUser, PendingUserStatus.inReview),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.status.rejected'),
+      onPress: () => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.delete'),
+      onPress: showAlert,
+    },
+  ];
+  
   function navigateToSpecificClientCreation(client: IPendingUser) {
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
   }
@@ -85,33 +107,9 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
       <Tooltip
         isVisible={isTooltipVisible}
         setIsVisible={setIsTooltipVisible}
-        children={(
-          <View style={styles.tooltipIconContainer}>
-            <Image source={require('../../assets/images/ellipsis.png')}/>
-          </View>
-        )}
-        popover={(
-          <View style={styles.popover}>
-            <TouchableOpacity style={styles.popoverButton} onPress={() => navigateToSpecificClientCreation(pendingUser)}>
-              <Text style={styles.tooltipButtonText}>{t('components.tooltip.open')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.pending)}>
-              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.pending')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.inReview)}>
-              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.inReview')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected)}>
-              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.popoverButton} onPress={() => updatePendingUserStatus(pendingUser, PendingUserStatus.rejected)}>
-              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.status.rejected')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.popoverButton} onPress={showAlert}>
-              <Text style={styles.tooltipButtonText}>{t('components.tooltip.pendingUserManagement.delete')}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        popoverActions={popoverActions}
+        selectedItem={pendingUser}
+        setSelectedItem={setSelectedPendingUser}
       />
     </View>
   );

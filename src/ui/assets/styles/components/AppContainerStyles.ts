@@ -37,6 +37,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     padding: 16
   },
+  settingsButton: {
+    paddingHorizontal: 8,
+  },
 });
 
 export default styles;

@@ -7,6 +7,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 10,
+    left: 0,
+    zIndex: -1
   },
   mentionText: {
     fontSize: 10,
@@ -29,6 +35,18 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: 'black',
     marginHorizontal: 4
+  },
+  text: {
+    fontSize: 14,
+    color: Colors.primary,
+    margin: 4
+  },
+  dialogInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
   },
 });
 

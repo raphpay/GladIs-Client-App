@@ -29,7 +29,6 @@ class PendingUserService {
   }
 
   // CREATE
-
   /**
    * Converts a pending user to a regular user.
    * @param id - The ID of the pending user.
@@ -81,7 +80,6 @@ class PendingUserService {
   }
 
   // READ
-
   /**
    * Retrieves all pending users.
    * @param token - The authentication token.
@@ -155,7 +153,6 @@ class PendingUserService {
   }
 
   // UPDATE
-
   /**
    * Updates the status of a pending user.
    * @param pendingUser - The pending user object.
@@ -174,7 +171,6 @@ class PendingUserService {
   }
 
   // DELETE
-
   /**
    * Removes a pending user.
    * @param id - The ID of the pending user.

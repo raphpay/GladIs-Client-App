@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Colors } from '../../colors/colors';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,6 +25,20 @@ const styles = StyleSheet.create({
   action: {
     paddingVertical: 5,
   },
+  tooltipIconContainer: {
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popoverButton: {
+    width: '500%',
+    marginVertical: 4
+  },
+  popoverButtonText: {
+    fontSize: 12,
+    fontFamily: Fonts.poppinsLight
+  }
 });
 
 export default styles;

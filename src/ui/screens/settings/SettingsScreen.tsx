@@ -25,12 +25,14 @@ interface ISettingsAction {
   id: string;
   title: string;
   action: () => void;
+  isActionDisabled: boolean;
 }
 
 function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { currentUser } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
 
   const [oldPassword, setOldPassword] = useState<string>('');
@@ -42,14 +44,22 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
   const settingsActions: ISettingsAction[] = [
     {
+      id: 'userInfos',
+      title: `${t('settings.userInfos')} ${currentUser?.username}`,
+      action: () => {},
+      isActionDisabled: true,
+    },
+    {
       id: 'changePasswordId',
       title: t('settings.modifyPassword'),
-      action: () => showModifyPasswordDialog()
+      action: () => showModifyPasswordDialog(),
+      isActionDisabled: false
     },
     {
       id: 'logoutID',
       title: t('settings.logout'),
-      action: () => displayLogoutDialog()
+      action: () => displayLogoutDialog(),
+      isActionDisabled: false
     },
   ];
 
@@ -173,8 +183,12 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
   function SettingsActionFlatListItem(item: ISettingsAction) {
     return (
-      <TouchableOpacity style={styles.actionContainer} onPress={item.action}>
-        <Text style={styles.actionText}>{item.title}</Text>
+      <TouchableOpacity
+        disabled={item.isActionDisabled}
+        style={styles.actionContainer}
+        onPress={item.action}
+      >
+        <Text style={item.isActionDisabled ? styles.text : styles.actionText}>{item.title}</Text>
         <View style={styles.separator} />
       </TouchableOpacity>
     )

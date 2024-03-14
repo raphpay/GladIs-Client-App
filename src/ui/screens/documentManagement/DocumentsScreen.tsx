@@ -42,24 +42,32 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [documentName, setDocumentName] = useState<string>('');
+
   const plusIcon = require('../../assets/images/plus.png');
+  
   const { t } = useTranslation();
+  
   const { navigation } = props;
-  const { previousScreen, currentScreen, documentsPath, processNumber } = props.route.params;
+  const {
+    previousScreen,
+    currentScreen,
+    documentsPath,
+    processNumber,
+    hideModulesRoute,
+  } = props.route.params;
+
   const { module } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
+
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
       title: t('dashboard.title'),
       action: () => navigateToDashboard,
-    },
-    {
-      title: t(`modules.${module?.name}`),
-      action: () => navigateToDocumentManagementScreen()
     },
     {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
@@ -126,9 +134,20 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setDocuments(docs);
   }
 
+  async function addModulesRoute() {
+    if (hideModulesRoute === undefined || hideModulesRoute === false) {
+      const moduleRoute: INavigationHistoryItem = {
+        title: t(`modules.${module?.name}`),
+        action: () => navigateToDocumentManagementScreen()
+      };
+      navigationHistoryItems.splice(1, 0, moduleRoute);
+    }
+  }
+
   useEffect(() => {
     async function init() {
-      loadDocuments();
+      await loadDocuments();
+      addModulesRoute();
     }
     init();
   }, []);

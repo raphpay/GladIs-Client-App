@@ -155,8 +155,23 @@
   },
   "settings": {
     "title": "Settings",
+    "clientSettings": {
+      "title": "Client settings",
+      "clientInfos": "Settings of :",
+      "addBill": "Add a bill",
+      "bills": "Bills",
+      "employees": "Employees",
+      "noEmployees": {
+        "title": "No employees yet",
+        "message": "Add new employees now"
+      },
+      "modules": "Modules",
+      "blockClient": "Block client",
+      "unblockClient": "Unblock client"
+    },
+    "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
-    "logout": "Log out"
+    "logout": "Log out",
   },
   "components": {
     "searchTextInput": {
@@ -165,6 +180,7 @@
     "buttons": {
       "back": "Back",
       "addClient": "Add a client",
+      "addEmployee": "Add an employee",
       "continue": "Continue",
       "addDocument": "Add a document",
       "addTab": "Add a tab"
@@ -209,6 +225,12 @@
           "invalidPhone": "Please verify the phone number"
         }
       },
+      "removeModule": {
+        "title": "Are you sure you want to remove this module ?",
+        "description": "The module will be removed from the client's subscription."
+      },
+      "blockClient": "Are you sure you want to block this client?",
+      "unblockClient": "Are you sure you want to unblock this client?",
       "confirm": "OK",
       "cancel": "Cancel"
     },

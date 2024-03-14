@@ -26,6 +26,7 @@ class DocumentService {
   /**
    * Retrieves the documents at the specified path.
    * @param path - The path to retrieve the documents from.
+   * @param token - The authentication token (optional).
    * @returns A promise that resolves to an array of documents.
    * @throws If an error occurs while retrieving the documents.
    */
@@ -43,6 +44,7 @@ class DocumentService {
   /**
    * Downloads the document with the specified ID.
    * @param id - The ID of the document to download.
+   * @param token - The authentication token (optional).
    * @returns A promise that resolves to the downloaded document.
    * @throws If an error occurs while downloading the document.
    */
@@ -61,6 +63,7 @@ class DocumentService {
    * @param file - The file to upload.
    * @param name - The name of the document.
    * @param path - The path to upload the document to.
+   * @param token - The authentication token (optional).
    * @returns A promise that resolves to the uploaded document.
    * @throws If an error occurs while uploading the document.
    */
@@ -75,6 +78,14 @@ class DocumentService {
     }
   }
 
+  /**
+   * Uploads a logo file.
+   * @param file - The logo file to upload.
+   * @param name - The name of the logo.
+   * @param path - The path to upload the logo to.
+   * @returns A promise that resolves to the uploaded logo document.
+   * @throws If an error occurs while uploading the logo.
+   */
   async uploadLogo(file: IFile, name: string, path: string): Promise<IDocument> {
     try {
       const params = { name, path, file };

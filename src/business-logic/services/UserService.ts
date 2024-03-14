@@ -36,9 +36,9 @@ class UserService {
    * @returns A promise that resolves to the created user.
    * @throws If an error occurs while creating the user.
    */
-  async createUser(user: IUser): Promise<IUser> {
+  async createUser(user: IUser, token: IToken | null): Promise<IUser> {
     try {
-      const createdUser = await APIService.post<IUser>(this.baseRoute, user);
+      const createdUser = await APIService.post<IUser>(this.baseRoute, user, token?.value as string);
       return createdUser;
     } catch (error) {
       console.error('Error creating user:', error);
@@ -81,6 +81,17 @@ class UserService {
         console.log('Error adding module', moduleID, 'to user', id, error);
         throw error;
       }
+    }
+  }
+
+  
+  async removeModuleFromClient(id: string, moduleID: string, token: IToken | null): Promise<IModule[]> {
+    try {
+      const remaningModules = await APIService.post<IModule[]>(`${this.baseRoute}/${id}/remove/modules/${moduleID}`, null, token?.value as string);
+      return remaningModules;
+    } catch (error) {
+      console.error('Error removing module from client', error);
+      throw error;
     }
   }
 
@@ -128,7 +139,7 @@ class UserService {
    * @returns A promise that resolves to the user.
    * @throws If an error occurs while retrieving the user.
    */
-  async getUserByID(id: string | undefined, token: IToken | undefined): Promise<IUser> {
+  async getUserByID(id: string | undefined, token: IToken | null): Promise<IUser> {
     try {
       let usedToken = token;
       if (!usedToken) {
@@ -182,12 +193,41 @@ class UserService {
       const tabs = await APIService.get<ITechnicalDocTab[]>(`${this.baseRoute}/${id}/technicalDocumentationTabs`, usedToken?.value);
       return tabs;
     } catch (error) {
-      console.error('Error getting user\'s technical documentation tabs:', id, error);
+      console.log('Error getting user\'s technical documentation tabs:', id, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves the employees of a user.
+   * @param id - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to an array of employees.
+   */
+  async getClientEmployees(clientID: string, token: IToken | null): Promise<IUser[]> {
+    try {
+      const employees = await APIService.get<IUser[]>(`${this.baseRoute}/${clientID}/employees`, token?.value as string);
+      return employees;
+    } catch (error) {
+      console.log('Error getting client employees', error);
       throw error;
     }
   }
 
   // UPDATE
+  /**
+   * Updates the user.
+   * @param user - The user to update.
+   * @param token - The authentication token.
+   */
+  async updateUser(user: IUser, token: IToken | null): Promise<void> {
+    try {
+      await APIService.put(`${this.baseRoute}/${user.id}/updateInfos/`, user, token?.value as string);
+    } catch (error) {
+      console.error('Error updating user:', user, error);
+      throw error;
+    }
+  }
 
   /**
    * Changes the password of the current user.
@@ -237,6 +277,34 @@ class UserService {
       await APIService.put(`${this.baseRoute}/${userID}/addManager/${managerID}`, null, token?.value as string);
     } catch (error) {
       console.error('Error adding manager to user', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Blocks a user.
+   * @param clientID - The ID of the user to block.
+   * @param token - The authentication token.
+   */
+  async blockUser(clientID: string, token: IToken | null) {
+    try {
+      await APIService.put(`${this.baseRoute}/${clientID}/block`, null, token?.value as string);
+    } catch (error) {
+      console.log('Error blocking client', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Unblocks a user.
+   * @param clientID - The ID of the user to unblock.
+   * @param token - The authentication token.
+   */
+  async unblockUser(clientID: string, token: IToken | null) {
+    try {
+      await APIService.put(`${this.baseRoute}/${clientID}/unblock`, null, token?.value as string);
+    } catch (error) {
+      console.log('Error unblocking client', error);
       throw error;
     }
   }

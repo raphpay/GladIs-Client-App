@@ -142,6 +142,21 @@
   },
   "settings": {
     "title": "Réglages",
+    "clientSettings": {
+      "title": "Réglages client",
+      "clientInfos": "Réglages de :",
+      "addBill": "Ajouter une facture",
+      "bills": "Factures",
+      "employees": "Employés",
+      "noEmployees": {
+        "title": "Pas d'employés pour le moment",
+        "message": "Ajoutez un employé maintenant"
+      },
+      "modules": "Modules",
+      "blockClient": "Bloquer le client",
+      "unblockClient": "Débloquer le client",
+    },
+    "userInfos": "Connecté en tant que",
     "modifyPassword": "Modifier le mot de passe",
     "logout": "Déconnexion"
   },
@@ -165,6 +180,7 @@
     "buttons": {
       "back": "Retour",
       "addClient": "Ajouter un client",
+      "addEmployee": "Ajouter un employé",
       "continue": "Continuer",
       "addDocument": "Ajouter un document",
       "addTab": "Ajouter un onglet"
@@ -209,6 +225,12 @@
           "invalidPhone": "Veuillez vérifier le numéro de téléphone"
         }
       },
+      "removeModule": {
+        "title": "Etes-vous sûr de vouloir supprimer ce module ?",
+        "description": "Le module sera supprimé de la souscription du client."
+      },
+      "blockClient": "Êtes-vous sûr de vouloir bloquer ce client ?",
+      "unblockClient": "Êtes-vous sûr de vouloir débloquer ce client ?",
       "confirm": "OK",
       "cancel": "Annuler"
     },

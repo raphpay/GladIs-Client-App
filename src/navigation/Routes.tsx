@@ -30,10 +30,14 @@ import TechnicalDocAreaScreen from '../ui/screens/documentManagement/TechnicalDo
 import TechnicalDocumentationScreen from '../ui/screens/documentManagement/TechnicalDocumentationScreen';
 // Tracking
 import TrackingScreen from '../ui/screens/tracking/TrackingScreen';
-// Client Management
+// Client Creation
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
+// Client Management
+import ClientEmployees from '../ui/screens/settings/ClientEmployees';
+import ClientModules from '../ui/screens/settings/ClientModules';
+import ClientSettingsScreenFromAdmin from '../ui/screens/settings/ClientSettingsScreenFromAdmin';
 // Settings
 import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 
@@ -50,7 +54,13 @@ export type IRootStackParams = {
   TechnicalDocumentationScreen: undefined,
   TechnicalDocAreaScreen: { area: IArea },
   ProcessesScreen: { processNumber: number },
-  DocumentsScreen: { previousScreen: string, currentScreen: string, documentsPath: string, processNumber: number | undefined },
+  DocumentsScreen: {
+    previousScreen: string,
+    currentScreen: string,
+    documentsPath: string,
+    processNumber: number | undefined,
+    hideModulesRoute?: boolean,
+  },
   PDFScreen: { documentInput: IDocument },
   // Tracking
   TrackingScreen: undefined,
@@ -58,14 +68,22 @@ export type IRootStackParams = {
   SettingsScreen: undefined,
 }
 
-export type IClientManagementParams = {
+export type IClientCreationStack = {
   // Client Creation
-  ClientManagementStack: undefined;
+  ClientCreationStack: undefined;
   PendingClientListScreen: undefined;
   ClientCreationScreen: { pendingUser?: IPendingUser | null};
 }
 
+export type IClientManagementParams = {
+  ClientManagementStack: undefined,
+  ClientSettingsScreenFromAdmin: undefined,
+  ClientEmployees: undefined,
+  ClientModules: undefined,
+}
+
 let RootStack = createStackNavigator<IRootStackParams>();
+let ClientCreationStack = createStackNavigator<IClientCreationStack>();
 let ClientManagementStack = createStackNavigator<IClientManagementParams>();
 
 function LoginStack() {
@@ -85,17 +103,39 @@ function LoginStack() {
   )
 }
 
-function ClientManagement() {
+function ClientCreation() {
   return (
-    <ClientManagementStack.Navigator>
-      <ClientManagementStack.Screen
+    <ClientCreationStack.Navigator>
+      <ClientCreationStack.Screen
         name={NavigationRoutes.PendingClientListScreen}
         component={PendingClientListScreen}
         options={{headerShown: false}}
       />
-      <ClientManagementStack.Screen
+      <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationScreen}
         component={ClientCreationScreen}
+        options={{headerShown: false}}
+      />
+    </ClientCreationStack.Navigator>
+  );
+}
+
+function ClientManagement() {
+  return (
+    <ClientManagementStack.Navigator>
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.ClientSettingsScreenFromAdmin}
+        component={ClientSettingsScreenFromAdmin}
+        options={{headerShown: false}}
+      />
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.ClientEmployees}
+        component={ClientEmployees}
+        options={{headerShown: false}}
+      />
+      <ClientManagementStack.Screen
+        name={NavigationRoutes.ClientModules}
+        component={ClientModules}
         options={{headerShown: false}}
       />
     </ClientManagementStack.Navigator>
@@ -157,6 +197,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SettingsScreen}
         component={SettingsScreen}
+        options={{headerShown: false}}
+      />
+      <ClientCreationStack.Screen
+        name={NavigationRoutes.ClientCreationStack}
+        component={ClientCreation}
         options={{headerShown: false}}
       />
       <ClientManagementStack.Screen

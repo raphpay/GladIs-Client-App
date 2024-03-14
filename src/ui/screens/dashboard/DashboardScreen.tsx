@@ -34,7 +34,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const { t } = useTranslation();
 
   function navigateToClientList() {
-    navigation.navigate(NavigationRoutes.ClientManagementStack);
+    navigation.navigate(NavigationRoutes.ClientCreationStack);
   }
 
   async function submitPasswordChange() {
