@@ -86,11 +86,11 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: Add translations
   function dialogContent() {
     return (
       <Dialog
-        title='Are you sure you want to remove this module?'
+        title={t('components.dialog.addModule.title')}
+        confirmTitle={t('components.dialog.addModule.confirmButton')}
         onConfirm={removeModuleFromClient}
         isCancelAvailable={true}
         onCancel={() => setShowDialog(false)}

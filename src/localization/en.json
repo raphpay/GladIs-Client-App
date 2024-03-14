@@ -164,7 +164,8 @@
       "noEmployees": {
         "title": "No employees yet",
         "message": "Add new employees now"
-      }
+      },
+      "modules": "Modules",
     },
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
@@ -221,6 +222,10 @@
           "invalidEmail": "Please verify the email address",
           "invalidPhone": "Please verify the phone number"
         }
+      },
+      "addModule": {
+        "title": "Add a module",
+        "confirmButton": "Add"
       },
       "confirm": "OK",
       "cancel": "Cancel"
