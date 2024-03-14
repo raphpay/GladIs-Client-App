@@ -22,7 +22,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
-import { IClientManagementParams } from '../../../navigation/Routes';
+import { IClientCreationStack } from '../../../navigation/Routes';
 
 import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
@@ -33,7 +33,7 @@ import TextButton from '../../components/TextButton';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
-type ClientCreationScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientCreationScreen>;
+type ClientCreationScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.ClientCreationScreen>;
 
 function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Element {
   const [firstName, setFirstName] = useState<string>('');

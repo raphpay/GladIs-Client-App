@@ -75,7 +75,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
   }
 
   function navigateToClientSettings() {
-    navigation.navigate(NavigationRoutes.ClientSettingsScreenFromAdmin);
+    navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
   useEffect(() => {

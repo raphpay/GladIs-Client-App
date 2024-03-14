@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import { IRootStackParams } from '../../../navigation/Routes';
+import { IClientManagementParams } from '../../../navigation/Routes';
 
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -20,7 +20,7 @@ import ErrorDialog from '../../components/ErrorDialog';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
-type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
+type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
 
 interface ISettingsAction {
   id: string;

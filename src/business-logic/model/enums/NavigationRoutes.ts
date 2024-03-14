@@ -16,11 +16,13 @@ enum NavigationRoutes {
   // Tracking
   TrackingScreen = 'TrackingScreen',
   // Client Creation
-  ClientManagementStack = 'ClientManagementStack',
+  ClientCreationStack = 'ClientCreationStack',
   PendingClientListScreen = 'PendingClientListScreen',
   ClientCreationScreen = 'ClientCreationScreen',
   // Settings
   SettingsScreen = 'SettingsScreen',
+  // Client Management
+  ClientManagementStack = 'ClientManagementStack',
   ClientSettingsScreenFromAdmin = 'ClientSettingsScreenFromAdmin',
   ClientEmployees = 'ClientEmployees',
   ClientModules = 'ClientModules',

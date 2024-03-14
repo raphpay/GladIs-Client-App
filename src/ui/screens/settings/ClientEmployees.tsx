@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import { IRootStackParams } from '../../../navigation/Routes';
+import { IClientManagementParams } from '../../../navigation/Routes';
 
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import IUser from '../../../business-logic/model/IUser';
@@ -29,7 +29,7 @@ import Tooltip from '../../components/Tooltip';
 
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
 
-type ClientEmployeesProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientEmployees>;
+type ClientEmployeesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientEmployees>;
 
 function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');

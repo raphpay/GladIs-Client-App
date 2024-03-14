@@ -10,7 +10,7 @@ import PendingUserService from '../../../business-logic/services/PendingUserServ
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import { IClientManagementParams } from '../../../navigation/Routes';
+import { IClientCreationStack } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -18,7 +18,7 @@ import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 import PendingUserRow from './PendingUserRow';
 
-type PendingClientListScreenProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.PendingClientListScreen>;
+type PendingClientListScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.PendingClientListScreen>;
 
 function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX.Element {
   const [pendingUsers, setPendingUsers] = useState<IPendingUser[]>([]);

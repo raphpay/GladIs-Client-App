@@ -10,13 +10,13 @@ import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import { IRootStackParams } from '../../../navigation/Routes';
+import { IClientManagementParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 
-type ClientModulesProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientModules>;
+type ClientModulesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientModules>;
 
 function ClientModules(props: ClientModulesProps): React.JSX.Element {
   const [modules, setModules] = useState<IModule[]>([]);
