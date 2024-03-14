@@ -229,6 +229,8 @@
         "title": "Are you sure you want to remove this module ?",
         "description": "The module will be removed from the client's subscription."
       },
+      "blockClient": "Are you sure you want to block this client?",
+      "unblockClient": "Are you sure you want to unblock this client?",
       "confirm": "OK",
       "cancel": "Cancel"
     },

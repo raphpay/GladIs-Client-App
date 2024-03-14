@@ -41,6 +41,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [showBlockDialog, setShowBlockDialog] = useState<boolean>(false);
   const [blockTitle, setBlockTitle] = useState<string>('');
+  const [dialogTitle, setDialogTitle] = useState<string>('');
 
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
@@ -83,7 +84,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     {
       id: 'blockClientID',
       title: blockTitle,
-      action: () => setShowBlockDialog(true),
+      action: () => showBlockClient(),
       isActionDisabled: false,
     },
   ];
@@ -153,13 +154,18 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     }
   }
 
+  function showBlockClient() {
+    setDialogTitle(currentClient?.isBlocked ? t('components.dialog.unblockClient') : t('components.dialog.blockClient'));
+    setShowBlockDialog(true);
+  }
+
   function reloadBlockTitle() {
     currentClient?.isBlocked ? setBlockTitle(t('settings.clientSettings.unblockClient')) : setBlockTitle(t('settings.clientSettings.blockClient'));
   }
 
   async function loadClientIsBlocked() {
     const client = await UserService.getInstance().getUserByID(currentClient?.id as string, token);
-    dispatch(changeClientBlockedStatus(client.isBlocked as boolean || false));
+    dispatch(changeClientBlockedStatus(client.isBlocked as boolean));
     reloadBlockTitle();
   }
 
@@ -187,15 +193,13 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     )
   }
 
-
-  // TODO: Add translation
   function blockDialog() {
     return (
       <>
         {
           showBlockDialog && (
             <Dialog
-              title='Are you sure you want to block this client?'
+              title={dialogTitle}
               isCancelAvailable={true}
               onConfirm={toggleClientBlock}
               onCancel={() => setShowBlockDialog(false)}
