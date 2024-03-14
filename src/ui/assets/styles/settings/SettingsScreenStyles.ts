@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 10,
+    left: 0,
   },
   mentionText: {
     fontSize: 10,

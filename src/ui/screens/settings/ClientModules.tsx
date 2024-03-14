@@ -1,7 +1,7 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import IModule from '../../../business-logic/model/IModule';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -9,7 +9,9 @@ import ModuleService from '../../../business-logic/services/ModuleService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+
 import { IRootStackParams } from '../../../navigation/Routes';
+
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
