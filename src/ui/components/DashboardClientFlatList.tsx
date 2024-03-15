@@ -10,6 +10,7 @@ import {
 import IModule from '../../business-logic/model/IModule';
 import IToken from '../../business-logic/model/IToken';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../business-logic/model/enums/UserType';
 import ModuleService from '../../business-logic/services/ModuleService';
 import UserService from '../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../business-logic/store/hooks';
@@ -38,8 +39,9 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
   const modulesFiltered = modules.filter(module =>
     module.name.toLowerCase().includes(searchText?.toLowerCase()),
   );
+
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
 
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
@@ -64,12 +66,14 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
 
   useEffect(() => {
     async function init() {
-      const apiModules = await ModuleService.getInstance().getModules();
-      const castedToken = token as IToken;
-      const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
-      const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
-      setClientModulesIDs(usersModulesIDs);
-      setModules(apiModules);
+      if (currentClient && currentUser?.userType !== UserType.Admin) {
+        const apiModules = await ModuleService.getInstance().getModules();
+        const castedToken = token as IToken;
+        const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
+        const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
+        setClientModulesIDs(usersModulesIDs);
+        setModules(apiModules);
+      }
     }
     init();
   }, []);

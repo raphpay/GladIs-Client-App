@@ -6,11 +6,11 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import UserService from '../../../business-logic/services/UserService';
-
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+
 import AppContainer from '../../components/AppContainer';
 import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
 import DashboardClientFlatList from '../../components/DashboardClientFlatList';
@@ -18,7 +18,6 @@ import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
-
 
 type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
 
