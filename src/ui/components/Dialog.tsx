@@ -15,6 +15,7 @@ type DialogProps = {
   confirmTitle?: string;
   cancelTitle?: string;
   isConfirmDisabled?: boolean;
+  isConfirmAvailable?: boolean;
   isCancelAvailable?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
@@ -29,6 +30,7 @@ function Dialog(props: DialogProps): React.JSX.Element {
     confirmTitle,
     cancelTitle,
     isConfirmDisabled,
+    isConfirmAvailable,
     isCancelAvailable,
     onConfirm,
     onCancel,
@@ -52,9 +54,15 @@ function Dialog(props: DialogProps): React.JSX.Element {
               <View style={{flex: 1}}/>
             )
           }
-          <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
-            <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
-          </TouchableOpacity>
+          {
+            isConfirmAvailable ? (
+              <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
+                <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
+              </TouchableOpacity>
+            ) : (
+              <View style={{flex: 1}}/>
+            )
+          }
         </View>
       </View>
     </View>

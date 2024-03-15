@@ -209,8 +209,11 @@
         "placeholder": "New tab name"
       },
       "pendingUserManagement": {
-        "title": "Are you sure you want to delete this user ?",
-        "description": "The deletion is definitive."
+        "delete": {
+          "title": "Are you sure you want to delete this user ?",
+          "description": "The deletion is definitive.",
+        },
+        "action": "Actions on"
       },
       "logout": {
         "title": "Do you really want to logout ?",

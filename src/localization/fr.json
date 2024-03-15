@@ -209,8 +209,11 @@
         "placeholder": "Nouvel onglet"
       },
       "pendingUserManagement": {
-        "title": "Etes-vous sûr de vouloir supprimer cet utilisateur ?",
-        "description": "La suppression est définitive."
+        "delete": {
+          "title": "Etes-vous sûr de vouloir supprimer cet utilisateur ?",
+          "description": "La suppression est définitive."
+        },
+        "action": "Actions sur"
       },
       "logout": {
         "title": "Voulez-vous vraiment vous déconnecter ?",
