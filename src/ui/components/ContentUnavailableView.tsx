@@ -9,6 +9,7 @@ type ContentUnavailableViewProps = {
   image?: JSX.Element;
 };
 
+// TODO: Don't pass image as JSX.Element, instead pass the image source and create the JSX.Element inside the component
 function ContentUnavailableView(props: ContentUnavailableViewProps): React.JSX.Element {
 
   const { title, message, image } = props;

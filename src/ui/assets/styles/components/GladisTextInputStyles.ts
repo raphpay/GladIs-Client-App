@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   placeholder: {
     fontWeight: Fonts.bold,
-    fontSize: Fonts.h4,
+    fontSize: 16,
     fontFamily: Fonts.poppinsLight,
   },
   visibilityButtonContainer: {
@@ -31,6 +31,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     right: 8,
   },
+  icon: {
+    width: 25,
+    height: 20,
+    resizeMode: 'contain',
+  }
 });
 
 export default styles;

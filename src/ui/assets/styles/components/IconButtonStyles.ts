@@ -16,9 +16,10 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   icon: {
-    width: 20,
-    height: 20,
-    padding: 4
+    width: 18,
+    height: 18,
+    marginHorizontal: 4,
+    resizeMode: 'contain',
   },
   textButton: {
     fontSize: 14,

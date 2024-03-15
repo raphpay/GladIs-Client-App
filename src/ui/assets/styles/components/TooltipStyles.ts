@@ -38,6 +38,11 @@ const styles = StyleSheet.create({
   popoverButtonText: {
     fontSize: 12,
     fontFamily: Fonts.poppinsLight
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   }
 });
 

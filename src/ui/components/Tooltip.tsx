@@ -47,7 +47,7 @@ const Tooltip = (props: TooltipProps) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.tooltipIconContainer} onPress={toggleTooltip}>
-        <Image source={ellipsisIcon}/>
+        <Image style={styles.icon} source={ellipsisIcon}/>
       </TouchableOpacity>
       {isVisible && (
         <Animated.View style={[styles.tooltip, {opacity: fadeAnimation}]}>
