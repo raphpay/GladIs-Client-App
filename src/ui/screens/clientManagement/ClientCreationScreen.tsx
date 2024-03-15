@@ -60,7 +60,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [logoURI, setLogoURI] = useState<string>('');
 
   const { navigation } = props;
-  const { pendingUser } = props.route.params;
+  const { pendingUser, loadPendingUsers } = props.route.params;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
 
@@ -116,6 +116,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
       await createEmployees(createdUser.id as string);
       await uploadLogo();
+      await loadPendingUsers();
       navigation.goBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -166,7 +167,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
       }
       await uploadLogo();
-      navigation.goBack(); 
+      await loadPendingUsers();
+      navigation.goBack();
     } catch (error) {
       const errorKeys = error as string[];
       showError(errorKeys);
@@ -235,10 +237,28 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
-  const isButtonDisabled = !firstName || !lastName || !phoneNumber ||
-    !companyName || !email ||
-    (products && !products.length) || (employees && !employees.length) ||
-    (numberOfUsers && !numberOfUsers.length) || (sales && !sales.length);
+  function isANumber(value: string) {
+    return !isNaN(Number(value));
+  }
+
+  function isFormFilled() {
+    let isFilled = false;
+    if (products && employees && numberOfUsers && sales) {
+      isFilled = firstName.length > 0 &&
+      lastName.length > 0 &&
+      phoneNumber.length > 0 &&
+      companyName.length > 0 &&
+      email.length > 0 &&
+      products.length > 0 &&
+      employees.length > 0 &&
+      isANumber(employees) &&
+      numberOfUsers.length > 0 &&
+      isANumber(numberOfUsers) &&
+      sales.length > 0 &&
+      isANumber(sales);
+    }
+    return isFilled;
+  }
   
   async function loadModules() {
     try {
@@ -306,7 +326,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       )
     );
   }
-  
 
   return (
     <>
@@ -322,7 +341,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
               width={'100%'}
               title={t('quotation.submit')}
               onPress={submit}
-              disabled={isButtonDisabled}
+              disabled={!isFormFilled()}
             />
           </View>
         )}

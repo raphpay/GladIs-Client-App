@@ -39,14 +39,14 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const { navigation } = props;
 
   function navigateToCreateClient() {
-    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
+    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null, loadPendingUsers });
   }
 
   function navigateBack() {
     navigation.goBack();
   }
 
-  async function getPendingUsers() {
+  async function loadPendingUsers() {
     const castedToken = token as IToken;
     const users = await PendingUserService.getInstance().getUsers(castedToken);
     setPendingUsers(users);
@@ -54,13 +54,13 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   async function removePendingUser() {
     await PendingUserService.getInstance().removePendingUser(selectedPendingUser?.id, token);
-    await getPendingUsers();
+    await loadPendingUsers();
     setShowDialog(false);
   }
 
   useEffect(() => {
     async function init() {
-      await getPendingUsers();
+      await loadPendingUsers();
     }
     init();
   }, []);
@@ -120,7 +120,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
                 pendingUser={renderItem.item}
                 isTooltipVisible={isTooltipVisible}
                 setIsTooltipVisible={setIsTooltipVisible}
-                updateFlatList={getPendingUsers}
+                updateFlatList={loadPendingUsers}
                 setShowDialog={setShowDialog}
                 setSelectedPendingUser={setSelectedPendingUser}
               />}

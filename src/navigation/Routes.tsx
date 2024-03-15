@@ -72,7 +72,7 @@ export type IClientCreationStack = {
   // Client Creation
   ClientCreationStack: undefined;
   PendingClientListScreen: undefined;
-  ClientCreationScreen: { pendingUser?: IPendingUser | null};
+  ClientCreationScreen: { pendingUser?: IPendingUser | null, loadPendingUsers: () => Promise<void>;};
 }
 
 export type IClientManagementParams = {

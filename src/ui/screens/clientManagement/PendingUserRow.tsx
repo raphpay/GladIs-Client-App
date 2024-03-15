@@ -76,7 +76,7 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
   ];
   
   function navigateToSpecificClientCreation(client: IPendingUser) {
-    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
+    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client, loadPendingUsers: updateFlatList });
   }
 
   async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {

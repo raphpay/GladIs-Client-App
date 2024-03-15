@@ -40,9 +40,8 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.poppinsLight
   },
   icon: {
-    width: 20,
-    height: 20,
-    resizeMode: 'contain',
+    height: 8,
+    width: 30,
   }
 });
 
