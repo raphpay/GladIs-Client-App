@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Image } from 'react-native';
+import { FlatList } from 'react-native';
 
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
@@ -26,7 +26,10 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [selectedPendingUser, setSelectedPendingUser] = useState<IPendingUser | undefined>(undefined);
+
   const plusIcon = require('../../assets/images/plus.png');
+  const docIcon = require('../../assets/images/doc.fill.png');
+  
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
   const pendingUsersFiltered = pendingUsers.filter(pendingUser =>
@@ -107,9 +110,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
           <ContentUnavailableView 
             title={t('pendingUserManagement.noPendingUsers.title')}
             message={t('pendingUserManagement.noPendingUsers.message')}
-            image={(
-              <Image source={require('../../assets/images/doc.fill.png')} />
-            )}
+            image={docIcon}
           />
          ) : (
           <FlatList

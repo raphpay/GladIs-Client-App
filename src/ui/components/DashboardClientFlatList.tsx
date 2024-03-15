@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  Image,
   Text,
   TouchableOpacity
 } from 'react-native';
@@ -28,8 +27,11 @@ type DashboardClientFlatListProps = {
 
 function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
   const { searchText, setShowDialog } = props;
+
   const [modules, setModules] = useState<IModule[]>([]);
   const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
+  const clipboardIcon = require('../assets/images/list.clipboard.png');
+
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -79,9 +81,7 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
         <ContentUnavailableView
           title={t('dashboard.client.noModules.title')}
           message={t('dashboard.client.noModules.message')}
-          image={(
-            <Image source={require('../assets/images/list.clipboard.png')}/>
-          )}
+          image={clipboardIcon}
         />
       ) : (
         <FlatList

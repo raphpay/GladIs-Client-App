@@ -44,6 +44,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documentName, setDocumentName] = useState<string>('');
 
   const plusIcon = require('../../assets/images/plus.png');
+  const docIcon = require('../../assets/images/doc.fill.png');
   
   const { t } = useTranslation();
   
@@ -224,9 +225,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           <ContentUnavailableView 
             title={t('documentsScreen.noDocs.title')}
             message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-            image={(
-              <Image source={require('../../assets/images/doc.fill.png')} />
-            )}
+            image={docIcon}
           />
         )
       }

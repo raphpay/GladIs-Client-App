@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  Image,
   Text,
   TouchableOpacity,
   View
@@ -28,6 +27,7 @@ type ProcessesProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.
 
 function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const { t } = useTranslation();
   const { navigation } = props;
   const { processNumber } = props.route.params;
@@ -115,9 +115,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
           <ContentUnavailableView
             title={t('process.noItems.title')}
             message={t('process.noItems.message')}
-            image={(
-              <Image source={require('../../assets/images/list.clipboard.png')}/>
-            )}
+            image={clipboardIcon}
           />
         ) : (
           <FlatList

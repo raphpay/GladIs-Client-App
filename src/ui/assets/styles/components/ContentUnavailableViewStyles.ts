@@ -15,6 +15,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.poppinsLight
   },
+  image: {
+    maxWidth: 55,
+    maxHeight: 75,
+    resizeMode: 'contain'
+  }
 });
 
 export default styles;

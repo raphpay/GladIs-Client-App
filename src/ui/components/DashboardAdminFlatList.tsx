@@ -2,8 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
-  Image
+  FlatList
 } from 'react-native';
 
 import IUser from '../../business-logic/model/IUser';
@@ -21,6 +20,8 @@ type DashboardAdminFlatListProps = {
 
 function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.Element {
   const { searchText } = props;
+
+  const clipboardIcon = require('../assets/images/list.clipboard.png');
 
   const [clients, setClients] = useState<IUser[]>([]);
 
@@ -53,9 +54,7 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
         <ContentUnavailableView
           title={t('dashboard.noClients.title')}
           message={t('dashboard.noClients.message')}
-          image={(
-            <Image source={require('../assets/images/list.clipboard.png')}/>
-          )}
+          image={clipboardIcon}
         />
       ) : (
             <FlatList

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -25,6 +25,9 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   const { navigation } = props;
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
+
   const [logs, setLogs] = useState<IDocumentActivityLog[]>([]);
   const logsFiltered = logs.filter(log =>
     log.name.toLowerCase().includes(searchText.toLowerCase()),
@@ -88,9 +91,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
             <ContentUnavailableView
               title={t('tracking.noLogs.title')}
               message={t('tracking.noLogs.message')}
-              image={(
-                <Image source={require('../../assets/images/list.clipboard.png')}/>
-              )}
+              image={clipboardIcon}
             />
           ) : (
             <FlatList

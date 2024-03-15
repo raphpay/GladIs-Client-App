@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import Pdf from 'react-native-pdf';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -22,6 +22,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const { documentInput } = props.route.params;
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const docIcon = require('../../assets/images/doc.fill.png');
 
   async function pickPDF() {
     const data = await DocumentService.getInstance().download(documentInput.id as string, token)
@@ -58,9 +59,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
           <ContentUnavailableView
             title={t('documentsScreen.noDocs.title')}
             message={t('documentsScreen.noDocs.message.client')}
-            image={(
-              <Image source={require('../../assets/images/doc.fill.png')} />
-            )}
+            image={docIcon}
           />
         )
       }

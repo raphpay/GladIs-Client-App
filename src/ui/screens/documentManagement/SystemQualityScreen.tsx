@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  Image,
   Text,
   TouchableOpacity,
   View
@@ -32,6 +31,7 @@ type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, Navigat
 
 function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const { t } = useTranslation();
   const { navigation } = props;
   const { currentUser } = useAppSelector((state: RootState) => state.users);
@@ -139,9 +139,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
           <ContentUnavailableView
             title={t('systemQuality.noItems.title')}
             message={t('systemQuality.noItems.message')}
-            image={(
-              <Image source={require('../../assets/images/list.clipboard.png')}/>
-            )}
+            image={clipboardIcon}
           />
         ) : (
           <FlatList

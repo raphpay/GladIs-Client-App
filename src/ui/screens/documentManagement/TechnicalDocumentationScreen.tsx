@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -24,6 +24,8 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
   const { t } = useTranslation();
   const { navigation } = props;
   const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
+
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
       title: t('dashboard.title'),
@@ -98,9 +100,7 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
           <ContentUnavailableView
             title={t('technicalDocumentation.noAreas.title')}
             message={t('technicalDocumentation.noAreas.message')}
-            image={(
-              <Image source={require('../../assets/images/list.clipboard.png')}/>
-            )}
+            image={clipboardIcon}
           />
         ) : (
           <FlatList
