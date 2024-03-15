@@ -31,6 +31,7 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.ClientCreationScreen>;
@@ -211,7 +212,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }
 
   async function addLogo() {
-    if (Platform.OS === 'macos') {
+    if (Platform.OS === PlatformName.Mac) {
       const data = await FinderModule.getInstance().pickImage();
       setImageData(data);
       setLogoURI(`data:image/png;base64,${data}`);
@@ -271,7 +272,9 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     if (docs.length > 0) {
       const logo = docs[0];
       const logoData = await DocumentService.getInstance().download(logo.id as string, token);
-      Platform.OS === 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) : setLogoURI(logoData);
+      Platform.OS === PlatformName.Mac ?
+        setLogoURI(`data:image/png;base64,${logoData}`) :
+        setLogoURI(logoData);
     }
   }
 

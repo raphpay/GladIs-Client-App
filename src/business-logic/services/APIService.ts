@@ -4,6 +4,7 @@
 // import { LOCAL_IP_ADDRESS } from "../../../protected-contants";
 import { Platform } from "react-native";
 import HttpMethod from "../model/enums/HttpMethod";
+import PlatformName from "../model/enums/PlatformName";
 
 // const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
 const API_BASE_URL = 'http://localhost:8080/api';
@@ -231,7 +232,7 @@ class APIService {
           reader.onload = () => {
               const base64Data = reader.result as string; // Cast result to string
               const base64String = base64Data.split(',')[1]; // Extract Base64 string after the comma
-              const result = Platform.OS === 'macos' ? base64String : base64Data;
+              const result = Platform.OS === PlatformName.Mac ? base64String : base64Data;
               resolve(result);
           };
           reader.onerror = reject; // Reject promise on error

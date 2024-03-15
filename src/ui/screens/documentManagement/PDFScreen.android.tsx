@@ -12,6 +12,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 
@@ -32,7 +33,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   useEffect(() => {
     async function init() {
       let data = await DocumentService.getInstance().download(documentInput.id as string, token);
-      if (Platform.OS === 'android') {
+      if (Platform.OS === PlatformName.Android) {
         data = Utils.changeMimeType(data, 'application/pdf');
       }
       setPDFData(data)

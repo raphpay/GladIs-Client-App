@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import PlatformName from "../model/enums/PlatformName";
 
 /**
  * Utility class containing various helper functions.
@@ -106,7 +107,7 @@ class Utils {
   static async getFileBase64FromURI(uri: string): Promise<string> {
     let blob: Blob;
     let data: string = '';
-    if (Platform.OS === 'android') {
+    if (Platform.OS === PlatformName.Android) {
       blob = await this.uriToBlob(uri);
     } else {
       const response = await fetch(uri);

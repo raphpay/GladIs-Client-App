@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 
+import PlatformName from '../../business-logic/model/enums/PlatformName';
 import DocumentService from '../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../business-logic/store/hooks';
 import { RootState } from '../../business-logic/store/store';
@@ -33,7 +34,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
       const logo = docs[0];
       if (logo && logo.id) {
         const logoData = await DocumentService.getInstance().download(logo.id, token);
-        Platform.OS === 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) :  setLogoURI(logoData);
+        Platform.OS === PlatformName.Mac ? setLogoURI(`data:image/png;base64,${logoData}`) :  setLogoURI(logoData);
       }
     } else {
       setLogoURI('');

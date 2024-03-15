@@ -32,6 +32,7 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
@@ -149,7 +150,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   }
 
   async function addLogo() {
-    if (Platform.OS === 'macos') {
+    if (Platform.OS === PlatformName.Mac) {
       const data = await FinderModule.getInstance().pickImage();
       setImageData(data);
       setLogoURI(`data:image/png;base64,${data}`);

@@ -33,6 +33,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -109,7 +110,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
     const filename = documentName.replace(/\s/g, "_");
     let data: string = '';
-    if (Platform.OS !== 'macos') {
+    if (Platform.OS !== PlatformName.Mac) {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
       data = await Utils.getFileBase64FromURI(doc.uri) as string;
     } else {
