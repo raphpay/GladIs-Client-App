@@ -268,9 +268,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   async function loadLogo() {
     const company = pendingUser?.companyName as string;
     const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
-    const logo = docs[0];
-    const logoData = await DocumentService.getInstance().download(logo.id as string, token);
-    Platform.OS === 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) : setLogoURI(logoData);
+    if (docs.length > 0) {
+      const logo = docs[0];
+      const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+      Platform.OS === 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) : setLogoURI(logoData);
+    }
   }
 
   useEffect(() => {
