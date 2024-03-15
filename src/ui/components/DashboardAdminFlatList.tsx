@@ -26,7 +26,7 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
   const [clients, setClients] = useState<IUser[]>([]);
 
   const clientsFiltered = clients.filter(client =>
-    client.username.toLowerCase().includes(searchText?.toLowerCase()),
+    client.username?.toLowerCase().includes(searchText?.toLowerCase()),
   );
 
   const navigation = useNavigation();

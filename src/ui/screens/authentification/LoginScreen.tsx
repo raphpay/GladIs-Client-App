@@ -41,7 +41,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     try {
       const token = await AuthenticationService.getInstance().login(identifier, password);
       dispatch(setToken(token));
-      const user = await UserService.getInstance().getUserByID(token.user.id);
+      const user = await UserService.getInstance().getUserByID(token.user.id, token);
       dispatch(setCurrentUser(user));
     } catch (error) {
       setErrorTitle(t('errors.login.title'));
