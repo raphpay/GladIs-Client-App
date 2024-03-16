@@ -15,6 +15,7 @@ import Utils from '../../../business-logic/utils/Utils';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import IconButton from '../../components/IconButton';
 
 type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PDFScreen>;
 
@@ -23,12 +24,17 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const [pdfData, setPDFData] = useState<string>('');
 
   const docIcon = require('../../assets/images/doc.fill.png');
+  const backIcon = require('../../assets/images/arrowshape.turn.up.left.png');
 
   const { t } = useTranslation();
-
+  const { navigation } = props;
   const { documentInput } = props.route.params;
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
+
+  function navigateBack() {
+    navigation.goBack();
+  }
 
   useEffect(() => {
     async function init() {
@@ -71,6 +77,12 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
           />
         )
       }
+      <IconButton
+        title={t('components.buttons.back')}
+        icon={backIcon}
+        onPress={navigateBack}
+        style={styles.backButton}
+      />
     </SafeAreaView>
   );
 }
