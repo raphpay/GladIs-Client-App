@@ -83,8 +83,8 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
     {
       modulesFiltered.length === 0 ? (
         <ContentUnavailableView
-          title={t('dashboard.client.noModules.title')}
-          message={t('dashboard.client.noModules.message')}
+          title={t('dashboard.noModules.title')}
+          message={t('dashboard.noModules.message')}
           image={clipboardIcon}
         />
       ) : (
