@@ -188,6 +188,7 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.PDFScreen}
         component={PDFScreen}
+        options={{headerShown: false}}
       />
       <RootStack.Screen
         name={NavigationRoutes.TrackingScreen}
