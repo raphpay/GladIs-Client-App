@@ -226,19 +226,23 @@ export let Routes = () => {
   useEffect(() => {
     async function init() {
       if (token == null) {
-        const token = await AuthenticationService.getInstance().checkAuthentication();
-        setIsLoggedIn(!!token);
-        if (token != null) {
-          dispatch(setToken(token));
-          const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
-          dispatch(setCurrentUser(currentUser));
-          if (currentUser.userType !== UserType.Admin) {
-            dispatch(setCurrentClient(currentUser));
+        try {
+          const token = await AuthenticationService.getInstance().checkAuthentication();
+          setIsLoggedIn(!!token);
+          if (token != null) {
+            dispatch(setToken(token));
+            const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
+            dispatch(setCurrentUser(currentUser));
+            if (currentUser.userType !== UserType.Admin) {
+              dispatch(setCurrentClient(currentUser));
+            }
+          } else {
+            dispatch(removeToken());
+            dispatch(removeCurrentUser());
+            dispatch(removeCurrentClient());
           }
-        } else {
-          dispatch(removeToken());
-          dispatch(removeCurrentUser());
-          dispatch(removeCurrentClient());
+        } catch (error) {
+          console.log('User not authenticated', error);
         }
       }
     }
