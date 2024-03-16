@@ -10,7 +10,6 @@ import {
 import IModule from '../../business-logic/model/IModule';
 import IToken from '../../business-logic/model/IToken';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
-import UserType from '../../business-logic/model/enums/UserType';
 import ModuleService from '../../business-logic/services/ModuleService';
 import UserService from '../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../business-logic/store/hooks';
@@ -66,8 +65,8 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
 
   useEffect(() => {
     async function init() {
-      if (currentClient && currentUser?.userType !== UserType.Admin) {
-        const apiModules = await ModuleService.getInstance().getModules();
+      if (currentClient) {
+        const apiModules = await ModuleService.getInstance().getSortedModules(token);
         const castedToken = token as IToken;
         const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
         const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
