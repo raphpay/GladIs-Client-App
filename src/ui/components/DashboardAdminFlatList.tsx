@@ -8,8 +8,9 @@ import {
 import IUser from '../../business-logic/model/IUser';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import UserService from '../../business-logic/services/UserService';
-import { useAppDispatch } from '../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../business-logic/store/hooks';
 import { setCurrentClient } from '../../business-logic/store/slices/userReducer';
+import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
 import FlatListClientItem from './FlatListClientItem';
@@ -30,6 +31,7 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
   );
 
   const navigation = useNavigation();
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
 
   function navigateToClientDashboard(client: IUser) {
@@ -41,7 +43,7 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
 
   useEffect(() => {
     async function init() {
-      const apiClients = await UserService.getInstance().getClients();
+      const apiClients = await UserService.getInstance().getClients(token);
       setClients(apiClients);
     }
     init();

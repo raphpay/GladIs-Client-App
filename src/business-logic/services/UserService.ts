@@ -119,11 +119,10 @@ class UserService {
    * @returns A promise that resolves to an array of clients.
    * @throws If an error occurs while retrieving the clients.
    */
-  async getClients(): Promise<IUser[]> {
+  async getClients(token: IToken | null): Promise<IUser[]> {
     try {
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      const users = await APIService.get<IUser[]>(this.baseRoute, castedToken.value);
+      console.log('token', token?.value );
+      const users = await APIService.get<IUser[]>(this.baseRoute, token?.value as string);
       const clients = users.filter((user) => user.userType !== UserType.Admin && user.userType !== UserType.Employee);
       return clients;
     } catch (error) {

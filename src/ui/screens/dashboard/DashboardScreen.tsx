@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
@@ -69,7 +70,11 @@ function DashboardScreen(props: DashboardScreenProps): any {
         setDialogDescription(t('components.dialog.firstConnection.description'))
         setShowDialog(currentUser.firstConnection ?? false);
       } else {
-        await AuthenticationService.getInstance().logout(token);
+        const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
+        const user = await UserService.getInstance().getUserByID(userID as string, token);
+        setIsAdmin(user.userType == UserType.Admin);
+        setDialogDescription(t('components.dialog.firstConnection.description'))
+        setShowDialog(user.firstConnection ?? false);
       }
     }
     init();

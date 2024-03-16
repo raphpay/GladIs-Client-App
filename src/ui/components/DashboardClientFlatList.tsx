@@ -19,7 +19,7 @@ import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
 
-import styles from '../assets/styles/components/DashboardClientFlatList';
+import styles from '../assets/styles/components/DashboardClientFlatListStyles';
 
 type DashboardClientFlatListProps = {
   searchText: string;
