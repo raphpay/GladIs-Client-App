@@ -62,6 +62,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
+  const ellipsisIcon = require('../../assets/images/ellipsis.png');
+  
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
@@ -168,8 +170,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}>
-            <Image source={require('../../assets/images/ellipsis.png')}/>
+          <TouchableOpacity style={styles.actionButton} onPress={() => console.log('hello')}>
+            <Image style={styles.ellipsisIcon} source={ellipsisIcon}/>
           </TouchableOpacity>
         </View>
         <View style={styles.separator}/>
