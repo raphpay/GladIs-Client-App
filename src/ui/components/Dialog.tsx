@@ -15,7 +15,7 @@ type DialogProps = {
   confirmTitle?: string;
   cancelTitle?: string;
   isConfirmDisabled?: boolean;
-  isConfirmAvailable?: boolean;
+  isConfirmAvailable?: boolean | true;
   isCancelAvailable?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
@@ -38,6 +38,9 @@ function Dialog(props: DialogProps): React.JSX.Element {
   } = props;
   const { t } = useTranslation();
 
+  console.log('dialog', isConfirmAvailable, isConfirmAvailable == true || isConfirmAvailable == undefined );
+
+  // TODO: Check all dialog confirm buttons
   return (
     <View style={styles.overlay}>
       <View style={styles.dialog}>
@@ -55,7 +58,7 @@ function Dialog(props: DialogProps): React.JSX.Element {
             )
           }
           {
-            isConfirmAvailable ? (
+            isConfirmAvailable == true || isConfirmAvailable == undefined ? (
               <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
                 <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
               </TouchableOpacity>

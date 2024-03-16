@@ -109,12 +109,16 @@ class AuthenticationService {
   async checkAuthentication(): Promise<IToken> {
     try {
       const cachedToken = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserToken) as IToken;
-      const token = await APIService.get<IToken>(`${this.baseRoute}/${cachedToken.id}`);
-      const cachedUserID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
-      if (token.user.id === cachedUserID) {
-        return token;
+      if (cachedToken !== null) {
+        const token = await APIService.get<IToken>(`${this.baseRoute}/${cachedToken.id}`);
+        const cachedUserID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
+        if (token.user.id === cachedUserID) {
+          return token;
+        } else {
+          throw new Error('User is not authenticated');
+        }
       } else {
-        throw new Error('The user is not connected');
+        throw new Error('User is not authenticated');
       }
     } catch (error) {
       console.log('Error checking user authentication status', error);
