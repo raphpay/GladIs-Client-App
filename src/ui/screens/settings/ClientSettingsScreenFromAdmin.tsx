@@ -99,7 +99,6 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       currentScreen: t('settings.clientSettings.bills'),
       documentsPath: 'bills',
       processNumber: undefined,
-      hideModulesRoute: true,
     });
   }
 

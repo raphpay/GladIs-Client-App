@@ -59,7 +59,6 @@ export type IRootStackParams = {
     currentScreen: string,
     documentsPath: string,
     processNumber: number | undefined,
-    hideModulesRoute?: boolean,
   },
   PDFScreen: { documentInput: IDocument },
   // Tracking

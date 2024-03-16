@@ -55,7 +55,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     currentScreen,
     documentsPath,
     processNumber,
-    hideModulesRoute,
   } = props.route.params;
 
   const { module } = useAppSelector((state: RootState) => state.appState);
@@ -72,6 +71,10 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     {
       title: t('dashboard.title'),
       action: () => navigateToDashboard,
+    },
+    {
+      title: t(`modules.${module?.name}`),
+      action: () => navigateToDocumentManagementScreen()
     },
     {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
@@ -138,20 +141,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setDocuments(docs);
   }
 
-  async function addModulesRoute() {
-    if (hideModulesRoute === undefined || hideModulesRoute === false) {
-      const moduleRoute: INavigationHistoryItem = {
-        title: t(`modules.${module?.name}`),
-        action: () => navigateToDocumentManagementScreen()
-      };
-      navigationHistoryItems.splice(1, 0, moduleRoute);
-    }
-  }
-
   useEffect(() => {
     async function init() {
       await loadDocuments();
-      addModulesRoute();
     }
     init();
   }, []);
