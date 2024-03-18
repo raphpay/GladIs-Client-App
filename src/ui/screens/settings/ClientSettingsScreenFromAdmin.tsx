@@ -11,6 +11,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
+import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { changeClientBlockedStatus } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -37,6 +38,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useDispatch();
 
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
@@ -95,6 +97,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   }
 
   function navigateToBills() {
+    dispatch(setDocumentListCount(documentListCount + 1));
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: t('settings.title'),
       currentScreen: t('settings.clientSettings.bills'),
