@@ -11,6 +11,7 @@ import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
+import CacheService from '../../../business-logic/services/CacheService';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import IconButton from '../../components/IconButton';
@@ -28,9 +29,10 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const docIcon = require('../../assets/images/doc.fill.png');
   const backIcon = require('../../assets/images/arrowshape.turn.up.left.png');
 
-  async function pickPDF() {
-    const data = await DocumentService.getInstance().download(documentInput.id as string, token)
-    setPDFData(data)
+  async function loadFromAPI() {
+    let data = await DocumentService.getInstance().download(documentInput.id as string, token)
+    await CacheService.getInstance().storeValue(documentInput.id as string, data);
+    setPDFData(data);
   }
 
   function navigateBack() {
@@ -39,7 +41,17 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
-      await pickPDF();
+      let cachedData = null;
+      try {
+        cachedData = await CacheService.getInstance().retrieveValue(documentInput.id as string);
+      } catch (error) {
+        console.log('error getting cached data', error ); 
+      }
+      if (cachedData === null || cachedData === undefined) {
+        await loadFromAPI();
+      } else {
+        setPDFData(cachedData as string)
+      }
     }
     init();
   }, []);
