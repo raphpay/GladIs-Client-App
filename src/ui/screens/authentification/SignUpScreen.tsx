@@ -162,11 +162,13 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     }
   }
 
+  // TODO: Copy the client creation logic from the SignUpScreen component
   const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
     email.length === 0 || products.length === 0 || numberOfEmployees.length === 0 || numberOfUsers.length === 0 || sales.length === 0;
 
   useEffect(() => {
     async function init() {
+      // TODO: Change this to sorted modules
       const apiModules = await ModuleService.getInstance().getModules();  
       setModules(apiModules);
       setSelectedModules([]);

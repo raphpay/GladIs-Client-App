@@ -34,42 +34,29 @@ class Utils {
  */
   private static async uriToBlob(uri: string): Promise<Blob> {
     try {
-      console.log('uriToBlob1');
       const xhr = new XMLHttpRequest();
-      console.log('uriToBlob2');
       
       return new Promise((resolve, reject) => {
         // If successful -> return with blob
         xhr.onload = function () {
-          console.log('uriToBlob3');
-
           resolve(xhr.response);
-          console.log('uriToBlob4', xhr.response );
         };
         
         // reject on error
         xhr.onerror = function () {
-          console.log('uriToBlob5');
           reject(new Error('uriToBlob failed'));
-          console.log('uriToBlob6');
         };
         
         // Set the response type to 'blob' - this means the server's response 
         // will be accessed as a binary object
-        console.log('uriToBlob7');
         xhr.responseType = 'blob';
-        console.log('uriToBlob8');
         
         // Initialize the request. The third argument set to 'true' denotes 
         // that the request is asynchronous
-        console.log('uriToBlob9');
         xhr.open('GET', uri, true);
-        console.log('uriToBlob10');
         
         // Send the request. The 'null' argument means that no body content is given for the request
-        console.log('uriToBlob11');
         xhr.send(null);
-        console.log('uriToBlob12');
       });
     } catch (error) {
       throw new Error('uriToBlob failed');
