@@ -272,7 +272,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
               key={module.id}
               module={module}
               isSelected={isModuleSelected(module)}
-              isDisabled={false}
               onSelectModule={() => toggleCheckbox(module)}
             />
           ))}

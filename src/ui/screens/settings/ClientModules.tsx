@@ -124,7 +124,6 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
                 key={module.id}
                 module={module}
                 isSelected={isModuleSelected(module)}
-                isDisabled={false}
                 onSelectModule={() => toggleCheckbox(module)}
               />
             ))

@@ -400,7 +400,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
               module={module}
               isSelected={isModuleSelected(module)}
               onSelectModule={() => toggleCheckbox(module)}
-              isDisabled={pendingUser != null}
             />
           ))}
           <GladisTextInput
