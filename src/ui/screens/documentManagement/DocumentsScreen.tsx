@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   Image,
   Platform,
   Text,
@@ -20,6 +19,7 @@ import IFile from '../../../business-logic/model/IFile';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../business-logic/modules/FinderModule';
 import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
@@ -31,9 +31,9 @@ import Utils from '../../../business-logic/utils/Utils';
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
+import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 
-import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -211,10 +211,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     >
       {
         documentsFiltered.length !== 0 ? (
-          <FlatList
+          <Grid
             data={documentsFiltered}
             renderItem={(renderItem) => DocumentRow(renderItem.item)}
-            keyExtractor={(item) => item.id}
           />
         ) : (
           <ContentUnavailableView 

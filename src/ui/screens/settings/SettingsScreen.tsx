@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -9,17 +9,18 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { removeModule, setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
+import { removeCurrentClient, removeCurrentUser } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
-import GladisTextInput from '../../components/GladisTextInput';
-
-import { removeModule, setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
-import { removeCurrentClient, removeCurrentUser } from '../../../business-logic/store/slices/userReducer';
-import styles from '../../assets/styles/settings/SettingsScreenStyles';
 import ErrorDialog from '../../components/ErrorDialog';
+import GladisTextInput from '../../components/GladisTextInput';
+import Grid from '../../components/Grid';
+
+import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
 type SettingsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SettingsScreen>;
 
@@ -195,7 +196,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     )
   }
 
-  function SettingsActionFlatListItem(item: ISettingsAction) {
+  function SettingsActionGridItem(item: ISettingsAction) {
     return (
       <TouchableOpacity
         disabled={item.isActionDisabled}
@@ -218,10 +219,9 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
         navigateBack={navigateBack}
         additionalComponent={additionalMentions()}
       >
-        <FlatList
+        <Grid
           data={settingsActions}
-          renderItem={(renderItem) => SettingsActionFlatListItem(renderItem.item)}
-          keyExtractor={(item) => item.id}
+          renderItem={(renderItem) => SettingsActionGridItem(renderItem.item)}
         />
       </AppContainer>
       {dialogContent()}

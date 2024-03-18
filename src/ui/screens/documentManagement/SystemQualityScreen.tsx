@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   Text,
   TouchableOpacity,
   View
@@ -18,6 +17,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Grid from '../../components/Grid';
 
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 
@@ -112,9 +112,9 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
-  function SystemQualityFlatListItem(item: ISystemQualityItem) {
+  function SystemQualityGridItem(item: ISystemQualityItem) {
     return (
-      <TouchableOpacity onPress={() => navigateTo(item)}>
+      <TouchableOpacity key={item.id} onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
@@ -122,7 +122,6 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     )
   }
 
-  // TODO: add empty view
   return (
     <AppContainer
       mainTitle={t('systemQuality.title')}
@@ -142,11 +141,9 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             image={clipboardIcon}
           />
         ) : (
-          <FlatList
+          <Grid
             data={systemQualityItemsFiltered}
-            numColumns={3}
-            renderItem={(renderItem) => SystemQualityFlatListItem(renderItem.item)}
-            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => SystemQualityGridItem(item)}
           />
         )
       }

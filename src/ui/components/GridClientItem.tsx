@@ -14,14 +14,14 @@ import { RootState } from '../../business-logic/store/store';
 
 import PlatformName from '../../business-logic/model/enums/PlatformName';
 import { Colors } from '../assets/colors/colors';
-import styles from '../assets/styles/components/FlatListClientItemStyles';
+import styles from '../assets/styles/components/GridClientItemStyles';
 
-type FlatListClientItemProps = {
+type GridClientItemProps = {
   client: IUser;
   onPress: (user: IUser) => void
 };
 
-function FlatListClientItem(props: FlatListClientItemProps): React.JSX.Element {
+function GridClientItem(props: GridClientItemProps): React.JSX.Element {
 
   const { client, onPress } = props;
   const [logoURI, setLogoURI] = useState<string>('');
@@ -71,4 +71,4 @@ function FlatListClientItem(props: FlatListClientItemProps): React.JSX.Element {
   );
 }
 
-export default FlatListClientItem;
+export default GridClientItem;

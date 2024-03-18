@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   Text,
   TouchableOpacity,
   View
@@ -18,6 +17,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Grid from '../../components/Grid';
 
 import styles from '../../assets/styles/documentManagement/DocumentManagementScreenStyles';
 
@@ -67,7 +67,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
     }
   }
 
-  function SubCategoryFlatListItem(item: ISubCategory) {
+  function SubCategoryGridItem(item: ISubCategory) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.categoryContainer}>
@@ -100,11 +100,9 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
               image={clipboardIcon}
             />
           ) : (
-            <FlatList
+            <Grid
               data={subcategoriesFiltered}
-              numColumns={2}
-              renderItem={(renderItem) => SubCategoryFlatListItem(renderItem.item)}
-              keyExtractor={(item) => item.id}
+              renderItem={(renderItem) => SubCategoryGridItem(renderItem.item)}
             />
           )
         }

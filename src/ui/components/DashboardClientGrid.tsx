@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   Text,
   TouchableOpacity
 } from 'react-native';
@@ -17,15 +16,16 @@ import { setModule } from '../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
+import Grid from './Grid';
 
-import styles from '../assets/styles/components/DashboardClientFlatListStyles';
+import styles from '../assets/styles/components/DashboardClientGridStyles';
 
-type DashboardClientFlatListProps = {
+type DashboardClientGridProps = {
   searchText: string;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
+function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element {
   const { searchText, setShowDialog } = props;
 
   const [modules, setModules] = useState<IModule[]>([]);
@@ -35,12 +35,13 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
   const modulesFiltered = modules.filter(module =>
     module.name.toLowerCase().includes(searchText?.toLowerCase()),
   );
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
 
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
@@ -55,7 +56,7 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
     }
   }
 
-  function FlatListModuleItem(module: IModule) {
+  function GridModuleItem(module: IModule) {
     return (
       <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
         <Text style={styles.moduleText}>{t(`modules.${module.name}`)}</Text>
@@ -87,11 +88,9 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
           image={clipboardIcon}
         />
       ) : (
-        <FlatList
+        <Grid
           data={modulesFiltered}
-          numColumns={4}
-          renderItem={(renderItem) => FlatListModuleItem(renderItem.item)}
-          keyExtractor={(item) => item.id}
+          renderItem={(renderItem) => GridModuleItem(renderItem.item)}
         />
       )
     }
@@ -99,4 +98,4 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
   );
 }
 
-export default DashboardClientFlatList;
+export default DashboardClientGrid;

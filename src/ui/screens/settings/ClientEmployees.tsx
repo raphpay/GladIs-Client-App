@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   Text,
   View
 } from 'react-native';
@@ -22,6 +21,7 @@ import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
+import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 import Tooltip, { ITooltipAction } from '../../components/Tooltip';
 
@@ -276,10 +276,9 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     >
       {
         employeesFiltered.length > 0 ? (
-          <FlatList
+          <Grid
             data={employeesFiltered}
             renderItem={(renderItem) => EmployeeRow(renderItem.item)}
-            keyExtractor={(item) => item.id}
           />
         ) : (
           <ContentUnavailableView

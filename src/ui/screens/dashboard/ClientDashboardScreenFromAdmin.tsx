@@ -10,7 +10,7 @@ import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { removeCurrentClient } from '../../../business-logic/store/slices/userReducer';
 
 import AppContainer from '../../components/AppContainer';
-import DashboardClientFlatList from '../../components/DashboardClientFlatList';
+import DashboardClientGrid from '../../components/DashboardClientGrid';
 import ErrorDialog from '../../components/ErrorDialog';
 
 type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;
@@ -49,7 +49,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
         dialogIsShown={showDialog}
         showSettings={true}
       >
-        <DashboardClientFlatList searchText={searchText} setShowDialog={setShowDialog} />
+        <DashboardClientGrid searchText={searchText} setShowDialog={setShowDialog} />
       </AppContainer>
       {
         showDialog && (

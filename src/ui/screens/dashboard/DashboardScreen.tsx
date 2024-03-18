@@ -13,8 +13,8 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
-import DashboardAdminFlatList from '../../components/DashboardAdminFlatList';
-import DashboardClientFlatList from '../../components/DashboardClientFlatList';
+import DashboardAdminGrid from '../../components/DashboardAdminGrid';
+import DashboardClientGrid from '../../components/DashboardClientGrid';
 import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
@@ -85,9 +85,9 @@ function DashboardScreen(props: DashboardScreenProps): any {
       <>
         {
             isAdmin ? (
-              <DashboardAdminFlatList searchText={searchText} />
+              <DashboardAdminGrid searchText={searchText} />
             ) : (
-              <DashboardClientFlatList searchText={searchText} setShowDialog={setShowErrorDialog}/>
+              <DashboardClientGrid searchText={searchText} setShowDialog={setShowErrorDialog}/>
             )
           }
       </>

@@ -2,7 +2,6 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   Text,
   TouchableOpacity,
   View
@@ -15,6 +14,7 @@ import INavigationHistoryItem from '../../../business-logic/model/INavigationHis
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Grid from '../../components/Grid';
 
 import styles from '../../assets/styles/documentManagement/ProcessesScreenStyles';
 
@@ -89,7 +89,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     });
   }
 
-  function ProcessusFlatListItem(item: IProcessItem) {
+  function ProcessusGridItem(item: IProcessItem) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
@@ -118,11 +118,9 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
             image={clipboardIcon}
           />
         ) : (
-          <FlatList
+          <Grid
             data={processesFiltered}
-            numColumns={2}
-            renderItem={(renderItem) => ProcessusFlatListItem(renderItem.item)}
-            keyExtractor={(item) => item.id}
+            renderItem={(renderItem) => ProcessusGridItem(renderItem.item)}
           />
         )
       }
