@@ -57,7 +57,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     processNumber,
   } = props.route.params;
 
-  const { module } = useAppSelector((state: RootState) => state.appState);
+  const { module, documentListCount } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
@@ -113,7 +113,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    const filename = documentName.replace(/\s/g, "_");
+    const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
     let data: string = '';
     if (Platform.OS !== PlatformName.Mac) {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
@@ -147,6 +147,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
     init();
   }, []);
+
+  useEffect(() => {
+    async function init() {
+      await loadDocuments();
+    }
+    init();
+  }, [documentListCount]);
 
   function DocumentRow(item: IDocument) {
     return (

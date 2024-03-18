@@ -44,11 +44,16 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
-      const cachedData = await CacheService.getInstance().retrieveValue(documentInput.id as string);
-      if (cachedData) {
-        setPDFData(cachedData as string)
-      } else {
+      let cachedData = null;
+      try {
+        cachedData = await CacheService.getInstance().retrieveValue(documentInput.id as string);
+      } catch (error) {
+        console.log('error getting cached data', error ); 
+      }
+      if (cachedData === null || cachedData === undefined) {
         await loadFromAPI();
+      } else {
+        setPDFData(cachedData as string)
       }
     }
     init();

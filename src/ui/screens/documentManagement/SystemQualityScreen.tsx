@@ -12,7 +12,8 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
@@ -32,9 +33,15 @@ type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, Navigat
 function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
+  
   const { t } = useTranslation();
+  
   const { navigation } = props;
+
   const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
+
   const systemQualityItems: ISystemQualityItem[] = [
     {
       id: 'qualityManualID',
@@ -101,6 +108,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   function navigateTo(item: ISystemQualityItem) {
     if (item.id === 'qualityManualID') {
+      dispatch(setDocumentListCount(documentListCount + 1));
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         previousScreen: t('systemQuality.title'),
         currentScreen: t('systemQuality.qualityManual'),

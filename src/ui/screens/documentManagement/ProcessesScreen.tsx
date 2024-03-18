@@ -11,6 +11,9 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -28,9 +31,14 @@ type ProcessesProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.
 function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
+  
   const { t } = useTranslation();
+  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
+
   const { navigation } = props;
   const { processNumber } = props.route.params;
+
   const processes: IProcessItem[] = [
     {
       id: 'processesID',
@@ -81,6 +89,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   }
 
   function navigateTo(item: IProcessItem) {
+    dispatch(setDocumentListCount(documentListCount + 1));
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: 'process',
       processNumber: processNumber,

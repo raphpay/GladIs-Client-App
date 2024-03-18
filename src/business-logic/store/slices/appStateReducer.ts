@@ -5,12 +5,14 @@ export interface AppState {
   module: IModule | undefined,
   pendingUserListCount: number,
   clientListCount: number,
+  documentListCount: number,
 }
 
 const initialState: AppState = {
   module: undefined,
   pendingUserListCount: 0,
   clientListCount: 0,
+  documentListCount: 0,
 };
 
 export const appStateSlice = createSlice({
@@ -30,9 +32,18 @@ export const appStateSlice = createSlice({
     setClientListCount: (state, action: PayloadAction<number>) => {
       state.clientListCount = action.payload;
     },
+    setDocumentListCount: (state, action: PayloadAction<number>) => {
+      state.documentListCount = action.payload;
+    }
   },
 });
 
-export const { setModule, removeModule, setPendingUserListCount, setClientListCount } = appStateSlice.actions;
+export const {
+  setModule,
+  removeModule,
+  setPendingUserListCount,
+  setClientListCount,
+  setDocumentListCount
+} = appStateSlice.actions;
 
 export default appStateSlice.reducer;

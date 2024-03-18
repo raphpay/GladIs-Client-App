@@ -13,7 +13,8 @@ import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
 import TechnicalDocumentationTabService from '../../../business-logic/services/TechnicalDocumentationTabService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
@@ -41,6 +42,9 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   const { t } = useTranslation();
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
+
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
       title: t('dashboard.title'),
@@ -72,6 +76,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   }
 
   function navigateTo(item: ITechnicalDocTab) {
+    dispatch(setDocumentListCount(documentListCount + 1));
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: area.name,
       currentScreen: item.name,
