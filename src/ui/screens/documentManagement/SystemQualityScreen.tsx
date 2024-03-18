@@ -112,7 +112,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
-  function SystemQualityFlatListItem(item: ISystemQualityItem) {
+  function SystemQualityGridItem(item: ISystemQualityItem) {
     return (
       <TouchableOpacity key={item.id} onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
@@ -143,7 +143,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         ) : (
           <Grid
             data={systemQualityItemsFiltered}
-            renderItem={({ item }) => SystemQualityFlatListItem(item)}
+            renderItem={({ item }) => SystemQualityGridItem(item)}
           />
         )
       }

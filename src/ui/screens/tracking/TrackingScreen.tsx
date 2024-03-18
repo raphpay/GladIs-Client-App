@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -14,6 +14,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Grid from '../../components/Grid';
 
 import styles from '../../assets/styles/tracking/TrackingScreenStyles';
 
@@ -52,7 +53,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
     init();
   }, []);
 
-  function LogFlatListItem(item: IDocumentActivityLog) {
+  function LogGridItem(item: IDocumentActivityLog) {
     const actorName = item.actorIsAdmin ? 'MD Consulting' : item.actorUsername;
     const itemDate = new Date(item.actionDate)
     const formattedDate = itemDate.toLocaleDateString("fr-FR", {
@@ -94,10 +95,9 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
               image={clipboardIcon}
             />
           ) : (
-            <FlatList
+            <Grid
               data={logsFiltered}
-              renderItem={(renderItem) => LogFlatListItem(renderItem.item)}
-              keyExtractor={(item) => item.id}
+              renderItem={(renderItem) => LogGridItem(renderItem)}
             />
           )
         }

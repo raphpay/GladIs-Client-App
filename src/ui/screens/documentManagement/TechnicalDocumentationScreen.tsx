@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -14,6 +14,7 @@ import { RootState } from '../../../business-logic/store/store';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 import AppContainer from '../../components/AppContainer';
+import Grid from '../../components/Grid';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 
@@ -74,7 +75,7 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
     navigation.navigate(NavigationRoutes.TechnicalDocAreaScreen, { area: item })
   }
 
-  function AreaFlatListItem(item: IArea) {
+  function AreaGridItem(item: IArea) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
@@ -103,11 +104,9 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
             image={clipboardIcon}
           />
         ) : (
-          <FlatList
+          <Grid
             data={areasFiltered}
-            numColumns={3}
-            renderItem={(renderItem) => AreaFlatListItem(renderItem.item)}
-            keyExtractor={(item) => item.id}
+            renderItem={(renderItem) => AreaGridItem(renderItem.item)}
           />
         )
       }

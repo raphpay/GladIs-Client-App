@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
@@ -17,6 +17,7 @@ import { RootState } from '../../../business-logic/store/store';
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
+import Grid from '../../components/Grid';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
@@ -209,7 +210,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     )
   }
 
-  function SettingsActionFlatListItem(item: ISettingsAction) {
+  function SettingsActionGridItem(item: ISettingsAction) {
     return (
       <TouchableOpacity
         disabled={item.isActionDisabled}
@@ -234,10 +235,9 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
         dialogIsShown={showErrorDialog || showBlockDialog}
         navigationHistoryItems={navigationHistoryItems}
       >
-        <FlatList
+        <Grid
           data={settingsActions}
-          renderItem={(renderItem) => SettingsActionFlatListItem(renderItem.item)}
-          keyExtractor={(item) => item.id}
+          renderItem={(renderItem) => SettingsActionGridItem(renderItem.item)}
         />
       </AppContainer>
       {blockDialog()}

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -19,6 +19,7 @@ import { RootState } from '../../../business-logic/store/store';
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
+import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
@@ -111,7 +112,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     init();
   }, []);
 
-  function TabFlatListItem(item: ITechnicalDocTab) {
+  function TabGridItem(item: ITechnicalDocTab) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.processusContainer}>
@@ -136,11 +137,9 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
               image={clipboardIcon}
             />
           ) : (
-            <FlatList
+            <Grid
               data={technicalTabsFiltered}
-              numColumns={3}
-              renderItem={(renderItem) => TabFlatListItem(renderItem.item)}
-              keyExtractor={(item) => item.id}
+              renderItem={(renderItem) => TabGridItem(renderItem.item)}
             />
           )
         }
