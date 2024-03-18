@@ -91,8 +91,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         setErrorTitle(t('errors.signup.phoneNumber.title'));
         setErrorDescription(t('errors.signup.phoneNumber.description'));
       }
+      setShowErrorDialog(true);
     }
-    setShowErrorDialog(true);
   }
 
   function retrieveSelectedModules(): IModule[] {
@@ -123,8 +123,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
       await createEmployees(createdUser.id as string);
       await uploadLogo();
-      await loadPendingUsers();
-      navigation.goBack();
+      navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
       showError(errorKeys);
@@ -174,8 +173,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
       }
       await uploadLogo();
-      await loadPendingUsers();
-      navigation.goBack();
+      navigateBack();
     } catch (error) {
       const errorKeys = error as string[];
       showError(errorKeys);
@@ -262,6 +260,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       isANumber(employees) &&
       numberOfUsers.length > 0 &&
       isANumber(numberOfUsers) &&
+      parseInt(employees) >= parseInt(numberOfUsers) &&
       sales.length > 0 &&
       isANumber(sales);
     }

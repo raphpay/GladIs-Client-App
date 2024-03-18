@@ -121,7 +121,6 @@ class UserService {
    */
   async getClients(token: IToken | null): Promise<IUser[]> {
     try {
-      console.log('token', token?.value );
       const users = await APIService.get<IUser[]>(this.baseRoute, token?.value as string);
       const clients = users.filter((user) => user.userType !== UserType.Admin && user.userType !== UserType.Employee);
       return clients;
