@@ -40,6 +40,8 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const docIcon = require('../../assets/images/doc.fill.png');
   
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { pendingUserListCount } = useAppSelector((state: RootState) => state.appState);
+
   const { t } = useTranslation();
   const pendingUsersFiltered = pendingUsers.filter(pendingUser =>
     pendingUser.companyName.toLowerCase().includes(searchText.toLowerCase()),
@@ -48,7 +50,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const { navigation } = props;
 
   function navigateToCreateClient() {
-    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null, loadPendingUsers });
+    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
   }
 
   function navigateBack() {
@@ -117,6 +119,13 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     }
     init();
   }, []);
+
+  useEffect(() => {
+    async function init() {
+      await loadPendingUsers();
+    }
+    init();
+  }, [pendingUserListCount]);
 
   function pendingUserDialog() {
     return (

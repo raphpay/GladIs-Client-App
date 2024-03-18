@@ -49,7 +49,7 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
   const ellipsisIcon = require('../../assets/images/ellipsis.png');
   
   function navigateToSpecificClientCreation(client: IPendingUser) {
-    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client, loadPendingUsers });
+    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
   }
 
   function tapOnOptions() {

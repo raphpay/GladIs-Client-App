@@ -12,13 +12,15 @@ import IToken from '../../../business-logic/model/IToken';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
@@ -31,7 +33,6 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
-import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.ClientCreationScreen>;
@@ -60,8 +61,12 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [logoURI, setLogoURI] = useState<string>('');
 
   const { navigation } = props;
-  const { pendingUser, loadPendingUsers } = props.route.params;
+  const { pendingUser } = props.route.params;
+
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { pendingUserListCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
+
   const { t } = useTranslation();
 
   async function submit() {
@@ -73,17 +78,19 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }
 
   function showError(errorKeys: string []) {
-    if (errorKeys.includes('email.invalid')) {
-      if (errorKeys.includes('phoneNumber.invalid')) {
-        setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-        setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-      } else {
-        setErrorTitle(t('errors.signup.email.title'));
-        setErrorDescription(t('errors.signup.email.description'));
+    if (errorKeys.length > 0) {
+      if (errorKeys.includes('email.invalid')) {
+        if (errorKeys.includes('phoneNumber.invalid')) {
+          setErrorTitle(t('errors.signup.phoneAndEmail.title'));
+          setErrorDescription(t('errors.signup.phoneAndEmail.description'));
+        } else {
+          setErrorTitle(t('errors.signup.email.title'));
+          setErrorDescription(t('errors.signup.email.description'));
+        }
+      } else if (errorKeys.includes('phoneNumber.invalid')) {
+        setErrorTitle(t('errors.signup.phoneNumber.title'));
+        setErrorDescription(t('errors.signup.phoneNumber.description'));
       }
-    } else if (errorKeys.includes('phoneNumber.invalid')) {
-      setErrorTitle(t('errors.signup.phoneNumber.title'));
-      setErrorDescription(t('errors.signup.phoneNumber.description'));
     }
     setShowErrorDialog(true);
   }
@@ -210,6 +217,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }
 
   function navigateBack() {
+    dispatch(setPendingUserListCount(pendingUserListCount + 1));
     navigation.goBack();
   }
 
@@ -288,22 +296,24 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
   async function loadLogo() {
     const company = pendingUser?.companyName as string;
-    const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
-    if (docs.length > 0) {
-      const logo = docs[0];
-      const logoData = await DocumentService.getInstance().download(logo.id as string, token);
-      Platform.OS === PlatformName.Mac ?
-        setLogoURI(`data:image/png;base64,${logoData}`) :
-        setLogoURI(logoData);
+    if (company) {
+      const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+      if (docs.length > 0) {
+        const logo = docs[0];
+        const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+        Platform.OS === PlatformName.Mac ?
+          setLogoURI(`data:image/png;base64,${logoData}`) :
+          setLogoURI(logoData);
+      }
     }
   }
 
   useEffect(() => {
+    setDefaultValues();
     async function init() {
       await loadModules();
       await loadEmployees();
       await loadLogo();
-      setDefaultValues();
     }
     init();
   }, []);
