@@ -20,7 +20,7 @@ import PendingUserService from '../../../business-logic/services/PendingUserServ
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
@@ -64,7 +64,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const { pendingUser } = props.route.params;
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { pendingUserListCount } = useAppSelector((state: RootState) => state.appState);
+  const { pendingUserListCount, clientListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
   const { t } = useTranslation();
@@ -173,6 +173,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
       }
       await uploadLogo();
+      dispatch(setClientListCount(clientListCount + 1));
       navigateBack();
     } catch (error) {
       const errorKeys = error as string[];

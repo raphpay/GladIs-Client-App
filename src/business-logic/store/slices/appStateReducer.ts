@@ -3,12 +3,14 @@ import IModule from '../../model/IModule';
 
 export interface AppState {
   module: IModule | undefined,
-  pendingUserListCount: number
+  pendingUserListCount: number,
+  clientListCount: number,
 }
 
 const initialState: AppState = {
   module: undefined,
-  pendingUserListCount: 0
+  pendingUserListCount: 0,
+  clientListCount: 0,
 };
 
 export const appStateSlice = createSlice({
@@ -24,10 +26,13 @@ export const appStateSlice = createSlice({
     },
     setPendingUserListCount: (state, action: PayloadAction<number>) => {
       state.pendingUserListCount = action.payload;
-    }
+    },
+    setClientListCount: (state, action: PayloadAction<number>) => {
+      state.clientListCount = action.payload;
+    },
   },
 });
 
-export const { setModule, removeModule, setPendingUserListCount } = appStateSlice.actions;
+export const { setModule, removeModule, setPendingUserListCount, setClientListCount } = appStateSlice.actions;
 
 export default appStateSlice.reducer;

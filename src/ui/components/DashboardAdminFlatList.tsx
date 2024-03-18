@@ -32,6 +32,7 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
 
   const navigation = useNavigation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { clientListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
   function navigateToClientDashboard(client: IUser) {
@@ -41,13 +42,24 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
 
   const { t } = useTranslation();
 
+  async function loadClients() {
+    const apiClients = await UserService.getInstance().getClients(token);
+    setClients(apiClients);
+  }
+
   useEffect(() => {
     async function init() {
-      const apiClients = await UserService.getInstance().getClients(token);
-      setClients(apiClients);
+      loadClients();
     }
     init();
   }, []);
+
+  useEffect(() => {
+    async function init() {
+      loadClients();
+    }
+    init();
+  }, [clientListCount]);
 
   return (
     <>
