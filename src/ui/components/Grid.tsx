@@ -1,11 +1,8 @@
-import type {
-  ListRenderItem
-} from '@react-native/virtualized-lists';
+import type { ListRenderItem } from '@react-native/virtualized-lists';
 import React from 'react';
-import {
-  StyleSheet
-} from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native';
+
+import styles from '../assets/styles/components/GridStyles';
 
 type GridProps<ItemT> = {
   data: Array<ItemT> | null | undefined;
@@ -32,18 +29,5 @@ function Grid<ItemT>(props: GridProps<ItemT>): React.JSX.Element {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  }
-});
 
 export default Grid;
