@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
@@ -16,6 +16,7 @@ import PendingUserStatus from '../../../business-logic/model/enums/PendingUserSt
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
+import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 import PendingUserRow from './PendingUserRow';
 
@@ -88,7 +89,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {
     await PendingUserService.getInstance().updatePendingUserStatus(pendingUser, token, status);
-    // Update the flatlist
+    // Update the grid
     await loadPendingUsers();
     // Close the dialogs
     setShowPendingUserDialog(false);
@@ -199,7 +200,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               image={docIcon}
             />
           ) : (
-            <FlatList
+            <Grid
               data={pendingUsersFiltered}
               renderItem={(renderItem) =>
                 <PendingUserRow 
@@ -207,8 +208,8 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
                   loadPendingUsers={loadPendingUsers}
                   setSelectedPendingUser={setSelectedPendingUser}
                   setShowPendingUserDialog={setShowPendingUserDialog}
-                />}
-              keyExtractor={(item) => item.id}
+                />
+              }
             />
           )
         }

@@ -35,12 +35,13 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
   const modulesFiltered = modules.filter(module =>
     module.name.toLowerCase().includes(searchText?.toLowerCase()),
   );
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
 
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {

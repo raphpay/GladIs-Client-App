@@ -318,7 +318,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     init();
   }, []);
 
-  function PotentialEmployeeFlatListItem(item: IPotentialEmployee, index: number) {
+  function PotentialEmployeeGridItem(item: IPotentialEmployee, index: number) {
     return (
       <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
     )
@@ -430,7 +430,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
               <>
                 <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
                 {potentialEmployees.map((employee, index) => (
-                  PotentialEmployeeFlatListItem(employee, index)
+                  PotentialEmployeeGridItem(employee, index)
                 ))}
               </>
             )

@@ -190,7 +190,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     init();
   }, []);
 
-  function PotentialEmployeeFlatListItem(item: IPotentialEmployee, index: number) {
+  function PotentialEmployeeGridItem(item: IPotentialEmployee, index: number) {
     return (
       <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
     )
@@ -299,7 +299,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
               <>
                 <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
                 {potentialEmployees.map((employee, index) => (
-                  PotentialEmployeeFlatListItem(employee, index)
+                  PotentialEmployeeGridItem(employee, index)
                 ))}
               </>
             )
