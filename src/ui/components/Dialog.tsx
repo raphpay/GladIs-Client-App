@@ -38,8 +38,6 @@ function Dialog(props: DialogProps): React.JSX.Element {
   } = props;
   const { t } = useTranslation();
 
-  console.log('dialog', isConfirmAvailable, isConfirmAvailable == true || isConfirmAvailable == undefined );
-
   // TODO: Check all dialog confirm buttons
   return (
     <View style={styles.overlay}>

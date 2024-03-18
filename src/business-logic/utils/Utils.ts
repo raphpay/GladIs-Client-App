@@ -119,6 +119,16 @@ class Utils {
     }
     return base64String;
   }
+
+  
+  /**
+   * Checks if a given value is a valid number.
+   * @param value - The value to check.
+   * @returns `true` if the value is a valid number, `false` otherwise.
+   */
+  static isANumber(value: string) {
+    return !isNaN(Number(value));
+  }
 }
 
 export default Utils;
