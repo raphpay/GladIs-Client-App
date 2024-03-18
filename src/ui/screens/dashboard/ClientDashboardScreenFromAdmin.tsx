@@ -10,7 +10,7 @@ import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { removeCurrentClient } from '../../../business-logic/store/slices/userReducer';
 
 import AppContainer from '../../components/AppContainer';
-import DashboardClientFlatList from '../../components/DashboardClientFlatList';
+import DashboardClientFlatList from '../../components/DashboardClientGrid';
 import ErrorDialog from '../../components/ErrorDialog';
 
 type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;

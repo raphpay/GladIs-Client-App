@@ -14,7 +14,7 @@ import { RootState } from '../../business-logic/store/store';
 
 import PlatformName from '../../business-logic/model/enums/PlatformName';
 import { Colors } from '../assets/colors/colors';
-import styles from '../assets/styles/components/FlatListClientItemStyles';
+import styles from '../assets/styles/components/GridClientItemStyles';
 
 type GridClientItemProps = {
   client: IUser;

@@ -20,12 +20,12 @@ import Grid from './Grid';
 
 import styles from '../assets/styles/components/DashboardClientGridStyles';
 
-type DashboardClientFlatListProps = {
+type DashboardClientGridProps = {
   searchText: string;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
+function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element {
   const { searchText, setShowDialog } = props;
 
   const [modules, setModules] = useState<IModule[]>([]);
@@ -97,4 +97,4 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
   );
 }
 
-export default DashboardClientFlatList;
+export default DashboardClientGrid;
