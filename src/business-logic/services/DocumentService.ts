@@ -49,12 +49,18 @@ class DocumentService {
    * @throws If an error occurs while downloading the document.
    */
   async download(id: string, token: IToken | null): Promise<any> {
-    try {
-      const url = `${this.baseRoute}/download/${id}`;
-      return await APIService.download(url, token?.value as string);
-    } catch (error) {
-      console.error('Error downloading document at id:', id, error);
-      throw error;
+    const tokenValue = token?.value as string;
+    if (tokenValue) {
+      try {
+        const url = `${this.baseRoute}/download/${id}`;
+        const data = await APIService.download(url, token?.value as string);
+        return data;
+      } catch (error) {
+        console.error('Error downloading document at id:', id, error);
+        throw error;
+      }
+    } else {
+      throw new Error('No token provided for download');
     }
   }
 
