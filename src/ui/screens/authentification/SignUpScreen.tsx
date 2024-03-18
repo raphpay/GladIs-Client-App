@@ -85,17 +85,19 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
-      if (errorKeys.includes('email.invalid')) {
-        if (errorKeys.includes('phoneNumber.invalid')) {
-          setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-          setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-        } else {
-          setErrorTitle(t('errors.signup.email.title'));
-          setErrorDescription(t('errors.signup.email.description'));
+      if (errorKeys.length > 0) {
+        if (errorKeys.includes('email.invalid')) {
+          if (errorKeys.includes('phoneNumber.invalid')) {
+            setErrorTitle(t('errors.signup.phoneAndEmail.title'));
+            setErrorDescription(t('errors.signup.phoneAndEmail.description'));
+          } else {
+            setErrorTitle(t('errors.signup.email.title'));
+            setErrorDescription(t('errors.signup.email.description'));
+          }
+        } else if (errorKeys.includes('phoneNumber.invalid')) {
+          setErrorTitle(t('errors.signup.phoneNumber.title'));
+          setErrorDescription(t('errors.signup.phoneNumber.description'));
         }
-      } else if (errorKeys.includes('phoneNumber.invalid')) {
-        setErrorTitle(t('errors.signup.phoneNumber.title'));
-        setErrorDescription(t('errors.signup.phoneNumber.description'));
       }
       setShowErrorDialog(true);
     }
