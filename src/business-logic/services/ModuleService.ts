@@ -1,4 +1,5 @@
 import IModule from '../model/IModule';
+import IToken from '../model/IToken';
 import APIService from './APIService';
 
 /**
@@ -29,6 +30,21 @@ class ModuleService {
   async getModules(): Promise<IModule[]> {
     try {
       const modules = await APIService.get<IModule[]>(this.baseRoute);
+      return modules;
+    } catch (error) {
+      console.error('Error getting modules', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves all modules sorted by their order.
+   * @returns A promise that resolves to an array of modules sorted by their order.
+   * @throws If there was an error retrieving the modules.
+   */
+  async getSortedModules(token: IToken | null): Promise<IModule[]> {
+    try {
+      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/sorted`, token?.value as string);
       return modules;
     } catch (error) {
       console.error('Error getting modules', error);

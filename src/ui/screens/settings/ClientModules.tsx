@@ -13,6 +13,7 @@ import { RootState } from '../../../business-logic/store/store';
 import { IClientManagementParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 
@@ -29,6 +30,8 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
   const navigationHistoryItems: INavigationHistoryItem[] = [
     {
@@ -115,15 +118,22 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
       dialog={dialogContent()}
     >
       <>
-        {modules.map((module) => (
-          <ModuleCheckBox
-            key={module.id}
-            module={module}
-            isSelected={isModuleSelected(module)}
-            isDisabled={false}
-            onSelectModule={() => toggleCheckbox(module)}
-          />
-        ))}
+          {modules.length > 0 ? (
+            modules.map((module: IModule) => (
+              <ModuleCheckBox
+                key={module.id}
+                module={module}
+                isSelected={isModuleSelected(module)}
+                onSelectModule={() => toggleCheckbox(module)}
+              />
+            ))
+          ) : (
+            <ContentUnavailableView
+              title={t('dashboard.noModules.title')}
+              message={t('dashboard.noModules.message')}
+              image={clipboardIcon}
+            />
+          )}
       </>
     </AppContainer>
   );

@@ -48,6 +48,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.poppinsLight,
     fontWeight: Fonts.regular,
   },
+  ellipsisIcon: {
+    height: 8,
+    width: 30,
+  }
 });
 
 export default styles;

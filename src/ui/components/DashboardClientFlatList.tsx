@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   FlatList,
-  Image,
   Text,
   TouchableOpacity
 } from 'react-native';
@@ -19,7 +18,7 @@ import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
 
-import styles from '../assets/styles/components/DashboardClientFlatList';
+import styles from '../assets/styles/components/DashboardClientFlatListStyles';
 
 type DashboardClientFlatListProps = {
   searchText: string;
@@ -28,16 +27,20 @@ type DashboardClientFlatListProps = {
 
 function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX.Element {
   const { searchText, setShowDialog } = props;
+
   const [modules, setModules] = useState<IModule[]>([]);
   const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
+  const clipboardIcon = require('../assets/images/list.clipboard.png');
+
   const navigation = useNavigation();
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const modulesFiltered = modules.filter(module =>
     module.name.toLowerCase().includes(searchText?.toLowerCase()),
   );
+
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
 
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
@@ -62,12 +65,14 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
 
   useEffect(() => {
     async function init() {
-      const apiModules = await ModuleService.getInstance().getModules();
-      const castedToken = token as IToken;
-      const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
-      const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
-      setClientModulesIDs(usersModulesIDs);
-      setModules(apiModules);
+      if (currentClient) {
+        const apiModules = await ModuleService.getInstance().getSortedModules(token);
+        const castedToken = token as IToken;
+        const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
+        const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
+        setClientModulesIDs(usersModulesIDs);
+        setModules(apiModules);
+      }
     }
     init();
   }, []);
@@ -77,11 +82,9 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
     {
       modulesFiltered.length === 0 ? (
         <ContentUnavailableView
-          title={t('dashboard.client.noModules.title')}
-          message={t('dashboard.client.noModules.message')}
-          image={(
-            <Image source={require('../assets/images/list.clipboard.png')}/>
-          )}
+          title={t('dashboard.noModules.title')}
+          message={t('dashboard.noModules.message')}
+          image={clipboardIcon}
         />
       ) : (
         <FlatList

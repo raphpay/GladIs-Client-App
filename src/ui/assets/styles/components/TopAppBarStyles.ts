@@ -30,6 +30,11 @@ const styles = StyleSheet.create({
   },
   navigationButtonContainer: {
     flexDirection: 'row'
+  },
+  chevron: {
+    width: 10,
+    height: 10,
+    resizeMode: 'contain',
   }
 });
 

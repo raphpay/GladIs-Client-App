@@ -10,7 +10,7 @@ type PDFViewerProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const NativePDFViewer = requireNativeComponent('PDFViewer');
+const NativePDFViewer = requireNativeComponent<PDFViewerProps>('PDFViewer');
 
 function PDFViewer(props: PDFViewerProps): React.JSX.Element {
 

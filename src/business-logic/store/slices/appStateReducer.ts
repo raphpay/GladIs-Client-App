@@ -2,11 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import IModule from '../../model/IModule';
 
 export interface AppState {
-  module: IModule | undefined
+  module: IModule | undefined,
+  pendingUserListCount: number,
+  clientListCount: number,
 }
 
 const initialState: AppState = {
   module: undefined,
+  pendingUserListCount: 0,
+  clientListCount: 0,
 };
 
 export const appStateSlice = createSlice({
@@ -20,9 +24,15 @@ export const appStateSlice = createSlice({
     removeModule: (state) => {
       state.module = undefined
     },
+    setPendingUserListCount: (state, action: PayloadAction<number>) => {
+      state.pendingUserListCount = action.payload;
+    },
+    setClientListCount: (state, action: PayloadAction<number>) => {
+      state.clientListCount = action.payload;
+    },
   },
 });
 
-export const { setModule, removeModule } = appStateSlice.actions;
+export const { setModule, removeModule, setPendingUserListCount, setClientListCount } = appStateSlice.actions;
 
 export default appStateSlice.reducer;

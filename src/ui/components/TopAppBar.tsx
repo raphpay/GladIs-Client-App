@@ -23,7 +23,7 @@ function TopAppBar(props: TopAppBarProps): React.JSX.Element {
             {item.title}
           </Text>
         </TouchableOpacity>
-        <Image source={require('../assets/images/chevron.right.png')}/>
+        <Image style={styles.chevron} source={require('../assets/images/chevron.right.png')}/>
       </View>
     );
   }

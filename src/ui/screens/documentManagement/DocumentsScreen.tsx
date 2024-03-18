@@ -33,6 +33,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import IconButton from '../../components/IconButton';
 
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -44,6 +45,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documentName, setDocumentName] = useState<string>('');
 
   const plusIcon = require('../../assets/images/plus.png');
+  const docIcon = require('../../assets/images/doc.fill.png');
   
   const { t } = useTranslation();
   
@@ -53,13 +55,14 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     currentScreen,
     documentsPath,
     processNumber,
-    hideModulesRoute,
   } = props.route.params;
 
   const { module } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
+  const ellipsisIcon = require('../../assets/images/ellipsis.png');
+  
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
@@ -68,6 +71,10 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     {
       title: t('dashboard.title'),
       action: () => navigateToDashboard,
+    },
+    {
+      title: t(`modules.${module?.name}`),
+      action: () => navigateToDocumentManagementScreen()
     },
     {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
@@ -108,7 +115,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
     const filename = documentName.replace(/\s/g, "_");
     let data: string = '';
-    if (Platform.OS !== 'macos') {
+    if (Platform.OS !== PlatformName.Mac) {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
       data = await Utils.getFileBase64FromURI(doc.uri) as string;
     } else {
@@ -134,20 +141,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setDocuments(docs);
   }
 
-  async function addModulesRoute() {
-    if (hideModulesRoute === undefined || hideModulesRoute === false) {
-      const moduleRoute: INavigationHistoryItem = {
-        title: t(`modules.${module?.name}`),
-        action: () => navigateToDocumentManagementScreen()
-      };
-      navigationHistoryItems.splice(1, 0, moduleRoute);
-    }
-  }
-
   useEffect(() => {
     async function init() {
       await loadDocuments();
-      addModulesRoute();
     }
     init();
   }, []);
@@ -166,8 +162,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}>
-            <Image source={require('../../assets/images/ellipsis.png')}/>
+          <TouchableOpacity style={styles.actionButton} onPress={() => console.log('hello')}>
+            <Image style={styles.ellipsisIcon} source={ellipsisIcon}/>
           </TouchableOpacity>
         </View>
         <View style={styles.separator}/>
@@ -224,9 +220,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           <ContentUnavailableView 
             title={t('documentsScreen.noDocs.title')}
             message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-            image={(
-              <Image source={require('../../assets/images/doc.fill.png')} />
-            )}
+            image={docIcon}
           />
         )
       }

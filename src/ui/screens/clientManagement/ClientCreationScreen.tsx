@@ -12,13 +12,15 @@ import IToken from '../../../business-logic/model/IToken';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
@@ -60,7 +62,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
   const { navigation } = props;
   const { pendingUser } = props.route.params;
+
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { pendingUserListCount, clientListCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
+
   const { t } = useTranslation();
 
   async function submit() {
@@ -72,19 +78,21 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }
 
   function showError(errorKeys: string []) {
-    if (errorKeys.includes('email.invalid')) {
-      if (errorKeys.includes('phoneNumber.invalid')) {
-        setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-        setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-      } else {
-        setErrorTitle(t('errors.signup.email.title'));
-        setErrorDescription(t('errors.signup.email.description'));
+    if (errorKeys.length > 0) {
+      if (errorKeys.includes('email.invalid')) {
+        if (errorKeys.includes('phoneNumber.invalid')) {
+          setErrorTitle(t('errors.signup.phoneAndEmail.title'));
+          setErrorDescription(t('errors.signup.phoneAndEmail.description'));
+        } else {
+          setErrorTitle(t('errors.signup.email.title'));
+          setErrorDescription(t('errors.signup.email.description'));
+        }
+      } else if (errorKeys.includes('phoneNumber.invalid')) {
+        setErrorTitle(t('errors.signup.phoneNumber.title'));
+        setErrorDescription(t('errors.signup.phoneNumber.description'));
       }
-    } else if (errorKeys.includes('phoneNumber.invalid')) {
-      setErrorTitle(t('errors.signup.phoneNumber.title'));
-      setErrorDescription(t('errors.signup.phoneNumber.description'));
+      setShowErrorDialog(true);
     }
-    setShowErrorDialog(true);
   }
 
   function retrieveSelectedModules(): IModule[] {
@@ -115,7 +123,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
       await createEmployees(createdUser.id as string);
       await uploadLogo();
-      navigation.goBack();
+      navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
       showError(errorKeys);
@@ -165,7 +173,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
       }
       await uploadLogo();
-      navigation.goBack(); 
+      dispatch(setClientListCount(clientListCount + 1));
+      navigateBack();
     } catch (error) {
       const errorKeys = error as string[];
       showError(errorKeys);
@@ -207,11 +216,12 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }
 
   function navigateBack() {
+    dispatch(setPendingUserListCount(pendingUserListCount + 1));
     navigation.goBack();
   }
 
   async function addLogo() {
-    if (Platform.OS === 'macos') {
+    if (Platform.OS === PlatformName.Mac) {
       const data = await FinderModule.getInstance().pickImage();
       setImageData(data);
       setLogoURI(`data:image/png;base64,${data}`);
@@ -234,10 +244,29 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
-  const isButtonDisabled = !firstName || !lastName || !phoneNumber ||
-    !companyName || !email ||
-    (products && !products.length) || (employees && !employees.length) ||
-    (numberOfUsers && !numberOfUsers.length) || (sales && !sales.length);
+  function isANumber(value: string) {
+    return !isNaN(Number(value));
+  }
+
+  function isFormFilled() {
+    let isFilled = false;
+    if (products && employees && numberOfUsers && sales) {
+      isFilled = firstName.length > 0 &&
+      lastName.length > 0 &&
+      phoneNumber.length > 0 &&
+      companyName.length > 0 &&
+      email.length > 0 &&
+      products.length > 0 &&
+      employees.length > 0 &&
+      isANumber(employees) &&
+      numberOfUsers.length > 0 &&
+      isANumber(numberOfUsers) &&
+      parseInt(employees) >= parseInt(numberOfUsers) &&
+      sales.length > 0 &&
+      isANumber(sales);
+    }
+    return isFilled;
+  }
   
   async function loadModules() {
     try {
@@ -267,18 +296,24 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
   async function loadLogo() {
     const company = pendingUser?.companyName as string;
-    const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
-    const logo = docs[0];
-    const logoData = await DocumentService.getInstance().download(logo.id as string, token);
-    Platform.OS === 'macos' ? setLogoURI(`data:image/png;base64,${logoData}`) : setLogoURI(logoData);
+    if (company) {
+      const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+      if (docs.length > 0) {
+        const logo = docs[0];
+        const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+        Platform.OS === PlatformName.Mac ?
+          setLogoURI(`data:image/png;base64,${logoData}`) :
+          setLogoURI(logoData);
+      }
+    }
   }
 
   useEffect(() => {
+    setDefaultValues();
     async function init() {
       await loadModules();
       await loadEmployees();
       await loadLogo();
-      setDefaultValues();
     }
     init();
   }, []);
@@ -301,7 +336,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       )
     );
   }
-  
 
   return (
     <>
@@ -317,7 +351,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
               width={'100%'}
               title={t('quotation.submit')}
               onPress={submit}
-              disabled={isButtonDisabled}
+              disabled={!isFormFilled()}
             />
           </View>
         )}
@@ -366,7 +400,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
               module={module}
               isSelected={isModuleSelected(module)}
               onSelectModule={() => toggleCheckbox(module)}
-              isDisabled={pendingUser != null}
             />
           ))}
           <GladisTextInput

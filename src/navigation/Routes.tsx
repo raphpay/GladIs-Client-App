@@ -59,7 +59,6 @@ export type IRootStackParams = {
     currentScreen: string,
     documentsPath: string,
     processNumber: number | undefined,
-    hideModulesRoute?: boolean,
   },
   PDFScreen: { documentInput: IDocument },
   // Tracking
@@ -72,7 +71,7 @@ export type IClientCreationStack = {
   // Client Creation
   ClientCreationStack: undefined;
   PendingClientListScreen: undefined;
-  ClientCreationScreen: { pendingUser?: IPendingUser | null};
+  ClientCreationScreen: { pendingUser?: IPendingUser | null };
 }
 
 export type IClientManagementParams = {
@@ -188,6 +187,7 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.PDFScreen}
         component={PDFScreen}
+        options={{headerShown: false}}
       />
       <RootStack.Screen
         name={NavigationRoutes.TrackingScreen}
@@ -226,19 +226,23 @@ export let Routes = () => {
   useEffect(() => {
     async function init() {
       if (token == null) {
-        const token = await AuthenticationService.getInstance().checkAuthentication();
-        setIsLoggedIn(!!token);
-        if (token != null) {
-          dispatch(setToken(token));
-          const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
-          dispatch(setCurrentUser(currentUser));
-          if (currentUser.userType !== UserType.Admin) {
-            dispatch(setCurrentClient(currentUser));
+        try {
+          const token = await AuthenticationService.getInstance().checkAuthentication();
+          setIsLoggedIn(!!token);
+          if (token != null) {
+            dispatch(setToken(token));
+            const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
+            dispatch(setCurrentUser(currentUser));
+            if (currentUser.userType !== UserType.Admin) {
+              dispatch(setCurrentClient(currentUser));
+            }
+          } else {
+            dispatch(removeToken());
+            dispatch(removeCurrentUser());
+            dispatch(removeCurrentClient());
           }
-        } else {
-          dispatch(removeToken());
-          dispatch(removeCurrentUser());
-          dispatch(removeCurrentClient());
+        } catch (error) {
+          console.log('User not authenticated', error);
         }
       }
     }

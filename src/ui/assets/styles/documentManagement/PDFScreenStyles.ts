@@ -10,6 +10,11 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
+  backButton: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16
+  }
 });
 
 export default styles;

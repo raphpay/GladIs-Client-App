@@ -1,12 +1,12 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Image, ImageSourcePropType, Text, View } from 'react-native';
 
 import styles from '../assets/styles/components/ContentUnavailableViewStyles';
 
 type ContentUnavailableViewProps = {
   title: string;
   message: string;
-  image?: JSX.Element;
+  image: ImageSourcePropType;
 };
 
 function ContentUnavailableView(props: ContentUnavailableViewProps): React.JSX.Element {
@@ -15,7 +15,7 @@ function ContentUnavailableView(props: ContentUnavailableViewProps): React.JSX.E
 
   return (
     <View style={styles.container}>
-      { image }
+      <Image source={image} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>
     </View>

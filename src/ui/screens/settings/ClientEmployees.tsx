@@ -19,6 +19,7 @@ import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
@@ -48,7 +49,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
 
   const plusIcon = require('../../assets/images/plus.png');
   const personIcon = require('../../assets/images/person.2.fill.png');
-  const ellipsisIcon = require('../../assets/images/ellipsis.png');
 
   const { t } = useTranslation();
   
@@ -275,11 +275,19 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
       }
     >
       {
-        <FlatList
-          data={employeesFiltered}
-          renderItem={(renderItem) => EmployeeRow(renderItem.item)}
-          keyExtractor={(item) => item.id}
-        />
+        employeesFiltered.length > 0 ? (
+          <FlatList
+            data={employeesFiltered}
+            renderItem={(renderItem) => EmployeeRow(renderItem.item)}
+            keyExtractor={(item) => item.id}
+          />
+        ) : (
+          <ContentUnavailableView
+            title={t('settings.clientSettings.noEmployees.title')}
+            message={t('settings.clientSettings.noEmployees.message')}
+            image={personIcon}
+          />
+        )
       }
     </AppContainer>
   );

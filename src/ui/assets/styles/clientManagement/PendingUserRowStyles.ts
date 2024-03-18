@@ -54,6 +54,11 @@ const styles = StyleSheet.create({
   tooltipButtonText: {
     fontSize: 12,
     fontFamily: Fonts.poppinsLight
+  },
+  ellipsisIcon: {
+    height: 8,
+    width: 30,
+    resizeMode: 'contain'
   }
 });
 

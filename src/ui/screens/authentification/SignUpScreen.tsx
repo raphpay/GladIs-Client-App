@@ -32,6 +32,7 @@ import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
 
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
@@ -84,17 +85,19 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
-      if (errorKeys.includes('email.invalid')) {
-        if (errorKeys.includes('phoneNumber.invalid')) {
-          setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-          setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-        } else {
-          setErrorTitle(t('errors.signup.email.title'));
-          setErrorDescription(t('errors.signup.email.description'));
+      if (errorKeys.length > 0) {
+        if (errorKeys.includes('email.invalid')) {
+          if (errorKeys.includes('phoneNumber.invalid')) {
+            setErrorTitle(t('errors.signup.phoneAndEmail.title'));
+            setErrorDescription(t('errors.signup.phoneAndEmail.description'));
+          } else {
+            setErrorTitle(t('errors.signup.email.title'));
+            setErrorDescription(t('errors.signup.email.description'));
+          }
+        } else if (errorKeys.includes('phoneNumber.invalid')) {
+          setErrorTitle(t('errors.signup.phoneNumber.title'));
+          setErrorDescription(t('errors.signup.phoneNumber.description'));
         }
-      } else if (errorKeys.includes('phoneNumber.invalid')) {
-        setErrorTitle(t('errors.signup.phoneNumber.title'));
-        setErrorDescription(t('errors.signup.phoneNumber.description'));
       }
       setShowErrorDialog(true);
     }
@@ -149,7 +152,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   }
 
   async function addLogo() {
-    if (Platform.OS === 'macos') {
+    if (Platform.OS === PlatformName.Mac) {
       const data = await FinderModule.getInstance().pickImage();
       setImageData(data);
       setLogoURI(`data:image/png;base64,${data}`);
@@ -161,8 +164,22 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     }
   }
 
-  const isButtonDisabled = firstName.length === 0 || lastName.length === 0 || phoneNumber.length === 0 || companyName.length === 0 ||
-    email.length === 0 || products.length === 0 || numberOfEmployees.length === 0 || numberOfUsers.length === 0 || sales.length === 0;
+  function isFormFilled(): boolean {
+    let isFilled = false;
+    isFilled = firstName.length > 0 &&
+    lastName.length > 0 &&
+    phoneNumber.length > 0 &&
+    companyName.length > 0 &&
+    email.length > 0 &&
+    products.length > 0 &&
+    numberOfEmployees.length > 0 &&
+    Utils.isANumber(numberOfEmployees) &&
+    numberOfUsers.length > 0 &&
+    Utils.isANumber(numberOfUsers) &&
+    sales.length > 0 &&
+    Utils.isANumber(sales);
+    return isFilled;
+  }
 
   useEffect(() => {
     async function init() {
@@ -207,7 +224,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
               width={'100%'}
               title={t('quotation.submit')}
               onPress={submit}
-              disabled={isButtonDisabled}
+              disabled={!isFormFilled()}
             />
           </View>
         )}
@@ -255,7 +272,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
               key={module.id}
               module={module}
               isSelected={isModuleSelected(module)}
-              isDisabled={false}
               onSelectModule={() => toggleCheckbox(module)}
             />
           ))}

@@ -81,9 +81,9 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
               >
                 {
                   isSecure ? (
-                    <Image source={require('../assets/images/eye.slash.fill.png')} />
+                    <Image style={styles.icon} source={require('../assets/images/eye.slash.fill.png')} />
                   ) : (
-                    <Image source={require('../assets/images/eye.fill.png')} />
+                    <Image style={styles.icon} source={require('../assets/images/eye.fill.png')} />
                   )
                 }
               </TouchableOpacity>

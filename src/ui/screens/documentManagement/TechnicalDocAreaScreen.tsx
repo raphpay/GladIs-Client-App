@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -31,7 +31,10 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [newTabName, setNewTabName] = useState<string>('');
+
   const plusIcon = require('../../assets/images/plus.png');
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
+
   const { navigation } = props;
   const { area } = props.route.params;
   const { t } = useTranslation();
@@ -130,9 +133,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
                   t('technicalDocumentation.noTabs.admin') :
                   t('technicalDocumentation.noTabs.client')
               }
-              image={(
-                <Image source={require('../../assets/images/list.clipboard.png')}/>
-              )}
+              image={clipboardIcon}
             />
           ) : (
             <FlatList

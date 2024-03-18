@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import PlatformName from "../model/enums/PlatformName";
 
 /**
  * Utility class containing various helper functions.
@@ -33,42 +34,29 @@ class Utils {
  */
   private static async uriToBlob(uri: string): Promise<Blob> {
     try {
-      console.log('uriToBlob1');
       const xhr = new XMLHttpRequest();
-      console.log('uriToBlob2');
       
       return new Promise((resolve, reject) => {
         // If successful -> return with blob
         xhr.onload = function () {
-          console.log('uriToBlob3');
-
           resolve(xhr.response);
-          console.log('uriToBlob4', xhr.response );
         };
         
         // reject on error
         xhr.onerror = function () {
-          console.log('uriToBlob5');
           reject(new Error('uriToBlob failed'));
-          console.log('uriToBlob6');
         };
         
         // Set the response type to 'blob' - this means the server's response 
         // will be accessed as a binary object
-        console.log('uriToBlob7');
         xhr.responseType = 'blob';
-        console.log('uriToBlob8');
         
         // Initialize the request. The third argument set to 'true' denotes 
         // that the request is asynchronous
-        console.log('uriToBlob9');
         xhr.open('GET', uri, true);
-        console.log('uriToBlob10');
         
         // Send the request. The 'null' argument means that no body content is given for the request
-        console.log('uriToBlob11');
         xhr.send(null);
-        console.log('uriToBlob12');
       });
     } catch (error) {
       throw new Error('uriToBlob failed');
@@ -82,7 +70,7 @@ class Utils {
    * @returns A Promise that resolves to the base64 string representation of the Blob.
    * @throws If the conversion fails.
    */
-  private static async blobToData(blob: Blob): Promise<string> {
+  static async blobToData(blob: Blob): Promise<string> {
     try {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -99,14 +87,15 @@ class Utils {
   }
   
   /**
-   * Checks if a password is valid.
-   * @param input - The password to validate.
-   * @returns A boolean indicating whether the password is valid or not.
+   * Converts a file URI to a base64 string.
+   * @param uri - The URI of the file to convert.
+   * @returns A Promise that resolves to the base64 string representation of the file.
+   * @throws If the conversion fails.
    */
   static async getFileBase64FromURI(uri: string): Promise<string> {
     let blob: Blob;
     let data: string = '';
-    if (Platform.OS === 'android') {
+    if (Platform.OS === PlatformName.Android) {
       blob = await this.uriToBlob(uri);
     } else {
       const response = await fetch(uri);
@@ -130,6 +119,16 @@ class Utils {
       return `data:${newMimeType};base64,${data}`;
     }
     return base64String;
+  }
+
+  
+  /**
+   * Checks if a given value is a valid number.
+   * @param value - The value to check.
+   * @returns `true` if the value is a valid number, `false` otherwise.
+   */
+  static isANumber(value: string) {
+    return !isNaN(Number(value));
   }
 }
 

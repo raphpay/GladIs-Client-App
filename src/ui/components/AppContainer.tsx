@@ -36,8 +36,7 @@ type AppContainerProps = {
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
-  // TODO: Improve icons resolution
-  const backIcon = require('../assets/images/arrow.uturn.left.png');
+  const backIcon = require('../assets/images/arrowshape.turn.up.left.png');
   const settingsIcon = require('../assets/images/gearshape.fill.png');
   const {
     mainTitle,
