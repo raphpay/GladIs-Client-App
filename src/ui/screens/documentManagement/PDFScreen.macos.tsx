@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  ActivityIndicator,
   SafeAreaView
 } from 'react-native';
 
@@ -17,6 +18,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import IconButton from '../../components/IconButton';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
 
+import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 
 type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PDFScreen>;
@@ -24,6 +26,8 @@ type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   const [pdfData, setPDFData] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const { navigation } = props;
   const { documentInput } = props.route.params;
   const { t } = useTranslation();
@@ -36,6 +40,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
     const data = await DocumentService.getInstance().download(documentInput.id as string, token)
     await CacheService.getInstance().storeValue(documentInput.id as string, data);
     setPDFData(data);
+    setIsLoading(false);
   }
 
   function navigateBack() {
@@ -53,23 +58,38 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
       if (cachedData === null || cachedData === undefined) {
         await loadFromAPI();
       } else {
-        setPDFData(cachedData as string)
+        setPDFData(cachedData as string);
+        setIsLoading(false);
       }
     }
     init();
   }, []);
 
+  function PDFView() {
+    return (
+      <>
+        {
+          pdfData ? (
+            <PDFViewer style={styles.pdf} dataString={pdfData} />
+          ) : (
+            <ContentUnavailableView
+              title={t('document.noDocumentFound.title')}
+              message={t('document.noDocumentFound.message')}
+              image={docIcon}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {
-        pdfData ? (
-          <PDFViewer style={styles.pdf} dataString={pdfData} />
+        isLoading ? (
+          <ActivityIndicator size="large" color={Colors.primary} />
         ) : (
-          <ContentUnavailableView
-            title={t('document.noDocumentFound.title')}
-            message={t('document.noDocumentFound.message')}
-            image={docIcon}
-          />
+          PDFView()
         )
       }
       <IconButton
