@@ -70,7 +70,7 @@ class Utils {
    * @returns A Promise that resolves to the base64 string representation of the Blob.
    * @throws If the conversion fails.
    */
-  private static async blobToData(blob: Blob): Promise<string> {
+  static async blobToData(blob: Blob): Promise<string> {
     try {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -87,9 +87,10 @@ class Utils {
   }
   
   /**
-   * Checks if a password is valid.
-   * @param input - The password to validate.
-   * @returns A boolean indicating whether the password is valid or not.
+   * Converts a file URI to a base64 string.
+   * @param uri - The URI of the file to convert.
+   * @returns A Promise that resolves to the base64 string representation of the file.
+   * @throws If the conversion fails.
    */
   static async getFileBase64FromURI(uri: string): Promise<string> {
     let blob: Blob;
