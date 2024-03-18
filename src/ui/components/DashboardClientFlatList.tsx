@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  FlatList,
   Text,
   TouchableOpacity
 } from 'react-native';
@@ -17,8 +16,9 @@ import { setModule } from '../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
+import Grid from './Grid';
 
-import styles from '../assets/styles/components/DashboardClientFlatListStyles';
+import styles from '../assets/styles/components/DashboardClientGridStyles';
 
 type DashboardClientFlatListProps = {
   searchText: string;
@@ -55,7 +55,7 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
     }
   }
 
-  function FlatListModuleItem(module: IModule) {
+  function GridModuleItem(module: IModule) {
     return (
       <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
         <Text style={styles.moduleText}>{t(`modules.${module.name}`)}</Text>
@@ -87,11 +87,9 @@ function DashboardClientFlatList(props: DashboardClientFlatListProps): React.JSX
           image={clipboardIcon}
         />
       ) : (
-        <FlatList
+        <Grid
           data={modulesFiltered}
-          numColumns={4}
-          renderItem={(renderItem) => FlatListModuleItem(renderItem.item)}
-          keyExtractor={(item) => item.id}
+          renderItem={(renderItem) => GridModuleItem(renderItem.item)}
         />
       )
     }

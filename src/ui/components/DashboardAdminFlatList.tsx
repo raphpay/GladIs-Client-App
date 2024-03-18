@@ -1,9 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  FlatList
-} from 'react-native';
 
 import IUser from '../../business-logic/model/IUser';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
@@ -13,13 +10,14 @@ import { setCurrentClient } from '../../business-logic/store/slices/userReducer'
 import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
-import FlatListClientItem from './FlatListClientItem';
+import Grid from './Grid';
+import GridClientItem from './GridClientItem';
 
-type DashboardAdminFlatListProps = {
+type DashboardAdminGridProps = {
   searchText: string;
 };
 
-function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.Element {
+function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   const { searchText } = props;
 
   const clipboardIcon = require('../assets/images/list.clipboard.png');
@@ -71,16 +69,14 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
           image={clipboardIcon}
         />
       ) : (
-            <FlatList
+            <Grid
               data={clientsFiltered}
-              numColumns={4}
               renderItem={(renderItem) => 
-                <FlatListClientItem 
+                <GridClientItem 
                   client={renderItem.item} 
                   onPress={() => navigateToClientDashboard(renderItem.item)}
                 />
               }
-              keyExtractor={(item) => item.id}
             />
           )
         }
@@ -88,4 +84,4 @@ function DashboardAdminFlatList(props: DashboardAdminFlatListProps): React.JSX.E
   );
 }
 
-export default DashboardAdminFlatList;
+export default DashboardAdminGrid;
