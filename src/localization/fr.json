@@ -253,7 +253,13 @@
   "errors": {
     "login": {
       "title": "Erreur lors de l'authentification",
-      "message": "Veuillez vérifier vos identifiants"
+      "message": "Veuillez vérifier vos identifiants",
+      "account": {
+        "blocked": {
+          "title": "Votre compte est bloqué",
+          "message": "Veuillez contacter votre fournisseur"
+        }
+      }
     },
     "logout": {
       "title": "Erreur lors de la déconnexion",

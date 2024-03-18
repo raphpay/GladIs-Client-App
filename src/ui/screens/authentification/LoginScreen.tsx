@@ -44,8 +44,13 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const user = await UserService.getInstance().getUserByID(token.user.id, token);
       dispatch(setCurrentUser(user));
     } catch (error) {
-      setErrorTitle(t('errors.login.title'));
-      setErrorDescription(t('errors.login.message'));
+      if ((error as Error).message) {
+        setErrorTitle(t(`errors.${(error as Error).message}.title`));
+        setErrorDescription(t(`errors.${(error as Error).message}.message`));
+      } else {
+        setErrorTitle(t('errors.login.title'));
+        setErrorDescription(t('errors.login.message'));
+      }
       setShowErrorDialog(true);
     }
   }
