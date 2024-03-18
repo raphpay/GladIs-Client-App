@@ -16,7 +16,7 @@ import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 
-import { removeModule } from '../../../business-logic/store/slices/appStateReducer';
+import { removeModule, setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { removeCurrentClient, removeCurrentUser } from '../../../business-logic/store/slices/userReducer';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 import ErrorDialog from '../../components/ErrorDialog';
@@ -91,13 +91,22 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   async function logout() {
     try {
       await AuthenticationService.getInstance().logout(token);
-      dispatch(removeToken());
-      dispatch(removeCurrentClient());
-      dispatch(removeCurrentUser());
-      dispatch(removeModule());
+      removeAllReduxStates();
     } catch (error) {
       setShowErrorDialog(true);
     }
+  }
+
+  function removeAllReduxStates() {
+    // App State Reducer
+    dispatch(removeModule());
+    dispatch(setPendingUserListCount(0));
+    dispatch(setClientListCount(0));
+    // Token Reducer
+    dispatch(removeToken());
+    // User Reducer
+    dispatch(removeCurrentUser());
+    dispatch(removeCurrentClient());
   }
 
   function additionalMentions() {
