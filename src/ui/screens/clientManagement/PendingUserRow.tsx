@@ -17,7 +17,6 @@ import styles from '../../assets/styles/clientManagement/PendingUserRowStyles';
 
 type PendingUserRowProps = {
   pendingUser: IPendingUser;
-  loadPendingUsers: () => Promise<void>;
   setSelectedPendingUser: React.Dispatch<React.SetStateAction<IPendingUser | undefined>>;
   setShowPendingUserDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -28,7 +27,6 @@ function PendingUserRow(props: PendingUserRowProps): React.JSX.Element {
 
   const {
     pendingUser,
-    loadPendingUsers,
     setSelectedPendingUser,
     setShowPendingUserDialog
   } = props;

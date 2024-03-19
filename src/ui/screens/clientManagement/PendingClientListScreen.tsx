@@ -205,7 +205,6 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               renderItem={(renderItem) =>
                 <PendingUserRow 
                   pendingUser={renderItem.item}
-                  loadPendingUsers={loadPendingUsers}
                   setSelectedPendingUser={setSelectedPendingUser}
                   setShowPendingUserDialog={setShowPendingUserDialog}
                 />
