@@ -2,8 +2,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import INavigationHistoryItem from '../../../business-logic/model/IAction';
 import IModule from '../../../business-logic/model/IModule';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import UserService from '../../../business-logic/services/UserService';

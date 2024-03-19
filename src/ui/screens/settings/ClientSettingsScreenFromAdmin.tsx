@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import INavigationHistoryItem from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';

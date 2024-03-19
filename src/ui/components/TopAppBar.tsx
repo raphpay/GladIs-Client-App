@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
-import INavigationHistoryItem from '../../business-logic/model/INavigationHistoryItem';
+import IAction from '../../business-logic/model/IAction';
 
 import AppIcon from './AppIcon';
 
@@ -9,13 +9,13 @@ import styles from '../assets/styles/components/TopAppBarStyles';
 
 type TopAppBarProps = {
   mainTitle: string;
-  navigationHistoryItems?: INavigationHistoryItem[];
+  navigationHistoryItems?: IAction[];
 };
 
 function TopAppBar(props: TopAppBarProps): React.JSX.Element {
   const { mainTitle, navigationHistoryItems } = props;
 
-  function NavigationButton(item: INavigationHistoryItem) {
+  function NavigationButton(item: IAction) {
     return (
       <View style={styles.navigationHistoryContainer} key={item.title}>
         <TouchableOpacity onPress={item.action}>

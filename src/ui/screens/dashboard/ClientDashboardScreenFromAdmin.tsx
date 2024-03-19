@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { removeCurrentClient } from '../../../business-logic/store/slices/userReducer';
@@ -24,7 +24,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
 
   const dispatch = useAppDispatch();
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.adminTitle'),
       action: () => navigateBack()

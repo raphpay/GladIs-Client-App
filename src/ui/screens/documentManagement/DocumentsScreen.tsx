@@ -13,10 +13,10 @@ import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import { default as IAction, default as INavigationHistoryItem } from '../../../business-logic/model/IAction';
 import IDocument from '../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../business-logic/model/IFile';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
@@ -37,12 +37,6 @@ import IconButton from '../../components/IconButton';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
-
-// TODO: Merge this and IPendingUserAction into one exportable interface
-interface IDocumentAction {
-  title: string;
-  onPress: () => void;
-}
 
 function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
@@ -88,7 +82,26 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
       action: () => navigateBack()
     }
-  ]
+  ];
+
+  const popoverActions: IAction[] = [
+    {
+      title: t('components.tooltip.open'),
+      action: () => navigateToSelectedDocument(),
+    },
+    {
+      title: t('components.tooltip.download'),
+      action: () => setShowDocumentActionDialog(false),
+    },
+    {
+      title: t('components.tooltip.request'),
+      action: () => setShowDocumentActionDialog(false),
+    },
+    {
+      title: t('components.tooltip.approve'),
+      action: () => setShowDocumentActionDialog(false),
+    },
+  ];
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
@@ -143,6 +156,17 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     await loadDocuments();
   }
 
+  function navigateToSelectedDocument() {
+    if (selectedDocument) {
+      navigateToDocument(selectedDocument)
+    }
+  }
+
+  function openDocumentActionDialog(item: IDocument) {
+    setSelectedDocument(item);
+    setShowDocumentActionDialog(true);
+  }
+
   async function loadDocuments() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
     const docs = await DocumentService.getInstance().getDocumentsAtPath(path, token);
@@ -163,37 +187,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     init();
   }, [documentListCount]);
 
-  // TODO: To be moved with the constants
-  const popoverActions: IDocumentAction[] = [
-    {
-      title: t('components.tooltip.open'),
-      onPress: () => navigateToSelectedDocument(),
-    },
-    {
-      title: t('components.tooltip.download'),
-      onPress: () => setShowDocumentActionDialog(false),
-    },
-    {
-      title: t('components.tooltip.request'),
-      onPress: () => setShowDocumentActionDialog(false),
-    },
-    {
-      title: t('components.tooltip.approve'),
-      onPress: () => setShowDocumentActionDialog(false),
-    },
-  ];
-
-  function navigateToSelectedDocument() {
-    if (selectedDocument) {
-      navigateToDocument(selectedDocument)
-    }
-  }
-
-  function openDocumentActionDialog(item: IDocument) {
-    setSelectedDocument(item);
-    setShowDocumentActionDialog(true);
-  }
-
   function DocumentActionDialog() {
     return (
       <>
@@ -207,8 +200,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               onCancel={() => setShowDocumentActionDialog(false)}
             >
               <>
-                {popoverActions.map((action: IDocumentAction, index: number) => (
-                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.onPress}>
+                {popoverActions.map((action: IAction, index: number) => (
+                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.action}>
                     <Text style={styles.popoverButtonText}>{action.title}</Text>
                   </TouchableOpacity>
                 ))}

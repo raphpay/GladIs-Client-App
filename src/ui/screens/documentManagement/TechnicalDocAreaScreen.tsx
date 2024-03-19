@@ -5,7 +5,7 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import INavigationHistoryItem from '../../../business-logic/model/IAction';
 import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentationTab';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';

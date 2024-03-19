@@ -5,8 +5,8 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import INavigationHistoryItem from '../../../business-logic/model/IAction';
 import IDocumentActivityLog from '../../../business-logic/model/IDocumentActivityLog';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
 import { useAppSelector } from '../../../business-logic/store/hooks';

@@ -10,7 +10,7 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import INavigationHistoryItem from '../../../business-logic/model/IAction';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';

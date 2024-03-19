@@ -9,7 +9,7 @@ import {
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import INavigationHistoryItem from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
