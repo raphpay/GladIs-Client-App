@@ -36,7 +36,7 @@ class DocumentService {
       const documents = await APIService.post<IDocument[]>(url, { value: path }, token?.value as string);
       return documents;
     } catch (error) {
-      console.error('Error getting documents at path:', path, error);
+      console.log('Error getting documents at path:', path, error);
       throw error;
     }
   }
@@ -56,7 +56,7 @@ class DocumentService {
         const data = await APIService.download(url, token?.value as string);
         return data;
       } catch (error) {
-        console.error('Error downloading document at id:', id, error);
+        console.log('Error downloading document at id:', id, error);
         throw error;
       }
     } else {
@@ -79,7 +79,7 @@ class DocumentService {
       const response = await APIService.post<IDocument>('documents', params, token?.value as string);
       return response as IDocument;
     } catch (error) {
-      console.error('Error uploading document', name, 'at path', path, error);
+      console.log('Error uploading document', name, 'at path', path, error);
       throw error;
     }
   }
@@ -98,7 +98,7 @@ class DocumentService {
       const response = await APIService.post<IDocument>(`${this.baseRoute}/logo`, params);
       return response as IDocument;
     } catch (error) {
-      console.error('Error uploading logo', name, 'at path', path, error);
+      console.log('Error uploading logo', name, 'at path', path, error);
       throw error;
     }
   }
