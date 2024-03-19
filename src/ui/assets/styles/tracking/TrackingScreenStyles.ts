@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   logContainer: {
     width: '100%',
     paddingVertical: 10,
-    marginHorizontal: 4
+    marginHorizontal: 4,
   },
   dateContainer: {
     flexDirection: 'row'
