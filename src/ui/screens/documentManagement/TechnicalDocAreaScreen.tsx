@@ -7,10 +7,8 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentationTab';
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import CacheService from '../../../business-logic/services/CacheService';
 import TechnicalDocumentationTabService from '../../../business-logic/services/TechnicalDocumentationTabService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
@@ -39,7 +37,9 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
 
   const { navigation } = props;
   const { area } = props.route.params;
+
   const { t } = useTranslation();
+
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
@@ -59,6 +59,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
       action: () => navigateToTechnicalDocumentation(),
     }
   ];
+
   const technicalTabsFiltered = technicalTabs.filter(technicalTab =>
     technicalTab.name.toLowerCase().includes(searchText.toLowerCase()),
   );
@@ -95,10 +96,12 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     setShowDialog(false);
   }
 
-  async function getUser() {
-    const userID = await CacheService.getInstance().retrieveValue(CacheKeys.currentUserID) as string;
-    const user = await UserService.getInstance().getUserByID(userID);
-    setIsAdmin(user.userType == UserType.Admin);
+  function getUser() {
+    if (currentUser) {
+      setIsAdmin(currentUser.userType == UserType.Admin);
+    } else {
+      setIsAdmin(false);
+    }
   }
 
   async function getTabs() {
@@ -110,8 +113,8 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   }
 
   useEffect(() => {
+    getUser();
     async function init() {
-      await getUser();
       await getTabs();
     }
     init();

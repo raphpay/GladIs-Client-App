@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -16,14 +16,18 @@ import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid';
 
+import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/tracking/TrackingScreenStyles';
 
 type TrackingScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.TrackingScreen>;
 
 function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
-  const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  
   const { navigation } = props;
+  
+  const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
@@ -49,6 +53,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
     async function init() {
       const clientLogs = await DocumentActivityLogsService.getInstance().getLogsForClient(currentClient?.id, token);
       setLogs(clientLogs.reverse());
+      setIsLoading(false);
     }
     init();
   }, []);
@@ -64,15 +69,36 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
     const dateText = `${t(`tracking.actions.${item.action}`)} ${formattedDate}`
 
     return (
-      <TouchableOpacity>
+      <TouchableOpacity style={styles.logContainer}>
         <View style={styles.logContainer}>
-          <Text style={styles.logName}>{item.name}</Text>
+          <Text style={styles.logName}>{item.name }</Text>
           <Text style={styles.actor}>{actorName}</Text>
           <Text style={styles.date}>{dateText}</Text>
         </View>
         <View style={styles.separator} />
       </TouchableOpacity>
     );
+  }
+
+  function LogGrid() {
+    return (
+      <>
+        {
+          logsFiltered && logsFiltered.length === 0 ? (
+            <ContentUnavailableView
+              title={t('tracking.noLogs.title')}
+              message={t('tracking.noLogs.message')}
+              image={clipboardIcon}
+            />
+          ) : (
+            <Grid
+              data={logsFiltered}
+              renderItem={(renderItem) => LogGridItem(renderItem.item)}
+            />
+          )
+        }
+      </>
+    )
   }
 
   return (
@@ -88,17 +114,10 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
     >
       <>
         {
-          logsFiltered && logsFiltered.length === 0 ? (
-            <ContentUnavailableView
-              title={t('tracking.noLogs.title')}
-              message={t('tracking.noLogs.message')}
-              image={clipboardIcon}
-            />
+          isLoading ? (
+            <ActivityIndicator size="large" color={Colors.primary} />
           ) : (
-            <Grid
-              data={logsFiltered}
-              renderItem={(renderItem) => LogGridItem(renderItem)}
-            />
+            LogGrid()
           )
         }
       </>
