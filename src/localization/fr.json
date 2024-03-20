@@ -296,6 +296,10 @@
       "title": "Ce module ne fait pas partie de votre abonnement",
       "description": "Veuillez contacter votre fournisseur.",
       "cancelButton": "OK"
+    },
+    "Unauthorized": {
+      "title": "Identifiants incorrects",
+      "message": "Veuillez vérifier vos identifiants"
     }
   },
   "legal": {
