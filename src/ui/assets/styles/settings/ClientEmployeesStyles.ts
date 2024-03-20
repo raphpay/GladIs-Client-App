@@ -50,19 +50,6 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.poppinsLight,
     fontWeight: Fonts.regular,
   },
-  ellipsisIcon: {
-    height: 8,
-    width: 30,
-  },
-  popoverButton: {
-    width: '500%',
-    marginVertical: 4,
-    marginBottom: 18
-  },
-  popoverButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.poppinsLight,
-  },
 });
 
 export default styles;

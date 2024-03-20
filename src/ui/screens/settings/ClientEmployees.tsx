@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
@@ -23,8 +23,8 @@ import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 import Tooltip from '../../components/Tooltip';
 
-import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
+import TooltipAction from '../../components/TooltipAction';
 
 type ClientEmployeesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientEmployees>;
 
@@ -37,12 +37,9 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployeeEmail, setPotentialEmployeeEmail] = useState<string>('');
   const [potentialEmployeePhoneNumber, setPotentialEmployeePhoneNumber] = useState<string>('');
-  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
   const [isModifyingEmployee, setIsModifiyingEmployee] = useState<boolean>(false);
   const [selectedEmployee, setSelectedEmployee] = useState<IUser>();
   const [showEmployeeDialog, setShowEmployeeDialog] = useState<boolean>(false);
-
-  const ellipsisIcon = require('../../assets/images/ellipsis.png');
 
   const [employees, setEmployees] = useState<IUser[]>([]);
   const employeesFiltered = employees.filter(employee =>
@@ -219,36 +216,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     );
   }
 
-  function employeeDialog() {
-    return (
-      <>
-        {
-          showEmployeeDialog && (
-            <Dialog
-              title='employee:'
-              isConfirmAvailable={false}
-              isCancelAvailable={true}
-              onConfirm={() => {}}
-              onCancel={() => setShowEmployeeDialog(false)}
-            >
-              <>
-                {popoverActions.map((action: IAction, index: number) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.popoverButton}
-                    onPress={action.onPress} disabled={action.isDisabled}
-                  >
-                    <Text style={[styles.popoverButtonText, {color: action.isDisabled ? Colors.inactive : Colors.primary}]}>{action.title}</Text>
-                  </TouchableOpacity>
-                ))}
-              </>
-            </Dialog>
-          )
-        }
-      </>
-    )
-  }
-
   const dialogContent = () => {
     return (
       <Dialog
@@ -299,7 +266,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         setShowDialog={setShowDialog}
         dialogIsShown={showDialog}
         dialog={dialogContent()}
-        hideTooltip={() => setIsTooltipVisible(false)}
         adminButton={
           <IconButton
             title={t('components.buttons.addEmployee')}
@@ -323,7 +289,15 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
           )
         }
       </AppContainer>
-      {employeeDialog()}
+      <TooltipAction
+        showDialog={showEmployeeDialog}
+        title={dialogTitle}
+        description={dialogDescription}
+        isCancelAvailable={true}
+        onConfirm={addOrModifyEmployee}
+        onCancel={() => setShowEmployeeDialog(false)}
+        popoverActions={popoverActions}
+      />
     </>
   );
 }
