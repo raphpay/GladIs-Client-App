@@ -222,7 +222,6 @@ export let Routes = () => {
     setIsLoggedIn(!!token);
   }, [token]);
 
-
   useEffect(() => {
     async function init() {
       if (token == null) {

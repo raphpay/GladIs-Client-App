@@ -43,7 +43,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const token = await AuthenticationService.getInstance().login(identifier, password);
       const user = await UserService.getInstance().getUserByID(token.user.id, token);
       dispatch(setCurrentUser(user));
-      if (user.userType === UserType.Client || user.userType === UserType.Employee) {
+      if (user.userType !== UserType.Admin) {
         dispatch(setCurrentClient(user));
       }
       dispatch(setToken(token));

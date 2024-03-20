@@ -64,19 +64,30 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
     )
   }
 
+  async function loadModules() {
+    if (currentClient) {
+      const apiModules = await ModuleService.getInstance().getSortedModules(token);
+      const castedToken = token as IToken;
+      const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
+      const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
+      setClientModulesIDs(usersModulesIDs);
+      setModules(apiModules);
+    }
+  }
+
   useEffect(() => {
     async function init() {
-      if (currentClient) {
-        const apiModules = await ModuleService.getInstance().getSortedModules(token);
-        const castedToken = token as IToken;
-        const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
-        const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
-        setClientModulesIDs(usersModulesIDs);
-        setModules(apiModules);
-      }
+      await loadModules();
     }
     init();
   }, []);
+  
+  useEffect(() => {
+    async function reload() {
+      await loadModules();
+    }
+    reload();
+  }, [currentClient]);
   
   return (
     <>
