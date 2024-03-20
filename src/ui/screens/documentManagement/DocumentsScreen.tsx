@@ -22,6 +22,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../business-logic/modules/FinderModule';
+import CacheService from '../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -164,8 +165,22 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     init();
   }, [documentListCount]);
 
-  function download(document: IDocument) {
-    console.log('download', document);
+  async function download(document: IDocument) {
+    const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
+    if (cachedData === null || cachedData == undefined) {
+      let docData = await DocumentService.getInstance().download(document.id, token);
+      docData = Utils.changeMimeType(docData, 'application/pdf');
+      await CacheService.getInstance().storeValue(document.id as string, docData);
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Loaded,
+        actorIsAdmin: true,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: document.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    }
+    setShowDocumentActionDialog(false);
   }
 
   function approveDocument(document: IDocument) {
