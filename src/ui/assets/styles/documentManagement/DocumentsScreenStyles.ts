@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -62,7 +61,6 @@ const styles = StyleSheet.create({
   popoverButtonText: {
     fontSize: 14,
     fontFamily: Fonts.poppinsLight,
-    color: Colors.primary,
   },
 });
 

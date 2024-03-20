@@ -13,6 +13,7 @@ import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import IAction from '../../../business-logic/model/IAction';
 import IDocument, { DocumentStatus } from '../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../business-logic/model/IFile';
@@ -35,9 +36,8 @@ import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 
+import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
-// TODO: Create a refactor interface
-import { ITooltipAction } from '../../components/Tooltip';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
@@ -196,7 +196,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDocumentActionDialog(false);
   }
 
-  const popoverActions: ITooltipAction[] = [
+  const popoverActions: IAction[] = [
     {
       title: t('components.dialog.documentActions.open'),
       onPress: () => navigateToDocument(selectedDocument as IDocument),
@@ -208,6 +208,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     {
       title: t('components.dialog.documentActions.approve'),
       onPress: () => approveDocument(selectedDocument as IDocument),
+      isDisabled: currentUser?.userType === UserType.Employee,
     }
   ];
 
@@ -224,9 +225,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               onCancel={() => setShowDocumentActionDialog(false)}
             >
               <>
-                {popoverActions.map((action: ITooltipAction, index: number) => (
-                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.onPress}>
-                    <Text style={styles.popoverButtonText}>{action.title}</Text>
+                {popoverActions.map((action: IAction, index: number) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.popoverButton}
+                    onPress={action.onPress} disabled={action.isDisabled}
+                  >
+                    <Text style={[styles.popoverButtonText, {color: action.isDisabled ? Colors.inactive : Colors.primary}]}>{action.title}</Text>
                   </TouchableOpacity>
                 ))}
               </>

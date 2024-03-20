@@ -8,6 +8,7 @@ import {
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
+import IAction from '../../../business-logic/model/IAction';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -23,7 +24,7 @@ import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
-import Tooltip, { ITooltipAction } from '../../components/Tooltip';
+import Tooltip from '../../components/Tooltip';
 
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
 
@@ -64,7 +65,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   ];
 
-  const popoverActions: ITooltipAction[] = [
+  const popoverActions: IAction[] = [
     {
       title: t('components.tooltip.modify'),
       onPress: () => showModifyEmployeeDialog(selectedEmployee as IUser)
@@ -81,7 +82,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
 
   async function loadEmployees() {
     if (currentClient && token) {
-      const clientEmployees = await UserService.getInstance().getClientEmployees(currentClient.id, token);
+      const clientEmployees = await UserService.getInstance().getClientEmployees(currentClient.id as string, token);
       setEmployees(clientEmployees);
     }
   }

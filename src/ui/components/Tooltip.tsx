@@ -1,17 +1,13 @@
 import React, { useRef } from 'react';
 import { Animated, Image, Text, TouchableOpacity, View } from 'react-native';
+import IAction from '../../business-logic/model/IAction';
 import styles from '../assets/styles/components/TooltipStyles';
 
-
-export interface ITooltipAction {
-  title: string;
-  onPress: () => void;
-}
 
 type TooltipProps = {
   isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  popoverActions: ITooltipAction[];
+  popoverActions: IAction[];
   selectedItem: any;
   setSelectedItem: React.Dispatch<React.SetStateAction<any>>;
 };
@@ -35,7 +31,7 @@ const Tooltip = (props: TooltipProps) => {
   function popover() {
     return (
       <View style={styles.popoverButton}>
-        {popoverActions.map((action: ITooltipAction, index: number) => (
+        {popoverActions.map((action: IAction, index: number) => (
           <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.onPress}>
             <Text style={styles.popoverButtonText}>{action.title}</Text>
           </TouchableOpacity>
