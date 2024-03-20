@@ -54,8 +54,8 @@ class AuthenticationService {
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserID);
       await CacheService.getInstance().removeValueAt(CacheKeys.currentUserToken);
     } catch (error) {
-      // TODO: Remove all console.error
-      console.error('Error logging user out', error);
+      // TODO: Remove all console.log
+      console.log('Error logging user out', error);
       throw error;
     }
   }
@@ -71,7 +71,7 @@ class AuthenticationService {
       const tokens = await APIService.get<IToken[]>(this.baseRoute, adminToken?.value);
       return tokens;
     } catch (error) {
-      console.error('Error getting tokens', error);
+      console.log('Error getting tokens', error);
       throw error;
     }
   }
@@ -96,7 +96,7 @@ class AuthenticationService {
         }
       }
     } catch (error) {
-      console.error('Error removing token for user', error);
+      console.log('Error removing token for user', error);
       throw error;
     }
   }

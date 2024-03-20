@@ -91,7 +91,7 @@ class PendingUserService {
       const pendingUsers = await APIService.get<IPendingUser[]>(this.baseRoute, token.value);
       return pendingUsers;
     } catch (error) {
-      console.error('Error getting user by ID:', error);
+      console.log('Error getting user by ID:', error);
       throw error;
     }
   }
@@ -109,7 +109,7 @@ class PendingUserService {
       const pendingUser = await APIService.get<IPendingUser>(`${this.baseRoute}/${id}`, castedToken?.value);
       return pendingUser;
     } catch (error) {
-      console.error('Error getting pending user by id:', id, error);
+      console.log('Error getting pending user by id:', id, error);
       throw error;
     }
   }
@@ -130,7 +130,7 @@ class PendingUserService {
       }
       return moduleIDs;
     } catch (error) {
-      console.error('Error getting pending user\'s modules for id:', id, error);
+      console.log('Error getting pending user\'s modules for id:', id, error);
       throw error;
     }
   }
@@ -147,7 +147,7 @@ class PendingUserService {
       const employees = await APIService.get<IPotentialEmployee[]>(`${this.baseRoute}/${id}/employees`, token?.value);
       return employees;
     } catch (error) {
-      console.error('Error getting pending user\'s employees for id:', id, error);
+      console.log('Error getting pending user\'s employees for id:', id, error);
       throw error;
     }
   }
@@ -165,7 +165,7 @@ class PendingUserService {
       const id = pendingUser.id as string;
       await APIService.put(`${this.baseRoute}/${id}/status`, { "type": status }, token?.value);
     } catch (error) {
-      console.error('Error updating pending user status', pendingUser, status, error);
+      console.log('Error updating pending user status', pendingUser, status, error);
       throw error;
     }
   }
@@ -181,7 +181,7 @@ class PendingUserService {
     try {
       await APIService.delete(`${this.baseRoute}/${id}`, token?.value);
     } catch (error) {
-      console.error('Error deleting pending user', id, error);
+      console.log('Error deleting pending user', id, error);
       throw error;
     }
   }

@@ -296,6 +296,10 @@
       "title": "This module is not part of your subscription",
       "description": "Please contact you provider.",
       "cancelButton": "OK"
+    },
+    "Unauthorized": {
+      "title": "Wrong username or password",
+      "message": "Please verify your credentials"
     }
   },
   "legal": {
