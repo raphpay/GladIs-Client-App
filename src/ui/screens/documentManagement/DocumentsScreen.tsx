@@ -35,6 +35,8 @@ import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
+// TODO: Create a refactor interface
+import { ITooltipAction } from '../../components/Tooltip';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
@@ -42,7 +44,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
   const [documentName, setDocumentName] = useState<string>('');
+  const [selectedDocument, setSelectedDocument] = useState<IDocument>();
 
   const plusIcon = require('../../assets/images/plus.png');
   const docIcon = require('../../assets/images/doc.fill.png');
@@ -111,6 +115,11 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDialog(true);
   }
 
+  function showDocumentDialog(item: IDocument) {
+    setSelectedDocument(item);
+    setShowDocumentActionDialog(true);
+  }
+
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
     const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
@@ -155,6 +164,55 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     init();
   }, [documentListCount]);
 
+  function download(document: IDocument) {
+    console.log('download', document);
+  }
+
+  function approveDocument(document: IDocument) {
+    console.log('approveDocument', document);
+  }
+
+  const popoverActions: ITooltipAction[] = [
+    {
+      title: t('components.dialog.documentActions.open'),
+      onPress: () => navigateToDocument(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.download'),
+      onPress: () => download(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.approve'),
+      onPress: () => approveDocument(selectedDocument as IDocument),
+    }
+  ];
+
+  function documentActionDialog() {
+    return (
+      <>
+        {
+          showDocumentActionDialog && (
+            <Dialog
+              title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+              isConfirmAvailable={false}
+              isCancelAvailable={true}
+              onConfirm={() => {}}
+              onCancel={() => setShowDocumentActionDialog(false)}
+            >
+              <>
+                {popoverActions.map((action: ITooltipAction, index: number) => (
+                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.onPress}>
+                    <Text style={styles.popoverButtonText}>{action.title}</Text>
+                  </TouchableOpacity>
+                ))}
+              </>
+            </Dialog>
+          )
+        }
+      </>
+    )
+  }
+
   function DocumentRow(item: IDocument) {
     return (
       <View style={styles.documentLineContainer}>
@@ -169,7 +227,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={() => console.log('hello')}>
+          <TouchableOpacity style={styles.actionButton} onPress={() => showDocumentDialog(item)}>
             <Image style={styles.ellipsisIcon} source={ellipsisIcon}/>
           </TouchableOpacity>
         </View>
@@ -179,58 +237,61 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   return (
-    <AppContainer
-      mainTitle={t(currentScreen)}
-      navigationHistoryItems={navigationHistoryItems}
-      searchText={searchText}
-      setSearchText={setSearchText}
-      showBackButton={true}
-      showSearchText={true}
-      navigateBack={navigateBack}
-      showDialog={showDialog}
-      showSettings={true}
-      adminButton={
-        currentUser?.userType == UserType.Admin ? (
-          <IconButton
-            title={t('components.buttons.addDocument')}
-            icon={plusIcon}
-            onPress={addDocument}
-          />
-        ) : undefined
-      }
-      dialog={
-        <Dialog
-          title={t('components.dialog.addDocument.title')}
-          confirmTitle={t('components.dialog.addDocument.confirmButton')}
-          onConfirm={pickAFile}
-          isCancelAvailable={true}
-          onCancel={() => setShowDialog(false)}
-          isConfirmDisabled={documentName.length === 0}
-        >
-          <TextInput
-            value={documentName}
-            onChangeText={setDocumentName}
-            placeholder={t('components.dialog.addDocument.placeholder')}
-            style={styles.dialogInput}
-          />
-        </Dialog>
-      }
-    >
-      {
-        documentsFiltered.length !== 0 ? (
-          <Grid
-            data={documentsFiltered}
-            renderItem={(renderItem) => DocumentRow(renderItem.item)}
-          />
-        ) : (
-          <ContentUnavailableView 
-            title={t('documentsScreen.noDocs.title')}
-            message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-            image={docIcon}
-          />
-        )
-      }
-    </AppContainer>
+    <>
+      <AppContainer
+        mainTitle={t(currentScreen)}
+        navigationHistoryItems={navigationHistoryItems}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showBackButton={true}
+        showSearchText={true}
+        navigateBack={navigateBack}
+        showDialog={showDialog}
+        showSettings={true}
+        adminButton={
+          currentUser?.userType == UserType.Admin ? (
+            <IconButton
+              title={t('components.buttons.addDocument')}
+              icon={plusIcon}
+              onPress={addDocument}
+            />
+          ) : undefined
+        }
+        dialog={
+          <Dialog
+            title={t('components.dialog.addDocument.title')}
+            confirmTitle={t('components.dialog.addDocument.confirmButton')}
+            onConfirm={pickAFile}
+            isCancelAvailable={true}
+            onCancel={() => setShowDialog(false)}
+            isConfirmDisabled={documentName.length === 0}
+          >
+            <TextInput
+              value={documentName}
+              onChangeText={setDocumentName}
+              placeholder={t('components.dialog.addDocument.placeholder')}
+              style={styles.dialogInput}
+            />
+          </Dialog>
+        }
+      >
+        {
+          documentsFiltered.length !== 0 ? (
+            <Grid
+              data={documentsFiltered}
+              renderItem={(renderItem) => DocumentRow(renderItem.item)}
+            />
+          ) : (
+            <ContentUnavailableView 
+              title={t('documentsScreen.noDocs.title')}
+              message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
+              image={docIcon}
+            />
+          )
+        }
+      </AppContainer>
+      {documentActionDialog()}
+    </>
   );
 }
 

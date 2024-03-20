@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -51,7 +52,18 @@ const styles = StyleSheet.create({
   ellipsisIcon: {
     height: 8,
     width: 30,
-  }
+  },
+  // TODO: Create component for this
+  popoverButton: {
+    width: '500%',
+    marginVertical: 4,
+    marginBottom: 18
+  },
+  popoverButtonText: {
+    fontSize: 14,
+    fontFamily: Fonts.poppinsLight,
+    color: Colors.primary,
+  },
 });
 
 export default styles;
