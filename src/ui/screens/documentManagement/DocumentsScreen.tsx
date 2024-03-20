@@ -13,7 +13,7 @@ import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import IDocument from '../../../business-logic/model/IDocument';
+import IDocument, { DocumentStatus } from '../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../business-logic/model/IFile';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
@@ -183,8 +183,17 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDocumentActionDialog(false);
   }
 
-  function approveDocument(document: IDocument) {
-    console.log('approveDocument', document);
+  async function approveDocument(document: IDocument) {
+    await DocumentService.getInstance().updateStatus(document.id, DocumentStatus.APPROVED, token);
+    const logInput: IDocumentActivityLogInput = {
+      action: DocumentLogAction.Approbation,
+      actorIsAdmin: true,
+      actorID: currentUser?.id as string,
+      clientID: currentClient?.id as string,
+      documentID: document.id,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    setShowDocumentActionDialog(false);
   }
 
   const popoverActions: ITooltipAction[] = [
