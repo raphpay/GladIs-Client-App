@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
@@ -21,6 +21,7 @@ import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Tooltip from '../../components/Tooltip';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
@@ -180,6 +181,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   }
 
+  // TODO: Add translations
   function showAddEmployeeDialog() {
     setShowDialog(true);
     setIsModifiyingEmployee(false);
@@ -210,9 +212,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
               </Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.actionButton} onPress={() => displayEmployeeDialog(item)}>
-            <Image style={styles.ellipsisIcon} source={ellipsisIcon}/>
-          </TouchableOpacity>
+          <Tooltip action={() => displayEmployeeDialog(item)} />
         </View>
         <View style={styles.separator}/>
       </View>

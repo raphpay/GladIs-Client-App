@@ -35,8 +35,9 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Tooltip from '../../components/Tooltip';
+import TooltipAction from '../../components/TooltipAction';
 
-import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -65,8 +66,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { module, documentListCount } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
-
-  const ellipsisIcon = require('../../assets/images/ellipsis.png');
   
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
@@ -85,7 +84,23 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
       action: () => navigateBack()
     }
-  ]
+  ];
+
+  const popoverActions: IAction[] = [
+    {
+      title: t('components.dialog.documentActions.open'),
+      onPress: () => navigateToDocument(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.download'),
+      onPress: () => download(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.approve'),
+      onPress: () => approveDocument(selectedDocument as IDocument),
+      isDisabled: currentUser?.userType === UserType.Employee,
+    }
+  ];
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
@@ -145,26 +160,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     await loadDocuments();
   }
 
-  async function loadDocuments() {
-    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    const docs = await DocumentService.getInstance().getDocumentsAtPath(path, token);
-    setDocuments(docs);
-  }
-
-  useEffect(() => {
-    async function init() {
-      await loadDocuments();
-    }
-    init();
-  }, []);
-
-  useEffect(() => {
-    async function init() {
-      await loadDocuments();
-    }
-    init();
-  }, [documentListCount]);
-
   async function download(document: IDocument) {
     const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
     if (cachedData === null || cachedData == undefined) {
@@ -196,51 +191,25 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDocumentActionDialog(false);
   }
 
-  const popoverActions: IAction[] = [
-    {
-      title: t('components.dialog.documentActions.open'),
-      onPress: () => navigateToDocument(selectedDocument as IDocument),
-    },
-    {
-      title: t('components.dialog.documentActions.download'),
-      onPress: () => download(selectedDocument as IDocument),
-    },
-    {
-      title: t('components.dialog.documentActions.approve'),
-      onPress: () => approveDocument(selectedDocument as IDocument),
-      isDisabled: currentUser?.userType === UserType.Employee,
-    }
-  ];
-
-  function documentActionDialog() {
-    return (
-      <>
-        {
-          showDocumentActionDialog && (
-            <Dialog
-              title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
-              isConfirmAvailable={false}
-              isCancelAvailable={true}
-              onConfirm={() => {}}
-              onCancel={() => setShowDocumentActionDialog(false)}
-            >
-              <>
-                {popoverActions.map((action: IAction, index: number) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.popoverButton}
-                    onPress={action.onPress} disabled={action.isDisabled}
-                  >
-                    <Text style={[styles.popoverButtonText, {color: action.isDisabled ? Colors.inactive : Colors.primary}]}>{action.title}</Text>
-                  </TouchableOpacity>
-                ))}
-              </>
-            </Dialog>
-          )
-        }
-      </>
-    )
+  async function loadDocuments() {
+    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+    const docs = await DocumentService.getInstance().getDocumentsAtPath(path, token);
+    setDocuments(docs);
   }
+
+  useEffect(() => {
+    async function init() {
+      await loadDocuments();
+    }
+    init();
+  }, []);
+
+  useEffect(() => {
+    async function init() {
+      await loadDocuments();
+    }
+    init();
+  }, [documentListCount]);
 
   function DocumentRow(item: IDocument) {
     return (
@@ -256,9 +225,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={() => showDocumentDialog(item)}>
-            <Image style={styles.ellipsisIcon} source={ellipsisIcon}/>
-          </TouchableOpacity>
+          <Tooltip action={() => showDocumentDialog(item)} />
         </View>
         <View style={styles.separator}/>
       </View>
@@ -319,7 +286,15 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           )
         }
       </AppContainer>
-      {documentActionDialog()}
+      <TooltipAction
+        showDialog={showDocumentActionDialog}
+        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+        isConfirmAvailable={false}
+        isCancelAvailable={true}
+        onConfirm={() => {}}
+        onCancel={() => setShowDocumentActionDialog(false)}
+        popoverActions={popoverActions}
+      />
     </>
   );
 }
