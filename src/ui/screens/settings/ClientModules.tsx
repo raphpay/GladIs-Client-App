@@ -2,7 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import INavigationHistoryItem from '../../../business-logic/model/IAction';
+import IAction from '../../../business-logic/model/IAction';
 import IModule from '../../../business-logic/model/IModule';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../../business-logic/services/ModuleService';
@@ -34,10 +34,10 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('settings.title'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ];
 

@@ -5,7 +5,7 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/IAction';
+import IAction from '../../../business-logic/model/IAction';
 import IDocumentActivityLog from '../../../business-logic/model/IDocumentActivityLog';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
@@ -37,10 +37,10 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   const logsFiltered = logs.filter(log =>
     log.name.toLowerCase().includes(searchText.toLowerCase()),
   );
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ]
 

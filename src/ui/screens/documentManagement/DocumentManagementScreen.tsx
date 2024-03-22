@@ -10,7 +10,7 @@ import {
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import INavigationHistoryItem from '../../../business-logic/model/IAction';
+import IAction from '../../../business-logic/model/IAction';
 import ISubCategory from '../../../business-logic/model/ISubCategory';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
@@ -48,10 +48,10 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
     subCategory.title.toLowerCase().includes(searchText.toLowerCase()),
   );
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ]
 
