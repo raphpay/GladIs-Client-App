@@ -237,6 +237,10 @@
         "title": "Modifier cet employé",
         "description": "Veuillez modifier les champs désirés"
       },
+      "deleteEmployee": {
+        "title": "Etes-vous sûr de vouloir supprimer",
+        "description": "La suppression est définitive."
+      },
       "removeModule": {
         "title": "Etes-vous sûr de vouloir supprimer ce module ?",
         "description": "Le module sera supprimé de la souscription du client."

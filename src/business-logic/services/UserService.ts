@@ -307,7 +307,39 @@ class UserService {
     }
   }
 
+  /**
+   * Removes an employee from a manager.
+   * @param managerID - The ID of the manager.
+   * @param employeeID - The ID of the employee.
+   * @param token - The authentication token.
+   * @returns The updated manager.
+   * @throws If an error occurs while removing the employee from the manager.
+   */
+  async removeEmployeeFromManager(managerID: string, employeeID: string, token: IToken | null): Promise<IUser> {
+    try {
+      const manager = await APIService.put(`${this.baseRoute}/${managerID}/remove/${employeeID}`, null, token?.value as string);
+      return manager;
+    } catch (error) {
+      console.log('Error removing employee from manager', error);
+      throw error;
+    }
+  }
+
   // DELETE
+  /**
+   * Removes a user.
+   * @param id - The ID of the user to remove.
+   * @param token - The authentication token.
+   * @throws If an error occurs while removing the user.
+   * @returns A promise that resolves when the user is removed.
+   */
+  async removeUser(id: string, token: IToken | null): Promise<void> {
+    try {
+      await APIService.delete(`${this.baseRoute}/${id}`, token?.value as string);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default UserService;
