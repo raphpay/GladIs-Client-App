@@ -39,6 +39,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const [isModifyingEmployee, setIsModifiyingEmployee] = useState<boolean>(false);
   const [selectedEmployee, setSelectedEmployee] = useState<IUser>();
   const [showEmployeeDialog, setShowEmployeeDialog] = useState<boolean>(false);
+  const [showDeleteEmployeeDialog, setShowDeleteEmployeeDialog] = useState<boolean>(false);
 
   const [employees, setEmployees] = useState<IUser[]>([]);
   const employeesFiltered = employees.filter(employee =>
@@ -69,7 +70,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     },
     {
       title: t('components.buttons.delete'),
-      onPress: () => console.log('delete')
+      onPress: () => displayDeleteEmployeeDialog(selectedEmployee as IUser)
     }
   ];
 
@@ -190,10 +191,31 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     setShowEmployeeDialog(true);
   }
 
+  function displayDeleteEmployeeDialog(employee: IUser) {
+    setShowEmployeeDialog(false);
+    setShowDeleteEmployeeDialog(true);
+    setDialogTitle(`${t('components.dialog.deleteEmployee.title')} ${employee.username} ?`);
+    setDialogDescription(t('components.dialog.deleteEmployee.description'));
+  }
+
   function resetDialog() {
     setShowDialog(false);
+    setShowDeleteEmployeeDialog(false);
     setDialogTitle('');
     setDialogDescription('');
+  }
+
+  async function deleteSelectedEmployee() {
+    if (selectedEmployee) {
+      try {
+        await UserService.getInstance().removeUser(selectedEmployee?.id as string, token);
+        await UserService.getInstance().removeEmployeeFromManager(currentClient?.id as string, selectedEmployee.id as string, token);
+        resetDialog();
+        await loadEmployees();
+      } catch (error) {
+        console.log('Error deleting selected employee', error);
+      }
+    }
   }
 
   useEffect(() => {
@@ -256,6 +278,24 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     )
   }
 
+  function deleteEmployeeDialog() {
+    return (
+      <>
+        {
+          showDeleteEmployeeDialog && (
+            <Dialog
+              title={dialogTitle}
+              description={dialogDescription}
+              onConfirm={deleteSelectedEmployee}
+              onCancel={resetDialog}
+              isCancelAvailable={true}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -294,6 +334,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
           )
         }
       </AppContainer>
+      {deleteEmployeeDialog()}
       <TooltipAction
         showDialog={showEmployeeDialog}
         title={dialogTitle}

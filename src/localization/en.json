@@ -237,6 +237,10 @@
         "title": "Modify this employee",
         "description": "Please modify the desired fields"
       },
+      "deleteEmployee": {
+        "title": "Are you sure you want to delete",
+        "description": "The deletion is definitive."
+      },
       "removeModule": {
         "title": "Are you sure you want to remove this module ?",
         "description": "The module will be removed from the client's subscription."
