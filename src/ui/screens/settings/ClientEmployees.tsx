@@ -1,13 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Text,
-  View
-} from 'react-native';
+import { Text, View } from 'react-native';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
+import IAction from '../../../business-logic/model/IAction';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -23,9 +21,10 @@ import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
-import Tooltip, { ITooltipAction } from '../../components/Tooltip';
+import Tooltip from '../../components/Tooltip';
 
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
+import TooltipAction from '../../components/TooltipAction';
 
 type ClientEmployeesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientEmployees>;
 
@@ -38,9 +37,9 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployeeEmail, setPotentialEmployeeEmail] = useState<string>('');
   const [potentialEmployeePhoneNumber, setPotentialEmployeePhoneNumber] = useState<string>('');
-  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
   const [isModifyingEmployee, setIsModifiyingEmployee] = useState<boolean>(false);
   const [selectedEmployee, setSelectedEmployee] = useState<IUser>();
+  const [showEmployeeDialog, setShowEmployeeDialog] = useState<boolean>(false);
 
   const [employees, setEmployees] = useState<IUser[]>([]);
   const employeesFiltered = employees.filter(employee =>
@@ -64,7 +63,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   ];
 
-  const popoverActions: ITooltipAction[] = [
+  const popoverActions: IAction[] = [
     {
       title: t('components.tooltip.modify'),
       onPress: () => showModifyEmployeeDialog(selectedEmployee as IUser)
@@ -81,7 +80,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
 
   async function loadEmployees() {
     if (currentClient && token) {
-      const clientEmployees = await UserService.getInstance().getClientEmployees(currentClient.id, token);
+      const clientEmployees = await UserService.getInstance().getClientEmployees(currentClient.id as string, token);
       setEmployees(clientEmployees);
     }
   }
@@ -166,6 +165,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   }
 
   function showModifyEmployeeDialog(employee: IUser) {
+    setShowEmployeeDialog(false);
     setIsModifiyingEmployee(true);
     setShowDialog(true);
     if (employee) {
@@ -178,11 +178,17 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   }
 
+  // TODO: Add translations
   function showAddEmployeeDialog() {
     setShowDialog(true);
     setIsModifiyingEmployee(false);
     setDialogTitle(t('components.dialog.addEmployee.title'));
     setDialogDescription(t('components.dialog.addEmployee.description'));
+  }
+
+  function displayEmployeeDialog(item: IUser) {
+    setSelectedEmployee(item);
+    setShowEmployeeDialog(true);
   }
 
   useEffect(() => {
@@ -203,13 +209,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
               </Text>
             </View>
           </View>
-          <Tooltip
-            isVisible={isTooltipVisible}
-            setIsVisible={setIsTooltipVisible}
-            popoverActions={popoverActions}
-            selectedItem={item}
-            setSelectedItem={setSelectedEmployee}
-          />
+          <Tooltip action={() => displayEmployeeDialog(item)} />
         </View>
         <View style={styles.separator}/>
       </View>
@@ -252,43 +252,53 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   }
 
   return (
-    <AppContainer
-      mainTitle={t('settings.clientSettings.employees')}
-      searchText={searchText}
-      setSearchText={setSearchText}
-      showSearchText={true}
-      showSettings={false}
-      navigationHistoryItems={navigationHistoryItems}
-      showBackButton={true}
-      navigateBack={navigateBack}
-      showDialog={showDialog}
-      setShowDialog={setShowDialog}
-      dialogIsShown={showDialog}
-      dialog={dialogContent()}
-      hideTooltip={() => setIsTooltipVisible(false)}
-      adminButton={
-        <IconButton
-          title={t('components.buttons.addEmployee')}
-          icon={plusIcon}
-          onPress={showAddEmployeeDialog}
-        />
-      }
-    >
-      {
-        employeesFiltered.length > 0 ? (
-          <Grid
-            data={employeesFiltered}
-            renderItem={(renderItem) => EmployeeRow(renderItem.item)}
+    <>
+      <AppContainer
+        mainTitle={t('settings.clientSettings.employees')}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showSearchText={true}
+        showSettings={false}
+        navigationHistoryItems={navigationHistoryItems}
+        showBackButton={true}
+        navigateBack={navigateBack}
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+        dialogIsShown={showDialog}
+        dialog={dialogContent()}
+        adminButton={
+          <IconButton
+            title={t('components.buttons.addEmployee')}
+            icon={plusIcon}
+            onPress={showAddEmployeeDialog}
           />
-        ) : (
-          <ContentUnavailableView
-            title={t('settings.clientSettings.noEmployees.title')}
-            message={t('settings.clientSettings.noEmployees.message')}
-            image={personIcon}
-          />
-        )
-      }
-    </AppContainer>
+        }
+      >
+        {
+          employeesFiltered.length > 0 ? (
+            <Grid
+              data={employeesFiltered}
+              renderItem={(renderItem) => EmployeeRow(renderItem.item)}
+            />
+          ) : (
+            <ContentUnavailableView
+              title={t('settings.clientSettings.noEmployees.title')}
+              message={t('settings.clientSettings.noEmployees.message')}
+              image={personIcon}
+            />
+          )
+        }
+      </AppContainer>
+      <TooltipAction
+        showDialog={showEmployeeDialog}
+        title={dialogTitle}
+        description={dialogDescription}
+        isCancelAvailable={true}
+        onConfirm={addOrModifyEmployee}
+        onCancel={() => setShowEmployeeDialog(false)}
+        popoverActions={popoverActions}
+      />
+    </>
   );
 }
 

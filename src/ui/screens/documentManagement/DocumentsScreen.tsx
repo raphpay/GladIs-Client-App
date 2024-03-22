@@ -13,7 +13,8 @@ import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import IDocument from '../../../business-logic/model/IDocument';
+import IAction from '../../../business-logic/model/IAction';
+import IDocument, { DocumentStatus } from '../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../business-logic/model/IFile';
 import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
@@ -22,6 +23,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../business-logic/modules/FinderModule';
+import CacheService from '../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -33,6 +35,8 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Tooltip from '../../components/Tooltip';
+import TooltipAction from '../../components/TooltipAction';
 
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
@@ -42,7 +46,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
   const [documentName, setDocumentName] = useState<string>('');
+  const [selectedDocument, setSelectedDocument] = useState<IDocument>();
 
   const plusIcon = require('../../assets/images/plus.png');
   const docIcon = require('../../assets/images/doc.fill.png');
@@ -60,8 +66,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { module, documentListCount } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
-
-  const ellipsisIcon = require('../../assets/images/ellipsis.png');
   
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
@@ -80,7 +84,23 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
       action: () => navigateBack()
     }
-  ]
+  ];
+
+  const popoverActions: IAction[] = [
+    {
+      title: t('components.dialog.documentActions.open'),
+      onPress: () => navigateToDocument(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.download'),
+      onPress: () => download(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.approve'),
+      onPress: () => approveDocument(selectedDocument as IDocument),
+      isDisabled: currentUser?.userType === UserType.Employee,
+    }
+  ];
 
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
@@ -111,6 +131,11 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDialog(true);
   }
 
+  function showDocumentDialog(item: IDocument) {
+    setSelectedDocument(item);
+    setShowDocumentActionDialog(true);
+  }
+
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
     const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
@@ -131,8 +156,40 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       documentID: createdDocument.id,
     }
     await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    setDocumentName('');
     setShowDialog(false);
     await loadDocuments();
+  }
+
+  async function download(document: IDocument) {
+    const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
+    if (cachedData === null || cachedData == undefined) {
+      let docData = await DocumentService.getInstance().download(document.id, token);
+      docData = Utils.changeMimeType(docData, 'application/pdf');
+      await CacheService.getInstance().storeValue(document.id as string, docData);
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Loaded,
+        actorIsAdmin: true,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: document.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    }
+    setShowDocumentActionDialog(false);
+  }
+
+  async function approveDocument(document: IDocument) {
+    await DocumentService.getInstance().updateStatus(document.id, DocumentStatus.APPROVED, token);
+    const logInput: IDocumentActivityLogInput = {
+      action: DocumentLogAction.Approbation,
+      actorIsAdmin: true,
+      actorID: currentUser?.id as string,
+      clientID: currentClient?.id as string,
+      documentID: document.id,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    setShowDocumentActionDialog(false);
   }
 
   async function loadDocuments() {
@@ -169,9 +226,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={() => console.log('hello')}>
-            <Image style={styles.ellipsisIcon} source={ellipsisIcon}/>
-          </TouchableOpacity>
+          <Tooltip action={() => showDocumentDialog(item)} />
         </View>
         <View style={styles.separator}/>
       </View>
@@ -179,58 +234,69 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   return (
-    <AppContainer
-      mainTitle={t(currentScreen)}
-      navigationHistoryItems={navigationHistoryItems}
-      searchText={searchText}
-      setSearchText={setSearchText}
-      showBackButton={true}
-      showSearchText={true}
-      navigateBack={navigateBack}
-      showDialog={showDialog}
-      showSettings={true}
-      adminButton={
-        currentUser?.userType == UserType.Admin ? (
-          <IconButton
-            title={t('components.buttons.addDocument')}
-            icon={plusIcon}
-            onPress={addDocument}
-          />
-        ) : undefined
-      }
-      dialog={
-        <Dialog
-          title={t('components.dialog.addDocument.title')}
-          confirmTitle={t('components.dialog.addDocument.confirmButton')}
-          onConfirm={pickAFile}
-          isCancelAvailable={true}
-          onCancel={() => setShowDialog(false)}
-          isConfirmDisabled={documentName.length === 0}
-        >
-          <TextInput
-            value={documentName}
-            onChangeText={setDocumentName}
-            placeholder={t('components.dialog.addDocument.placeholder')}
-            style={styles.dialogInput}
-          />
-        </Dialog>
-      }
-    >
-      {
-        documentsFiltered.length !== 0 ? (
-          <Grid
-            data={documentsFiltered}
-            renderItem={(renderItem) => DocumentRow(renderItem.item)}
-          />
-        ) : (
-          <ContentUnavailableView 
-            title={t('documentsScreen.noDocs.title')}
-            message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-            image={docIcon}
-          />
-        )
-      }
-    </AppContainer>
+    <>
+      <AppContainer
+        mainTitle={t(currentScreen)}
+        navigationHistoryItems={navigationHistoryItems}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showBackButton={true}
+        showSearchText={true}
+        navigateBack={navigateBack}
+        showDialog={showDialog}
+        showSettings={true}
+        adminButton={
+          currentUser?.userType == UserType.Admin ? (
+            <IconButton
+              title={t('components.buttons.addDocument')}
+              icon={plusIcon}
+              onPress={addDocument}
+            />
+          ) : undefined
+        }
+        dialog={
+          <Dialog
+            title={t('components.dialog.addDocument.title')}
+            confirmTitle={t('components.dialog.addDocument.confirmButton')}
+            onConfirm={pickAFile}
+            isCancelAvailable={true}
+            onCancel={() => setShowDialog(false)}
+            isConfirmDisabled={documentName.length === 0}
+          >
+            <TextInput
+              value={documentName}
+              onChangeText={setDocumentName}
+              placeholder={t('components.dialog.addDocument.placeholder')}
+              style={styles.dialogInput}
+            />
+          </Dialog>
+        }
+      >
+        {
+          documentsFiltered.length !== 0 ? (
+            <Grid
+              data={documentsFiltered}
+              renderItem={(renderItem) => DocumentRow(renderItem.item)}
+            />
+          ) : (
+            <ContentUnavailableView 
+              title={t('documentsScreen.noDocs.title')}
+              message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
+              image={docIcon}
+            />
+          )
+        }
+      </AppContainer>
+      <TooltipAction
+        showDialog={showDocumentActionDialog}
+        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+        isConfirmAvailable={false}
+        isCancelAvailable={true}
+        onConfirm={() => {}}
+        onCancel={() => setShowDocumentActionDialog(false)}
+        popoverActions={popoverActions}
+      />
+    </>
   );
 }
 

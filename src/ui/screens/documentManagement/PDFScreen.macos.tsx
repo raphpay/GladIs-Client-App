@@ -23,6 +23,7 @@ import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
 
 type PDFScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PDFScreen>;
 
+// TODO: Check PDF 
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   const [pdfData, setPDFData] = useState<string>('');

@@ -235,6 +235,12 @@
         "title": "Etes-vous sûr de vouloir supprimer ce module ?",
         "description": "Le module sera supprimé de la souscription du client."
       },
+      "documentActions": {
+        "title": "Actions sur le document:",
+        "open": "Ouvrir",
+        "download": "Télécharger",
+        "approve": "Approuver"
+      },
       "blockClient": "Êtes-vous sûr de vouloir bloquer ce client ?",
       "unblockClient": "Êtes-vous sûr de vouloir débloquer ce client ?",
       "confirm": "OK",
