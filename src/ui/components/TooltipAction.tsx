@@ -1,13 +1,15 @@
 import React from 'react';
 import {
-  StyleSheet,
   Text,
   TouchableOpacity
 } from 'react-native';
+
 import IAction from '../../business-logic/model/IAction';
-import { Colors } from '../assets/colors/colors';
-import { Fonts } from '../assets/fonts/fonts';
+
 import Dialog from './Dialog';
+
+import { Colors } from '../assets/colors/colors';
+import styles from '../assets/styles/components/TooltipActionStyles';
 
 type TooltipActionProps = {
   showDialog: boolean;
@@ -71,23 +73,5 @@ function TooltipAction(props: TooltipActionProps): React.JSX.Element {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  // TODO: Create component for this
-  popoverButton: {
-    width: '500%',
-    marginVertical: 4,
-    marginBottom: 18
-  },
-  popoverButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.poppinsLight,
-  },
-});
 
 export default TooltipAction;

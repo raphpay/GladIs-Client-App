@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity } from 'react-native';
 
+import IAction from '../../../business-logic/model/IAction';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -21,11 +22,6 @@ import IconButton from '../../components/IconButton';
 import PendingUserRow from './PendingUserRow';
 
 import styles from '../../assets/styles/clientManagement/PendingClientListScreenStyles';
-
-interface IPendingUserAction {
-  title: string;
-  onPress: () => void;
-}
 
 type PendingClientListScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.PendingClientListScreen>;
 
@@ -58,33 +54,33 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     navigation.goBack();
   }
 
-  const popoverActions: IPendingUserAction[] = [
+  const popoverActions: IAction[] = [
     {
       title: t('components.tooltip.open'),
-      onPress: () => navigateToSpecificClientCreation(selectedPendingUser as IPendingUser),
+      action: () => navigateToSpecificClientCreation(selectedPendingUser as IPendingUser),
     },
     {
       title: t('components.tooltip.pendingUserManagement.status.pending'),
-      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.pending),
+      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.pending),
     },
     {
       title: t('components.tooltip.pendingUserManagement.status.inReview'),
-      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.inReview),
+      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.inReview),
     },
     {
       title: t('components.tooltip.pendingUserManagement.status.rejected'),
-      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.rejected),
+      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.rejected),
     },
     {
       title: t('components.tooltip.pendingUserManagement.delete'),
-      onPress: showAlert,
+      action: showAlert,
     },
   ];
   
   function navigateToSpecificClientCreation(client: IPendingUser) {
     setShowPendingUserDialog(false);
     setShowDeleteDialog(false);
-    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client, loadPendingUsers: loadPendingUsers });
+    navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
   }
 
   async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {
@@ -141,8 +137,8 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               onCancel={() => setShowPendingUserDialog(false)}
             >
               <>
-                {popoverActions.map((action: IPendingUserAction, index: number) => (
-                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.onPress}>
+                {popoverActions.map((action: IAction, index: number) => (
+                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.action}>
                     <Text style={styles.popoverButtonText}>{action.title}</Text>
                   </TouchableOpacity>
                 ))}
@@ -205,7 +201,6 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               renderItem={(renderItem) =>
                 <PendingUserRow 
                   pendingUser={renderItem.item}
-                  loadPendingUsers={loadPendingUsers}
                   setSelectedPendingUser={setSelectedPendingUser}
                   setShowPendingUserDialog={setShowPendingUserDialog}
                 />

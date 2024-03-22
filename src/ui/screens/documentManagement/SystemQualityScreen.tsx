@@ -9,7 +9,7 @@ import {
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
@@ -87,14 +87,14 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     systemQualityItem.title.toLowerCase().includes(searchText.toLowerCase()),
   );
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateToDashboard(),
+      onPress: () => navigateToDashboard(),
     },
     {
       title: t('documentManagement.title'),
-      action: () => navigateBack(),
+      onPress: () => navigateBack(),
     },
   ];
 

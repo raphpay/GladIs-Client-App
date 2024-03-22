@@ -5,8 +5,8 @@ import { Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import IAction from '../../../business-logic/model/IAction';
 import IArea from '../../../business-logic/model/IArea';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -27,14 +27,14 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
   const { currentUser } = useAppSelector((state: RootState) => state.users);
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateToDashboard(),
+      onPress: () => navigateToDashboard(),
     },
     {
       title: t('documentManagement.title'),
-      action: () => navigateBack(),
+      onPress: () => navigateBack(),
     },
   ];
   const areas: IArea[] = [

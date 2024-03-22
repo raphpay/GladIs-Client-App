@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
@@ -46,10 +46,10 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   const [blockTitle, setBlockTitle] = useState<string>('');
   const [dialogTitle, setDialogTitle] = useState<string>('');
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ];
 

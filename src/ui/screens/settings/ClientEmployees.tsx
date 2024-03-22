@@ -6,7 +6,6 @@ import { Text, View } from 'react-native';
 import { IClientManagementParams } from '../../../navigation/Routes';
 
 import IAction from '../../../business-logic/model/IAction';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
@@ -56,10 +55,10 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('settings.title'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ];
 
@@ -178,7 +177,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   }
 
-  // TODO: Add translations
   function showAddEmployeeDialog() {
     setShowDialog(true);
     setIsModifiyingEmployee(false);
@@ -188,7 +186,14 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
 
   function displayEmployeeDialog(item: IUser) {
     setSelectedEmployee(item);
+    setDialogTitle(`${t('components.dialog.pendingUserManagement.action')} : ${item.username}`);
     setShowEmployeeDialog(true);
+  }
+
+  function resetDialog() {
+    setShowDialog(false);
+    setDialogTitle('');
+    setDialogDescription('');
   }
 
   useEffect(() => {
@@ -223,7 +228,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         description={dialogDescription}
         onConfirm={addOrModifyEmployee}
         isCancelAvailable={true}
-        onCancel={() => setShowDialog(false)}
+        onCancel={resetDialog}
       >
         <>
           <GladisTextInput

@@ -5,7 +5,7 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import IAction from '../../../business-logic/model/IAction';
 import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentationTab';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
@@ -45,18 +45,18 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateToDashboard(),
+      onPress: () => navigateToDashboard(),
     },
     {
       title: t('documentManagement.title'),
-      action: () => navigateBack(),
+      onPress: () => navigateBack(),
     },
     {
       title: t('technicalDocumentation.title'),
-      action: () => navigateToTechnicalDocumentation(),
+      onPress: () => navigateToTechnicalDocumentation(),
     }
   ];
 

@@ -186,7 +186,9 @@
       "addEmployee": "Add an employee",
       "continue": "Continue",
       "addDocument": "Add a document",
-      "addTab": "Add a tab"
+      "addTab": "Add a tab",
+      "delete": "Delete",
+      "save": "Save"
     },
     "dialog": {
       "addDocument": {
@@ -231,6 +233,10 @@
           "invalidPhone": "Please verify the phone number"
         }
       },
+      "modifyEmployee": {
+        "title": "Modify this employee",
+        "description": "Please modify the desired fields"
+      },
       "removeModule": {
         "title": "Are you sure you want to remove this module ?",
         "description": "The module will be removed from the client's subscription."
@@ -239,7 +245,7 @@
         "title": "Actions on document:",
         "open": "Open",
         "download": "Download",
-        "approve": "Approve",
+        "approve": "Approve"
       },
       "blockClient": "Are you sure you want to block this client?",
       "unblockClient": "Are you sure you want to unblock this client?",
@@ -256,7 +262,11 @@
           "rejected": "Update status to Rejected"
         },
         "delete": "Delete"
-      }
+      },
+      "download": "Download",
+      "request": "Make a request",
+      "approve": "Approve",
+      "modify": "Modify"
     }
   },
   "errors": {

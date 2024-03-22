@@ -1,16 +1,12 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
+import IAction from '../../../business-logic/model/IAction';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -61,18 +57,18 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     process.title.toLowerCase().includes(searchText.toLowerCase()),
   );
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateToDashboard()
+      onPress: () => navigateToDashboard()
     },
     {
       title: t('documentManagement.title'),
-      action: () => navigateToDocumentManagement()
+      onPress: () => navigateToDocumentManagement()
     },
     {
       title: t('systemQuality.title'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ]
 

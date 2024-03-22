@@ -2,8 +2,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import IAction from '../../../business-logic/model/IAction';
 import IModule from '../../../business-logic/model/IModule';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import UserService from '../../../business-logic/services/UserService';
@@ -16,6 +16,8 @@ import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
+
+import styles from '../../assets/styles/settings/ClientModulesStyles';
 
 type ClientModulesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientModules>;
 
@@ -34,10 +36,10 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('settings.title'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ];
 
@@ -83,6 +85,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     );
   }
 
+  // TODO: Enhance save method ( should be disabled if no changes were made )
   async function saveModules() {
     if (currentClient && currentClient.id && token) {
       await UserService.getInstance().addModules(currentClient.id, selectedModules, token);
@@ -97,8 +100,6 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: Correct save method
-  // TODO: Add translations
   return (
     <AppContainer
       mainTitle={t('settings.clientSettings.modules')}
@@ -111,9 +112,10 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
       setShowDialog={setShowDialog}
       additionalComponent={
         <IconButton
-          title={'Save'}
+          title={t('components.buttons.save')}
           icon={plusIcon}
           onPress={saveModules}
+          style={styles.saveButton}
         />
       }
     >

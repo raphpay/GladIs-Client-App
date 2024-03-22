@@ -17,7 +17,6 @@ import IAction from '../../../business-logic/model/IAction';
 import IDocument, { DocumentStatus } from '../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../business-logic/model/IFile';
-import INavigationHistoryItem from '../../../business-logic/model/INavigationHistoryItem';
 import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
@@ -71,18 +70,18 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateToDashboard,
+      onPress: () => navigateToDashboard,
     },
     {
       title: t(`modules.${module?.name}`),
-      action: () => navigateToDocumentManagementScreen()
+      onPress: () => navigateToDocumentManagementScreen()
     },
     {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ];
 

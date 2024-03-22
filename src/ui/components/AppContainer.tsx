@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, TouchableWithoutFeedback, View } from 'react-native';
 
-import INavigationHistoryItem from '../../business-logic/model/INavigationHistoryItem';
+import IAction from '../../business-logic/model/IAction';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../business-logic/model/enums/UserType';
 import { useAppSelector } from '../../business-logic/store/hooks';
@@ -18,7 +18,7 @@ import styles from '../assets/styles/components/AppContainerStyles';
 
 type AppContainerProps = {
   mainTitle: string;
-  navigationHistoryItems?: INavigationHistoryItem[];
+  navigationHistoryItems?: IAction[];
   searchText?: string;
   setSearchText?: React.Dispatch<React.SetStateAction<string>>;
   showBackButton?: boolean;
