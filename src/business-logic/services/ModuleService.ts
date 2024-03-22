@@ -32,7 +32,7 @@ class ModuleService {
       const modules = await APIService.get<IModule[]>(this.baseRoute);
       return modules;
     } catch (error) {
-      console.error('Error getting modules', error);
+      console.log('Error getting modules', error);
       throw error;
     }
   }
@@ -47,7 +47,7 @@ class ModuleService {
       const modules = await APIService.get<IModule[]>(`${this.baseRoute}/sorted`, token?.value as string);
       return modules;
     } catch (error) {
-      console.error('Error getting modules', error);
+      console.log('Error getting modules', error);
       throw error;
     }
   }
@@ -63,7 +63,7 @@ class ModuleService {
       const module = await APIService.get<IModule>(`${this.baseRoute}/${id}`);
       return module;
     } catch (error) {
-      console.error('Error getting modules', error);
+      console.log('Error getting modules', error);
       throw error;
     }
   }

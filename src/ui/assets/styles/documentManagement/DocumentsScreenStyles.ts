@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -48,20 +47,6 @@ const styles = StyleSheet.create({
   documentText: {
     fontFamily: Fonts.poppinsLight,
     fontWeight: Fonts.regular,
-  },
-  ellipsisIcon: {
-    height: 8,
-    width: 30,
-  },
-  popoverButton: {
-    width: '500%',
-    marginVertical: 4,
-    marginBottom: 18
-  },
-  popoverButtonText: {
-    fontSize: 14,
-    fontFamily: Fonts.poppinsLight,
-    color: Colors.primary,
   },
 });
 

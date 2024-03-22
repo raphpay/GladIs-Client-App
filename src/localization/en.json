@@ -235,8 +235,11 @@
         "title": "Are you sure you want to remove this module ?",
         "description": "The module will be removed from the client's subscription."
       },
-      "document": {
-        "title": "Actions on document",
+      "documentActions": {
+        "title": "Actions on document:",
+        "open": "Open",
+        "download": "Download",
+        "approve": "Approve"
       },
       "blockClient": "Are you sure you want to block this client?",
       "unblockClient": "Are you sure you want to unblock this client?",
@@ -302,6 +305,10 @@
       "title": "This module is not part of your subscription",
       "description": "Please contact you provider.",
       "cancelButton": "OK"
+    },
+    "Unauthorized": {
+      "title": "Wrong username or password",
+      "message": "Please verify your credentials"
     }
   },
   "legal": {

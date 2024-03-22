@@ -36,7 +36,7 @@ class DocumentService {
       const documents = await APIService.post<IDocument[]>(url, { value: path }, token?.value as string);
       return documents;
     } catch (error) {
-      console.error('Error getting documents at path:', path, error);
+      console.log('Error getting documents at path:', path, error);
       throw error;
     }
   }
@@ -56,7 +56,7 @@ class DocumentService {
         const data = await APIService.download(url, token?.value as string);
         return data;
       } catch (error) {
-        console.error('Error downloading document at id:', id, error);
+        console.log('Error downloading document at id:', id, error);
         throw error;
       }
     } else {
@@ -79,7 +79,7 @@ class DocumentService {
       const response = await APIService.post<IDocument>('documents', params, token?.value as string);
       return response as IDocument;
     } catch (error) {
-      console.error('Error uploading document', name, 'at path', path, error);
+      console.log('Error uploading document', name, 'at path', path, error);
       throw error;
     }
   }
@@ -98,7 +98,25 @@ class DocumentService {
       const response = await APIService.post<IDocument>(`${this.baseRoute}/logo`, params);
       return response as IDocument;
     } catch (error) {
-      console.error('Error uploading logo', name, 'at path', path, error);
+      console.log('Error uploading logo', name, 'at path', path, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Updates the status of the document with the specified ID.
+   * @param id - The ID of the document to update.
+   * @param status - The new status of the document.
+   * @param token - The authentication token (optional).
+   * @returns A promise that resolves to the updated document.
+   * @throws If an error occurs while updating the status of the document.
+   */
+  async updateStatus(id: string, status: string, token: IToken | null): Promise<IDocument> {
+    try {
+      const response = await APIService.put(`${this.baseRoute}/${id}`, { status }, token?.value as string);
+      return response as IDocument;
+    } catch (error) {
+      console.log('Error updating status for document with id:', id, error);
       throw error;
     }
   }

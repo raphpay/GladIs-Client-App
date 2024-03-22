@@ -13,8 +13,8 @@ import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import { default as IAction, default as INavigationHistoryItem } from '../../../business-logic/model/IAction';
-import IDocument from '../../../business-logic/model/IDocument';
+import IAction from '../../../business-logic/model/IAction';
+import IDocument, { DocumentStatus } from '../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../business-logic/model/IFile';
 import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
@@ -22,6 +22,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../business-logic/modules/FinderModule';
+import CacheService from '../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -33,6 +34,8 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Tooltip from '../../components/Tooltip';
+import TooltipAction from '../../components/TooltipAction';
 
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
@@ -42,8 +45,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [documentName, setDocumentName] = useState<string>('');
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
+  const [documentName, setDocumentName] = useState<string>('');
   const [selectedDocument, setSelectedDocument] = useState<IDocument>();
 
   const plusIcon = require('../../assets/images/plus.png');
@@ -62,45 +65,40 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { module, documentListCount } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
-
-  const ellipsisIcon = require('../../assets/images/ellipsis.png');
   
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
-  const navigationHistoryItems: INavigationHistoryItem[] = [
+  const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      action: () => navigateToDashboard,
+      onPress: () => navigateToDashboard,
     },
     {
       title: t(`modules.${module?.name}`),
-      action: () => navigateToDocumentManagementScreen()
+      onPress: () => navigateToDocumentManagementScreen()
     },
     {
       title: processNumber ? `${t('documentsScreen.process')} ${processNumber}` : previousScreen,
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ];
 
   const popoverActions: IAction[] = [
     {
-      title: t('components.tooltip.open'),
-      action: () => navigateToSelectedDocument(),
+      title: t('components.dialog.documentActions.open'),
+      onPress: () => navigateToDocument(selectedDocument as IDocument),
     },
     {
-      title: t('components.tooltip.download'),
-      action: () => setShowDocumentActionDialog(false),
+      title: t('components.dialog.documentActions.download'),
+      onPress: () => download(selectedDocument as IDocument),
     },
     {
-      title: t('components.tooltip.request'),
-      action: () => setShowDocumentActionDialog(false),
-    },
-    {
-      title: t('components.tooltip.approve'),
-      action: () => setShowDocumentActionDialog(false),
-    },
+      title: t('components.dialog.documentActions.approve'),
+      onPress: () => approveDocument(selectedDocument as IDocument),
+      isDisabled: currentUser?.userType === UserType.Employee,
+    }
   ];
 
   function navigateToDashboard() {
@@ -132,6 +130,11 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDialog(true);
   }
 
+  function showDocumentDialog(item: IDocument) {
+    setSelectedDocument(item);
+    setShowDocumentActionDialog(true);
+  }
+
   async function pickAFile() {
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
     const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
@@ -152,19 +155,40 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       documentID: createdDocument.id,
     }
     await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    setDocumentName('');
     setShowDialog(false);
     await loadDocuments();
   }
 
-  function navigateToSelectedDocument() {
-    if (selectedDocument) {
-      navigateToDocument(selectedDocument)
+  async function download(document: IDocument) {
+    const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
+    if (cachedData === null || cachedData == undefined) {
+      let docData = await DocumentService.getInstance().download(document.id, token);
+      docData = Utils.changeMimeType(docData, 'application/pdf');
+      await CacheService.getInstance().storeValue(document.id as string, docData);
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Loaded,
+        actorIsAdmin: true,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: document.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
     }
+    setShowDocumentActionDialog(false);
   }
 
-  function openDocumentActionDialog(item: IDocument) {
-    setSelectedDocument(item);
-    setShowDocumentActionDialog(true);
+  async function approveDocument(document: IDocument) {
+    await DocumentService.getInstance().updateStatus(document.id, DocumentStatus.APPROVED, token);
+    const logInput: IDocumentActivityLogInput = {
+      action: DocumentLogAction.Approbation,
+      actorIsAdmin: true,
+      actorID: currentUser?.id as string,
+      clientID: currentClient?.id as string,
+      documentID: document.id,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    setShowDocumentActionDialog(false);
   }
 
   async function loadDocuments() {
@@ -187,32 +211,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     init();
   }, [documentListCount]);
 
-  function DocumentActionDialog() {
-    return (
-      <>
-        {
-          showDocumentActionDialog && (
-            <Dialog
-              title={`${t('components.dialog.document.title')}: ${selectedDocument?.name}`}
-              isConfirmAvailable={false}
-              onConfirm={() => {}}
-              isCancelAvailable={true}
-              onCancel={() => setShowDocumentActionDialog(false)}
-            >
-              <>
-                {popoverActions.map((action: IAction, index: number) => (
-                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.action}>
-                    <Text style={styles.popoverButtonText}>{action.title}</Text>
-                  </TouchableOpacity>
-                ))}
-              </>
-            </Dialog>
-          )
-        }
-      </>
-    )
-  }
-
   function DocumentRow(item: IDocument) {
     return (
       <View style={styles.documentLineContainer}>
@@ -227,9 +225,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               </View>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton} onPress={() => openDocumentActionDialog(item)}>
-            <Image style={styles.ellipsisIcon} source={ellipsisIcon}/>
-          </TouchableOpacity>
+          <Tooltip action={() => showDocumentDialog(item)} />
         </View>
         <View style={styles.separator}/>
       </View>
@@ -290,7 +286,15 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           )
         }
       </AppContainer>
-      {DocumentActionDialog()}
+      <TooltipAction
+        showDialog={showDocumentActionDialog}
+        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+        isConfirmAvailable={false}
+        isCancelAvailable={true}
+        onConfirm={() => {}}
+        onCancel={() => setShowDocumentActionDialog(false)}
+        popoverActions={popoverActions}
+      />
     </>
   );
 }

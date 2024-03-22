@@ -14,7 +14,7 @@ import { IClientManagementParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Dialog from '../../components/Dialog';
+import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 
 type ClientModulesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientModules>;
@@ -22,8 +22,9 @@ type ClientModulesProps = NativeStackScreenProps<IClientManagementParams, Naviga
 function ClientModules(props: ClientModulesProps): React.JSX.Element {
   const [modules, setModules] = useState<IModule[]>([]);
   const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
-  const [selectedModule, setSelectedModule] = useState<IModule>();
   const [showDialog, setShowDialog] = useState<boolean>(false);
+
+  const plusIcon = require('../../assets/images/plus.png');
 
   const { navigation } = props;
 
@@ -58,29 +59,34 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   }
   
   function toggleCheckbox(module: IModule): void {
-    setSelectedModule(module);
     if (isModuleSelected(module)) {
       // If the module is already selected, deselect it
-      setShowDialog(true);
+      removeModuleFromClient(module);
     } else {
       // If the module is not selected, select it
-      addModuleToClient();
+      addModuleToClient(module);
     }
   }
 
-  async function addModuleToClient() {
-    if (selectedModule && currentClient && currentClient.id && token) {
-      await UserService.getInstance().addModules(currentClient.id, [selectedModule], token);
-      const updatedSelectedModules = [...selectedModules, selectedModule];
-      setSelectedModules(updatedSelectedModules);
-    }
+  function addModuleToClient(moduleToAdd: IModule) {
+    setSelectedModules((currentSelectedModules) => [
+      ...currentSelectedModules,
+      moduleToAdd,
+    ]);
+  }
+  
+  function removeModuleFromClient(moduleToRemove: IModule) {
+    setSelectedModules((currentSelectedModules) =>
+      currentSelectedModules.filter(
+        (module) => module.id !== moduleToRemove.id
+      )
+    );
   }
 
-  async function removeModuleFromClient() {
-    if (selectedModule && currentClient && currentClient.id && token) {
-      const remainingModules = await UserService.getInstance().removeModuleFromClient(currentClient.id, selectedModule.id, token);
-      setShowDialog(false);
-      setSelectedModules(remainingModules);
+  async function saveModules() {
+    if (currentClient && currentClient.id && token) {
+      await UserService.getInstance().addModules(currentClient.id, selectedModules, token);
+      navigation.goBack();
     }
   }
 
@@ -91,20 +97,8 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     init();
   }, []);
 
-  function dialogContent() {
-    return (
-      <Dialog
-        title={t('components.dialog.removeModule.title')}
-        description={t('components.dialog.removeModule.description')}
-        onConfirm={removeModuleFromClient}
-        isCancelAvailable={true}
-        onCancel={() => setShowDialog(false)}
-      >
-
-      </Dialog>
-    )
-  }
-
+  // TODO: Correct save method
+  // TODO: Add translations
   return (
     <AppContainer
       mainTitle={t('settings.clientSettings.modules')}
@@ -115,7 +109,13 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
       navigateBack={navigateBack}
       showDialog= {showDialog}
       setShowDialog={setShowDialog}
-      dialog={dialogContent()}
+      additionalComponent={
+        <IconButton
+          title={'Save'}
+          icon={plusIcon}
+          onPress={saveModules}
+        />
+      }
     >
       <>
           {modules.length > 0 ? (

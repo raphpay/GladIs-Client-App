@@ -41,7 +41,9 @@ class CacheService {
     let item: T | string | null = null;
     try {
       const storedItem = await AsyncStorage.getItem(key);
-      item = JSON.parse(storedItem ?? '');
+      if (storedItem) {
+        item = JSON.parse(storedItem);
+      }
     } catch (error) {
       throw new Error(`Error retrieving value from cache : ${error}`);
     }

@@ -1,4 +1,5 @@
 export default interface IAction {
   title: string;
-  action: () => void;
+  onPress: () => void;
+  isDisabled?: boolean;
 }

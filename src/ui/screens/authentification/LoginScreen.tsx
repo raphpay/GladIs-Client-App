@@ -6,11 +6,12 @@ import { SafeAreaView, Text, TextInput } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../business-logic/model/enums/UserType';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
-import { setCurrentUser } from '../../../business-logic/store/slices/userReducer';
+import { setCurrentClient, setCurrentUser } from '../../../business-logic/store/slices/userReducer';
 
 import AppIcon from '../../components/AppIcon';
 import Dialog from '../../components/Dialog';
@@ -40,9 +41,12 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   async function login() {
     try {
       const token = await AuthenticationService.getInstance().login(identifier, password);
-      dispatch(setToken(token));
       const user = await UserService.getInstance().getUserByID(token.user.id, token);
       dispatch(setCurrentUser(user));
+      if (user.userType !== UserType.Admin) {
+        dispatch(setCurrentClient(user));
+      }
+      dispatch(setToken(token));
     } catch (error) {
       if ((error as Error).message) {
         setErrorTitle(t(`errors.${(error as Error).message}.title`));
