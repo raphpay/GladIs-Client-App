@@ -186,7 +186,8 @@
       "addEmployee": "Ajouter un employé",
       "continue": "Continuer",
       "addDocument": "Ajouter un document",
-      "addTab": "Ajouter un onglet"
+      "addTab": "Ajouter un onglet",
+      "delete": "Supprimer"
     },
     "dialog": {
       "addDocument": {
@@ -231,6 +232,10 @@
           "invalidPhone": "Veuillez vérifier le numéro de téléphone"
         }
       },
+      "modifyEmployee": {
+        "title": "Modifier cet employé",
+        "description": "Veuillez modifier les champs désirés"
+      },
       "removeModule": {
         "title": "Etes-vous sûr de vouloir supprimer ce module ?",
         "description": "Le module sera supprimé de la souscription du client."
@@ -259,7 +264,8 @@
       },
       "download": "Télécharger",
       "request": "Faire une demande",
-      "approve": "Approuver"
+      "approve": "Approuver",
+      "modify": "Modifier"
     }
   },
   "errors": {

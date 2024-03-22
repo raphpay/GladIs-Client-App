@@ -187,7 +187,14 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
 
   function displayEmployeeDialog(item: IUser) {
     setSelectedEmployee(item);
+    setDialogTitle(`${t('components.dialog.pendingUserManagement.action')} : ${item.username}`);
     setShowEmployeeDialog(true);
+  }
+
+  function resetDialog() {
+    setShowDialog(false);
+    setDialogTitle('');
+    setDialogDescription('');
   }
 
   useEffect(() => {
@@ -222,7 +229,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         description={dialogDescription}
         onConfirm={addOrModifyEmployee}
         isCancelAvailable={true}
-        onCancel={() => setShowDialog(false)}
+        onCancel={resetDialog}
       >
         <>
           <GladisTextInput
