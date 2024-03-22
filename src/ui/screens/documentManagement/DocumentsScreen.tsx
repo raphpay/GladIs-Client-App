@@ -156,6 +156,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       documentID: createdDocument.id,
     }
     await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    setDocumentName('');
     setShowDialog(false);
     await loadDocuments();
   }

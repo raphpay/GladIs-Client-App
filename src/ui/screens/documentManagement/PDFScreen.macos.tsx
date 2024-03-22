@@ -56,7 +56,6 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
       } catch (error) {
         console.log('error getting cached data', error ); 
       }
-      console.log('usee', cachedData );
       if (cachedData === null || cachedData === undefined) {
         await loadFromAPI();
       } else {
