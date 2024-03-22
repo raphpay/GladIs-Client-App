@@ -177,7 +177,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   }
 
-  // TODO: Add translations
   function showAddEmployeeDialog() {
     setShowDialog(true);
     setIsModifiyingEmployee(false);

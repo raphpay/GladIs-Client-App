@@ -17,6 +17,8 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 
+import styles from '../../assets/styles/settings/ClientModulesStyles';
+
 type ClientModulesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientModules>;
 
 function ClientModules(props: ClientModulesProps): React.JSX.Element {
@@ -83,6 +85,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     );
   }
 
+  // TODO: Enhance save method ( should be disabled if no changes were made )
   async function saveModules() {
     if (currentClient && currentClient.id && token) {
       await UserService.getInstance().addModules(currentClient.id, selectedModules, token);
@@ -97,8 +100,6 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: Correct save method
-  // TODO: Add translations
   return (
     <AppContainer
       mainTitle={t('settings.clientSettings.modules')}
@@ -111,9 +112,10 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
       setShowDialog={setShowDialog}
       additionalComponent={
         <IconButton
-          title={'Save'}
+          title={t('components.buttons.save')}
           icon={plusIcon}
           onPress={saveModules}
+          style={styles.saveButton}
         />
       }
     >

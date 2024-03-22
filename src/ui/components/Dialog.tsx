@@ -38,7 +38,6 @@ function Dialog(props: DialogProps): React.JSX.Element {
   } = props;
   const { t } = useTranslation();
 
-  // TODO: Check all dialog confirm buttons
   return (
     <View style={styles.overlay}>
       <View style={styles.dialog}>

@@ -187,7 +187,8 @@
       "continue": "Continue",
       "addDocument": "Add a document",
       "addTab": "Add a tab",
-      "delete": "Delete"
+      "delete": "Delete",
+      "save": "Save"
     },
     "dialog": {
       "addDocument": {

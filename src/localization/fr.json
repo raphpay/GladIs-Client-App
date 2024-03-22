@@ -187,7 +187,8 @@
       "continue": "Continuer",
       "addDocument": "Ajouter un document",
       "addTab": "Ajouter un onglet",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "save": "Sauvegarder"
     },
     "dialog": {
       "addDocument": {
