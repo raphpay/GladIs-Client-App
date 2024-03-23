@@ -20,16 +20,10 @@ import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 
+import IAction from '../../../business-logic/model/IAction';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
 type SettingsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SettingsScreen>;
-
-interface ISettingsAction {
-  id: string;
-  title: string;
-  action: () => void;
-  isActionDisabled: boolean;
-}
 
 function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const { t } = useTranslation();
@@ -45,24 +39,21 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
 
 
-  const settingsActions: ISettingsAction[] = [
+  const settingsActions: IAction[] = [
     {
-      id: 'userInfos',
       title: `${t('settings.userInfos')} ${currentUser?.username}`,
-      action: () => {},
-      isActionDisabled: true,
+      onPress: () => {},
+      isDisabled: true,
     },
     {
-      id: 'changePasswordId',
       title: t('settings.modifyPassword'),
-      action: () => showModifyPasswordDialog(),
-      isActionDisabled: false
+      onPress: () => showModifyPasswordDialog(),
+      isDisabled: false
     },
     {
-      id: 'logoutID',
       title: t('settings.logout'),
-      action: () => displayLogoutDialog(),
-      isActionDisabled: false
+      onPress: () => displayLogoutDialog(),
+      isDisabled: false
     },
   ];
 
@@ -196,14 +187,14 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     )
   }
 
-  function SettingsActionGridItem(item: ISettingsAction) {
+  function SettingsActionGridItem(item: IAction) {
     return (
       <TouchableOpacity
-        disabled={item.isActionDisabled}
+        disabled={item.isDisabled}
         style={styles.actionContainer}
-        onPress={item.action}
+        onPress={item.onPress}
       >
-        <Text style={item.isActionDisabled ? styles.text : styles.actionText}>{item.title}</Text>
+        <Text style={item.isDisabled ? styles.text : styles.actionText}>{item.title}</Text>
         <View style={styles.separator} />
       </TouchableOpacity>
     )

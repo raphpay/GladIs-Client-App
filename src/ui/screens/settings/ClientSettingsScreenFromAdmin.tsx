@@ -31,13 +31,6 @@ import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
 type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
 
-interface ISettingsAction {
-  id: string;
-  title: string;
-  action: () => void;
-  isActionDisabled: boolean;
-}
-
 function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps): React.JSX.Element {
   const { t } = useTranslation();
 
@@ -60,48 +53,41 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     }
   ];
 
-  const settingsActions: ISettingsAction[] = [
+  const settingsActions: IAction[] = [
     {
-      id: 'userInfos',
       title: `${t('settings.userInfos')} ${currentUser?.username}`,
-      action: () => {},
-      isActionDisabled: true,
+      onPress: () => {},
+      isDisabled: true,
     },
     {
-      id: 'clientInfos',
       title: `${t('settings.clientSettings.clientInfos')} ${currentClient?.username}`,
-      action: () => {},
-      isActionDisabled: true,
+      onPress: () => {},
+      isDisabled: true,
     },
     {
-      id: 'billListID',
       title: t('settings.clientSettings.bills'),
-      action: () => navigateToBills(),
-      isActionDisabled: false,
+      onPress: () => navigateToBills(),
+      isDisabled: false,
     },
     {
-      id: 'employeesID',
       title: t('settings.clientSettings.employees'),
-      action: () => navigateToEmployees(),
-      isActionDisabled: false,
+      onPress: () => navigateToEmployees(),
+      isDisabled: false,
     },
     {
-      id: 'modulesID',
       title: t('settings.clientSettings.modules'),
-      action: () => navigateToModules(),
-      isActionDisabled: false,
+      onPress: () => navigateToModules(),
+      isDisabled: false,
     },
     {
-      id: 'logoID',
       title: t('settings.clientSettings.logo'),
-      action: () => modifyLogo(),
-      isActionDisabled: false,
+      onPress: () => modifyLogo(),
+      isDisabled: false,
     },
     {
-      id: 'blockClientID',
       title: blockTitle,
-      action: () => showBlockClient(),
-      isActionDisabled: false,
+      onPress: () => showBlockClient(),
+      isDisabled: false,
     },
   ];
 
@@ -251,14 +237,14 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     )
   }
 
-  function SettingsActionGridItem(item: ISettingsAction) {
+  function SettingsActionGridItem(item: IAction) {
     return (
       <TouchableOpacity
-        disabled={item.isActionDisabled}
+        disabled={item.isDisabled}
         style={styles.actionContainer}
-        onPress={item.action}
+        onPress={item.onPress}
       >
-        <Text style={item.isActionDisabled ? styles.text : styles.actionText}>{item.title}</Text>
+        <Text style={item.isDisabled ? styles.text : styles.actionText}>{item.title}</Text>
         <View style={styles.separator} />
       </TouchableOpacity>
     )
