@@ -57,23 +57,23 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const popoverActions: IAction[] = [
     {
       title: t('components.tooltip.open'),
-      action: () => navigateToSpecificClientCreation(selectedPendingUser as IPendingUser),
+      onPress: () => navigateToSpecificClientCreation(selectedPendingUser as IPendingUser),
     },
     {
       title: t('components.tooltip.pendingUserManagement.status.pending'),
-      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.pending),
+      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.pending),
     },
     {
       title: t('components.tooltip.pendingUserManagement.status.inReview'),
-      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.inReview),
+      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.inReview),
     },
     {
       title: t('components.tooltip.pendingUserManagement.status.rejected'),
-      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.rejected),
+      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.rejected),
     },
     {
       title: t('components.tooltip.pendingUserManagement.delete'),
-      action: showAlert,
+      onPress: showAlert,
     },
   ];
   
@@ -138,7 +138,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
             >
               <>
                 {popoverActions.map((action: IAction, index: number) => (
-                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.action}>
+                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.onPress}>
                     <Text style={styles.popoverButtonText}>{action.title}</Text>
                   </TouchableOpacity>
                 ))}
