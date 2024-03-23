@@ -1,19 +1,26 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Platform, Text, TouchableOpacity, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 import { useDispatch } from 'react-redux';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
 import IAction from '../../../business-logic/model/IAction';
+import IFile from '../../../business-logic/model/IFile';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
+import FinderModule from '../../../business-logic/modules/FinderModule';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import CacheService from '../../../business-logic/services/CacheService';
+import DocumentService from '../../../business-logic/services/DocumentService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { changeClientBlockedStatus } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
@@ -85,6 +92,12 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       isActionDisabled: false,
     },
     {
+      id: 'logoID',
+      title: t('settings.clientSettings.logo'),
+      action: () => modifyLogo(),
+      isActionDisabled: false,
+    },
+    {
       id: 'blockClientID',
       title: blockTitle,
       action: () => showBlockClient(),
@@ -112,6 +125,31 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
   function navigateToModules() {
     navigation.navigate(NavigationRoutes.ClientModules);
+  }
+
+  async function modifyLogo() {
+    if (currentClient) {
+      try {
+        let data: string;
+        if (Platform.OS === PlatformName.Mac) {
+          data = await FinderModule.getInstance().pickImage();
+        } else {
+          const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
+          data = await Utils.getFileBase64FromURI(doc.uri) as string;
+        }
+
+        const filename = 'logo.png';
+        const file: IFile = {
+          data,
+          filename
+        };
+        await DocumentService.getInstance().uploadLogo(file, filename, `${currentClient.companyName}/logos/`);
+        await CacheService.getInstance().storeValue(`${currentClient?.id}/logo`, data);
+        await CacheService.getInstance().storeValue(`${currentClient?.id}/logo-lastModified`, new Date());
+      } catch (error) {
+        console.log('Error modifying logo', error);
+      }
+    }
   }
 
   function additionalMentions() {

@@ -7,11 +7,13 @@ import {
   ViewStyle
 } from 'react-native';
 
-
+import IDocument from '../../business-logic/model/IDocument';
 import PlatformName from '../../business-logic/model/enums/PlatformName';
+import CacheService from '../../business-logic/services/CacheService';
 import DocumentService from '../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../business-logic/store/hooks';
 import { RootState } from '../../business-logic/store/store';
+
 import styles from '../assets/styles/components/AppIconStyles';
 
 type AppIconProps = {
@@ -27,18 +29,52 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
-  async function loadLogo() {
+  async function getLogoDocument(): Promise<IDocument | undefined> {
     if (currentClient) {
       const company = currentClient.companyName;
       const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
       const logo = docs[0];
-      if (logo && logo.id) {
-        const logoData = await DocumentService.getInstance().download(logo.id, token);
-        Platform.OS === PlatformName.Mac ? setLogoURI(`data:image/png;base64,${logoData}`) :  setLogoURI(logoData);
+      return logo;
+    }
+  }
+  
+  async function loadLogoFromAPI() {
+    const logoDoc = await getLogoDocument();
+    if (logoDoc) {
+      const logoData = await DocumentService.getInstance().download(logoDoc.id, token);
+      await CacheService.getInstance().storeValue(`${currentClient?.id}/logo`, logoData)
+      await CacheService.getInstance().storeValue(`${currentClient?.id}/logo-lastModified`, logoDoc.lastModified);
+      displayLogo(logoData);
+    } else {
+      setLogoURI('');
+    }
+  }
+
+  async function loadLogo() {
+    if (currentClient) {
+      const cachedLastModified = await CacheService.getInstance().retrieveValue(`${currentClient.id}/logo-lastModified`);
+      const logoDoc = await getLogoDocument();
+      if (logoDoc) {
+        if (logoDoc.lastModified === cachedLastModified) {
+          const cachedLogo = await CacheService.getInstance().retrieveValue(`${currentClient.id}/logo`);
+          if (cachedLogo) {
+            displayLogo(cachedLogo as string);
+          } else {
+            await loadLogoFromAPI();
+          }
+        } else {
+          await loadLogoFromAPI();
+        }
+      } else {
+        setLogoURI('');
       }
     } else {
       setLogoURI('');
     }
+  }
+
+  async function displayLogo(data: string) {
+    Platform.OS === PlatformName.Mac ? setLogoURI(`data:image/png;base64,${data}`) : setLogoURI(data);
   }
 
   useEffect(() => {

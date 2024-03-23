@@ -158,6 +158,7 @@
       "modules": "Modules",
       "blockClient": "Bloquer le client",
       "unblockClient": "Débloquer le client",
+      "logo": "Modifier le logo du client"
     },
     "userInfos": "Connecté en tant que",
     "modifyPassword": "Modifier le mot de passe",

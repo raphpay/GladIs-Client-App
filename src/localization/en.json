@@ -170,7 +170,8 @@
       },
       "modules": "Modules",
       "blockClient": "Block client",
-      "unblockClient": "Unblock client"
+      "unblockClient": "Unblock client",
+      "logo": "Modify client's logo",
     },
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
