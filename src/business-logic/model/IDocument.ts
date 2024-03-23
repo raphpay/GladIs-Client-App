@@ -1,7 +1,8 @@
 export default interface IDocument {
   id: string,
   name: string,
-  path: string
+  path: string,
+  lastModified: Date,
 }
 
 export enum DocumentStatus {
