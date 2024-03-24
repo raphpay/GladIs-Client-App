@@ -65,8 +65,8 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   useEffect(() => {
     async function init() {
       const totalLogs = await DocumentActivityLogsService.getInstance().getLogsForClient(currentClient?.id, token);
-      setTotalPages(Math.ceil(totalLogs.length / 1));
-      const initialLogsToShow = totalLogs.slice(0, 1);
+      setTotalPages(Math.ceil(totalLogs.length / 5));
+      const initialLogsToShow = totalLogs.slice(0, 5);
       setLogs(initialLogsToShow);
       setIsLoading(false);
     }
