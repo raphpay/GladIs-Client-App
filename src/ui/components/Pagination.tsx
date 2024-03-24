@@ -1,10 +1,7 @@
 import React from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
+import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/PaginationStyles';
 
 type PaginationProps = {
@@ -13,34 +10,77 @@ type PaginationProps = {
   onPageChange: (page: number) => void;
 };
 
-function Pagination(props: PaginationProps): React.JSX.Element {
+function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps): React.JSX.Element {
+  const generatePageNumbers = (): (number | string)[] => {
+    let pages: (number | string)[] = [];
 
-  const { currentPage, totalPages, onPageChange } = props;
-  const pageNumbers: number[] = [];
+    if (totalPages <= 3) {
+      // For 3 or fewer total pages, show all pages
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Always include the first page
+      pages.push(1);
 
-  for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || i === currentPage || i === currentPage - 1 || i === currentPage + 1) {
-      pageNumbers.push(i);
+      // Logic for current page and dots
+      if (currentPage > 2 && currentPage < totalPages - 1) {
+        pages.push('...');
+        pages.push(currentPage);
+        pages.push('...');
+      } else if (currentPage === 2) {
+        // If the current page is 2, show it and then dots
+        pages.push(currentPage);
+        pages.push('...');
+      } else if (currentPage === totalPages - 1) {
+        // If the current page is the second to last, show dots and then current page
+        pages.push('...');
+        pages.push(currentPage);
+      } else {
+        // For first and last page, no dots needed in between
+        if (currentPage === 1 || currentPage === totalPages) {
+          pages.push('...');
+        }
+      }
+
+      // Always include the last page
+      pages.push(totalPages);
     }
-  }
+
+    return pages;
+  };
+
+  const pageNumbers = generatePageNumbers();
+
+  const currentPageStyle = {
+    color: Colors.primary
+  };
+
+  const pageNumberStyle = {
+    color: Colors.secondary
+  };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => onPageChange(currentPage - 1)}
+        onPress={() => onPageChange(Math.max(currentPage - 1, 1))}
         disabled={currentPage === 1}
       >
         <Text>{"<"}</Text>
       </TouchableOpacity>
-      {pageNumbers.map((number, index) => (
-        <TouchableOpacity key={number} onPress={() => onPageChange(number)}>
-          <Text style={styles.pageNumber}>
-            {pageNumbers[index - 1] && number - pageNumbers[index - 1] > 1 ? `... ${number}` : number}
+      {pageNumbers.map((number, index) =>
+        typeof number === 'number' ? (
+          <TouchableOpacity key={index} onPress={() => onPageChange(number)}>
+            <Text style={[styles.pageNumber, {color: currentPage === number ? Colors.primary : Colors.black}]}>{number}</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text key={index} style={styles.pageNumber}>
+            {number}
           </Text>
-        </TouchableOpacity>
-      ))}
+        )
+      )}
       <TouchableOpacity
-        onPress={() => onPageChange(currentPage + 1)}
+        onPress={() => onPageChange(Math.min(currentPage + 1, totalPages))}
         disabled={currentPage === totalPages}
       >
         <Text>{">"}</Text>

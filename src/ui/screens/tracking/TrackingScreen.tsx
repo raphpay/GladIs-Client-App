@@ -38,6 +38,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
   const [logs, setLogs] = useState<IDocumentActivityLog[]>([]);
+  
   const logsFiltered = logs.filter(log =>
     log.name.toLowerCase().includes(searchText.toLowerCase()),
   );
@@ -46,8 +47,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
       title: t('dashboard.title'),
       onPress: () => navigateBack()
     }
-  ]
-
+  ];
 
   function navigateBack() {
     navigation.goBack();
@@ -65,8 +65,8 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   useEffect(() => {
     async function init() {
       const totalLogs = await DocumentActivityLogsService.getInstance().getLogsForClient(currentClient?.id, token);
-      setTotalPages(Math.ceil(totalLogs.length / 5));
-      const initialLogsToShow = totalLogs.slice(0, 5);
+      setTotalPages(Math.ceil(totalLogs.length / 1));
+      const initialLogsToShow = totalLogs.slice(0, 1);
       setLogs(initialLogsToShow);
       setIsLoading(false);
     }
