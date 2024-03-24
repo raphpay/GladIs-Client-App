@@ -55,6 +55,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
+      setIsLoading(true);
       const logs = await DocumentActivityLogsService.getInstance().getPaginatedLogsForClient(currentClient?.id, token, currentPage);
       setLogs(logs);
       setIsLoading(false);

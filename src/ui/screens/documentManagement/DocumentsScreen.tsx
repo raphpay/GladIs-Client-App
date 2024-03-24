@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  ActivityIndicator,
   Image,
   Platform,
   Text,
@@ -34,9 +35,11 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Pagination from '../../components/Pagination';
 import Tooltip from '../../components/Tooltip';
 import TooltipAction from '../../components/TooltipAction';
 
+import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
@@ -48,6 +51,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
   const [documentName, setDocumentName] = useState<string>('');
   const [selectedDocument, setSelectedDocument] = useState<IDocument>();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const plusIcon = require('../../assets/images/plus.png');
   const docIcon = require('../../assets/images/doc.fill.png');
@@ -192,9 +198,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   async function loadDocuments() {
+    setIsLoading(true);
     const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    const docs = await DocumentService.getInstance().getDocumentsAtPath(path, token);
-    setDocuments(docs);
+    const totalDocs = await DocumentService.getInstance().getDocumentsAtPath(path, token);
+    setTotalPages(Math.ceil(totalDocs.length / 2));
+    const initialDocsToShow = totalDocs.slice(0, 2);
+    setDocuments(initialDocsToShow);
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -203,6 +213,17 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
     init();
   }, []);
+
+  useEffect(() => {
+    async function init() {
+      setIsLoading(true);
+      const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+      const docs = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage);
+      setDocuments(docs);
+      setIsLoading(false);
+    }
+    init();
+  }, [currentPage]);
 
   useEffect(() => {
     async function init() {
@@ -232,6 +253,27 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
+  function DocumentGrid() {
+    return (
+      <>
+        {
+          documentsFiltered.length !== 0 ? (
+            <Grid
+              data={documentsFiltered}
+              renderItem={(renderItem) => DocumentRow(renderItem.item)}
+            />
+          ) : (
+            <ContentUnavailableView 
+              title={t('documentsScreen.noDocs.title')}
+              message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
+              image={docIcon}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -244,6 +286,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         navigateBack={navigateBack}
         showDialog={showDialog}
         showSettings={true}
+        additionalComponent={
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page: number) => setCurrentPage(page)}
+          />
+        }
         adminButton={
           currentUser?.userType == UserType.Admin ? (
             <IconButton
@@ -271,20 +320,15 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           </Dialog>
         }
       >
-        {
-          documentsFiltered.length !== 0 ? (
-            <Grid
-              data={documentsFiltered}
-              renderItem={(renderItem) => DocumentRow(renderItem.item)}
-            />
-          ) : (
-            <ContentUnavailableView 
-              title={t('documentsScreen.noDocs.title')}
-              message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-              image={docIcon}
-            />
-          )
-        }
+        <>
+          {
+            isLoading ? (
+              <ActivityIndicator size="large" color={Colors.primary} />
+            ) : (
+              DocumentGrid()
+            )
+          }
+        </>
       </AppContainer>
       <TooltipAction
         showDialog={showDocumentActionDialog}

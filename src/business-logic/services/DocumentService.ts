@@ -42,6 +42,25 @@ class DocumentService {
   }
 
   /**
+   * Retrieves the paginated documents at the specified path.
+   * @param path - The path to retrieve the documents from.
+   * @param token - The authentication token (optional).
+   * @param page - The page number.
+   * @returns A promise that resolves to an array of documents.
+   * @throws If an error occurs while retrieving the documents.
+   */
+  async getPaginatedDocumentsAtPath(path: string, token: IToken | null, page: number): Promise<IDocument[]> {
+    try {
+      const url = `${this.baseRoute}/paginated/path?page=${page}&perPage=5`;
+      const documents = await APIService.post<IDocument[]>(url, { value: path }, token?.value as string);
+      return documents;
+    } catch (error) {
+      console.log('Error getting documents at path:', path, error);
+      throw error;
+    }
+  }
+
+  /**
    * Downloads the document with the specified ID.
    * @param id - The ID of the document to download.
    * @param token - The authentication token (optional).
