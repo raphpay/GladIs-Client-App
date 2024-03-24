@@ -130,6 +130,19 @@ class Utils {
   static isANumber(value: string) {
     return !isNaN(Number(value));
   }
+  
+  /**
+  * Formats a number with a leading zero if it is less than 10.
+  * @param number - The number to format.
+  * @returns A string representation of the number with a leading zero if it is less than 10.
+  */
+  static formatWithLeadingZero(number: number): string {
+    let stringNumber = number.toString();
+    if (number < 10) {
+      stringNumber = `0${number}`;
+    }
+    return stringNumber;
+  }
 }
 
 export default Utils;
