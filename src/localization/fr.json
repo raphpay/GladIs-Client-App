@@ -109,7 +109,8 @@
     "noLogs": {
       "title": "Pas de suivi de documents pour le moment",
       "message": "Revenez plus tard"
-    }
+    },
+    "at": "à",
   },
   "process": {
     "title": {

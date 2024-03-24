@@ -109,7 +109,8 @@
     "noLogs": {
       "title": "No document logs for now",
       "message": "Come back later"
-    }
+    },
+    "at": "at"
   },
   "process": {
     "title": {
