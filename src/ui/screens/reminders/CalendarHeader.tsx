@@ -42,15 +42,27 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
     // TODO: Implement state for month and year
     const nextMonth = new Date(year, month + 1, 1);
     setCurrentDate(nextMonth);
+    setMonthValue(nextMonth.getMonth());
+    setYearValue(nextMonth.getFullYear());
+    closeDropdowns();
   }
 
   function goToPreviousMonth() {
     const previousMonth = new Date(year, month - 1, 1);
     setCurrentDate(previousMonth);
+    setMonthValue(previousMonth.getMonth());
+    setYearValue(previousMonth.getFullYear());
+    closeDropdowns();
   }
 
   function goToToday() {
     setCurrentDate(new Date());
+    closeDropdowns();
+  }
+
+  function closeDropdowns() {
+    setMonthsOpen(false);
+    setYearsOpen(false);
   }
 
   const formatMonth = (month: number) => {
