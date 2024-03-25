@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 import styles from '../../assets/styles/reminders/CalendarStyles';
 
 interface Event {
@@ -18,12 +19,25 @@ interface EventsByDate {
 function Calendar(): React.JSX.Element {
 
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [monthsOpen, setMonthsOpen] = useState(false);
+  const [monthValue, setMonthValue] = useState(currentDate.getMonth());
+  const [yearsOpen, setYearsOpen] = useState(false);
+  const [yearValue, setYearValue] = useState(currentDate.getFullYear());
+  const [monthsItems, setMonthsItems] = useState(Array.from({ length: 12 }, (_, i) => i));
+  const [yearsItems, setYearsItems] = useState(Array.from({ length: 20 }, (_, i) => i + 2015));
+
+  const onMonthOpen = () => {
+    setYearsOpen(false);
+  };
+
+  const onYearOpen = () => {
+    setMonthsOpen(false);
+  }
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
   const formattedMonthYearDate = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(currentDate);
-  const formattedMonthDate = new Intl.DateTimeFormat('fr-FR', { month: 'short' }).format(currentDate);
-  const formattedYearDate = new Intl.DateTimeFormat('fr-FR', { year: 'numeric' }).format(currentDate);
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -65,7 +79,12 @@ function Calendar(): React.JSX.Element {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   };
 
+  const formatMonth = (month: number) => {
+    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(new Date(year, month));
+  }
+
   function goToNextMonth() {
+    // TODO: Implement state for month and year
     const nextMonth = new Date(year, month + 1, 1);
     setCurrentDate(nextMonth);
   }
@@ -113,20 +132,39 @@ function Calendar(): React.JSX.Element {
   }
 
   // TODO: Add translation for month names and today button
-  // TODO: Add dropdown to select month and year
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.monthYearText}>{formattedMonthYearDate}</Text>
         <View style={styles.headerButtons}>
-          <View style={styles.dateButton}>
-            <Text>{formattedMonthDate}</Text>
-          </View>
-          <View style={styles.dateButton}>
-            <Text>{formattedYearDate}</Text>
-          </View>
-          <TouchableOpacity onPress={goToToday} style={styles.dateButton}>
-            <Text>Today</Text>
+          <DropDownPicker
+            open={monthsOpen}
+            value={monthValue}
+            items={monthsItems.map(month => ({ label: formatMonth(month), value: month }))}
+            setOpen={setMonthsOpen}
+            onOpen={onMonthOpen}
+            setValue={setMonthValue}
+            setItems={setMonthsItems}
+            onSelectItem={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
+            containerStyle={{...styles.containerStyle, width: 150}}
+            style={styles.dropdownStyle}
+            textStyle={styles.dropdownText}
+          />
+          <DropDownPicker
+            open={yearsOpen}
+            value={yearValue}
+            items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
+            setOpen={setYearsOpen}
+            onOpen={onYearOpen}
+            setValue={setYearValue}
+            setItems={setYearsItems}
+            onSelectItem={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
+            containerStyle={{...styles.containerStyle, width: 100}}
+            style={styles.dropdownStyle}
+            textStyle={styles.dropdownText}
+          />
+          <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
+            <Text style={styles.dropdownText}>Aujourd'hui</Text>
           </TouchableOpacity>
           {ArrowButton('left')}
           {ArrowButton('right')}

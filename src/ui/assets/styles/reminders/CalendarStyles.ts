@@ -15,13 +15,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginBottom: 20,
+    zIndex: 1000
   },
   monthYearText: {
     fontFamily: Fonts.poppinsSemiBold,
   },
   headerButtons: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   arrow: {
     fontSize: 24,
@@ -85,22 +87,37 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'blue',
   },
-  dateButton: {
+  containerStyle: {
+    marginHorizontal: 10,
+  },
+  dropdownStyle: {
     borderWidth: 1,
     borderRadius: 5,
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     height: 35,
     alignItems: 'center',
+    borderColor: Colors.inactive,
+    backgroundColor: Colors.light
+  },
+  todayButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 10,
+    padding: 10,
+    height: 50,
     borderColor: Colors.inactive
+  },
+  dropdownText: {
+    fontFamily: Fonts.poppinsLight,
   },
   arrowButton: {
     borderWidth: 1,
     borderRadius: 5,
     marginHorizontal: 5,
     width: 35,
-    height: 35,
+    height: 50,
     alignItems: 'center',
     justifyContent: 'center',
     borderColor: Colors.inactive
