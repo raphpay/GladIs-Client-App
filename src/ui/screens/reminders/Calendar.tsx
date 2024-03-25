@@ -73,21 +73,24 @@ function Calendar(): React.JSX.Element {
 
   function DayCell(day: number, dayEvents: Event[]) {
     return (
-      <TouchableOpacity 
+      <View 
         key={`day-${day}`} 
         style={styles.dayCell} 
-        onPress={() => {/* Handle press event, e.g., open modal with day's events */}}
       >
-        <Text style={styles.dayText}>{day}</Text>
-        {dayEvents.slice(0, 3).map((event, index) => (
-          <Text key={index} style={styles.eventName}>{event.name}</Text>
+        <TouchableOpacity style={styles.dayTextContainer} onPress={() => console.log('Open day')}>
+          <Text style={styles.dayText}>{day}</Text>
+        </TouchableOpacity>
+        {dayEvents.slice(0, 2).map((event, index) => (
+          <TouchableOpacity key={index} onPress={() => console.log('open event')}>
+            <Text style={styles.eventName}>{event.name}</Text>
+          </TouchableOpacity>
         ))}
-        {dayEvents.length > 3 && (
+        {dayEvents.length > 2 && (
           <TouchableOpacity onPress={() => {/* Handle showing more events */}}>
             <Text style={styles.moreEventsText}>More...</Text>
           </TouchableOpacity>
         )}
-      </TouchableOpacity>
+      </View>
     );
   }
 
@@ -115,25 +118,9 @@ function Calendar(): React.JSX.Element {
         {daysArray.map(day => {
           const dayKey = formatDate(year, month, day);
           const dayEvents = events[dayKey] || [];
-
-          console.log('dayEvents', dayKey, dayEvents);
           
           return (
-            <TouchableOpacity 
-              key={`day-${day}`} 
-              style={styles.dayCell} 
-              onPress={() => {/* Handle press event, e.g., open modal with day's events */}}
-            >
-              <Text style={styles.dayText}>{day}</Text>
-              {dayEvents.slice(0, 3).map((event, index) => (
-                <Text key={index} style={styles.eventName}>{event.name}</Text>
-              ))}
-              {dayEvents.length > 3 && (
-                <TouchableOpacity onPress={() => {/* Handle showing more events */}}>
-                  <Text style={styles.moreEventsText}>More...</Text>
-                </TouchableOpacity>
-              )}
-            </TouchableOpacity>
+            DayCell(day, dayEvents)
           );
         })}
         {endingBlanks.map((_, index) => (

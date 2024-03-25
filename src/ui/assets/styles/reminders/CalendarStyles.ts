@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,22 +43,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: 'space-around',
   },
+  dayCell: {
+    width: '13%',
+    height: 75,
+    padding: 2,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
   day: {
     width: '13%',
     textAlign: 'center',
-    margin: 2,
     fontSize: 16,
   },
-  dayCell: {
-    width: '13%',
-    height: 50, // Set a fixed height for the cells
-    justifyContent: 'center', // Center the content vertically
-    alignItems: 'center', // Center the content horizontally
-    margin: 2,
-    borderWidth: 1, // Optional: add a border to each cell
-    borderColor: '#ddd', // Light grey border
+  dayTextContainer: {
+    width: '100%',
+    alignItems: 'flex-end'
   },
   dayText: {
+    fontFamily: Fonts.poppinsLight,
     textAlign: 'center',
     fontSize: 16,
   },
