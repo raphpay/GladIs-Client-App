@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -14,6 +15,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginBottom: 20,
+  },
+  monthYearText: {
+    fontFamily: Fonts.poppinsSemiBold,
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   arrow: {
     fontSize: 24,
@@ -76,6 +84,26 @@ const styles = StyleSheet.create({
   moreEventsText: {
     fontSize: 12,
     color: 'blue',
+  },
+  dateButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    marginHorizontal: 10,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    borderColor: Colors.inactive
+  },
+  arrowButton: {
+    borderWidth: 1,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    width: 35,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: Colors.inactive
   },
 });
 

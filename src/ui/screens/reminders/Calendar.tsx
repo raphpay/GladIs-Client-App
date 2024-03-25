@@ -21,15 +21,9 @@ function Calendar(): React.JSX.Element {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  function goToNextMonth() {
-    const nextMonth = new Date(year, month + 1, 1);
-    setCurrentDate(nextMonth);
-  }
-
-  function goToPreviousMonth() {
-    const previousMonth = new Date(year, month - 1, 1);
-    setCurrentDate(previousMonth);
-  }
+  const formattedMonthYearDate = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(currentDate);
+  const formattedMonthDate = new Intl.DateTimeFormat('fr-FR', { month: 'short' }).format(currentDate);
+  const formattedYearDate = new Intl.DateTimeFormat('fr-FR', { year: 'numeric' }).format(currentDate);
 
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -71,6 +65,20 @@ function Calendar(): React.JSX.Element {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   };
 
+  function goToNextMonth() {
+    const nextMonth = new Date(year, month + 1, 1);
+    setCurrentDate(nextMonth);
+  }
+
+  function goToPreviousMonth() {
+    const previousMonth = new Date(year, month - 1, 1);
+    setCurrentDate(previousMonth);
+  }
+
+  function goToToday() {
+    setCurrentDate(new Date());
+  }
+
   function DayCell(day: number, dayEvents: Event[]) {
     return (
       <View 
@@ -94,16 +102,35 @@ function Calendar(): React.JSX.Element {
     );
   }
 
+  function ArrowButton(side: 'left' | 'right') {
+    return (
+      <TouchableOpacity
+        style={styles.arrowButton}
+        onPress={side === 'left' ? goToPreviousMonth : goToNextMonth}>
+          <Text>{side === 'left' ? '<' : '>'}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  // TODO: Add translation for month names and today button
+  // TODO: Add dropdown to select month and year
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={goToPreviousMonth}>
-          <Text style={styles.arrow}>{"<"}</Text>
-        </TouchableOpacity>
-        <Text>{`${year} ${month + 1}`}</Text>
-        <TouchableOpacity onPress={goToNextMonth}>
-          <Text style={styles.arrow}>{">"}</Text>
-        </TouchableOpacity>
+        <Text style={styles.monthYearText}>{formattedMonthYearDate}</Text>
+        <View style={styles.headerButtons}>
+          <View style={styles.dateButton}>
+            <Text>{formattedMonthDate}</Text>
+          </View>
+          <View style={styles.dateButton}>
+            <Text>{formattedYearDate}</Text>
+          </View>
+          <TouchableOpacity onPress={goToToday} style={styles.dateButton}>
+            <Text>Today</Text>
+          </TouchableOpacity>
+          {ArrowButton('left')}
+          {ArrowButton('right')}
+        </View>
       </View>
       {/* <Text style={styles.monthText}>{`${months[month]} ${year}`}</Text> */}
       <View style={styles.daysOfWeekContainer}>
