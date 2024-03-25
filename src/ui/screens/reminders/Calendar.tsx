@@ -33,10 +33,12 @@ function Calendar(): React.JSX.Element {
   // Get the number of days in the month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // Determine what day of the week the month starts on
+  // Determine what day of the week the month starts on, correctly adjusting for a Monday start
   const startDayOfMonth = new Date(year, month).getDay();
+  
   // Determine what day of the week the month starts on, adjusting for a Monday start
-  const adjustedStartDay = startDayOfMonth === 0 ? 1 : startDayOfMonth - 1;
+  // const adjustedStartDay = startDayOfMonth === 0 ? 1 : startDayOfMonth - 1;
+  const adjustedStartDay = startDayOfMonth === 0 ? 6 : startDayOfMonth - 1;
 
   // Create an array for the blank spaces before the first day of the month
   const blankDays = Array(adjustedStartDay).fill(null);
@@ -45,7 +47,8 @@ function Calendar(): React.JSX.Element {
   // Create an array for the blank spaces after the last day of the month
   const lastDayOfMonth = new Date(year, month, daysInMonth).getDay();
   const adjustedLastDay = lastDayOfMonth === 0 ? 6 : lastDayOfMonth - 1;
-  const endingBlankDays = (7 - adjustedLastDay) % 7; // Ensuring non-negative length
+  // No adjustment needed if the month already ends on a Monday (adjustedLastDay == 0 in this setup)
+  const endingBlankDays = adjustedLastDay == 6 ? 0 : 6 - adjustedLastDay;
   const endingBlanks = Array(endingBlankDays).fill(null);
 
   // Create an array for the days of the month
@@ -99,6 +102,7 @@ function Calendar(): React.JSX.Element {
     );
   }
   
+  // TODO: Check scroll behavior
   return (
     <View style={styles.container}>
       <CalendarHeader currentDate={currentDate} setCurrentDate={setCurrentDate}/>
