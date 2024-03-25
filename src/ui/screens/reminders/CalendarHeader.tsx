@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+
+import Utils from '../../../business-logic/utils/Utils';
 
 import styles from '../../assets/styles/reminders/CalendarStyles';
 
@@ -26,6 +29,8 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
   const [monthsItems, setMonthsItems] = useState(Array.from({ length: 12 }, (_, i) => i));
   const [yearsItems, setYearsItems] = useState(Array.from({ length: 20 }, (_, i) => i + 2015));
 
+  const plusIcon = require('../../assets/images/plus.png');
+
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const formattedMonthYearDate = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(currentDate);
@@ -39,7 +44,6 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
   }
 
   function goToNextMonth() {
-    // TODO: Implement state for month and year
     const nextMonth = new Date(year, month + 1, 1);
     setCurrentDate(nextMonth);
     setMonthValue(nextMonth.getMonth());
@@ -57,6 +61,8 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
 
   function goToToday() {
     setCurrentDate(new Date());
+    setMonthValue(currentDate.getMonth());
+    setYearValue(currentDate.getFullYear());
     closeDropdowns();
   }
 
@@ -64,10 +70,6 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
     setMonthsOpen(false);
     setYearsOpen(false);
   }
-
-  const formatMonth = (month: number) => {
-    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(new Date(year, month));
-  };
 
   function ArrowButton(side: 'left' | 'right') {
     return (
@@ -79,6 +81,8 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
     );
   }
 
+  // TODO: Add a new plus icon with a primary color
+  // TODO: Add action on plus
   return (
     <View style={styles.header}>
       <Text style={styles.monthYearText}>{formattedMonthYearDate}</Text>
@@ -86,7 +90,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
         <DropDownPicker
           open={monthsOpen}
           value={monthValue}
-          items={monthsItems.map(month => ({ label: formatMonth(month), value: month }))}
+          items={monthsItems.map(month => ({ label: Utils.formatMonth(currentDate), value: month }))}
           setOpen={setMonthsOpen}
           onOpen={onMonthOpen}
           setValue={setMonthValue}
@@ -116,6 +120,9 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
         </TouchableOpacity>
         {ArrowButton('left')}
         {ArrowButton('right')}
+        <TouchableOpacity style={styles.todayButton}>
+          <Image source={plusIcon} style={styles.plusIcon}/>
+        </TouchableOpacity>
       </View>
     </View>
   );

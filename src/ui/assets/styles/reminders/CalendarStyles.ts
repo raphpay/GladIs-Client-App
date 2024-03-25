@@ -122,6 +122,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderColor: Colors.inactive
   },
+  plusIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+  },
 });
 
 export default styles;

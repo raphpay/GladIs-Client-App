@@ -6,9 +6,12 @@ import {
   View
 } from 'react-native';
 
-import styles from '../../assets/styles/reminders/CalendarStyles';
+import Utils from '../../../business-logic/utils/Utils';
 
 import CalendarHeader from './CalendarHeader';
+
+import styles from '../../assets/styles/reminders/CalendarStyles';
+
 
 interface Event {
   name: string;
@@ -19,16 +22,23 @@ interface EventsByDate {
   [key: string]: Event[];
 }
 
-function Calendar(): React.JSX.Element {
+type CalendarProps = {
+  currentDate: Date;
+  setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+};
+function Calendar(props: CalendarProps): React.JSX.Element {
   const { t } = useTranslation();
 
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const { currentDate, setCurrentDate, setShowDialog } = props;
+
+  // State to store the timestamp of the last tap
+  const [lastTap, setLastTap] = useState<number | null>(null)
+
   const daysItems = Array.from({ length: 7 }, (_, i) => i + 1);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
-  const formattedMonthYearDate = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(currentDate);
 
   // Get the number of days in the month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -66,49 +76,78 @@ function Calendar(): React.JSX.Element {
     '2024-03-25': [{name: 'Conference'}, {name: 'Dinner'}, {name: 'Call'}, {name: 'Study'}],
   };
 
-  // Helper function to format date
-  const formatDate = (year: number, month: number, day: number) => {
-    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-  };
+  function doubleTapDayCell(day: number) {
+    const now = Date.now();
+    const DOUBLE_TAP_DELAY = 300; // milliseconds
 
-  function formatDay(day: number): string {
-    const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
-    const dayDate = new Date(baseDate);
-    dayDate.setDate(dayDate.getDate() + day - 1);
-    const dayName = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' }).format(dayDate);
-    return dayName;
+    if (lastTap && (now - lastTap) < DOUBLE_TAP_DELAY) {
+      // Reset lastTap
+      setLastTap(null);
+      // Perform action on double tap
+      setShowDialog(true);
+    } else {
+      // Update the lastTap timestamp
+      setLastTap(now);
+      // Optional: Perform action on single tap
+      // ...
+    }
   }
 
-  function DayCell(day: number, dayEvents: Event[]) {
+  function DayCellContent(day: number, dayEvents: Event[]) {
     return (
-      <View 
-        key={`day-${day}`} 
-        style={styles.dayCell} 
-      >
-        <TouchableOpacity style={styles.dayTextContainer} onPress={() => console.log('Open day')}>
+      <>
+        <View key={`DayCellContent-view-${day}`} style={styles.dayTextContainer}>
           <Text style={styles.dayText}>{day}</Text>
-        </TouchableOpacity>
+        </View>
         {dayEvents.slice(0, 2).map((event, index) => (
           <TouchableOpacity key={index} onPress={() => console.log('open event')}>
             <Text style={styles.eventName}>{event.name}</Text>
           </TouchableOpacity>
         ))}
         {dayEvents.length > 2 && (
-          <TouchableOpacity onPress={() => {/* Handle showing more events */}}>
+          <TouchableOpacity key={`DayCellContent-touchable-${day}`}>
             <Text style={styles.moreEventsText}>{t('calendar.more')}</Text>
           </TouchableOpacity>
         )}
-      </View>
+      </>
+    )
+  }
+
+  function DayCell(day: number, dayEvents: Event[]) {
+    return (
+      <>
+        {
+          dayEvents.length > 0 ? (
+            <View
+              key={`DayCell-view-${day}`} 
+              style={styles.dayCell} 
+            >
+              {DayCellContent(day, dayEvents)}
+            </View> 
+          ) : (
+            <TouchableOpacity
+              key={`DayCell-touchable-${day}`} 
+              style={styles.dayCell}
+              onPress={() => doubleTapDayCell(day)}
+              >
+              {DayCellContent(day, dayEvents)}
+            </TouchableOpacity>
+          )
+        }
+      </>
     );
   }
   
   // TODO: Check scroll behavior
   return (
     <View style={styles.container}>
-      <CalendarHeader currentDate={currentDate} setCurrentDate={setCurrentDate}/>
+      <CalendarHeader
+        currentDate={currentDate}
+        setCurrentDate={setCurrentDate}
+      />
       <View style={styles.daysOfWeekContainer}>
         {daysItems.map((day) => (
-          <Text key={day} style={styles.dayOfWeek}>{formatDay(day)}</Text>
+          <Text key={day} style={styles.dayOfWeek}>{Utils.formatDay(day)}</Text>
         ))}
       </View>
       <View style={styles.daysContainer}>
@@ -116,7 +155,7 @@ function Calendar(): React.JSX.Element {
           <Text key={`start-blank-${index}`} style={styles.day}></Text>
         ))}
         {daysArray.map(day => {
-          const dayKey = formatDate(year, month, day);
+          const dayKey = Utils.formatDate(year, month, day);
           const dayEvents = events[dayKey] || [];
           
           return (

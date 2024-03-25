@@ -143,6 +143,22 @@ class Utils {
     }
     return stringNumber;
   }
+
+  static formatMonth(date: Date): string {
+    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(date);
+  }
+
+  static formatDate(year: number, month: number, day: number) {
+    return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+
+  static formatDay(day: number): string {
+    const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
+    const dayDate = new Date(baseDate);
+    dayDate.setDate(dayDate.getDate() + day - 1);
+    const dayName = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' }).format(dayDate);
+    return dayName;
+  }
 }
 
 export default Utils;
