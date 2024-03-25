@@ -178,6 +178,9 @@
     "modifyPassword": "Modify password",
     "logout": "Log out",
   },
+  "calendar": {
+    "today": "Today",
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"

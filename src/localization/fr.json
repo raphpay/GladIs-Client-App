@@ -178,6 +178,9 @@
       "message": "Revenez plus tard, ou enregistrez-en un maintenant"
     }
   },
+  "calendar": {
+    "today": "Aujourd'hui",
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"

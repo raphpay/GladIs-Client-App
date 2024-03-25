@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+
 import styles from '../../assets/styles/reminders/CalendarStyles';
 
 interface Event {
@@ -25,6 +27,9 @@ function Calendar(): React.JSX.Element {
   const [yearValue, setYearValue] = useState(currentDate.getFullYear());
   const [monthsItems, setMonthsItems] = useState(Array.from({ length: 12 }, (_, i) => i));
   const [yearsItems, setYearsItems] = useState(Array.from({ length: 20 }, (_, i) => i + 2015));
+  const daysItems = Array.from({ length: 7 }, (_, i) => i + 1);
+
+  const { t } = useTranslation();
 
   const onMonthOpen = () => {
     setYearsOpen(false);
@@ -38,8 +43,6 @@ function Calendar(): React.JSX.Element {
   const month = currentDate.getMonth();
 
   const formattedMonthYearDate = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(currentDate);
-
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   // Get the number of days in the month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -81,6 +84,14 @@ function Calendar(): React.JSX.Element {
 
   const formatMonth = (month: number) => {
     return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(new Date(year, month));
+  }
+
+  function formatDay(day: number): string {
+    const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
+    const dayDate = new Date(baseDate);
+    dayDate.setDate(dayDate.getDate() + day - 1);
+    const dayName = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' }).format(dayDate);
+    return dayName;
   }
 
   function goToNextMonth() {
@@ -131,7 +142,6 @@ function Calendar(): React.JSX.Element {
     );
   }
 
-  // TODO: Add translation for month names and today button
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -164,16 +174,15 @@ function Calendar(): React.JSX.Element {
             textStyle={styles.dropdownText}
           />
           <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
-            <Text style={styles.dropdownText}>Aujourd'hui</Text>
+            <Text style={styles.dropdownText}>{t('calendar.today')}</Text>
           </TouchableOpacity>
           {ArrowButton('left')}
           {ArrowButton('right')}
         </View>
       </View>
-      {/* <Text style={styles.monthText}>{`${months[month]} ${year}`}</Text> */}
       <View style={styles.daysOfWeekContainer}>
-        {daysOfWeek.map((day) => (
-          <Text key={day} style={styles.dayOfWeek}>{day}</Text>
+        {daysItems.map((day) => (
+          <Text key={day} style={styles.dayOfWeek}>{formatDay(day)}</Text>
         ))}
       </View>
       <View style={styles.daysContainer}>
