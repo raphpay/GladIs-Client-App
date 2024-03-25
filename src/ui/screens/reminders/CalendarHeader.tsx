@@ -81,6 +81,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           setItems={setMonthsItems}
           onSelectItem={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
           containerStyle={{...styles.containerStyle, width: 150}}
+          dropDownDirection='BOTTOM'
           style={styles.dropdownStyle}
           textStyle={styles.dropdownText}
         />
@@ -93,6 +94,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           setValue={setYearValue}
           setItems={setYearsItems}
           onSelectItem={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
+          dropDownDirection='BOTTOM'
           containerStyle={{...styles.containerStyle, width: 100}}
           style={styles.dropdownStyle}
           textStyle={styles.dropdownText}
