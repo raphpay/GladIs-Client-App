@@ -180,6 +180,7 @@
   },
   "calendar": {
     "today": "Today",
+    "more": "More...",
   },
   "components": {
     "searchTextInput": {

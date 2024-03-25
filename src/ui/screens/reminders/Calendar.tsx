@@ -5,9 +5,10 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 import styles from '../../assets/styles/reminders/CalendarStyles';
+
+import CalendarHeader from './CalendarHeader';
 
 interface Event {
   name: string;
@@ -19,25 +20,10 @@ interface EventsByDate {
 }
 
 function Calendar(): React.JSX.Element {
-
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [monthsOpen, setMonthsOpen] = useState(false);
-  const [monthValue, setMonthValue] = useState(currentDate.getMonth());
-  const [yearsOpen, setYearsOpen] = useState(false);
-  const [yearValue, setYearValue] = useState(currentDate.getFullYear());
-  const [monthsItems, setMonthsItems] = useState(Array.from({ length: 12 }, (_, i) => i));
-  const [yearsItems, setYearsItems] = useState(Array.from({ length: 20 }, (_, i) => i + 2015));
-  const daysItems = Array.from({ length: 7 }, (_, i) => i + 1);
-
   const { t } = useTranslation();
 
-  const onMonthOpen = () => {
-    setYearsOpen(false);
-  };
-
-  const onYearOpen = () => {
-    setMonthsOpen(false);
-  }
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const daysItems = Array.from({ length: 7 }, (_, i) => i + 1);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -82,31 +68,12 @@ function Calendar(): React.JSX.Element {
     return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   };
 
-  const formatMonth = (month: number) => {
-    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(new Date(year, month));
-  }
-
   function formatDay(day: number): string {
     const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
     const dayDate = new Date(baseDate);
     dayDate.setDate(dayDate.getDate() + day - 1);
     const dayName = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' }).format(dayDate);
     return dayName;
-  }
-
-  function goToNextMonth() {
-    // TODO: Implement state for month and year
-    const nextMonth = new Date(year, month + 1, 1);
-    setCurrentDate(nextMonth);
-  }
-
-  function goToPreviousMonth() {
-    const previousMonth = new Date(year, month - 1, 1);
-    setCurrentDate(previousMonth);
-  }
-
-  function goToToday() {
-    setCurrentDate(new Date());
   }
 
   function DayCell(day: number, dayEvents: Event[]) {
@@ -125,61 +92,16 @@ function Calendar(): React.JSX.Element {
         ))}
         {dayEvents.length > 2 && (
           <TouchableOpacity onPress={() => {/* Handle showing more events */}}>
-            <Text style={styles.moreEventsText}>More...</Text>
+            <Text style={styles.moreEventsText}>{t('calendar.more')}</Text>
           </TouchableOpacity>
         )}
       </View>
     );
   }
-
-  function ArrowButton(side: 'left' | 'right') {
-    return (
-      <TouchableOpacity
-        style={styles.arrowButton}
-        onPress={side === 'left' ? goToPreviousMonth : goToNextMonth}>
-          <Text>{side === 'left' ? '<' : '>'}</Text>
-      </TouchableOpacity>
-    );
-  }
-
+  
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.monthYearText}>{formattedMonthYearDate}</Text>
-        <View style={styles.headerButtons}>
-          <DropDownPicker
-            open={monthsOpen}
-            value={monthValue}
-            items={monthsItems.map(month => ({ label: formatMonth(month), value: month }))}
-            setOpen={setMonthsOpen}
-            onOpen={onMonthOpen}
-            setValue={setMonthValue}
-            setItems={setMonthsItems}
-            onSelectItem={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
-            containerStyle={{...styles.containerStyle, width: 150}}
-            style={styles.dropdownStyle}
-            textStyle={styles.dropdownText}
-          />
-          <DropDownPicker
-            open={yearsOpen}
-            value={yearValue}
-            items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
-            setOpen={setYearsOpen}
-            onOpen={onYearOpen}
-            setValue={setYearValue}
-            setItems={setYearsItems}
-            onSelectItem={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
-            containerStyle={{...styles.containerStyle, width: 100}}
-            style={styles.dropdownStyle}
-            textStyle={styles.dropdownText}
-          />
-          <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
-            <Text style={styles.dropdownText}>{t('calendar.today')}</Text>
-          </TouchableOpacity>
-          {ArrowButton('left')}
-          {ArrowButton('right')}
-        </View>
-      </View>
+      <CalendarHeader currentDate={currentDate} setCurrentDate={setCurrentDate}/>
       <View style={styles.daysOfWeekContainer}>
         {daysItems.map((day) => (
           <Text key={day} style={styles.dayOfWeek}>{formatDay(day)}</Text>
