@@ -27,7 +27,7 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
   const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.adminTitle'),
-      action: () => navigateBack()
+      onPress: () => navigateBack()
     }
   ]
 

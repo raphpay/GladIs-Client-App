@@ -50,6 +50,8 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
         navigation.navigate(NavigationRoutes.DocumentManagementScreen);
       } else if (module.name == 'tracking') {
         navigation.navigate(NavigationRoutes.TrackingScreen);
+      } else if (module.name == 'reminders') {
+        navigation.navigate(NavigationRoutes.RemindersScreen);
       }
     } else {
       setShowDialog && setShowDialog(true);
