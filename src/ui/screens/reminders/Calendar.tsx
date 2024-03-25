@@ -155,7 +155,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
           <Text key={`start-blank-${index}`} style={styles.day}></Text>
         ))}
         {daysArray.map(day => {
-          const dayKey = Utils.formatDate(year, month, day);
+          const dayKey = Utils.formatDate(currentDate);
           const dayEvents = events[dayKey] || [];
           
           return (

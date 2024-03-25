@@ -197,6 +197,13 @@
       "save": "Sauvegarder"
     },
     "dialog": {
+      "calendar": {
+        "newEvent": {
+          "title": "Nouvel événement",
+          "eventName": "Nom de l'événement",
+          "confirm": "Enregistrer"
+        }
+      },
       "addDocument": {
         "title": "Ajouter un document",
         "confirmButton": "Selectionner un fichier",

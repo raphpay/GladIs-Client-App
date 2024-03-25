@@ -257,6 +257,13 @@
         "download": "Download",
         "approve": "Approve"
       },
+      "calendar": {
+        "newEvent": {
+          "title": "New event",
+          "eventName": "Event name",
+          "confirm": "Save"
+        }
+      },
       "blockClient": "Are you sure you want to block this client?",
       "unblockClient": "Are you sure you want to unblock this client?",
       "confirm": "OK",
