@@ -31,7 +31,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
   const monthsItems = Array.from({ length: 12 }, (_, i) => i);
   const yearsItems = Array.from({ length: 20 }, (_, i) => i + 2015);
 
-  const plusIcon = require('../../assets/images/plus.png');
+  const plusIcon = require('../../assets/images/plus-blue.png');
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -83,8 +83,6 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
     );
   }
 
-  // TODO: Add a new plus icon with a primary color
-  // TODO: Add action on plus
   return (
     <View style={styles.header}>
       <Text style={styles.monthYearText}>{formattedMonthYearDate}</Text>
