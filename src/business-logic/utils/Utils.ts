@@ -148,9 +148,14 @@ class Utils {
     return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(date);
   }
 
-  static formatDate(date: Date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDay()).padStart(2, '0')}`;
-  }
+  static formatDate(date: Date): string {
+    const year = date.getFullYear();
+    // Months are zero-indexed, so add 1 for correct month number
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  };
 
   static formatStringDate(date: Date): string {
     return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', }).format(date);

@@ -64,16 +64,10 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   // Create an array for the days of the month
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-    // Mock function to check if a day has events
-  const hasEvents = (day: number) => {
-    // Example: return true if the day is the 5th of any month
-    return day === 5;
-  };
-
   const events: EventsByDate = {
     '2024-03-05': [{name: 'Meeting'}, {name: 'Doctor'}, {name: 'Gym'}],
-    '2024-03-15': [{name: 'Birthday'}],
-    '2024-03-25': [{name: 'Conference'}, {name: 'Dinner'}, {name: 'Call'}, {name: 'Study'}],
+    '2024-03-16': [{name: 'Birthday'}],
+    '2024-03-28': [{name: 'Conference'}, {name: 'Dinner'}, {name: 'Call'}, {name: 'Study'}],
   };
 
   function doubleTapDayCell(day: number) {
@@ -95,47 +89,40 @@ function Calendar(props: CalendarProps): React.JSX.Element {
 
   function DayCellContent(day: number, dayEvents: Event[]) {
     return (
-      <>
-        <View key={`DayCellContent-view-${day}`} style={styles.dayTextContainer}>
-          <Text style={styles.dayText}>{day}</Text>
-        </View>
+      <View style={styles.dayTextContainer}>
+        <Text style={styles.dayText}>{day}</Text>
         {dayEvents.slice(0, 2).map((event, index) => (
-          <TouchableOpacity key={index} onPress={() => console.log('open event')}>
+          <TouchableOpacity key={`event-${day}-${event.name}-${index}`} onPress={() => console.log('open event')}>
             <Text style={styles.eventName}>{event.name}</Text>
           </TouchableOpacity>
         ))}
         {dayEvents.length > 2 && (
-          <TouchableOpacity key={`DayCellContent-touchable-${day}`}>
+          <TouchableOpacity onPress={() => {/* Handle showing more events */}}>
             <Text style={styles.moreEventsText}>{t('calendar.more')}</Text>
           </TouchableOpacity>
         )}
-      </>
-    )
+      </View>
+    );
   }
 
   function DayCell(day: number, dayEvents: Event[]) {
-    return (
-      <>
-        {
-          dayEvents.length > 0 ? (
-            <View
-              key={`DayCell-view-${day}`} 
-              style={styles.dayCell} 
-            >
-              {DayCellContent(day, dayEvents)}
-            </View> 
-          ) : (
-            <TouchableOpacity
-              key={`DayCell-touchable-${day}`} 
-              style={styles.dayCell}
-              onPress={() => doubleTapDayCell(day)}
-              >
-              {DayCellContent(day, dayEvents)}
-            </TouchableOpacity>
-          )
-        }
-      </>
-    );
+    if (dayEvents.length > 0) {
+      return (
+        <View key={`DayCell-${day}`} style={styles.dayCell}>
+          {DayCellContent(day, dayEvents)}
+        </View>
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          key={`DayCell-${day}`} 
+          style={styles.dayCell}
+          onPress={() => doubleTapDayCell(day)}
+        >
+          {DayCellContent(day, dayEvents)}
+        </TouchableOpacity>
+      );
+    }
   }
   
   // TODO: Check scroll behavior
@@ -156,7 +143,9 @@ function Calendar(props: CalendarProps): React.JSX.Element {
           <Text key={`start-blank-${index}`} style={styles.day}></Text>
         ))}
         {daysArray.map(day => {
-          const dayKey = Utils.formatDate(currentDate);
+          const dayDate = new Date(year, month, day);
+          const dayKey = Utils.formatDate(dayDate);
+          
           const dayEvents = events[dayKey] || [];
           
           return (
