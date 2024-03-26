@@ -67,21 +67,20 @@ const styles = StyleSheet.create({
   },
   dayTextContainer: {
     width: '100%',
-    alignItems: 'flex-end'
   },
   dayText: {
     fontFamily: Fonts.poppinsLight,
-    textAlign: 'center',
+    textAlign: 'right',
     fontSize: 16,
   },
   eventIndicator: {
-    fontSize: 12,
-    color: 'red', // Example: mark event days with a red dot
-    paddingTop: 4,
+    backgroundColor: Colors.primary,
+    borderRadius: 5,
+    padding: 5,
   },
   eventName: {
     fontSize: 12,
-    color: '#333',
+    color: 'white',
   },
   moreEventsText: {
     fontSize: 12,

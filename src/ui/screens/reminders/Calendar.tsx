@@ -115,11 +115,15 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       <View style={styles.dayTextContainer}>
         <Text style={styles.dayText}>{day}</Text>
         {dayEvents.slice(0, 2).map((event, index) => (
-          <TouchableOpacity key={`event-${day}-${event.name}-${index}`} onPress={() => console.log('open event')}>
+          <TouchableOpacity
+            key={`event-${day}-${event.name}-${index}`}
+            onPress={() => console.log('open event')}
+            style={styles.eventIndicator}
+          >
             <Text style={styles.eventName}>{event.name}</Text>
           </TouchableOpacity>
         ))}
-        {dayEvents.length > 2 && (
+        {dayEvents.length > 1 && (
           <TouchableOpacity onPress={() => {/* Handle showing more events */}}>
             <Text style={styles.moreEventsText}>{t('calendar.more')}</Text>
           </TouchableOpacity>
