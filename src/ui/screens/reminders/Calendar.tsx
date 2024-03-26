@@ -17,12 +17,18 @@ type CalendarProps = {
   events: IEvent[];
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 function Calendar(props: CalendarProps): React.JSX.Element {
   const { t } = useTranslation();
 
-  const { events, currentDate, setCurrentDate, setShowDialog } = props;
+  const {
+    events,
+    currentDate, setCurrentDate,
+    setSelectedDate,
+    setShowDialog
+  } = props;
 
   // State to store the timestamp of the last tap
   const [lastTap, setLastTap] = useState<number | null>(null);
@@ -58,6 +64,8 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   function doubleTapDayCell(day: number) {
+    const tappedDate = new Date(year, month, day);
+
     const now = Date.now();
     const DOUBLE_TAP_DELAY = 300; // milliseconds
 
@@ -66,6 +74,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       setLastTap(null);
       // Perform action on double tap
       setShowDialog(true);
+      setSelectedDate(tappedDate);
     } else {
       // Update the lastTap timestamp
       setLastTap(now);

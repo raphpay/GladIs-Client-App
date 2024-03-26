@@ -11,7 +11,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import { IEvent } from '../../../business-logic/model/IEvent';
+import { IEvent, IEventInput } from '../../../business-logic/model/IEvent';
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
@@ -23,6 +23,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [eventName, setEventName] = useState<string>('');
   const [events, setEvents] = useState<IEvent[]>([]);
 
@@ -41,12 +42,37 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     try {
       if (currentClient?.id) {
         const events = await EventService.getInstance().getAllForClient(currentClient.id as string, token);
-        console.log('reminder', events );
         setEvents(events);
       }
     } catch (error) {
       // Show alert
     }
+  }
+
+  async function addEvent() {
+    // Call API
+    if (eventName !== '') {
+      try {
+        const selectedDateTimestamp = selectedDate.getTime();
+        const event: IEventInput = {
+          name: eventName,
+          date: selectedDateTimestamp,
+          clientID: currentClient?.id as string
+        }
+        const newEvent = await EventService.getInstance().create(event, token);
+        setEvents([...events, newEvent]);
+        resetDialog();
+      } catch (error) {
+        console.log('Error adding event', error );
+        // Show alert
+      }
+    }
+    // Update state
+  }
+
+  function resetDialog() {
+    setEventName('');
+    setShowDialog(false);
   }
 
   useEffect(() => {
@@ -63,12 +89,12 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
           showDialog && (
             <Dialog
               title={t('components.dialog.calendar.newEvent.title')}
-              description={Utils.formatStringDate(currentDate)}
+              description={Utils.formatStringDate(selectedDate)}
               isConfirmAvailable={true}
               confirmTitle={t('components.dialog.calendar.newEvent.confirm')}
-              onConfirm={() => setShowDialog(false)}
+              onConfirm={addEvent}
               isCancelAvailable={true}
-              onCancel={() => setShowDialog(false)}
+              onCancel={resetDialog}
             >
               <GladisTextInput
                 value={eventName}
@@ -99,6 +125,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
           events={events}
           currentDate={currentDate} 
           setCurrentDate={setCurrentDate}
+          setSelectedDate={setSelectedDate}
           setShowDialog={setShowDialog}
         />
       </AppContainer>

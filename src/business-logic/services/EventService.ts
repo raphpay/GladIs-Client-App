@@ -1,4 +1,4 @@
-import { IEvent } from '../model/IEvent';
+import { IEvent, IEventInput } from '../model/IEvent';
 import IToken from '../model/IToken';
 import APIService from './APIService';
 
@@ -29,7 +29,7 @@ class EventService {
    * @returns A promise that resolves to the created event.
    * @throws If an error occurs while creating the event.
    */
-  async create(event: IEvent, token: IToken | null): Promise<IEvent> {
+  async create(event: IEventInput, token: IToken | null): Promise<IEvent> {
     try {
       const newEvent = await APIService.post<IEvent>(this.baseRoute, event, token?.value as string);
       return newEvent;

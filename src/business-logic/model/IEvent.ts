@@ -1,8 +1,14 @@
 export interface IEvent {
-  id?: string;
+  id: string;
   name: string;
-  date: Date;
-  clientID: IClientID | null;
+  date: number;
+  client: IClientID | null;
+}
+
+export interface IEventInput {
+  name: string;
+  date: number;
+  clientID: string
 }
 
 interface IClientID {
