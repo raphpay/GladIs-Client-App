@@ -114,7 +114,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     return (
       <View style={styles.dayTextContainer}>
         <Text style={styles.dayText}>{day}</Text>
-        {dayEvents.slice(0, 2).map((event, index) => (
+        {dayEvents.slice(0, 1).map((event, index) => (
           <TouchableOpacity
             key={`event-${day}-${event.name}-${index}`}
             onPress={() => console.log('open event')}
