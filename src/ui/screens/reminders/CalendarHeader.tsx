@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 import Utils from '../../../business-logic/utils/Utils';
+
+import Dropdown from '../../components/Dropdown';
 
 import styles from '../../assets/styles/reminders/CalendarStyles';
 
@@ -88,36 +89,26 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
     <View style={styles.header}>
       <Text style={styles.monthYearText}>{formattedMonthYearDate}</Text>
       <View style={styles.headerButtons}>
-        <DropDownPicker
+        <Dropdown
           open={monthsOpen}
-          value={monthValue}
-          items={monthsItems.map(month => ({ label: Utils.formatMonth(currentDate), value: month }))}
           setOpen={setMonthsOpen}
-          onOpen={onMonthOpen}
+          value={monthValue}
           setValue={setMonthValue}
-          setItems={setMonthsItems}
-          onSelectItem={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
-          containerStyle={{...styles.containerStyle, width: 150}}
-          dropDownDirection='BOTTOM'
-          style={styles.dropdownStyle}
-          textStyle={styles.dropdownText}
+          items={monthsItems.map(month => ({ label: Utils.formatMonth(month), value: month }))}
+          onSelect={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
+          containerWidth={150}
         />
-        <DropDownPicker
+        <Dropdown
           open={yearsOpen}
-          value={yearValue}
-          items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
           setOpen={setYearsOpen}
-          onOpen={onYearOpen}
+          value={yearValue}
           setValue={setYearValue}
-          setItems={setYearsItems}
-          onSelectItem={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
-          dropDownDirection='BOTTOM'
-          containerStyle={{...styles.containerStyle, width: 100}}
-          style={styles.dropdownStyle}
-          textStyle={styles.dropdownText}
+          items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
+          onSelect={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
+          containerWidth={110}
         />
         <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
-          <Text style={styles.dropdownText}>{t('calendar.today')}</Text>
+          <Text style={styles.todayText}>{t('calendar.today')}</Text>
         </TouchableOpacity>
         {ArrowButton('left')}
         {ArrowButton('right')}

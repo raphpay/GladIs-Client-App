@@ -144,8 +144,10 @@ class Utils {
     return stringNumber;
   }
 
-  static formatMonth(date: Date): string {
-    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(date);
+  // TODO: Add documentation
+  static formatMonth(month: number): string {
+    const newDate = new Date(new Date().getFullYear(), month, 1);
+    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(newDate);
   }
 
   static formatDate(date: Date): string {

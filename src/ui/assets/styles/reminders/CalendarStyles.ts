@@ -86,18 +86,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'blue',
   },
-  containerStyle: {
-    marginHorizontal: 10,
-  },
-  dropdownStyle: {
-    borderWidth: 1,
-    borderRadius: 5,
-    marginHorizontal: 5,
-    height: 35,
-    alignItems: 'center',
-    borderColor: Colors.inactive,
-    backgroundColor: Colors.light
-  },
   todayButton: {
     borderWidth: 1,
     borderRadius: 5,
@@ -108,7 +96,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: Colors.inactive
   },
-  dropdownText: {
+  todayText: {
     fontFamily: Fonts.poppinsLight,
   },
   arrowButton: {
