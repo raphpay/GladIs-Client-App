@@ -19,6 +19,7 @@ type DialogProps = {
   isCancelAvailable?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  descriptionChildren?: JSX.Element;
   children?: JSX.Element;
 };
 
@@ -34,6 +35,7 @@ function Dialog(props: DialogProps): React.JSX.Element {
     isCancelAvailable,
     onConfirm,
     onCancel,
+    descriptionChildren,
     children,
   } = props;
   const { t } = useTranslation();
@@ -42,7 +44,13 @@ function Dialog(props: DialogProps): React.JSX.Element {
     <View style={styles.overlay}>
       <View style={styles.dialog}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        {
+          descriptionChildren ? (
+            descriptionChildren
+          ) : (
+            <Text style={styles.description}>{description}</Text>
+          )
+        }
         {children}
         <View style={styles.buttonContainer}>
           {

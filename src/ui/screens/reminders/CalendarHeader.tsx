@@ -28,8 +28,8 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
   const [monthValue, setMonthValue] = useState(currentDate.getMonth());
   const [yearsOpen, setYearsOpen] = useState(false);
   const [yearValue, setYearValue] = useState(currentDate.getFullYear());
-  const [monthsItems, setMonthsItems] = useState(Array.from({ length: 12 }, (_, i) => i));
-  const [yearsItems, setYearsItems] = useState(Array.from({ length: 20 }, (_, i) => i + 2015));
+  const monthsItems = Array.from({ length: 12 }, (_, i) => i);
+  const yearsItems = Array.from({ length: 20 }, (_, i) => i + 2015);
 
   const plusIcon = require('../../assets/images/plus.png');
 
