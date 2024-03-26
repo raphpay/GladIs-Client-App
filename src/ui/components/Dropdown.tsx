@@ -12,7 +12,9 @@ type DropdownProps = {
   setValue: React.Dispatch<React.SetStateAction<any>>;
   items: ItemType<number>[]; // Add the required type argument to the ItemType generic type
   onSelect: (item: ItemType<number>) => void;
+  onOpen: () => void;
   containerWidth: DimensionValue;
+  containerHeight?: DimensionValue;
 };
 
 function Dropdown(props: DropdownProps): React.JSX.Element {
@@ -21,7 +23,9 @@ function Dropdown(props: DropdownProps): React.JSX.Element {
     value, setValue,
     items,
     onSelect,
-    containerWidth
+    onOpen,
+    containerWidth,
+    containerHeight,
   } = props;
 
   return (
@@ -32,7 +36,8 @@ function Dropdown(props: DropdownProps): React.JSX.Element {
       setValue={setValue}
       items={items}
       onSelectItem={onSelect}
-      containerStyle={{ ...styles.containerStyle, width: containerWidth }}
+      onOpen={onOpen}
+      containerStyle={{ ...styles.containerStyle, width: containerWidth, height: containerHeight}}
       dropDownDirection="BOTTOM"
       style={styles.dropdownStyle}
       textStyle={styles.dropdownText}

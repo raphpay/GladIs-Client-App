@@ -96,6 +96,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           setValue={setMonthValue}
           items={monthsItems.map(month => ({ label: Utils.formatMonth(month), value: month }))}
           onSelect={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
+          onOpen={onMonthOpen}
           containerWidth={150}
         />
         <Dropdown
@@ -105,6 +106,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           setValue={setYearValue}
           items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
           onSelect={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
+          onOpen={onYearOpen}
           containerWidth={110}
         />
         <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
