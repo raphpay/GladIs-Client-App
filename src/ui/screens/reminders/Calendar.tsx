@@ -144,6 +144,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       <CalendarHeader
         currentDate={currentDate}
         setCurrentDate={setCurrentDate}
+        setShowDialog={setShowDialog}
       />
       <View style={styles.daysOfWeekContainer}>
         {daysItems.map((day) => (
