@@ -202,7 +202,8 @@
           "title": "Nouvel événement",
           "eventName": "Nom de l'événement",
           "confirm": "Enregistrer"
-        }
+        },
+        "eventsOn": "Evénements le"
       },
       "addDocument": {
         "title": "Ajouter un document",

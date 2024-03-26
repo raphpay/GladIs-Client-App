@@ -14,15 +14,18 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import AppContainer from '../../components/AppContainer';
 import Calendar from './Calendar';
 import EventDialog from './EventDialog';
+import ListEventsDialog from './ListDialog';
 
 type RemindersScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RemindersScreen>;
 
 function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
 
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showListDialog, setShowListDialog] = useState<boolean>(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [events, setEvents] = useState<IEvent[]>([]);
+  const [daysEvents, setDaysEvents] = useState<IEvent[]>([]);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
@@ -70,6 +73,8 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
           setCurrentDate={setCurrentDate}
           setSelectedDate={setSelectedDate}
           setShowDialog={setShowDialog}
+          setShowListDialog={setShowListDialog}
+          setDaysEvents={setDaysEvents}
         />
       </AppContainer>
       {
@@ -80,6 +85,13 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
           setEvents={setEvents}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+        />
+      }
+      {
+        <ListEventsDialog
+          showListDialog={showListDialog}
+          setShowListDialog={setShowListDialog}
+          daysEvents={daysEvents}
         />
       }
     </>

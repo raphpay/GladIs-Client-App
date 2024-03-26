@@ -19,6 +19,8 @@ type CalendarProps = {
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowListDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setDaysEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
 };
 function Calendar(props: CalendarProps): React.JSX.Element {
   const { t } = useTranslation();
@@ -27,7 +29,8 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     events,
     currentDate, setCurrentDate,
     setSelectedDate,
-    setShowDialog
+    setShowDialog, setShowListDialog,
+    setDaysEvents
   } = props;
 
   // State to store the timestamp of the last tap
@@ -83,6 +86,11 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     }
   }
 
+  function openEventListDialog(dayEvents: IEvent[]) {
+    setDaysEvents(dayEvents);
+    setShowListDialog(true)
+  }
+
   const groupEventsByDate = (): EventsByDate => {
     const eventsByDate: EventsByDate = {};
   
@@ -124,7 +132,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
           </TouchableOpacity>
         ))}
         {dayEvents.length > 1 && (
-          <TouchableOpacity onPress={() => {/* Handle showing more events */}}>
+          <TouchableOpacity onPress={() => openEventListDialog(dayEvents)}>
             <Text style={styles.moreEventsText}>{t('calendar.more')}</Text>
           </TouchableOpacity>
         )}

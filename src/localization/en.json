@@ -262,7 +262,8 @@
           "title": "New event",
           "eventName": "Event name",
           "confirm": "Save"
-        }
+        },
+        "eventsOn": "Events on",
       },
       "blockClient": "Are you sure you want to block this client?",
       "unblockClient": "Are you sure you want to unblock this client?",
