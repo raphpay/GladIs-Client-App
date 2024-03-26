@@ -178,6 +178,10 @@
       "message": "Revenez plus tard, ou enregistrez-en un maintenant"
     }
   },
+  "calendar": {
+    "today": "Aujourd'hui",
+    "more": "Plus...",
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"
@@ -193,6 +197,14 @@
       "save": "Sauvegarder"
     },
     "dialog": {
+      "calendar": {
+        "newEvent": {
+          "title": "Nouvel événement",
+          "eventName": "Nom de l'événement",
+          "confirm": "Enregistrer"
+        },
+        "eventsOn": "Evénements le"
+      },
       "addDocument": {
         "title": "Ajouter un document",
         "confirmButton": "Selectionner un fichier",

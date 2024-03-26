@@ -40,6 +40,8 @@ import ClientModules from '../ui/screens/settings/ClientModules';
 import ClientSettingsScreenFromAdmin from '../ui/screens/settings/ClientSettingsScreenFromAdmin';
 // Settings
 import SettingsScreen from '../ui/screens/settings/SettingsScreen';
+// Reminders
+import RemindersScreen from '../ui/screens/reminders/RemindersScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -65,6 +67,8 @@ export type IRootStackParams = {
   TrackingScreen: undefined,
   // Settings
   SettingsScreen: undefined,
+  // Reminders
+  RemindersScreen: undefined,
 }
 
 export type IClientCreationStack = {
@@ -197,6 +201,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SettingsScreen}
         component={SettingsScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.RemindersScreen}
+        component={RemindersScreen}
         options={{headerShown: false}}
       />
       <ClientCreationStack.Screen

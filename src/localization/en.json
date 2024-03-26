@@ -178,6 +178,10 @@
     "modifyPassword": "Modify password",
     "logout": "Log out",
   },
+  "calendar": {
+    "today": "Today",
+    "more": "More...",
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"
@@ -252,6 +256,14 @@
         "open": "Open",
         "download": "Download",
         "approve": "Approve"
+      },
+      "calendar": {
+        "newEvent": {
+          "title": "New event",
+          "eventName": "Event name",
+          "confirm": "Save"
+        },
+        "eventsOn": "Events on",
       },
       "blockClient": "Are you sure you want to block this client?",
       "unblockClient": "Are you sure you want to unblock this client?",

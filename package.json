@@ -26,6 +26,7 @@
     "react-native": "0.73.2",
     "react-native-blob-util": "^0.19.6",
     "react-native-document-picker": "^9.1.1",
+    "react-native-dropdown-picker": "^5.4.6",
     "react-native-gesture-handler": "^2.15.0",
     "react-native-macos": "^0.73.11",
     "react-native-pdf": "^6.7.4",
