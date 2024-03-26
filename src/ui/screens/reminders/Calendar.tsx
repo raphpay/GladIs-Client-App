@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Text,
@@ -6,23 +6,15 @@ import {
   View
 } from 'react-native';
 
+import { EventsByDate, IEvent } from '../../../business-logic/model/IEvent';
 import Utils from '../../../business-logic/utils/Utils';
 
 import CalendarHeader from './CalendarHeader';
 
 import styles from '../../assets/styles/reminders/CalendarStyles';
 
-
-interface Event {
-  name: string;
-  // Add other event properties as needed, e.g., id, description, etc.
-}
-
-interface EventsByDate {
-  [key: string]: Event[];
-}
-
 type CalendarProps = {
+  events: IEvent[];
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,10 +22,11 @@ type CalendarProps = {
 function Calendar(props: CalendarProps): React.JSX.Element {
   const { t } = useTranslation();
 
-  const { currentDate, setCurrentDate, setShowDialog } = props;
+  const { events, currentDate, setCurrentDate, setShowDialog } = props;
 
   // State to store the timestamp of the last tap
-  const [lastTap, setLastTap] = useState<number | null>(null)
+  const [lastTap, setLastTap] = useState<number | null>(null);
+  const [localEvents, setLocalEvents] = useState<EventsByDate>({});
 
   const daysItems = Array.from({ length: 7 }, (_, i) => i + 1);
 
@@ -64,12 +57,6 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   // Create an array for the days of the month
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
-  const events: EventsByDate = {
-    '2024-03-05': [{name: 'Meeting'}, {name: 'Doctor'}, {name: 'Gym'}],
-    '2024-03-16': [{name: 'Birthday'}],
-    '2024-03-28': [{name: 'Conference'}, {name: 'Dinner'}, {name: 'Call'}, {name: 'Study'}],
-  };
-
   function doubleTapDayCell(day: number) {
     const now = Date.now();
     const DOUBLE_TAP_DELAY = 300; // milliseconds
@@ -87,7 +74,34 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     }
   }
 
-  function DayCellContent(day: number, dayEvents: Event[]) {
+  const groupEventsByDate = (): EventsByDate => {
+    const eventsByDate: EventsByDate = {};
+  
+    if (events && events.length > 0) {
+      events.forEach((event) => {
+        // Format the event's date as a string (e.g., "2024-03-05")
+        const eventDate = new Date(event.date);
+        const dateKey = Utils.formatDate(eventDate);
+    
+        // If the key doesn't exist in the accumulator, initialize it with an empty array
+        if (!eventsByDate[dateKey]) {
+          eventsByDate[dateKey] = [];
+        }
+    
+        // Push the current event into the array for its date
+        eventsByDate[dateKey].push(event);
+      });
+    }
+  
+    return eventsByDate;
+  };
+
+  useEffect(() => {
+    const groupedEvents = groupEventsByDate();
+    setLocalEvents(groupedEvents);
+  }, [events]);
+
+  function DayCellContent(day: number, dayEvents: IEvent[]) {
     return (
       <View style={styles.dayTextContainer}>
         <Text style={styles.dayText}>{day}</Text>
@@ -105,7 +119,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     );
   }
 
-  function DayCell(day: number, dayEvents: Event[]) {
+  function DayCell(day: number, dayEvents: IEvent[]) {
     if (dayEvents.length > 0) {
       return (
         <View key={`DayCell-${day}`} style={styles.dayCell}>
@@ -146,7 +160,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
           const dayDate = new Date(year, month, day);
           const dayKey = Utils.formatDate(dayDate);
           
-          const dayEvents = events[dayKey] || [];
+          const dayEvents = localEvents[dayKey] || [];
           
           return (
             DayCell(day, dayEvents)
