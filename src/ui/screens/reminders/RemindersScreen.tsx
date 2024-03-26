@@ -10,7 +10,6 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
-
 import Calendar from './Calendar';
 
 type RemindersScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RemindersScreen>;
@@ -68,11 +67,11 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
         showDialog={showDialog}
         setShowDialog={setShowDialog}
       >
-        <Calendar 
+        <Calendar
           currentDate={currentDate} 
           setCurrentDate={setCurrentDate}
           setShowDialog={setShowDialog}
-        /> 
+        />
       </AppContainer>
       {DialogContent()}
     </>
