@@ -70,7 +70,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
           id: '1',
           number: passwordsToReset.length,
           name: t('dashboard.sections.actions.passwordsToReset'),
-          screenDestination: 'NavigationRoutes.PasswordResetScreen',
+          screenDestination: NavigationRoutes.PasswordResetScreen,
         }
         setPasswordResetAction(resetAction);
       }

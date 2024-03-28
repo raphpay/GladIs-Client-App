@@ -28,6 +28,8 @@ enum NavigationRoutes {
   ClientModules = 'ClientModules',
   // Reminders
   RemindersScreen = 'RemindersScreen',
+  // Password Reset
+  PasswordResetScreen = 'PasswordResetScreen',
 }
 
 export default NavigationRoutes;
