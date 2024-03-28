@@ -34,7 +34,7 @@ class PasswordResetService {
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
-      await APIService.post(`${this.baseRoute}/reset`, { token, newPassword });
+      await APIService.postWithoutResponse(`${this.baseRoute}/reset`, { token, newPassword });
     } catch (error) {
       throw error;
     }

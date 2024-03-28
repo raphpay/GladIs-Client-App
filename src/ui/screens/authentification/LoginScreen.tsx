@@ -34,6 +34,8 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [showResetTokenDialog, setShowResetTokenDialog] = useState<boolean>(false);
   const [dialogDescription, setDialogDescription] = useState<string>('');
   const [resetEmail, setResetEmail] = useState<string>('');
+  const [token, onTokenChange] = useState<string>('');
+  const [newPassword, onNewPasswordChange] = useState<string>('');
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
@@ -88,7 +90,17 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   }
 
   async function resetPasswordWithToken() {
-    // TODO: API Call
+    if (token.length > 0 && newPassword.length > 0) {
+      try {
+        await PasswordResetService.getInstance().resetPassword(token, newPassword);
+        resetDialogs();
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        setDialogDescription(t(`errors.${errorMessage}`))
+      }
+    } else {
+      setDialogDescription(t('components.dialog.addEmployee.errors.fillAll'));
+    }
   }
 
   async function submitLogin() {
@@ -111,6 +123,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
 
+  // TODO: Change TextInput to GladisTextInput
   function ResetDialogContent() {
     return (
       <>
@@ -169,7 +182,24 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
               isCancelAvailable={true}
               onCancel={resetDialogs}
             >
-              <Text>Hello</Text>
+              <>
+                <GladisTextInput 
+                  value={token}
+                  placeholder={t('components.dialog.passwordReset.tokenInput')}
+                  onValueChange={onTokenChange}
+                  autoCapitalize={'characters'}
+                  width={'100%'}
+                />
+                <GladisTextInput 
+                  value={newPassword}
+                  placeholder={t('components.dialog.passwordReset.newPassword')}
+                  onValueChange={onNewPasswordChange}
+                  secureTextEntry={true}
+                  autoCapitalize={'none'}
+                  showVisibilityButton={true}
+                  width={'100%'}
+                />
+              </>
             </Dialog>
           )
         }

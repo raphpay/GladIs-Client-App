@@ -215,7 +215,9 @@
         "confirmButton": "Envoyer",
         "placeholder": "Email",
         "token": "Vous avez une clé ?",
-        "resetDescription": "Entrez votre clé de réinitialisation et votre nouveau mot de passe"
+        "tokenInput": "Clé à 6 caractères",
+        "resetDescription": "Entrez votre clé de réinitialisation et votre nouveau mot de passe",
+        "newPassword": "Nouveau mot de passe"
       },
       "firstConnection": {
         "title": "Modification du mot de passe",

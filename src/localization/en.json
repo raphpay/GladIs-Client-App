@@ -207,7 +207,9 @@
         "confirmButton": "Send",
         "placeholder": "Email",
         "token": "Got a reset token?",
+        "tokenInput": "6-digit token",
         "resetDescription": "Enter your reset token and your new password",
+        "newPassword": "New password"
       },
       "firstConnection": {
         "title": "Modify your password",
@@ -339,7 +341,7 @@
     },
     "passwordReset": {
       "userNotFound": "No user found with this email. Please contact your provider"
-    }
+    },
   },
   "legal": {
     "appName": "GladIs",
