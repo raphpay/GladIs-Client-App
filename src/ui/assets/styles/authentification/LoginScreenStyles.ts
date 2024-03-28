@@ -15,14 +15,6 @@ const styles = StyleSheet.create({
   appIcon: {
     marginBottom: 10,
   },
-  textInput: {
-    borderWidth: 1,
-    borderColor: Colors.black,
-    borderRadius: 10,
-    width: '70%',
-    padding: 10,
-    margin: 8
-  },
   button: {
     backgroundColor: Colors.primary,
     borderRadius: 10,

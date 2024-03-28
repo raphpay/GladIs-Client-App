@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text, TextInput } from 'react-native';
+import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -124,7 +124,6 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     setDialogDescription('');
   }
 
-  // TODO: Change TextInput to GladisTextInput
   function ResetDialogContent() {
     return (
       <>
@@ -141,11 +140,12 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
               extraConfirmButtonTitle={t('components.dialog.passwordReset.token')}
               extraConfirmButtonAction={displayResetPasswordDialog}
             >
-              <TextInput
+              <GladisTextInput 
                 value={resetEmail}
-                onChangeText={setResetEmail}
                 placeholder={t('components.dialog.passwordReset.placeholder')}
-                style={styles.dialogInput}
+                onValueChange={setResetEmail}
+                autoCapitalize={'characters'}
+                width={'100%'}
               />
             </Dialog>
           )
