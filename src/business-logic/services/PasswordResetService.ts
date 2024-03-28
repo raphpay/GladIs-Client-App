@@ -1,3 +1,4 @@
+import { EmailInput } from "../model/IUser";
 import APIService from "./APIService";
 
 /**
@@ -22,7 +23,10 @@ class PasswordResetService {
 
   async requestPasswordReset(toEmail: string): Promise<void> {
     try {
-      await APIService.postWithoutResponse(`${this.baseRoute}/request`, toEmail);
+      const input: EmailInput = {
+        email: toEmail
+      };
+      await APIService.postWithoutResponse(`${this.baseRoute}/request`, input);
     } catch (error) {
       throw error;
     }
