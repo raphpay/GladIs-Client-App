@@ -41,6 +41,14 @@
     "noClients": {
       "title": "Pas de clients pour le moment",
       "message": "Ajoutez un client maintenant"
+    },
+    "sections": {
+      "actions": {
+        "title": "Actions",
+        "passwordsToReset": "Mots de passe à réinitialiser",
+        "events": "Evénements"
+      },
+      "clients": "Clients"
     }
   },
   "modules": {

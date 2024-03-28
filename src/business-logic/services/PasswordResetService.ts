@@ -1,3 +1,5 @@
+import IPasswordResetToken from "../model/IPasswordResetToken";
+import IToken from "../model/IToken";
 import { EmailInput } from "../model/IUser";
 import APIService from "./APIService";
 
@@ -35,6 +37,15 @@ class PasswordResetService {
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
       await APIService.postWithoutResponse(`${this.baseRoute}/reset`, { token, newPassword });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAll(token: IToken | null): Promise<IPasswordResetToken[]> {
+    try {
+      const resetTokens = await APIService.get<IPasswordResetToken[]>(this.baseRoute, token?.value as string);
+      return resetTokens;
     } catch (error) {
       throw error;
     }
