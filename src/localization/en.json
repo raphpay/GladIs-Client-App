@@ -190,6 +190,14 @@
     "today": "Today",
     "more": "More...",
   },
+  "passwordsToReset": {
+    "title": "Passwords to reset",
+    "dialog": {
+      "checkPassword": "Enter your current password",
+      "tokenGenerated": "The reset token is: ",
+      "confirmButton": "Verify"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"

@@ -190,6 +190,14 @@
     "today": "Aujourd'hui",
     "more": "Plus...",
   },
+  "passwordsToReset": {
+    "title": "Mot de passe à réinitialiser",
+    "dialog": {
+      "checkPassword": "Entrez votre mot de passe actuel",
+      "tokenGenerated": "La clé de réinitialisation générée est:",
+      "confirmButton": "Verifier"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"

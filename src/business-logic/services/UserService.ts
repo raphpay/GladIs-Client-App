@@ -96,6 +96,26 @@ class UserService {
     }
   }
 
+  /**
+   * Verify the password of a user.
+   * @param userID - The ID of the user.
+   * @param password - The password to verify.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to true if the password is valid, false otherwise.
+   * @throws If an error occurs while verifying the password.
+   */
+  async verifyPassword(userID: string, password: string, token: IToken | null): Promise<boolean> {
+    let isValid = false;
+    try {
+      await APIService.postWithoutResponse(`${this.baseRoute}/${userID}/verifyPassword`, { currentPassword: password }, token?.value as string);
+      isValid = true;
+    } catch (error) {
+      console.log('Error verifying password', error);
+      throw error;
+    }
+    return isValid;
+  }
+
   // READ
 
   /**
