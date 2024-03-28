@@ -1,7 +1,7 @@
 export default interface IPasswordResetToken {
   id?: string;
-  token: string;
-  user: IUserID
+  token?: string;
+  userID: IUserID,
   expiresAt: Date
 }
 

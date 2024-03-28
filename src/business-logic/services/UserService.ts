@@ -1,4 +1,5 @@
 import IModule from '../model/IModule';
+import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
@@ -208,6 +209,23 @@ class UserService {
       return employees;
     } catch (error) {
       console.log('Error getting client employees', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves the reset token value of a user.
+   * @param userID - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the reset token value.
+   * @throws If an error occurs while retrieving the reset token value.
+   */
+  async getResetTokenValue(userID: string, token: IToken | null): Promise<string> {
+    try {
+      const resetToken = await APIService.get<IPasswordResetToken>(`${this.baseRoute}/${userID}/resetToken`, token?.value as string);
+      const value = resetToken.token as string;
+      return value;
+    } catch (error) {
       throw error;
     }
   }

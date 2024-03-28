@@ -4,7 +4,7 @@ import { EmailInput } from "../model/IUser";
 import APIService from "./APIService";
 
 /**
- * TODO: add description
+ * Service class for handling password reset requests.
  */
 class PasswordResetService {
   private static instance: PasswordResetService | null = null;
@@ -23,6 +23,13 @@ class PasswordResetService {
     return PasswordResetService.instance;
   }
 
+  // CREATE
+  /**
+   * Sends a password reset request to the server.
+   * @param toEmail The email address to send the password reset request to.
+   * @returns A promise that resolves when the request is complete.
+   * @throws An error if the request fails.
+   */
   async requestPasswordReset(toEmail: string): Promise<void> {
     try {
       const input: EmailInput = {
@@ -34,6 +41,13 @@ class PasswordResetService {
     }
   }
 
+  /**
+   * Resets the password for a user.
+   * @param token The password reset token.
+   * @param newPassword The new password.
+   * @returns A promise that resolves when the request is complete.
+   * @throws An error if the request fails.
+   */
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
       await APIService.postWithoutResponse(`${this.baseRoute}/reset`, { token, newPassword });
@@ -42,6 +56,13 @@ class PasswordResetService {
     }
   }
 
+  // READ
+  /**
+   * Gets all password reset tokens.
+   * @param token The token to use for authentication.
+   * @returns A promise that resolves with an array of password reset tokens.
+   * @throws An error if the request fails.
+   */
   async getAll(token: IToken | null): Promise<IPasswordResetToken[]> {
     try {
       const resetTokens = await APIService.get<IPasswordResetToken[]>(this.baseRoute, token?.value as string);
