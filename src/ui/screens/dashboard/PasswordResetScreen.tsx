@@ -2,9 +2,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  StyleSheet,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
@@ -17,6 +17,7 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import styles from '../../assets/styles/dashboard/PasswordResetScreenStyles';
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
@@ -24,7 +25,6 @@ import Grid from '../../components/Grid';
 
 type PasswordResetScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PasswordResetScreen>;
 
-// TODO: Add some styles
 function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element {
 
   const { navigation } = props;
@@ -112,13 +112,21 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     const expirationDate = new Date(item.expiresAt);
     const dateString = Utils.formatDate(expirationDate);
     const timeString = Utils.formatTime(expirationDate);
+    const dateTimeString = `${dateString} ${t('tracking.at')} ${timeString}`
     const userID = item.userID.id || item.userID;
 
     return (
-      <TouchableOpacity onPress={() => openAdminPasswordDialog(userID as string)}>
-        <Text>{item.userEmail}</Text>
-        <Text>{dateString}</Text>
-        <Text>{timeString}</Text>
+      <TouchableOpacity 
+        style={styles.lineContainer}
+        onPress={() => openAdminPasswordDialog(userID as string)}>
+        <View style={styles.lineRow}>
+          <Text style={styles.mailText}>{item.userEmail}</Text>
+          <View style={styles.dateContainer}>
+            <Text style={styles.dateText}>Expiration Date:</Text>
+            <Text style={styles.dateText}>{dateTimeString}</Text>
+          </View>
+        </View>
+        <View style={styles.separator} />
       </TouchableOpacity>
     )
   }
@@ -190,13 +198,5 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default PasswordResetScreen;
