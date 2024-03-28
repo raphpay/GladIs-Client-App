@@ -39,6 +39,9 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
+
+  const inputIsEditable = !showDialog && !showErrorDialog && !showResetTokenDialog;
+  const isButtonDisabled = identifier.length === 0 || password.length === 0;
   
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -120,8 +123,6 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     setShowResetTokenDialog(false);
     setDialogDescription('');
   }
-
-  const isButtonDisabled = identifier.length === 0 || password.length === 0;
 
   // TODO: Change TextInput to GladisTextInput
   function ResetDialogContent() {
@@ -207,7 +208,6 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     )
   }
 
-  // TODO: Disable text inputs when dialogs are up
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -219,7 +219,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
           placeholder={t('login.identifier')}
           autoCapitalize={'none'}
           width={'70%'}
-          editable={!showDialog && !showErrorDialog}
+          editable={inputIsEditable}
         />
         <GladisTextInput
           value={password}
@@ -230,7 +230,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
           showVisibilityButton={true}
           autoCapitalize={'none'}
           width={'70%'}
-          editable={!showDialog && !showErrorDialog}
+          editable={inputIsEditable}
         />
         <TextButton
           title={t('login.login')}
