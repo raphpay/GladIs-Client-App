@@ -215,7 +215,7 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.PasswordResetScreen}
         component={PasswordResetScreen}
-        // options={{headerShown: false}}
+        options={{headerShown: false}}
       />
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationStack}
