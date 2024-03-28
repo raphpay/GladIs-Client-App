@@ -205,7 +205,9 @@
       "passwordReset": {
         "title": "Password reset",
         "confirmButton": "Send",
-        "placeholder": "Email"
+        "placeholder": "Email",
+        "token": "Got a reset token?",
+        "resetDescription": "Enter your reset token and your new password",
       },
       "firstConnection": {
         "title": "Modify your password",

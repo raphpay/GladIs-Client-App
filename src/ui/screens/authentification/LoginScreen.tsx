@@ -31,6 +31,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [identifier, onIdentifierChange] = useState<string>('');
   const [password, onPasswordChange] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showResetTokenDialog, setShowResetTokenDialog] = useState<boolean>(false);
   const [dialogDescription, setDialogDescription] = useState<string>('');
   const [resetEmail, setResetEmail] = useState<string>('');
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
@@ -86,14 +87,97 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     }
   }
 
+  async function resetPasswordWithToken() {
+    // TODO: API Call
+  }
+
   async function submitLogin() {
     if (identifier.length !== 0 && password.length !== 0) {
       await login();
     }
   }
 
+  function displayResetPasswordDialog() {
+    setShowDialog(false);
+    setDialogDescription(t('components.dialog.passwordReset.resetDescription'));
+    setShowResetTokenDialog(true);
+  }
+
+  function resetDialogs() {
+    setShowDialog(false);
+    setShowResetTokenDialog(false);
+    setDialogDescription('');
+  }
+
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
 
+  function ResetDialogContent() {
+    return (
+      <>
+        {
+          showDialog && (
+            <Dialog
+              title={t('components.dialog.passwordReset.title')}
+              description={dialogDescription}
+              confirmTitle={t('components.dialog.passwordReset.confirmButton')}
+              isConfirmDisabled={resetEmail.length == 0}
+              onConfirm={sendPasswordResetRequest}
+              isCancelAvailable={true}
+              onCancel={() => setShowDialog(false)}
+              extraConfirmButtonTitle={t('components.dialog.passwordReset.token')}
+              extraConfirmButtonAction={displayResetPasswordDialog}
+            >
+              <TextInput
+                value={resetEmail}
+                onChangeText={setResetEmail}
+                placeholder={t('components.dialog.passwordReset.placeholder')}
+                style={styles.dialogInput}
+              />
+            </Dialog>
+          )
+        }
+      </>
+    )
+  }
+
+  function ErrorDialogContent() {
+    return (
+      <>
+        {
+          showErrorDialog && (
+            <ErrorDialog
+              title={errorTitle}
+              description={errorDescription}
+              cancelTitle={t('errors.modules.cancelButton')}
+              onCancel={() => setShowErrorDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function ResetPasswordWithTokenDialogContent() {
+    return (
+      <>
+        {
+          showResetTokenDialog && (
+            <Dialog
+              title={t('components.dialog.passwordReset.title')}
+              description={dialogDescription}
+              onConfirm={resetPasswordWithToken}
+              isCancelAvailable={true}
+              onCancel={resetDialogs}
+            >
+              <Text>Hello</Text>
+            </Dialog>
+          )
+        }
+      </>
+    )
+  }
+
+  // TODO: Disable text inputs when dialogs are up
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -127,36 +211,9 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
         <SimpleTextButton title={t('login.forgottenPassword')} onPress={goToPasswordReset} />
       </SafeAreaView>
-      {
-        showDialog && (
-          <Dialog
-            title={t('components.dialog.passwordReset.title')}
-            description={dialogDescription}
-            confirmTitle={t('components.dialog.passwordReset.confirmButton')}
-            isConfirmDisabled={resetEmail.length == 0}
-            onConfirm={sendPasswordResetRequest}
-            isCancelAvailable={true}
-            onCancel={() => setShowDialog(false)}
-          >
-            <TextInput
-              value={resetEmail}
-              onChangeText={setResetEmail}
-              placeholder={t('components.dialog.passwordReset.placeholder')}
-              style={styles.dialogInput}
-            />
-          </Dialog>
-        )
-      }
-      {
-        showErrorDialog && (
-          <ErrorDialog
-            title={errorTitle}
-            description={errorDescription}
-            cancelTitle={t('errors.modules.cancelButton')}
-            onCancel={() => setShowErrorDialog(false)}
-          />
-        )
-      }
+      {ResetDialogContent()}
+      {ErrorDialogContent()}
+      {ResetPasswordWithTokenDialogContent()}
     </>
   );
 }

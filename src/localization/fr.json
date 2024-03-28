@@ -213,7 +213,9 @@
       "passwordReset": {
         "title": "Réinitialisation du mot de passe",
         "confirmButton": "Envoyer",
-        "placeholder": "Email"
+        "placeholder": "Email",
+        "token": "Vous avez une clé ?",
+        "resetDescription": "Entrez votre clé de réinitialisation et votre nouveau mot de passe"
       },
       "firstConnection": {
         "title": "Modification du mot de passe",
