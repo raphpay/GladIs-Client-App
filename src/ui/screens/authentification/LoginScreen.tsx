@@ -20,6 +20,7 @@ import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
+import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
@@ -39,6 +40,8 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
   const [errorDescription, setErrorDescription] = useState<string>('');
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
 
   const inputIsEditable = !showDialog && !showErrorDialog && !showResetTokenDialog;
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
@@ -82,7 +85,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         await PasswordResetService.getInstance().requestPasswordReset(resetEmail);
         setShowDialog(false);
         setResetEmail('');
-        // Show toast ?
+        displayToast(t('components.toast.passwordReset.requestSent'));
       } catch (error) {
         const errorMessage = (error as Error).message;
         setDialogDescription(t(`errors.${errorMessage}`));
@@ -97,6 +100,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       try {
         await PasswordResetService.getInstance().resetPassword(token, newPassword);
         resetDialogs();
+        displayToast(t('components.toast.passwordReset.success'));
       } catch (error) {
         const errorMessage = (error as Error).message;
         setDialogDescription(t(`errors.${errorMessage}`))
@@ -122,6 +126,11 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     setShowDialog(false);
     setShowResetTokenDialog(false);
     setDialogDescription('');
+  }
+
+  function displayToast(message: string) {
+    setShowToast(true);
+    setToastMessage(message);
   }
 
   function ResetDialogContent() {
@@ -208,6 +217,22 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     )
   }
 
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <SafeAreaView style={styles.container}>
@@ -244,6 +269,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       {ResetDialogContent()}
       {ErrorDialogContent()}
       {ResetPasswordWithTokenDialogContent()}
+      {ToastContent()}
     </>
   );
 }

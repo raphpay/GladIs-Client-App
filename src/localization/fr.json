@@ -289,6 +289,12 @@
       "request": "Faire une demande",
       "approve": "Approuver",
       "modify": "Modifier"
+    },
+    "toast": {
+      "passwordReset": {
+        "requestSent": "Vous allez recevoir un email avec un lien de réinitialisation",
+        "success": "Mot de passe modifié avec succès",
+      }
     }
   },
   "errors": {

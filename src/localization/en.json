@@ -289,6 +289,12 @@
       "request": "Make a request",
       "approve": "Approve",
       "modify": "Modify"
+    },
+    "toast": {
+      "passwordReset": {
+        "requestSent": "You will receive an email with a reset token.",
+        "success": "Password successfully reset"
+      }
     }
   },
   "errors": {
