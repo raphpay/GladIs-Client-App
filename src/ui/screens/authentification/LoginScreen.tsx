@@ -8,6 +8,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
@@ -30,6 +31,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [identifier, onIdentifierChange] = useState<string>('');
   const [password, onPasswordChange] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [dialogDescription, setDialogDescription] = useState<string>('');
   const [resetEmail, setResetEmail] = useState<string>('');
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [errorTitle, setErrorTitle] = useState<string>('');
@@ -64,11 +66,24 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   }
 
   function goToPasswordReset() {
+    setDialogDescription('');
     setShowDialog(true);
   }
 
-  function sendPasswordResetRequest() {
-    // TODO: Send password request
+  async function sendPasswordResetRequest() {
+    if (resetEmail.length > 0) {
+      try {
+        await PasswordResetService.getInstance().requestPasswordReset(resetEmail);
+        setShowDialog(false);
+        setResetEmail('');
+        // Show toast ?
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        setDialogDescription(t(`errors.${errorMessage}`));
+      }
+    } else {
+      setDialogDescription(t('components.dialog.addEmployee.errors.fillAll'));
+    }
   }
 
   async function submitLogin() {
@@ -116,6 +131,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         showDialog && (
           <Dialog
             title={t('components.dialog.passwordReset.title')}
+            description={dialogDescription}
             confirmTitle={t('components.dialog.passwordReset.confirmButton')}
             isConfirmDisabled={resetEmail.length == 0}
             onConfirm={sendPasswordResetRequest}

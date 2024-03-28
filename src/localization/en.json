@@ -334,6 +334,9 @@
     "Unauthorized": {
       "title": "Wrong username or password",
       "message": "Please verify your credentials"
+    },
+    "passwordReset": {
+      "userNotFound": "No user found with this email. Please contact your provider"
     }
   },
   "legal": {
