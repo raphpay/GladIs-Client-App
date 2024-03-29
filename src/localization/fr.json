@@ -370,13 +370,19 @@
     "api": {
       "notFound": {
         "user": "Utilisateur non trouvé",
+        "resetToken": "Clé de réinitialisation non trouvée"
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
         "access": "Vous n'avez pas les droits pour accéder à cette page"
       },
       "unauthorized": {
-        "invalidCurrentPassword": "Le mot de passe actuel est incorrect"
+        "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
+        "accountBlocked": "Votre compte est bloqué. Veuillez contacter votre fournisseur.",
+        "login": "Identifiants incorrects"
+      },
+      "badRequest": {
+        "tokenExpired": "La clé de réinitialisation a expiré. Veuillez en demander une nouvelle."
       }
     }
   },

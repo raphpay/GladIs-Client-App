@@ -369,14 +369,20 @@
     },
     "api": {
       "notFound": {
-        "user": "User not found with this id"
+        "user": "User not found with this id",
+        "resetToken": "Reset token not found"
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
         "access": "You don't have access to this route"
       },
       "unauthorized": {
-        "invalidCurrentPassword": "Invalid current password"
+        "invalidCurrentPassword": "Invalid current password",
+        "accountBlocked": "Account blocked. Please contact your provider",
+        "login": "Wrong username or password"
+      },
+      "badRequest": {
+        "tokenExpired": "Token expired. Please request a new one"
       }
     }
   },
