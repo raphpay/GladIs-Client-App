@@ -47,16 +47,22 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   const { clientListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
+  const { t } = useTranslation();
+
+  // Synchronous Methods
   function navigateToClientDashboard(client: IUser) {
     dispatch(setCurrentClient(client));
     navigation.navigate(NavigationRoutes.ClientDashboardScreenFromAdmin)
   }
 
-  const { t } = useTranslation();
-
+  // Asynchronous Methods
   async function loadClients() {
-    const apiClients = await UserService.getInstance().getClients(token);
-    setClients(apiClients);
+    try {
+      const apiClients = await UserService.getInstance().getClients(token);
+      setClients(apiClients); 
+    } catch (error) {
+      console.log('Error loading clients', error);
+    }
   }
 
   async function loadActions() {
@@ -79,6 +85,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     }
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadClients();
@@ -94,6 +101,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     init();
   }, [clientListCount]);
 
+  // Components
   function ActionGridItem(item?: IActionItem) {
     function navigateTo() {
       if (item?.screenDestination) {
@@ -135,7 +143,6 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     )
   }
 
-  // TODO: Add translations
   function ClientSection() {
     return (
       <View style={styles.clientSectionContainer}>

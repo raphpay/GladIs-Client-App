@@ -4,7 +4,6 @@ import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import CacheKeys from '../model/enums/CacheKeys';
-import UserType from '../model/enums/UserType';
 
 import APIService from './APIService';
 import CacheService from './CacheService';
@@ -142,11 +141,9 @@ class UserService {
    */
   async getClients(token: IToken | null): Promise<IUser[]> {
     try {
-      const users = await APIService.get<IUser[]>(this.baseRoute, token?.value as string);
-      const clients = users.filter((user) => user.userType !== UserType.Admin && user.userType !== UserType.Employee);
+      const clients = await APIService.get<IUser[]>(`${this.baseRoute}/clients`, token?.value as string);
       return clients;
     } catch (error) {
-      console.log('Error getting clients', error);
       throw error;
     }
   }
