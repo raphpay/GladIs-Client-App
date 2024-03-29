@@ -7,9 +7,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     left: 10,
-    backgroundColor: 'green',
     padding: 10,
     borderRadius: 5,
+    opacity: 0.9,
   },
   text: {
     color: Colors.white,

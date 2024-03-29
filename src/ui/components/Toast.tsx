@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Animated, Text } from 'react-native';
+import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/ToastStyles';
 
 type ToastProps = {
@@ -7,13 +8,20 @@ type ToastProps = {
   isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   duration?: number;
+  isShowingError?: boolean;
 };
 
 // TODO: Use toast when succeeding after a Dialog close
 const Toast = (props: ToastProps) => {
   const [slideAnim] = useState(new Animated.Value(60));
 
-  const { message, isVisible, setIsVisible, duration = 2000 } = props;
+  const {
+    message,
+    isVisible,
+    setIsVisible,
+    duration = 2000,
+    isShowingError = false,
+  } = props;
 
   const slideIn = () => {
     Animated.timing(slideAnim, {
@@ -46,7 +54,11 @@ const Toast = (props: ToastProps) => {
 
   return (
     <Animated.View
-      style={[ styles.toast, { transform: [{ translateY: slideAnim } ]}]}
+      style={[
+        styles.toast,
+        { transform: [{ translateY: slideAnim } ]},
+        { backgroundColor: isShowingError ? Colors.danger : Colors.success }
+      ]}
     >
       <Text style={styles.text}>{message}</Text>
     </Animated.View>

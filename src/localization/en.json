@@ -366,6 +366,18 @@
     },
     "passwordReset": {
       "userNotFound": "No user found with this email. Please contact your provider"
+    },
+    "api": {
+      "notFound": {
+        "user": "User not found with this id"
+      },
+      "forbidden": {
+        "userShouldBeAdmin": "User should be an admin to access this route",
+        "access": "You don't have access to this route"
+      },
+      "unauthorized": {
+        "invalidCurrentPassword": "Invalid current password"
+      }
     }
   },
   "legal": {

@@ -46,20 +46,45 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   const [selectedUserResetToken, setSelectedUserResetToken] = useState<string>('');
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
+  // Synchronous Methods
   function navigateBack() {
     navigation.goBack();
   }
 
+  function displayToast(message: string, isError: boolean) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  function openAdminPasswordDialog(userID: string) {
+    setSelectedUserID(userID);
+    setShowAdminPasswordDialog(true);
+  }
+
+  function resetDialogs() {
+    setShowAdminPasswordDialog(false);
+    setShowTokenDialog(false);
+    onAdminPasswordChange('');
+  }
+
+  function copyToClipboard() {
+    Clipboard.setString(selectedUserResetToken);
+    resetDialogs();
+    displayToast(t('components.toast.passwordsToReset.tokenCopied'), false);
+  }
+
+  // Asynchronous Methods
   async function loadPasswordsToReset() {
     try {
       const apiTokens = await PasswordResetService.getInstance().getAll(token);
       setPasswordsToReset(apiTokens);
     } catch (error) {
-      // TODO: Handle error
-      console.log('error', error);
+      console.log('Error loading password reset tokens', error);
     }
   }
 
@@ -68,14 +93,10 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     try {
       resetToken = await UserService.getInstance().getResetTokenValue(clientID, token);
     } catch (error) {
-      console.log('error', error);
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
     return resetToken;
-  }
-
-  function openAdminPasswordDialog(userID: string) {
-    setSelectedUserID(userID);
-    setShowAdminPasswordDialog(true);
   }
 
   async function onConfirmAdminPassword() {
@@ -90,24 +111,13 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
           setSelectedUserResetToken(resetToken);
         }
       } catch (error) {
-        console.log('error', error);
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
 
-  function resetDialogs() {
-    setShowAdminPasswordDialog(false);
-    setShowTokenDialog(false);
-    onAdminPasswordChange('');
-  }
-
-  function copyToClipboard() {
-    Clipboard.setString(selectedUserResetToken);
-    resetDialogs();
-    setShowToast(true);
-    setToastMessage(t('components.toast.passwordsToReset.tokenCopied'));
-  }
-
+  // Effects
   useEffect(() => {
     async function init() {
       await loadPasswordsToReset();
@@ -123,6 +133,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     }
   }, [showTokenDialog]);
 
+  // Components
   function PasswordRow(item: IPasswordResetToken) {
     const expirationDate = new Date(item.expiresAt);
     const dateString = Utils.formatDate(expirationDate);
@@ -209,6 +220,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
               message={toastMessage}
               isVisible={showToast}
               setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
             />
           )
         }

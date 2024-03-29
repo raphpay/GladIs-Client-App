@@ -366,6 +366,18 @@
     },
     "passwordReset": {
       "userNotFound": "Pas d'utilisateur trouvé avec cet email. Veuillez contacter votre fournisseur."
+    },
+    "api": {
+      "notFound": {
+        "user": "Utilisateur non trouvé",
+      },
+      "forbidden": {
+        "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
+        "access": "Vous n'avez pas les droits pour accéder à cette page"
+      },
+      "unauthorized": {
+        "invalidCurrentPassword": "Le mot de passe actuel est incorrect"
+      }
     }
   },
   "legal": {
