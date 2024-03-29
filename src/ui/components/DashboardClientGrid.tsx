@@ -22,11 +22,11 @@ import styles from '../assets/styles/components/DashboardClientGridStyles';
 
 type DashboardClientGridProps = {
   searchText: string;
-  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowErrorDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element {
-  const { searchText, setShowDialog } = props;
+  const { searchText, setShowErrorDialog } = props;
 
   const [modules, setModules] = useState<IModule[]>([]);
   const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
@@ -54,7 +54,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
         navigation.navigate(NavigationRoutes.RemindersScreen);
       }
     } else {
-      setShowDialog && setShowDialog(true);
+      setShowErrorDialog && setShowErrorDialog(true);
     }
   }
 

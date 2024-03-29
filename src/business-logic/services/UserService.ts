@@ -264,36 +264,32 @@ class UserService {
 
   /**
    * Changes the password of the current user.
+   * @param userID - The ID of the user.
    * @param currentPassword - The current password.
    * @param newPassword - The new password.
+   * @param token - The authentication token.
+   * @returns A promise that resolves when the password is changed.
    * @throws If an error occurs while changing the user's password.
    */
-  async changePassword(currentPassword: string, newPassword: string) {
+  async changePassword(userID: string, currentPassword: string, newPassword: string, token: IToken | null): Promise<void> {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-      const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      await APIService.put(`${this.baseRoute}/${castedUserID}/changePassword`, { currentPassword, newPassword }, castedToken.value);
+      await APIService.put(`${this.baseRoute}/${userID}/changePassword`, { currentPassword, newPassword }, token?.value as string);
     } catch (error) {
-      console.log('Error changing user password', error);
       throw error;
     }
   }
 
   /**
    * Sets the first connection parameter of the current user to false.
+   * @param userID - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves when the first connection parameter is changed.
    * @throws If an error occurs while changing the user's first connection parameter.
    */
-  async setUserFirstConnectionToFalse() {
+  async setUserFirstConnectionToFalse(userID: string, token: IToken | null): Promise<void> {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-      const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      await APIService.put(`${this.baseRoute}/${castedUserID}/setFirstConnectionToFalse`, null, castedToken.value);
+      await APIService.put(`${this.baseRoute}/${userID}/setFirstConnectionToFalse`, null, token?.value as string);
     } catch (error) {
-      console.log('Error changing user first connection parameter', error);
       throw error;
     }
   }
