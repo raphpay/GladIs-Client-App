@@ -60,8 +60,8 @@ class PendingUserService {
       await this.addModulesToPendingUser(modules, userAdded);
       return userAdded;
     } catch (error) {
-      const errorKeys = extractValidationErrors(error.message);
-      console.log('Error asking for sign up for user', pendingUser, errorKeys);
+      const errorMessage = (error as Error).message
+      const errorKeys = extractValidationErrors(errorMessage);
       throw errorKeys;
     }
   }

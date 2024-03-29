@@ -31,7 +31,6 @@ class PotentialEmployeeService {
     try {
       await APIService.post<IPotentialEmployee>(this.baseRoute, employee);
     } catch (error) {
-      console.log('Error creating potential employee:', employee);
       throw error;
     }
   }

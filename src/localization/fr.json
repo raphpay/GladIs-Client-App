@@ -389,7 +389,11 @@
         "login": "Identifiants incorrects"
       },
       "badRequest": {
-        "tokenExpired": "La clé de réinitialisation a expiré. Veuillez en demander une nouvelle."
+        "tokenExpired": "La clé de réinitialisation a expiré. Veuillez en demander une nouvelle.",
+        "phoneAndEmail": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agir d'un numéro français.",
+        "email": "Veuillez vérifier le format de votre email",
+        "phone": "Veuillez vérifier le format de votre numéro de téléphone. Il doit s'agir d'un numéro français.",
+        "default": "Une erreur est survenue. Veuillez vérifier les informations saisies."
       }
     }
   },

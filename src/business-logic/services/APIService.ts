@@ -87,7 +87,6 @@ class APIService {
 
       return await response.json() as T;
     } catch (error) {
-      console.log('Error posting data:', endpoint, data, error);
       throw error;
     }
   }
