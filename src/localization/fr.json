@@ -309,7 +309,10 @@
     "toast": {
       "passwordReset": {
         "requestSent": "Vous allez recevoir un email avec un lien de réinitialisation",
-        "success": "Mot de passe modifié avec succès",
+        "success": "Mot de passe modifié avec succès"
+      },
+      "passwordsToReset": {
+        "tokenCopied": "Clé copiée dans le presse-papier"
       }
     }
   },

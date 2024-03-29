@@ -310,6 +310,9 @@
       "passwordReset": {
         "requestSent": "You will receive an email with a reset token.",
         "success": "Password successfully reset"
+      },
+      "passwordsToReset": {
+        "tokenCopied": "Token copied to clipboard"
       }
     }
   },
@@ -363,7 +366,7 @@
     },
     "passwordReset": {
       "userNotFound": "No user found with this email. Please contact your provider"
-    },
+    }
   },
   "legal": {
     "appName": "GladIs",

@@ -32,6 +32,19 @@ const styles = StyleSheet.create({
     margin: 4,
     zIndex: -10
   },
+  tokenContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  tokenText: {
+    fontSize: 20,
+    fontFamily: Fonts.poppinsSemiBold,
+  },
+  copyIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+  },
 });
 
 export default styles;

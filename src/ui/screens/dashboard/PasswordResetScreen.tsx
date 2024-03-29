@@ -1,10 +1,12 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
@@ -17,11 +19,13 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import styles from '../../assets/styles/dashboard/PasswordResetScreenStyles';
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
+import Toast from '../../components/Toast';
+
+import styles from '../../assets/styles/dashboard/PasswordResetScreenStyles';
 
 type PasswordResetScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PasswordResetScreen>;
 
@@ -40,6 +44,10 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   const [adminPassword, onAdminPasswordChange] = useState<string>('');
   const [selectedUserID, setSelectedUserID] = useState<string>('');
   const [selectedUserResetToken, setSelectedUserResetToken] = useState<string>('');
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
   function navigateBack() {
     navigation.goBack();
@@ -91,6 +99,13 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     setShowAdminPasswordDialog(false);
     setShowTokenDialog(false);
     onAdminPasswordChange('');
+  }
+
+  function copyToClipboard() {
+    Clipboard.setString(selectedUserResetToken);
+    resetDialogs();
+    setShowToast(true);
+    setToastMessage(t('components.toast.passwordsToReset.tokenCopied'));
   }
 
   useEffect(() => {
@@ -158,7 +173,6 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     )
   }
 
-  // TODO: Add a copy button
   function ResetTokenDialog() {
     return (
       <>
@@ -171,8 +185,31 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
               isCancelAvailable={false}
               onCancel={() => {}}
             >
-              <Text>{selectedUserResetToken}</Text>
+              <View style={styles.tokenContainer}>
+                <TouchableOpacity onPress={copyToClipboard}>
+                  <Text style={styles.tokenText}>{selectedUserResetToken}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={copyToClipboard}>
+                  <Image source={clipboardIcon} style={styles.copyIcon} />
+                </TouchableOpacity>
+              </View>
             </Dialog>
+          )
+        }
+      </>
+    )
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+            />
           )
         }
       </>
@@ -195,6 +232,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
       </AppContainer>
       {AdminPasswordDialog()}
       {ResetTokenDialog()}
+      {ToastContent()}
     </>
   );
 }
