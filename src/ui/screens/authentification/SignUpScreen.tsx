@@ -156,12 +156,16 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   async function uploadLogo() {
     if (imageData) {
-      const fileName = 'logo.png';
-      const file: IFile = {
-        data: imageData,
-        filename: fileName
+      try {
+        const fileName = 'logo.png';
+        const file: IFile = {
+          data: imageData,
+          filename: fileName
+        }
+        await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
+      } catch (error) {
+        console.log('Error uploading logo', error);
       }
-      await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
     }
   }
 
@@ -178,7 +182,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         try {
           await PotentialEmployeeService.getInstance().create(employee)
         } catch (error) {
-          console.log('Error creating employee', employee, error);
+          console.log('Error creating potential employee:', employee, error);
         }
       }
     }

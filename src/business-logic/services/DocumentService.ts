@@ -117,7 +117,6 @@ class DocumentService {
       const response = await APIService.post<IDocument>(`${this.baseRoute}/logo`, params);
       return response as IDocument;
     } catch (error) {
-      console.log('Error uploading logo', name, 'at path', path, error);
       throw error;
     }
   }
