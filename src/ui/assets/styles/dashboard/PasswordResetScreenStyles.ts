@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   lineRow: {
-    width: '100%',
+    width: '95%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

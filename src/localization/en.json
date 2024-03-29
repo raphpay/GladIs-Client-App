@@ -301,6 +301,11 @@
         },
         "delete": "Delete"
       },
+      "passwordsToReset": {
+        "title": "Actions for:",
+        "copyEmail": "Copy email",
+        "showToken": "Show reset token"
+      },
       "download": "Download",
       "request": "Make a request",
       "approve": "Approve",
@@ -312,7 +317,9 @@
         "success": "Password successfully reset"
       },
       "passwordsToReset": {
-        "tokenCopied": "Token copied to clipboard"
+        "tokenCopied": "Token copied to clipboard",
+        "emailCopied": "Email copied to clipboard",
+        "emailNotFound": "Email not found"
       }
     }
   },

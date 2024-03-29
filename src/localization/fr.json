@@ -301,6 +301,11 @@
         },
         "delete": "Supprimer"
       },
+      "passwordsToReset": {
+        "title": "Actions pour:",
+        "copyEmail": "Copier l'email",
+        "showToken": "Afficher la clé de réinitialisation"
+      },
       "download": "Télécharger",
       "request": "Faire une demande",
       "approve": "Approuver",
@@ -312,7 +317,9 @@
         "success": "Mot de passe modifié avec succès"
       },
       "passwordsToReset": {
-        "tokenCopied": "Clé copiée dans le presse-papier"
+        "tokenCopied": "Clé copiée dans le presse-papier",
+        "emailCopied": "Email copié dans le presse-papier",
+        "emailNotFound": "Email non trouvé"
       }
     }
   },
