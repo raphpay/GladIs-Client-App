@@ -28,7 +28,6 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
-import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
@@ -52,9 +51,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [sales, setSales] = useState<string>('');
   // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
-  const [errorTitle, setErrorTitle] = useState<string>('');
-  const [errorDescription, setErrorDescription] = useState<string>('');
   // Potential employee
   const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
   // Logo
@@ -218,19 +214,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     )
   }
 
-  function errorDialog() {
-    return (
-      showErrorDialog && (
-        <ErrorDialog
-          title={errorTitle}
-          description={errorDescription}
-          cancelTitle={t('errors.modules.cancelButton')}
-          onCancel={() => setShowErrorDialog(false)}
-        />
-      )
-    )
-  }
-
   function ToastContent() {
     return (
       <>
@@ -255,37 +238,37 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           value={firstName}
           onValueChange={setFirstName}
           placeholder={t('quotation.firstName')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <GladisTextInput
           value={lastName}
           onValueChange={setLastName}
           placeholder={t('quotation.lastName')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
           />
         <GladisTextInput
           value={phoneNumber}
           onValueChange={setPhoneNumber}
           placeholder={t('quotation.phone')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <GladisTextInput
           value={companyName}
           onValueChange={setCompanyName}
           placeholder={t('quotation.companyName')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <GladisTextInput
           value={email}
           onValueChange={setEmail}
           placeholder={t('quotation.email')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <GladisTextInput
           value={products}
           onValueChange={setProducts}
           placeholder={t('quotation.products')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
         {modules.map((module) => (
@@ -300,19 +283,19 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           value={numberOfEmployees}
           onValueChange={setNumberOfEmployees}
           placeholder={t('quotation.employees')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <GladisTextInput
           value={numberOfUsers}
           onValueChange={setNumberOfUsers}
           placeholder={t('quotation.users')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <GladisTextInput
           value={sales}
           onValueChange={setSales}
           placeholder={t('quotation.capital')} showTitle={true}
-          editable={!showErrorDialog && !showDialog}
+          editable={!showDialog}
         />
         <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
         {
@@ -368,7 +351,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           setPotentialEmployees={setPotentialEmployees}
         />
       }
-      {errorDialog()}
       {ToastContent()}
     </>
   );
