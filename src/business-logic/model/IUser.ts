@@ -19,3 +19,7 @@ export default interface IUser {
   modules?: IModule[];
   isBlocked?: boolean;
 }
+
+export interface EmailInput {
+  email: string
+}

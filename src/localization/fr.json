@@ -41,6 +41,14 @@
     "noClients": {
       "title": "Pas de clients pour le moment",
       "message": "Ajoutez un client maintenant"
+    },
+    "sections": {
+      "actions": {
+        "title": "Actions",
+        "passwordsToReset": "Mots de passe à réinitialiser",
+        "events": "Evénements"
+      },
+      "clients": "Clients"
     }
   },
   "modules": {
@@ -182,6 +190,14 @@
     "today": "Aujourd'hui",
     "more": "Plus...",
   },
+  "passwordsToReset": {
+    "title": "Mot de passe à réinitialiser",
+    "dialog": {
+      "checkPassword": "Entrez votre mot de passe actuel",
+      "tokenGenerated": "La clé de réinitialisation générée est:",
+      "confirmButton": "Verifier"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"
@@ -213,7 +229,11 @@
       "passwordReset": {
         "title": "Réinitialisation du mot de passe",
         "confirmButton": "Envoyer",
-        "placeholder": "Email"
+        "placeholder": "Email",
+        "token": "Vous avez une clé ?",
+        "tokenInput": "Clé à 6 caractères",
+        "resetDescription": "Entrez votre clé de réinitialisation et votre nouveau mot de passe",
+        "newPassword": "Nouveau mot de passe"
       },
       "firstConnection": {
         "title": "Modification du mot de passe",
@@ -285,6 +305,15 @@
       "request": "Faire une demande",
       "approve": "Approuver",
       "modify": "Modifier"
+    },
+    "toast": {
+      "passwordReset": {
+        "requestSent": "Vous allez recevoir un email avec un lien de réinitialisation",
+        "success": "Mot de passe modifié avec succès"
+      },
+      "passwordsToReset": {
+        "tokenCopied": "Clé copiée dans le presse-papier"
+      }
     }
   },
   "errors": {
@@ -334,6 +363,27 @@
     "Unauthorized": {
       "title": "Identifiants incorrects",
       "message": "Veuillez vérifier vos identifiants"
+    },
+    "passwordReset": {
+      "userNotFound": "Pas d'utilisateur trouvé avec cet email. Veuillez contacter votre fournisseur."
+    },
+    "api": {
+      "notFound": {
+        "user": "Utilisateur non trouvé",
+        "resetToken": "Clé de réinitialisation non trouvée"
+      },
+      "forbidden": {
+        "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
+        "access": "Vous n'avez pas les droits pour accéder à cette page"
+      },
+      "unauthorized": {
+        "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
+        "accountBlocked": "Votre compte est bloqué. Veuillez contacter votre fournisseur.",
+        "login": "Identifiants incorrects"
+      },
+      "badRequest": {
+        "tokenExpired": "La clé de réinitialisation a expiré. Veuillez en demander une nouvelle."
+      }
     }
   },
   "legal": {

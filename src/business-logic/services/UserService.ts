@@ -1,9 +1,9 @@
 import IModule from '../model/IModule';
+import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
 import CacheKeys from '../model/enums/CacheKeys';
-import UserType from '../model/enums/UserType';
 
 import APIService from './APIService';
 import CacheService from './CacheService';
@@ -95,6 +95,26 @@ class UserService {
     }
   }
 
+  /**
+   * Verify the password of a user.
+   * @param userID - The ID of the user.
+   * @param password - The password to verify.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to true if the password is valid, false otherwise.
+   * @throws If an error occurs while verifying the password.
+   */
+  async verifyPassword(userID: string, password: string, token: IToken | null): Promise<boolean> {
+    let isValid = false;
+    try {
+      await APIService.postWithoutResponse(`${this.baseRoute}/${userID}/verifyPassword`, { currentPassword: password }, token?.value as string);
+      isValid = true;
+    } catch (error) {
+      console.log('Error verifying password', error);
+      throw error;
+    }
+    return isValid;
+  }
+
   // READ
 
   /**
@@ -121,11 +141,9 @@ class UserService {
    */
   async getClients(token: IToken | null): Promise<IUser[]> {
     try {
-      const users = await APIService.get<IUser[]>(this.baseRoute, token?.value as string);
-      const clients = users.filter((user) => user.userType !== UserType.Admin && user.userType !== UserType.Employee);
+      const clients = await APIService.get<IUser[]>(`${this.baseRoute}/clients`, token?.value as string);
       return clients;
     } catch (error) {
-      console.log('Error getting clients', error);
       throw error;
     }
   }
@@ -208,6 +226,23 @@ class UserService {
       return employees;
     } catch (error) {
       console.log('Error getting client employees', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves the reset token value of a user.
+   * @param userID - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the reset token value.
+   * @throws If an error occurs while retrieving the reset token value.
+   */
+  async getResetTokenValue(userID: string, token: IToken | null): Promise<string> {
+    try {
+      const resetToken = await APIService.get<IPasswordResetToken>(`${this.baseRoute}/${userID}/resetToken`, token?.value as string);
+      const value = resetToken.token as string;
+      return value;
+    } catch (error) {
       throw error;
     }
   }

@@ -42,6 +42,8 @@ import ClientSettingsScreenFromAdmin from '../ui/screens/settings/ClientSettings
 import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 // Reminders
 import RemindersScreen from '../ui/screens/reminders/RemindersScreen';
+// Password Reset
+import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -69,6 +71,8 @@ export type IRootStackParams = {
   SettingsScreen: undefined,
   // Reminders
   RemindersScreen: undefined,
+  // Password Reset
+  PasswordResetScreen: undefined,
 }
 
 export type IClientCreationStack = {
@@ -206,6 +210,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.RemindersScreen}
         component={RemindersScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.PasswordResetScreen}
+        component={PasswordResetScreen}
         options={{headerShown: false}}
       />
       <ClientCreationStack.Screen

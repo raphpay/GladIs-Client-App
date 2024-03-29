@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.poppinsSemiBold
   },
+  extraButton: {
+    paddingRight: 25,
+  }
 });
 
 export default styles;

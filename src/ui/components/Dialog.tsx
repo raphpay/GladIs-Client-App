@@ -21,6 +21,8 @@ type DialogProps = {
   onCancel: () => void;
   descriptionChildren?: JSX.Element;
   children?: JSX.Element;
+  extraConfirmButtonTitle?: string;
+  extraConfirmButtonAction?: () => void,
 };
 
 function Dialog(props: DialogProps): React.JSX.Element {
@@ -37,6 +39,8 @@ function Dialog(props: DialogProps): React.JSX.Element {
     onCancel,
     descriptionChildren,
     children,
+    extraConfirmButtonTitle,
+    extraConfirmButtonAction,
   } = props;
   const { t } = useTranslation();
 
@@ -64,9 +68,16 @@ function Dialog(props: DialogProps): React.JSX.Element {
           }
           {
             isConfirmAvailable == true || isConfirmAvailable == undefined ? (
-              <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
-                <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
-              </TouchableOpacity>
+              <View style={{flexDirection: 'row-reverse'}}>
+                <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
+                  <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
+                </TouchableOpacity>
+                {extraConfirmButtonAction && extraConfirmButtonTitle && (
+                  <TouchableOpacity style={styles.extraButton} onPress={extraConfirmButtonAction}>
+                    <Text style={[styles.buttonText, { color: Colors.primary }]}>{extraConfirmButtonTitle}</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             ) : (
               <View style={{flex: 1}}/>
             )

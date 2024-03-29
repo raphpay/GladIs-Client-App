@@ -41,6 +41,14 @@
     "noClients": {
       "title": "No clients yet",
       "message": "Add a client now"
+    },
+    "sections": {
+      "actions": {
+        "title": "Actions",
+        "passwordsToReset": "Passwords to reset",
+        "events": "Events"
+      },
+      "clients": "Clients"
     }
   },
   "modules": {
@@ -182,6 +190,14 @@
     "today": "Today",
     "more": "More...",
   },
+  "passwordsToReset": {
+    "title": "Passwords to reset",
+    "dialog": {
+      "checkPassword": "Enter your current password",
+      "tokenGenerated": "The reset token is: ",
+      "confirmButton": "Verify"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"
@@ -205,7 +221,11 @@
       "passwordReset": {
         "title": "Password reset",
         "confirmButton": "Send",
-        "placeholder": "Email"
+        "placeholder": "Email",
+        "token": "Got a reset token?",
+        "tokenInput": "6-digit token",
+        "resetDescription": "Enter your reset token and your new password",
+        "newPassword": "New password"
       },
       "firstConnection": {
         "title": "Modify your password",
@@ -285,6 +305,15 @@
       "request": "Make a request",
       "approve": "Approve",
       "modify": "Modify"
+    },
+    "toast": {
+      "passwordReset": {
+        "requestSent": "You will receive an email with a reset token.",
+        "success": "Password successfully reset"
+      },
+      "passwordsToReset": {
+        "tokenCopied": "Token copied to clipboard"
+      }
     }
   },
   "errors": {
@@ -334,6 +363,27 @@
     "Unauthorized": {
       "title": "Wrong username or password",
       "message": "Please verify your credentials"
+    },
+    "passwordReset": {
+      "userNotFound": "No user found with this email. Please contact your provider"
+    },
+    "api": {
+      "notFound": {
+        "user": "User not found with this id",
+        "resetToken": "Reset token not found"
+      },
+      "forbidden": {
+        "userShouldBeAdmin": "User should be an admin to access this route",
+        "access": "You don't have access to this route"
+      },
+      "unauthorized": {
+        "invalidCurrentPassword": "Invalid current password",
+        "accountBlocked": "Account blocked. Please contact your provider",
+        "login": "Wrong username or password"
+      },
+      "badRequest": {
+        "tokenExpired": "Token expired. Please request a new one"
+      }
     }
   },
   "legal": {
