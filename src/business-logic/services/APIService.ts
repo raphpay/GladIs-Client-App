@@ -92,7 +92,14 @@ class APIService {
     }
   }
 
-  // TODO: Add description
+  /**
+   * Sends a POST request to the specified endpoint without expecting a response.
+   * @param endpoint - The API endpoint to send the request to.
+   * @param data - The data to include in the request body.
+   * @param token - Optional token for authentication.
+   * @throws An error if the request fails.
+   * @returns A Promise that resolves when the request is successful.
+   */
   static async postWithoutResponse(endpoint: string, data: any = {}, token?: string): Promise<void> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;
