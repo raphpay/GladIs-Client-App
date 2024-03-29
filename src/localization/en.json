@@ -352,16 +352,6 @@
         "description": "Please verify your email and phone number format. It should be a french phone"
       }
     },
-    "password": {
-      "current": {
-        "invalid": "Current Password is invalid"
-      },
-      "samePassword": "The new password should be different from the current one",
-      "invalidLength": "The password should contain at least 12 characters",
-      "missingUppercase": "The password should contain at least one uppercased letter",
-      "missingDigit": "The password should contain at least one digit",
-      "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
-    },
     "modules": {
       "title": "This module is not part of your subscription",
       "description": "Please contact you provider.",
@@ -386,7 +376,14 @@
       "unauthorized": {
         "invalidCurrentPassword": "Invalid current password",
         "accountBlocked": "Account blocked. Please contact your provider",
-        "login": "Wrong username or password"
+        "login": "Wrong username or password",
+        "password": {
+          "samePassword": "The new password should be different from the current one",
+          "invalidLength": "The password should contain at least 12 characters",
+          "missingUppercase": "The password should contain at least one uppercased letter",
+          "missingDigit": "The password should contain at least one digit",
+          "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
+        },
       },
       "badRequest": {
         "tokenExpired": "Token expired. Please request a new one",

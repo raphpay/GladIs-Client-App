@@ -352,16 +352,6 @@
         "description": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agir d'un numéro français."
       }
     },
-    "password": {
-      "current": {
-        "invalid": "Le mot de passe actuel est incorrect"
-      },
-      "samePassword": "Le nouveau mot de passe doit être différent de l'ancien",
-      "invalidLength": "Le mot de passe doit contenir au moins 12 caractères",
-      "missingUppercase": "Le mot de passe doit contenir au moins une majuscule",
-      "missingDigit": "Le mot de passe doit contenir au moins un chiffre",
-      "missingSpecialCharacter": "Le mot de passe doit contenir au moins un caractère spécial parmi !@#$%^&*.()"
-    },
     "modules": {
       "title": "Ce module ne fait pas partie de votre abonnement",
       "description": "Veuillez contacter votre fournisseur.",
@@ -386,7 +376,17 @@
       "unauthorized": {
         "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
         "accountBlocked": "Votre compte est bloqué. Veuillez contacter votre fournisseur.",
-        "login": "Identifiants incorrects"
+        "login": "Identifiants incorrects",
+        "password": {
+          "current": {
+            "invalid": "Le mot de passe actuel est incorrect"
+          },
+          "samePassword": "Le nouveau mot de passe doit être différent de l'ancien",
+          "invalidLength": "Le mot de passe doit contenir au moins 12 caractères",
+          "missingUppercase": "Le mot de passe doit contenir au moins une majuscule",
+          "missingDigit": "Le mot de passe doit contenir au moins un chiffre",
+          "missingSpecialCharacter": "Le mot de passe doit contenir au moins un caractère spécial parmi !@#$%^&*.()"
+        }
       },
       "badRequest": {
         "tokenExpired": "La clé de réinitialisation a expiré. Veuillez en demander une nouvelle.",

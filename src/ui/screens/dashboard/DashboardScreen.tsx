@@ -19,6 +19,7 @@ import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
+import Toast from '../../components/Toast';
 
 type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
 
@@ -31,6 +32,10 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const [dialogDescription, setDialogDescription] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
   
   const plusIcon = require('../../assets/images/plus.png');
   
@@ -39,47 +44,61 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const { currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
+  // Sync Methods
   function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientCreationStack);
   }
 
+  function displayToast(message: string, isError: boolean) {
+    setToastMessage(message);
+    setToastIsShowingError(isError);
+    setShowToast(true);
+  }
+
+  // Async Methods
   async function submitPasswordChange() {
     if (oldPassword.length !== 0 && newPassword.length !== 0) {
       if (oldPassword === newPassword) {
-        setDialogDescription(t('errors.password.samePassword'));
+        displayToast(t('errors.api.unauthorized.password.samePassword'), true);
       } else {
-        try {
-          await UserService.getInstance().changePassword(oldPassword, newPassword);
-          await UserService.getInstance().setUserFirstConnectionToFalse();
-          setShowDialog(false);
-        } catch (error) {
-          const errorMessage = (error as Error).message as string;
-          if (errorMessage) {
-            setDialogDescription(t(`errors.${errorMessage}`));
+        if (currentUser) {
+          try {
+            const userID = currentUser.id as string; 
+            await UserService.getInstance().changePassword(userID, oldPassword, newPassword, token);
+            await UserService.getInstance().setUserFirstConnectionToFalse(userID, token);
+            setShowDialog(false);
+          } catch (error) {
+            const errorMessage = (error as Error).message as string;
+            displayToast(t(`errors.api.${errorMessage}`), true);
           }
-          console.log('Error changing password', error);
         }
       }
     }
   }
 
+  async function loadView() {
+    if (currentUser) {
+      setIsAdmin(currentUser.userType == UserType.Admin);
+      setDialogDescription(t('components.dialog.firstConnection.description'))
+      setShowDialog(currentUser.firstConnection ?? false);
+    } else {
+      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
+      const user = await UserService.getInstance().getUserByID(userID as string, token);
+      setIsAdmin(user.userType == UserType.Admin);
+      setDialogDescription(t('components.dialog.firstConnection.description'))
+      setShowDialog(user.firstConnection ?? false);
+    }
+  }
+
+  // Lifecycle Methods
   useEffect(() => {
      async function init() {
-      if (currentUser) {
-        setIsAdmin(currentUser.userType == UserType.Admin);
-        setDialogDescription(t('components.dialog.firstConnection.description'))
-        setShowDialog(currentUser.firstConnection ?? false);
-      } else {
-        const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-        const user = await UserService.getInstance().getUserByID(userID as string, token);
-        setIsAdmin(user.userType == UserType.Admin);
-        setDialogDescription(t('components.dialog.firstConnection.description'))
-        setShowDialog(user.firstConnection ?? false);
-      }
+      await loadView();
     }
     init();
   }, []);
 
+  // Components
   function appContainerChildren() {
     return (
       <>
@@ -87,7 +106,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
             isAdmin ? (
               <DashboardAdminGrid searchText={searchText} />
             ) : (
-              <DashboardClientGrid searchText={searchText} setShowDialog={setShowErrorDialog}/>
+              <DashboardClientGrid searchText={searchText} setShowErrorDialog={setShowErrorDialog}/>
             )
           }
       </>
@@ -151,6 +170,23 @@ function DashboardScreen(props: DashboardScreenProps): any {
       </>
     )
   }
+  
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
 
   return (
     <>
@@ -173,6 +209,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
       />
       {dialogContent()}
       {errorDialogContent()}
+      {ToastContent()}
     </>
   )
 }
