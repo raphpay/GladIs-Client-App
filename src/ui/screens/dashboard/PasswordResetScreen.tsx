@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+import IAction from '../../../business-logic/model/IAction';
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
@@ -24,6 +25,8 @@ import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 import Toast from '../../components/Toast';
+import Tooltip from '../../components/Tooltip';
+import TooltipAction from '../../components/TooltipAction';
 
 import styles from '../../assets/styles/dashboard/PasswordResetScreenStyles';
 
@@ -41,14 +44,27 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   const [passwordsToReset, setPasswordsToReset] = useState<IPasswordResetToken[]>([]);
   const [showAdminPasswordDialog, setShowAdminPasswordDialog] = useState<boolean>(false);
   const [showTokenDialog, setShowTokenDialog] = useState<boolean>(false);
+  const [showTooltipDialog, setShowTooltipDialog] = useState<boolean>(false);
   const [adminPassword, onAdminPasswordChange] = useState<string>('');
   const [selectedUserID, setSelectedUserID] = useState<string>('');
   const [selectedUserResetToken, setSelectedUserResetToken] = useState<string>('');
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<IPasswordResetToken>();
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
+
+  const popoverActions: IAction[] = [
+    {
+      title: t('components.tooltip.passwordsToReset.copyEmail'),
+      onPress: () => copyMail()
+    },
+    {
+      title: t('components.tooltip.passwordsToReset.showToken'),
+      onPress: () => openAdminPasswordDialog(selectedUserID)
+    }
+  ];
 
   // Synchronous Methods
   function navigateBack() {
@@ -63,19 +79,38 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
 
   function openAdminPasswordDialog(userID: string) {
     setSelectedUserID(userID);
+    setShowTooltipDialog(false);
     setShowAdminPasswordDialog(true);
   }
 
   function resetDialogs() {
     setShowAdminPasswordDialog(false);
     setShowTokenDialog(false);
+    setShowTooltipDialog(false);
     onAdminPasswordChange('');
   }
 
-  function copyToClipboard() {
+  function copyResetToken() {
     Clipboard.setString(selectedUserResetToken);
     resetDialogs();
     displayToast(t('components.toast.passwordsToReset.tokenCopied'), false);
+  }
+
+  function copyMail() {
+    const email = selectedItem?.userEmail;
+    if (email) {
+      Clipboard.setString(email);
+      resetDialogs();
+      displayToast(t('components.toast.passwordsToReset.emailCopied'), false);
+    } else {
+      displayToast(t('components.toast.passwordsToReset.emailNotFound'), true);
+    }
+  }
+
+  function displayTooltipDialog(userID: string, item: IPasswordResetToken) {
+    setShowTooltipDialog(true);
+    setSelectedUserID(userID);
+    setSelectedItem(item);
   }
 
   // Asynchronous Methods
@@ -142,18 +177,19 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     const userID = item.userID.id || item.userID;
 
     return (
-      <TouchableOpacity 
-        style={styles.lineContainer}
-        onPress={() => openAdminPasswordDialog(userID as string)}>
+      <View style={styles.lineContainer}>
         <View style={styles.lineRow}>
-          <Text style={styles.mailText}>{item.userEmail}</Text>
-          <View style={styles.dateContainer}>
-            <Text style={styles.dateText}>Expiration Date:</Text>
-            <Text style={styles.dateText}>{dateTimeString}</Text>
-          </View>
+          <TouchableOpacity style={styles.lineRow} onPress={() => openAdminPasswordDialog(userID as string)}>
+            <Text style={styles.mailText}>{item.userEmail}</Text>
+            <View style={styles.dateContainer}>
+              <Text style={styles.dateText}>Expiration Date:</Text>
+              <Text style={styles.dateText}>{dateTimeString}</Text>
+            </View>
+          </TouchableOpacity>
+          <Tooltip action={() => displayTooltipDialog(userID as string, item)}/>
         </View>
         <View style={styles.separator} />
-      </TouchableOpacity>
+      </View>
     )
   }
 
@@ -197,10 +233,10 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
               onCancel={() => {}}
             >
               <View style={styles.tokenContainer}>
-                <TouchableOpacity onPress={copyToClipboard}>
+                <TouchableOpacity onPress={copyResetToken}>
                   <Text style={styles.tokenText}>{selectedUserResetToken}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={copyToClipboard}>
+                <TouchableOpacity onPress={copyResetToken}>
                   <Image source={clipboardIcon} style={styles.copyIcon} />
                 </TouchableOpacity>
               </View>
@@ -228,6 +264,19 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     )
   }
 
+  function TooltipActionContent() {
+    return (
+      <TooltipAction
+        showDialog={showTooltipDialog}
+        title={`${t('components.tooltip.passwordsToReset.title')} ${selectedItem?.userEmail}`}
+        isCancelAvailable={true}
+        onConfirm={resetDialogs}
+        onCancel={resetDialogs}
+        popoverActions={popoverActions}
+      />
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -245,6 +294,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
       {AdminPasswordDialog()}
       {ResetTokenDialog()}
       {ToastContent()}
+      {TooltipActionContent()}
     </>
   );
 }
