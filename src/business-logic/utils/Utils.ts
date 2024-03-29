@@ -28,10 +28,10 @@ class Utils {
   }
 
   /**
- * Function to convert a URI to a Blob object
- * @param {string} uri - The URI of the file
- * @returns {Promise} - Returns a promise that resolves with the Blob object
- */
+   * Function to convert a URI to a Blob object
+   * @param {string} uri - The URI of the file
+   * @returns {Promise} - Returns a promise that resolves with the Blob object
+   */
   private static async uriToBlob(uri: string): Promise<Blob> {
     try {
       const xhr = new XMLHttpRequest();
@@ -144,12 +144,21 @@ class Utils {
     return stringNumber;
   }
 
-  // TODO: Add documentation
+  /**
+   * Formats a month number to its corresponding name.
+   * @param month - The month number to format.
+   * @returns The name of the month.
+   */
   static formatMonth(month: number): string {
     const newDate = new Date(new Date().getFullYear(), month, 1);
     return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(newDate);
   }
 
+  /**
+   * Formats a date to a string in the format 'YYYY-MM-DD'.
+   * @param date - The date to format.
+   * @returns A string representation of the date in the format 'YYYY-MM-DD'.
+   */
   static formatDate(date: Date): string {
     const year = date.getFullYear();
     // Months are zero-indexed, so add 1 for correct month number
@@ -159,10 +168,20 @@ class Utils {
     return `${year}-${month}-${day}`;
   };
 
+  /**
+   * Formats a date to a string in the format 'DD/MM/YYYY'.
+   * @param date - The date to format.
+   * @returns A string representation of the date in the format 'DD/MM/YYYY'.
+   */
   static formatStringDate(date: Date): string {
     return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', }).format(date);
   }
 
+  /**
+   * Formats a day number to its corresponding name.
+   * @param day - The day number to format.
+   * @returns The name of the day.
+   */
   static formatDay(day: number): string {
     const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
     const dayDate = new Date(baseDate);
@@ -171,6 +190,11 @@ class Utils {
     return dayName;
   }
 
+  /**
+   * Formats a time to a string in the format 'HH:MM'.
+   * @param date - The date to format.
+   * @returns A string representation of the time in the format 'HH:MM'.
+   */
   static formatTime(date: Date): string {
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
