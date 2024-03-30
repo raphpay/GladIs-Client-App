@@ -224,7 +224,7 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.MessagesScreen}
         component={MessagesScreen}
-        // options={{headerShown: false}}
+        options={{headerShown: false}}
       />
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationStack}

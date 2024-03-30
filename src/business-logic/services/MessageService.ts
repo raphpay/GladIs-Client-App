@@ -39,6 +39,23 @@ class MessageService {
       throw error;
     }
   }
+
+  /**
+   * Gets all sent messages for a user.
+   * @param userID The ID of the user to get messages for.
+   * @param token The token to use for authentication.
+   * @returns A promise that resolves to an array of messages.
+   * @throws An error if the request fails.
+   */
+  async getMessagesForUser(userID: string, token: IToken | null): Promise<IMessage[]> {
+    try {
+      const url = `${this.userRoute}/${userID}/${this.baseRoute}/all`;
+      const messages = await APIService.get<IMessage[]>(url ,token?.value as string);
+      return messages;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default MessageService;
