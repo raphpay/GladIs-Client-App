@@ -15,6 +15,7 @@ import ContentUnavailableView from './ContentUnavailableView';
 import Grid from './Grid';
 import GridClientItem from './GridClientItem';
 
+import MessageService from '../../business-logic/services/MessageService';
 import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/DashboardAdminGridStyles';
 
@@ -37,6 +38,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   const [clients, setClients] = useState<IUser[]>([]);
   const [passwordResetAction, setPasswordResetAction] = useState<IActionItem>();
+  const [messagesAction, setMessagesAction] = useState<IActionItem>();
 
   const clientsFiltered = clients.filter(client =>
     client.username?.toLowerCase().includes(searchText?.toLowerCase()),
@@ -44,6 +46,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   const navigation = useNavigation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { currentUser } = useAppSelector((state: RootState) => state.users);
   const { clientListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
@@ -67,6 +70,11 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   async function loadActions() {
     // TODO: Load events too
+    await loadPasswordReset();
+    await loadChatMessages();
+  }
+
+  async function loadPasswordReset() {
     try {
       const passwordsToReset = await PasswordResetService.getInstance().getAll(token);
       if (passwordsToReset.length === 0) {
@@ -82,6 +90,29 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
       }
     } catch (error) {
       console.log('Error loading password reset tokens', error);
+    }
+  }
+
+  async function loadChatMessages() {
+    if (currentUser) {
+      try {
+        const messages = await MessageService.getInstance().getReceivedMessagesForUser(currentUser.id as string, token)
+        if (messages.length === 0) {
+          setMessagesAction(undefined);
+        } else {
+          // TODO: Add translations
+          const messageAction: IActionItem = {
+            id: '2',
+            number: messages.length,
+            name: t('dashboard.sections.actions.messages'),
+            screenDestination: NavigationRoutes.MessagesScreen,
+          }
+          setMessagesAction(messageAction);
+        }
+      } catch (error) {
+        // TODO: Handle error
+        console.log('error', error );
+      }
     }
   }
 
@@ -130,11 +161,12 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     return (
       <>
         {
-          passwordResetAction && (
+          (passwordResetAction || messagesAction) && (
             <View style={styles.actionSectionContainer}>
               <Text style={styles.sectionTitle}>{t('dashboard.sections.actions.title')}</Text>
               <ScrollView horizontal={true}>
-                {ActionGridItem(passwordResetAction)}
+                { passwordResetAction && ActionGridItem(passwordResetAction) }
+                { messagesAction && ActionGridItem(messagesAction) }
               </ScrollView>
             </View>
           )
