@@ -1,7 +1,9 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { IMessage } from '../../../business-logic/model/IMessage';
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import MessageService from '../../../business-logic/services/MessageService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
@@ -9,10 +11,12 @@ import { RootState } from '../../../business-logic/store/store';
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 
+import { IRootStackParams } from '../../../navigation/Routes';
 import styles from '../../assets/styles/chat/MessagesScreenStyles';
 
+type MessagesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.MessagesScreen>;
 
-function MessagesScreen(): React.JSX.Element {
+function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   const messageIcon = require('../../assets/images/message.fill.png');
 
@@ -20,6 +24,13 @@ function MessagesScreen(): React.JSX.Element {
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
+
+  const { navigation } = props;
+
+  // Synchronous Methods
+  function navigateBack() {
+    navigation.goBack();
+  }
 
   // Async Methods
   async function loadMessages() {
@@ -80,6 +91,8 @@ function MessagesScreen(): React.JSX.Element {
       mainTitle='Messages'
       showSearchText={false}
       showSettings={true}
+      showBackButton={true}
+      navigateBack={navigateBack}
     >
       {MessageTable()}
     </AppContainer>
