@@ -3,7 +3,7 @@ import IToken from '../model/IToken';
 import APIService from './APIService';
 
 /**
- *
+ * A service for managing messages.
  */
 class MessageService {
   private static instance: MessageService | null = null;
@@ -23,6 +23,13 @@ class MessageService {
     return MessageService.instance;
   }
 
+  /**
+   * Gets all received messages for a user.
+   * @param userID The ID of the user to get messages for.
+   * @param token The token to use for authentication.
+   * @returns A promise that resolves to an array of messages.
+   * @throws An error if the request fails.
+   */
   async getReceivedMessagesForUser(userID: string, token: IToken | null): Promise<IMessage[]> {
     try {
       const url = `${this.userRoute}/${userID}/${this.baseRoute}/received`;
