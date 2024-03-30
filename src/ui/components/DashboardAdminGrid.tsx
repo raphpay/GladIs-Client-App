@@ -140,16 +140,17 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
       }
     }
 
-    // TODO: Check height
     return (
       <>
         {
           item && (
-            <TouchableOpacity onPress={navigateTo} style={styles.actionRow}>
-              <View style={{...styles.circle, borderColor: item.color ? item.color : Colors.primary}}>
-                <Text style={styles.circleNumber}>{item.number}</Text>
+            <TouchableOpacity onPress={navigateTo}>
+              <View style={styles.actionRow}>
+                <View style={{...styles.circle, borderColor: item.color ? item.color : Colors.primary}}>
+                  <Text style={styles.circleNumber}>{item.number}</Text>
+                </View>
+                <Text>{item.name}</Text>
               </View>
-              <Text>{item.name}</Text>
             </TouchableOpacity>
           )
         }
@@ -164,7 +165,12 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
           (passwordResetAction || messagesAction) && (
             <View style={styles.actionSectionContainer}>
               <Text style={styles.sectionTitle}>{t('dashboard.sections.actions.title')}</Text>
-              <ScrollView horizontal={true}>
+              <ScrollView
+                contentContainerStyle={styles.actionScrollView}
+                scrollEnabled={false}
+                horizontal={true}
+                showsVerticalScrollIndicator={false}
+              >
                 { passwordResetAction && ActionGridItem(passwordResetAction) }
                 { messagesAction && ActionGridItem(messagesAction) }
               </ScrollView>
