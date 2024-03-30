@@ -44,6 +44,8 @@ import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 import RemindersScreen from '../ui/screens/reminders/RemindersScreen';
 // Password Reset
 import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
+// Chat
+import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -73,6 +75,8 @@ export type IRootStackParams = {
   RemindersScreen: undefined,
   // Password Reset
   PasswordResetScreen: undefined,
+  // Chat
+  MessagesScreen: undefined,
 }
 
 export type IClientCreationStack = {
@@ -216,6 +220,11 @@ function DashboardStack() {
         name={NavigationRoutes.PasswordResetScreen}
         component={PasswordResetScreen}
         options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.MessagesScreen}
+        component={MessagesScreen}
+        // options={{headerShown: false}}
       />
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationStack}
