@@ -214,6 +214,7 @@
     },
     "dialog": {
       "confirmButton": "Send",
+      "messageReceiverPlaceholder": "Contact",
       "messageTitlePlaceholder": "Message object",
       "messageContentPlaceholder": "Message content",
       "charactersLeft": "Characters left"

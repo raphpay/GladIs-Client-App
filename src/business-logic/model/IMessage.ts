@@ -9,6 +9,15 @@ export interface IMessage {
   receiverMail: string;
 }
 
-interface IUserID {
+export interface IUserID {
   id: string;
+}
+
+export interface IMessageInput {
+  title: string;
+  content: string;
+  senderID: string;
+  senderMail: string;
+  receiverID: string;
+  receiverMail: string;
 }

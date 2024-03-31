@@ -1,4 +1,4 @@
-import { IMessage } from '../model/IMessage';
+import { IMessage, IMessageInput } from '../model/IMessage';
 import IToken from '../model/IToken';
 import APIService from './APIService';
 
@@ -23,6 +23,24 @@ class MessageService {
     return MessageService.instance;
   }
 
+  // CREATE
+  /**
+   * Sends a message.
+   * @param message The message to send.
+   * @param token The token to use for authentication.
+   * @returns A promise that resolves to the sent message.
+   * @throws An error if the request fails.
+   */
+  async sendMessage(message: IMessageInput, token: IToken | null): Promise<IMessage> {
+    try {
+      const newMessage = await APIService.post<IMessage>(this.baseRoute, message, token?.value as string);
+      return newMessage;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // READ
   /**
    * Gets all received messages for a user.
    * @param userID The ID of the user to get messages for.

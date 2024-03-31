@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Image, Text, View } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import { IMessage } from '../../../business-logic/model/IMessage';
+import { IMessage, IMessageInput, IUserID } from '../../../business-logic/model/IMessage';
+import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import MessageService from '../../../business-logic/services/MessageService';
+import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -31,6 +33,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [showNewMessageDialog, setShowNewMessageDialog] = useState<boolean>(false);
+  const [messageReceiver, setMessageReceiver] = useState<string>('');
   const [messageTitle, setMessageTitle] = useState<string>('');
   const [messageContent, setMessageContent] = useState<string>('');
   const [charactersLeft, setCharactersLeft] = useState<number>(300);
@@ -41,6 +44,8 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   const { t } = useTranslation();
 
   const { navigation } = props;
+
+  const isFormFilled = messageReceiver.length > 0 && messageTitle.length > 0 && messageContent.length > 0;
 
   // Synchronous Methods
   function navigateBack() {
@@ -53,6 +58,9 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   function resetDialogs() {
     setShowNewMessageDialog(false);
+    setMessageReceiver('');
+    setMessageTitle('');
+    setMessageContent('');
   }
 
   function onMessageContentChange(text: string) {
@@ -72,6 +80,41 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     }
   }
 
+  async function sendMessage() {
+    // Get user by mail
+    let receiver: IUser | undefined;
+    try {
+      receiver = await UserService.getInstance().getUserByEmail(messageReceiver, token);
+    } catch (error) {
+      // TODO: Handle error
+      console.log('error');
+    }
+
+    if (receiver && currentUser) {
+      // Create message
+      const senderID: IUserID = { id: currentUser.id as string };
+      const receiverID: IUserID = { id: receiver.id as string };
+      const message: IMessageInput = {
+        title: messageTitle,
+        content: messageContent,
+        senderID: senderID.id,
+        senderMail: currentUser.email,
+        receiverID: receiverID.id,
+        receiverMail: receiver.email
+      }
+
+      // Send message
+      try {
+        const newMessage = await MessageService.getInstance().sendMessage(message, token);
+        setMessages([...messages, newMessage]);
+        resetDialogs();
+      } catch (error) {
+        // TODO: Handle error
+        console.log('error');
+      }
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
@@ -80,6 +123,9 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     init();
   }, []);
 
+  // Components
+  // TODO: Correct key prop
+  // TODO: Extract to separate componentxs
   function MessageRow(message: IMessage, index: number) {
     const date = new Date(message.dateSent);
     const formattedDate = Utils.formatDate(date);
@@ -104,7 +150,6 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     );
   }
 
-  // Components
   function MessageTable() {
     return (
       <>
@@ -152,11 +197,17 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
               title={t('chat.button.sendMessage')}
               confirmTitle={t('chat.dialog.confirmButton')}
               isConfirmAvailable={true}
-              onConfirm={resetDialogs}
+              onConfirm={sendMessage}
+              isConfirmDisabled={!isFormFilled}
               isCancelAvailable={true}
               onCancel={resetDialogs}
             >
               <>
+                <GladisTextInput
+                  value={messageReceiver}
+                  onValueChange={setMessageReceiver}
+                  placeholder={t('chat.dialog.messageReceiverPlaceholder')}
+                />
                 <GladisTextInput
                   value={messageTitle}
                   onValueChange={setMessageTitle}
