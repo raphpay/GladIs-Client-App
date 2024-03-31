@@ -201,7 +201,6 @@ class Utils {
     return `${hours}:${minutes}`;
   }
 
-  // TODO: Use it in SignUpScreen too
   /**
    * Handle error keys to display the correct error message.
    * @param keys - The keys of the error messages.

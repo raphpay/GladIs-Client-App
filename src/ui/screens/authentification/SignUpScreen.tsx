@@ -101,22 +101,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     return isFilled;
   }
 
-  function handleErrorKeys(keys: string[]): string {
-    let errorTitle = t('errors.api.badRequest.default');
-    if (keys.length > 0) {
-      if (keys.includes('badRequest.email.invalid')) {
-        if (keys.includes('badRequest.phoneNumber.invalid')) {
-          errorTitle = t('errors.api.badRequest.phoneAndEmail');
-        } else {
-          errorTitle = t('errors.api.badRequest.email');
-        }
-      } else if (keys.includes('badRequest.phoneNumber.invalid')) {
-        errorTitle = t('errors.api.badRequest.phoneNumber');
-      }
-    }
-    return errorTitle;
-  }
-
   function displayToast(message: string, isShowingError: boolean) {
     setShowToast(true);
     setToastMessage(message);
@@ -145,8 +129,8 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
-      const errorTitle = handleErrorKeys(errorKeys);
-      displayToast(errorTitle, true);
+      const errorTitle = Utils.handleErrorKeys(errorKeys);
+      displayToast(t(errorTitle), true);
     }
   }
 
