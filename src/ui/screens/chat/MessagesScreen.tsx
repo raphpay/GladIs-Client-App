@@ -58,20 +58,25 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   function MessageRow(message: IMessage, index: number) {
     const date = new Date(message.dateSent);
     const formattedDate = Utils.formatDate(date);
-
+  
     const isMessageFromCurrentUser = message.sender.id === currentUser?.id;
     const emailToDisplay = isMessageFromCurrentUser ? message.receiverMail : message.senderMail;
     const arrowIcon = isMessageFromCurrentUser ? sentIcon : receivedIcon;
-
+  
     return (
-      <View key={message.id} style={styles.row}>
-        <Text style={styles.cell}>{index + 1}</Text>
-        <Text style={styles.cell}>{message.title}</Text>
-        <Text style={styles.cell}>{formattedDate}</Text>
-        <Text style={styles.cell}>{emailToDisplay}</Text>
-        <Image source={arrowIcon} style={styles.arrowIcon}/>
+      <View>
+        <View key={message.id} style={styles.row}>
+          <Text style={[styles.cell, styles.messageCellText, styles.narrowCell]}>{index + 1}</Text>
+          <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{message.title}</Text>
+          <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{formattedDate}</Text>
+          <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{emailToDisplay}</Text>
+          <View style={styles.iconCell}>
+            <Image source={arrowIcon} style={styles.arrowIcon}/>
+          </View>
+        </View>
+        <View style={styles.separator}/>
       </View>
-    )
+    );
   }
 
   // TODO: Add translations
@@ -89,10 +94,10 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
           ) : (
             <View style={styles.table}>
               <View style={styles.rowHeader}>
-                <Text style={[styles.cell, styles.headerCell]}>#</Text>
-                <Text style={[styles.cell, styles.headerCell]}>Title</Text>
-                <Text style={[styles.cell, styles.headerCell]}>Date Sent</Text>
-                <Text style={[styles.cell, styles.headerCell]}>User Mail</Text>
+                <Text style={[styles.cell, styles.headerCell, styles.narrowCell]}>#</Text>
+                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>Title</Text>
+                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>Date Sent</Text>
+                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>User Mail</Text>
               </View>
               {messages.map((message, index) => (
                 MessageRow(message, index)
