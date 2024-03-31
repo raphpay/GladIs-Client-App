@@ -137,7 +137,6 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   }, []);
 
   // Components
-  // TODO: Correct key prop
   // TODO: Extract to separate componentxs
   function MessageRow(message: IMessage, index: number) {
     const date = new Date(message.dateSent);
@@ -148,8 +147,8 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     const arrowIcon = isMessageFromCurrentUser ? sentIcon : receivedIcon;
   
     return (
-      <View>
-        <View key={message.id} style={styles.row}>
+      <View key={message.id}>
+        <View style={styles.row}>
           <Text style={[styles.cell, styles.messageCellText, styles.narrowCell]}>{index + 1}</Text>
           <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{message.title}</Text>
           <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{formattedDate}</Text>
