@@ -415,7 +415,11 @@
         "phoneAndEmail": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agir d'un numéro français.",
         "email": "Veuillez vérifier le format de votre email",
         "phone": "Veuillez vérifier le format de votre numéro de téléphone. Il doit s'agir d'un numéro français.",
-        "default": "Une erreur est survenue. Veuillez vérifier les informations saisies."
+        "default": "Une erreur est survenue. Veuillez vérifier les informations saisies.",
+        "message": {
+          "contentLength": "Le contenu du message ne doit pas dépasser 300 caractères",
+          "senderAndReceiverSame": "Vous ne pouvez pas vous envoyer de message à vous-même"
+        }
       }
     }
   },

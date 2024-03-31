@@ -405,14 +405,18 @@
           "missingUppercase": "The password should contain at least one uppercased letter",
           "missingDigit": "The password should contain at least one digit",
           "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
-        },
+        }
       },
       "badRequest": {
         "tokenExpired": "Token expired. Please request a new one",
         "phoneAndEmail": "Please verify the email address and the phone number",
         "email": "Please verify the email address",
         "phone": "Please verify the phone number",
-        "default": "Please verify the informations you entered"
+        "default": "Please verify the informations you entered",
+        "message": {
+          "contentLength": "The message should not contain more than 300 characters",
+          "senderAndReceiverSame": "You can't send a message to yourself"
+        }
       }
     }
   },

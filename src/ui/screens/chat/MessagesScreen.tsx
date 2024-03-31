@@ -122,8 +122,8 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         setMessages([...messages, newMessage]);
         resetDialogs();
       } catch (error) {
-        // TODO: Handle error
-        console.log('error');
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
