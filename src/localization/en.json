@@ -214,7 +214,9 @@
     },
     "dialog": {
       "confirmButton": "Send",
-      "messageContentPlaceholder": "Message content"
+      "messageTitlePlaceholder": "Message object",
+      "messageContentPlaceholder": "Message content",
+      "charactersLeft": "Characters left"
     }
   },
   "components": {

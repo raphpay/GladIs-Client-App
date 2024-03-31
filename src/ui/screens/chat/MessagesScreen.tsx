@@ -14,6 +14,8 @@ import Utils from '../../../business-logic/utils/Utils';
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
+import ExpandingTextInput from '../../components/ExpandingTextInput';
+import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
 
 import styles from '../../assets/styles/chat/MessagesScreenStyles';
@@ -29,6 +31,9 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [showNewMessageDialog, setShowNewMessageDialog] = useState<boolean>(false);
+  const [messageTitle, setMessageTitle] = useState<string>('');
+  const [messageContent, setMessageContent] = useState<string>('');
+  const [charactersLeft, setCharactersLeft] = useState<number>(300);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
@@ -48,6 +53,11 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   function resetDialogs() {
     setShowNewMessageDialog(false);
+  }
+
+  function onMessageContentChange(text: string) {
+    setMessageContent(text);
+    setCharactersLeft(300 - text.length);
   }
 
   // Async Methods
@@ -145,7 +155,23 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
               onConfirm={resetDialogs}
               isCancelAvailable={true}
               onCancel={resetDialogs}
-            />
+            >
+              <>
+                <GladisTextInput
+                  value={messageTitle}
+                  onValueChange={setMessageTitle}
+                  placeholder={t('chat.dialog.messageTitlePlaceholder')}
+                />
+                <ExpandingTextInput
+                  text={messageContent}
+                  setText={onMessageContentChange}
+                  placeholder={t('chat.dialog.messageContentPlaceholder')}
+                />
+                <View style={styles.charactersCount}>
+                  <Text style={styles.charactersCountText}>{t('chat.dialog.charactersLeft')}: {charactersLeft}</Text>
+                </View>
+              </>
+            </Dialog>
           )
         }
       </>

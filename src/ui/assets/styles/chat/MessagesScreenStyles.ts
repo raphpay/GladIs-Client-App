@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -52,6 +53,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     margin: 4,
     zIndex: -10
+  },
+  charactersCount: {
+    width: '100%',
+    flexDirection: 'row-reverse',
+    marginBottom: 16,
+  },
+  charactersCountText: {
+    fontFamily: Fonts.poppinsSemiBold,
+    color: Colors.inactive
   },
 });
 
