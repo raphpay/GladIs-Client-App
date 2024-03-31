@@ -14,11 +14,12 @@ import styles from '../../assets/styles/chat/MessagesScreenStyles';
 
 type MessageTableProps = {
   messages: IMessage[];
+  onMessageSelection: (message: IMessage) => void;
 };
 
 function MessageTable(props: MessageTableProps): React.JSX.Element {
 
-  const { messages } = props;
+  const { messages, onMessageSelection } = props;
 
   const messageIcon = require('../../assets/images/message.fill.png');
 
@@ -42,7 +43,7 @@ function MessageTable(props: MessageTableProps): React.JSX.Element {
               <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.userMail')}</Text>
             </View>
             {messages.map((message, index) => (
-              <MessageRow message={message} index={index} key={message.id} />
+              <MessageRow onMessageSelection={onMessageSelection} message={message} index={index} key={message.id} />
             ))}
           </View>
         )

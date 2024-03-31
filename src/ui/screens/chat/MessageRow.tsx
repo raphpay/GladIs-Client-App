@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Image,
-  Text,
-  View
-} from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 import { IMessage } from '../../../business-logic/model/IMessage';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -15,10 +11,11 @@ import styles from '../../assets/styles/chat/MessagesScreenStyles';
 type MessageRowProps = {
   message: IMessage;
   index: number;
+  onMessageSelection: (message: IMessage) => void;
 };
 
 function MessageRow(props: MessageRowProps): React.JSX.Element {
-  const { message, index } = props;
+  const { message, index, onMessageSelection } = props;
 
   const { currentUser } = useAppSelector((state: RootState) => state.users);
 
@@ -34,7 +31,7 @@ function MessageRow(props: MessageRowProps): React.JSX.Element {
 
   return (
     <View key={message.id}>
-      <View style={styles.row}>
+      <TouchableOpacity onPress={() => onMessageSelection(message)} style={styles.row}>
         <Text style={[styles.cell, styles.messageCellText, styles.narrowCell]}>{index + 1}</Text>
         <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{message.title}</Text>
         <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{formattedDate}</Text>
@@ -42,7 +39,7 @@ function MessageRow(props: MessageRowProps): React.JSX.Element {
         <View style={styles.iconCell}>
           <Image source={arrowIcon} style={styles.arrowIcon}/>
         </View>
-      </View>
+      </TouchableOpacity>
       <View style={styles.separator}/>
     </View>
   );

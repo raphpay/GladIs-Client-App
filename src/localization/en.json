@@ -217,7 +217,10 @@
       "messageReceiverPlaceholder": "Contact",
       "messageTitlePlaceholder": "Message object",
       "messageContentPlaceholder": "Message content",
-      "charactersLeft": "Characters left"
+      "charactersLeft": "Characters left",
+      "message": "Message",
+      "to": "To",
+      "from": "From"
     }
   },
   "components": {

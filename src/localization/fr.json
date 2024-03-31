@@ -217,7 +217,10 @@
       "messageReceiverPlaceholder": "Destinataire",
       "messageTitlePlaceholder": "Objet du message",
       "messageContentPlaceholder": "Contenu du message",
-      "charactersLeft": "Caractères restants"
+      "charactersLeft": "Caractères restants",
+      "message": "Message",
+      "to": "De",
+      "from": "A"
     }
   },
   "components": {

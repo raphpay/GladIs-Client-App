@@ -63,6 +63,14 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.poppinsSemiBold,
     color: Colors.inactive
   },
+  messageTitle: {
+    fontFamily: Fonts.poppinsSemiBold,
+    marginBottom: 16,
+  },
+  messageContent: {
+    fontFamily: Fonts.poppinsLight,
+    marginBottom: 16,
+  },
 });
 
 export default styles;

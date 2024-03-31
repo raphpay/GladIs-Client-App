@@ -30,12 +30,15 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   const plusIcon = require('../../assets/images/plus.png');
 
   const [messages, setMessages] = useState<IMessage[]>([]);
+  // Dialog
   const [showNewMessageDialog, setShowNewMessageDialog] = useState<boolean>(false);
+  const [showSingleMessageDialog, setShowSingleMessageDialog] = useState<boolean>(false);
   // Message
   const [messageReceiver, setMessageReceiver] = useState<string>('');
   const [messageTitle, setMessageTitle] = useState<string>('');
   const [messageContent, setMessageContent] = useState<string>('');
   const [charactersLeft, setCharactersLeft] = useState<number>(300);
+  const [selectedMessage, setSelectedMessage] = useState<IMessage>();
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -61,6 +64,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   function resetDialogs() {
     setShowNewMessageDialog(false);
+    setShowSingleMessageDialog(false);
     setMessageReceiver('');
     setMessageTitle('');
     setMessageContent('');
@@ -75,6 +79,11 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
+  }
+
+  function onMessageSelection(message: IMessage) {
+    setSelectedMessage(message);
+    setShowSingleMessageDialog(true);
   }
 
   // Async Methods
@@ -185,6 +194,34 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     )
   }
 
+  function SingleMessageDialog() {
+    const isMessageFromCurrentUser = selectedMessage?.sender.id === currentUser?.id;
+    const emailToDisplay = isMessageFromCurrentUser ? selectedMessage?.receiverMail : selectedMessage?.senderMail;
+    const linkedWord = isMessageFromCurrentUser ? t('chat.dialog.to') : t('chat.dialog.from');
+    const dialogTitle = `${t('chat.dialog.message')} ${linkedWord} ${emailToDisplay}`;
+
+    return (
+      <>
+        {
+          showSingleMessageDialog && (
+            <Dialog
+              title={dialogTitle}
+              isConfirmAvailable={false}
+              onConfirm={() => {}}
+              isCancelAvailable={true}
+              onCancel={resetDialogs}
+            >
+              <>
+                <Text style={styles.messageTitle}>{selectedMessage?.title}</Text>
+                <Text style={styles.messageContent}>{selectedMessage?.content}</Text>
+              </>
+            </Dialog>
+          )
+        }
+      </>
+    )
+  }
+
   function ToastContent() {
     return (
       <>
@@ -212,9 +249,10 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         navigateBack={navigateBack}
         adminButton={AddMessageButton()}
       >
-        <MessageTable messages={messages}/>
+        <MessageTable messages={messages} onMessageSelection={onMessageSelection}/>
       </AppContainer>
       {NewMessageDialog()}
+      {SingleMessageDialog()}
       {ToastContent()}
     </>
   );
