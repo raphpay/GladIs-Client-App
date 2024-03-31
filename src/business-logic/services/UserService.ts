@@ -3,6 +3,7 @@ import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
+import { extractValidationErrors } from '../model/ValidationError';
 import CacheKeys from '../model/enums/CacheKeys';
 
 import APIService from './APIService';
@@ -182,7 +183,9 @@ class UserService {
       const user = await APIService.post<IUser>(`${this.baseRoute}/byMail`, { email }, token?.value as string);
       return user;
     } catch (error) {
-      throw error;
+      const errorMessage = (error as Error).message
+      const errorKeys = extractValidationErrors(errorMessage);
+      throw errorKeys;
     }
   }
 

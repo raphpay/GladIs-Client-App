@@ -19,6 +19,7 @@ import Dialog from '../../components/Dialog';
 import ExpandingTextInput from '../../components/ExpandingTextInput';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
+import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/chat/MessagesScreenStyles';
 
@@ -33,10 +34,15 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [showNewMessageDialog, setShowNewMessageDialog] = useState<boolean>(false);
+  // Message
   const [messageReceiver, setMessageReceiver] = useState<string>('');
   const [messageTitle, setMessageTitle] = useState<string>('');
   const [messageContent, setMessageContent] = useState<string>('');
   const [charactersLeft, setCharactersLeft] = useState<number>(300);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
@@ -68,6 +74,12 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     setCharactersLeft(300 - text.length);
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
   // Async Methods
   async function loadMessages() {
     if (currentUser) {
@@ -86,8 +98,9 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     try {
       receiver = await UserService.getInstance().getUserByEmail(messageReceiver, token);
     } catch (error) {
-      // TODO: Handle error
-      console.log('error');
+      const errorKeys: string[] = error as string[];
+      const errorTitle = Utils.handleErrorKeys(errorKeys);
+      displayToast(t(`${errorTitle}`), true);
     }
 
     if (receiver && currentUser) {
@@ -229,6 +242,23 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     )
   }
 
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -242,6 +272,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         {MessageTable()}
       </AppContainer>
       {NewMessageDialog()}
+      {ToastContent()}
     </>
   );
 }
