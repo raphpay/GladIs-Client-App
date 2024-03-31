@@ -198,6 +198,25 @@
       "confirmButton": "Verify"
     }
   },
+  "chat": {
+    "title": "Chat",
+    "emptyState": {
+      "title": "No messages yet",
+      "description": "You have no messages yet. Start a conversation now."
+    },
+    "table": {
+      "title": "Object",
+      "dateSent": "Date Sent",
+      "userMail": "Contact"
+    },
+    "button": {
+      "sendMessage": "Send Message"
+    },
+    "dialog": {
+      "confirmButton": "Send",
+      "messageContentPlaceholder": "Message content"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"

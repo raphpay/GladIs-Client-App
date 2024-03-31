@@ -1,5 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Image, Text, View } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -31,6 +32,8 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
+
+  const { t } = useTranslation();
 
   const { navigation } = props;
 
@@ -91,7 +94,6 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     );
   }
 
-  // TODO: Add translations
   // Components
   function MessageTable() {
     return (
@@ -99,17 +101,17 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         {
           messages.length === 0 ? (
             <ContentUnavailableView
-              title='No Messages'
-              message='You have no messages to display.'
+              title={t('chat.emptyState.title')}
+              message={t('chat.emptyState.description')}
               image={messageIcon}
             />
           ) : (
             <View style={styles.table}>
               <View style={styles.rowHeader}>
                 <Text style={[styles.cell, styles.headerCell, styles.narrowCell]}>#</Text>
-                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>Title</Text>
-                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>Date Sent</Text>
-                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>User Mail</Text>
+                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.title')}</Text>
+                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.dateSent')}</Text>
+                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.userMail')}</Text>
               </View>
               {messages.map((message, index) => (
                 MessageRow(message, index)
@@ -124,7 +126,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   function AddMessageButton() {
     return (
       <IconButton
-        title='Add Message'
+        title={t('chat.button.sendMessage')}
         icon={plusIcon}
         onPress={displayMessageDialog}
       />
@@ -137,7 +139,8 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         {
           showNewMessageDialog && (
             <Dialog
-              title='New Message'
+              title={t('chat.button.sendMessage')}
+              confirmTitle={t('chat.dialog.confirmButton')}
               isConfirmAvailable={true}
               onConfirm={resetDialogs}
               isCancelAvailable={true}
@@ -152,7 +155,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   return (
     <>
       <AppContainer
-        mainTitle='Messages'
+        mainTitle={t('chat.title')}
         showSearchText={false}
         showSettings={true}
         showBackButton={true}

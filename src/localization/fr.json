@@ -198,6 +198,25 @@
       "confirmButton": "Verifier"
     }
   },
+  "chat": {
+    "title": "Chat",
+    "emptyState": {
+      "title": "Pas de messages pour le moment",
+      "description": "Vous n'avez pas de messages pour le moment. Commencez une conversation."
+    },
+    "table": {
+      "title": "Objet",
+      "dateSent": "Date envoyée",
+      "userMail": "Correspondant"
+    },
+    "button": {
+      "sendMessage": "Envoyer un Message"
+    },
+    "dialog": {
+      "confirmButton": "Send",
+      "messageContentPlaceholder": "Contenu du message"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"
