@@ -46,6 +46,7 @@
       "actions": {
         "title": "Actions",
         "passwordsToReset": "Passwords to reset",
+        "messages": "Messages",
         "events": "Events"
       },
       "clients": "Clients"

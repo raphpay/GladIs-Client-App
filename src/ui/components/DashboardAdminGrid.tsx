@@ -96,7 +96,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   async function loadChatMessages() {
     if (currentUser) {
       try {
-        const messages = await MessageService.getInstance().getReceivedMessagesForUser(currentUser.id as string, token)
+        const messages = await MessageService.getInstance().getReceivedMessagesForUser(currentUser.id as string, token);
         if (messages.length === 0) {
           setMessagesAction(undefined);
         } else {

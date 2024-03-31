@@ -46,6 +46,7 @@
       "actions": {
         "title": "Actions",
         "passwordsToReset": "Mots de passe à réinitialiser",
+        "messages": "Messages",
         "events": "Evénements"
       },
       "clients": "Clients"
