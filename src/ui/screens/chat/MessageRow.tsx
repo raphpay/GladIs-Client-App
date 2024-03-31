@@ -1,0 +1,51 @@
+import React from 'react';
+import {
+  Image,
+  Text,
+  View
+} from 'react-native';
+
+import { IMessage } from '../../../business-logic/model/IMessage';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
+
+import styles from '../../assets/styles/chat/MessagesScreenStyles';
+
+type MessageRowProps = {
+  message: IMessage;
+  index: number;
+};
+
+function MessageRow(props: MessageRowProps): React.JSX.Element {
+  const { message, index } = props;
+
+  const { currentUser } = useAppSelector((state: RootState) => state.users);
+
+  const sentIcon = require('../../assets/images/arrow.up.right.png');
+  const receivedIcon = require('../../assets/images/arrow.down.left.png');
+
+  const date = new Date(message.dateSent);
+  const formattedDate = Utils.formatDate(date);
+
+  const isMessageFromCurrentUser = message.sender.id === currentUser?.id;
+  const emailToDisplay = isMessageFromCurrentUser ? message.receiverMail : message.senderMail;
+  const arrowIcon = isMessageFromCurrentUser ? sentIcon : receivedIcon;
+
+  return (
+    <View key={message.id}>
+      <View style={styles.row}>
+        <Text style={[styles.cell, styles.messageCellText, styles.narrowCell]}>{index + 1}</Text>
+        <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{message.title}</Text>
+        <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{formattedDate}</Text>
+        <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{emailToDisplay}</Text>
+        <View style={styles.iconCell}>
+          <Image source={arrowIcon} style={styles.arrowIcon}/>
+        </View>
+      </View>
+      <View style={styles.separator}/>
+    </View>
+  );
+}
+
+export default MessageRow;

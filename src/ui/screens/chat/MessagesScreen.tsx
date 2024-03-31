@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import { IMessage, IMessageInput, IUserID } from '../../../business-logic/model/IMessage';
@@ -14,12 +14,12 @@ import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
-import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import ExpandingTextInput from '../../components/ExpandingTextInput';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
 import Toast from '../../components/Toast';
+import MessageTable from './MessageTable';
 
 import styles from '../../assets/styles/chat/MessagesScreenStyles';
 
@@ -27,9 +27,6 @@ type MessagesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRo
 
 function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
-  const messageIcon = require('../../assets/images/message.fill.png');
-  const sentIcon = require('../../assets/images/arrow.up.right.png');
-  const receivedIcon = require('../../assets/images/arrow.down.left.png');
   const plusIcon = require('../../assets/images/plus.png');
 
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -137,59 +134,6 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   }, []);
 
   // Components
-  // TODO: Extract to separate componentxs
-  function MessageRow(message: IMessage, index: number) {
-    const date = new Date(message.dateSent);
-    const formattedDate = Utils.formatDate(date);
-  
-    const isMessageFromCurrentUser = message.sender.id === currentUser?.id;
-    const emailToDisplay = isMessageFromCurrentUser ? message.receiverMail : message.senderMail;
-    const arrowIcon = isMessageFromCurrentUser ? sentIcon : receivedIcon;
-  
-    return (
-      <View key={message.id}>
-        <View style={styles.row}>
-          <Text style={[styles.cell, styles.messageCellText, styles.narrowCell]}>{index + 1}</Text>
-          <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{message.title}</Text>
-          <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{formattedDate}</Text>
-          <Text style={[styles.cell, styles.messageCellText, styles.wideCell]}>{emailToDisplay}</Text>
-          <View style={styles.iconCell}>
-            <Image source={arrowIcon} style={styles.arrowIcon}/>
-          </View>
-        </View>
-        <View style={styles.separator}/>
-      </View>
-    );
-  }
-
-  function MessageTable() {
-    return (
-      <>
-        {
-          messages.length === 0 ? (
-            <ContentUnavailableView
-              title={t('chat.emptyState.title')}
-              message={t('chat.emptyState.description')}
-              image={messageIcon}
-            />
-          ) : (
-            <View style={styles.table}>
-              <View style={styles.rowHeader}>
-                <Text style={[styles.cell, styles.headerCell, styles.narrowCell]}>#</Text>
-                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.title')}</Text>
-                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.dateSent')}</Text>
-                <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.userMail')}</Text>
-              </View>
-              {messages.map((message, index) => (
-                MessageRow(message, index)
-              ))}
-            </View>
-          )
-        }
-      </>
-    )
-  }
-
   function AddMessageButton() {
     return (
       <IconButton
@@ -268,7 +212,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         navigateBack={navigateBack}
         adminButton={AddMessageButton()}
       >
-        {MessageTable()}
+        <MessageTable messages={messages}/>
       </AppContainer>
       {NewMessageDialog()}
       {ToastContent()}
