@@ -21,6 +21,11 @@ const styles = StyleSheet.create({
   headerCell: {
     fontWeight: 'bold',
   },
+  arrowIcon: {
+    width: 10,
+    height: 10,
+    resizeMode: 'contain',
+  }
 });
 
 export default styles;

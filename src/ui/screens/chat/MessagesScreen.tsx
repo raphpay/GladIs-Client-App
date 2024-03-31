@@ -1,17 +1,18 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
+import { IRootStackParams } from '../../../navigation/Routes';
 
 import { IMessage } from '../../../business-logic/model/IMessage';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import MessageService from '../../../business-logic/services/MessageService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 
-import { IRootStackParams } from '../../../navigation/Routes';
 import styles from '../../assets/styles/chat/MessagesScreenStyles';
 
 type MessagesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.MessagesScreen>;
@@ -19,6 +20,8 @@ type MessagesScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRo
 function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   const messageIcon = require('../../assets/images/message.fill.png');
+  const sentIcon = require('../../assets/images/arrow.up.right.png');
+  const receivedIcon = require('../../assets/images/arrow.down.left.png');
 
   const [messages, setMessages] = useState<IMessage[]>([]);
 
@@ -52,6 +55,26 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     init();
   }, []);
 
+  function MessageRow(message: IMessage, index: number) {
+    const date = new Date(message.dateSent);
+    const formattedDate = Utils.formatDate(date);
+
+    const isMessageFromCurrentUser = message.sender.id === currentUser?.id;
+    const emailToDisplay = isMessageFromCurrentUser ? message.receiverMail : message.senderMail;
+    const arrowIcon = isMessageFromCurrentUser ? sentIcon : receivedIcon;
+
+    return (
+      <View key={message.id} style={styles.row}>
+        <Text style={styles.cell}>{index + 1}</Text>
+        <Text style={styles.cell}>{message.title}</Text>
+        <Text style={styles.cell}>{formattedDate}</Text>
+        <Text style={styles.cell}>{emailToDisplay}</Text>
+        <Image source={arrowIcon} style={styles.arrowIcon}/>
+      </View>
+    )
+  }
+
+  // TODO: Add translations
   // Components
   function MessageTable() {
     return (
@@ -69,15 +92,10 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
                 <Text style={[styles.cell, styles.headerCell]}>#</Text>
                 <Text style={[styles.cell, styles.headerCell]}>Title</Text>
                 <Text style={[styles.cell, styles.headerCell]}>Date Sent</Text>
-                <Text style={[styles.cell, styles.headerCell]}>Sender ID</Text>
+                <Text style={[styles.cell, styles.headerCell]}>User Mail</Text>
               </View>
               {messages.map((message, index) => (
-                <View key={message.id} style={styles.row}>
-                  <Text style={styles.cell}>{index + 1}</Text>
-                  <Text style={styles.cell}>{message.title}</Text>
-                  {/* <Text style={styles.cell}>{message.dateSent.toLocaleDateString()}</Text> */}
-                  <Text style={styles.cell}>{message.sender.id}</Text>
-                </View>
+                MessageRow(message, index)
               ))}
             </View>
           )

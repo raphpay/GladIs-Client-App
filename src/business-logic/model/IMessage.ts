@@ -4,7 +4,9 @@ export interface IMessage {
   content: string;
   dateSent: Date;
   sender: IUserID;
+  senderMail: string;
   receiver: IUserID;
+  receiverMail: string;
 }
 
 interface IUserID {
