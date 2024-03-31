@@ -12,6 +12,8 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialog';
+import IconButton from '../../components/IconButton';
 
 import styles from '../../assets/styles/chat/MessagesScreenStyles';
 
@@ -22,8 +24,10 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   const messageIcon = require('../../assets/images/message.fill.png');
   const sentIcon = require('../../assets/images/arrow.up.right.png');
   const receivedIcon = require('../../assets/images/arrow.down.left.png');
+  const plusIcon = require('../../assets/images/plus.png');
 
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [showNewMessageDialog, setShowNewMessageDialog] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
@@ -33,6 +37,14 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   // Synchronous Methods
   function navigateBack() {
     navigation.goBack();
+  }
+
+  function displayMessageDialog() {
+    setShowNewMessageDialog(true);
+  }
+
+  function resetDialogs() {
+    setShowNewMessageDialog(false);
   }
 
   // Async Methods
@@ -109,16 +121,48 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     )
   }
 
+  function AddMessageButton() {
+    return (
+      <IconButton
+        title='Add Message'
+        icon={plusIcon}
+        onPress={displayMessageDialog}
+      />
+    )
+  }
+
+  function NewMessageDialog() {
+    return (
+      <>
+        {
+          showNewMessageDialog && (
+            <Dialog
+              title='New Message'
+              isConfirmAvailable={true}
+              onConfirm={resetDialogs}
+              isCancelAvailable={true}
+              onCancel={resetDialogs}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
-    <AppContainer
-      mainTitle='Messages'
-      showSearchText={false}
-      showSettings={true}
-      showBackButton={true}
-      navigateBack={navigateBack}
-    >
-      {MessageTable()}
-    </AppContainer>
+    <>
+      <AppContainer
+        mainTitle='Messages'
+        showSearchText={false}
+        showSettings={true}
+        showBackButton={true}
+        navigateBack={navigateBack}
+        adminButton={AddMessageButton()}
+      >
+        {MessageTable()}
+      </AppContainer>
+      {NewMessageDialog()}
+    </>
   );
 }
 
