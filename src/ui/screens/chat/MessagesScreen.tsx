@@ -38,7 +38,8 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   const [messageReceiver, setMessageReceiver] = useState<string>('');
   const [messageTitle, setMessageTitle] = useState<string>('');
   const [messageContent, setMessageContent] = useState<string>('');
-  const [charactersLeft, setCharactersLeft] = useState<number>(300);
+  const [titleCharactersLeft, setTitleCharactersLeft] = useState<number>(60);
+  const [contentCharactersLeft, setContentCharactersLeft] = useState<number>(300);
   const [selectedMessage, setSelectedMessage] = useState<IMessage>();
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -72,9 +73,18 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     setMessageContent('');
   }
 
+  function onMessageTitleChange(text: string) {
+    if (text.length <= 60) {
+      setMessageTitle(text);
+      setTitleCharactersLeft(60 - text.length);
+    }
+  }
+
   function onMessageContentChange(text: string) {
-    setMessageContent(text);
-    setCharactersLeft(300 - text.length);
+    if (text.length <= 300) {
+      setMessageContent(text);
+      setContentCharactersLeft(300 - text.length);
+    }
   }
 
   function displayToast(message: string, isError: boolean = false) {
@@ -194,16 +204,19 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
                 />
                 <GladisTextInput
                   value={messageTitle}
-                  onValueChange={setMessageTitle}
+                  onValueChange={onMessageTitleChange}
                   placeholder={t('chat.dialog.messageTitlePlaceholder')}
                 />
+                <View style={styles.charactersCount}>
+                  <Text style={styles.charactersCountText}>{t('chat.dialog.charactersLeft')}: {titleCharactersLeft}</Text>
+                </View>
                 <ExpandingTextInput
                   text={messageContent}
                   setText={onMessageContentChange}
                   placeholder={t('chat.dialog.messageContentPlaceholder')}
                 />
                 <View style={styles.charactersCount}>
-                  <Text style={styles.charactersCountText}>{t('chat.dialog.charactersLeft')}: {charactersLeft}</Text>
+                  <Text style={styles.charactersCountText}>{t('chat.dialog.charactersLeft')}: {contentCharactersLeft}</Text>
                 </View>
               </>
             </Dialog>
