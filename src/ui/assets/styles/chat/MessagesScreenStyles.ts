@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.poppinsLight,
     marginBottom: 16,
   },
+  scrollView: {
+    marginBottom: 60,
+  },
 });
 
 export default styles;

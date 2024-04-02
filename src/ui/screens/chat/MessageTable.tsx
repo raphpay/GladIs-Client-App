@@ -1,9 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Text,
-  View
-} from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { IMessage } from '../../../business-logic/model/IMessage';
 
@@ -42,9 +39,11 @@ function MessageTable(props: MessageTableProps): React.JSX.Element {
               <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.dateSent')}</Text>
               <Text style={[styles.cell, styles.headerCell, styles.wideCell]}>{t('chat.table.userMail')}</Text>
             </View>
-            {messages.map((message, index) => (
-              <MessageRow onMessageSelection={onMessageSelection} message={message} index={index} key={message.id} />
-            ))}
+            <ScrollView style={styles.scrollView}>
+              {messages.map((message, index) => (
+                <MessageRow onMessageSelection={onMessageSelection} message={message} index={index} key={message.id} />
+              ))}
+            </ScrollView>
           </View>
         )
       }
