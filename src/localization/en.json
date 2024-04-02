@@ -222,6 +222,16 @@
       "message": "Message",
       "to": "To",
       "from": "From"
+    },
+    "singleMessageDialog": {
+      "confirmButton": "Close",
+      "cancelButton": "Delete"
+    },
+    "deleteDialog": {
+      "title": "Do you really want to delete this message ?",
+      "message": "The deletion is definitive.",
+      "confirmButton": "No",
+      "cancelButton": "Yes"
     }
   },
   "components": {

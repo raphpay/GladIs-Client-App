@@ -33,6 +33,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   // Dialog
   const [showNewMessageDialog, setShowNewMessageDialog] = useState<boolean>(false);
   const [showSingleMessageDialog, setShowSingleMessageDialog] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   // Message
   const [messageReceiver, setMessageReceiver] = useState<string>('');
   const [messageTitle, setMessageTitle] = useState<string>('');
@@ -65,6 +66,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   function resetDialogs() {
     setShowNewMessageDialog(false);
     setShowSingleMessageDialog(false);
+    setShowDeleteDialog(false);
     setMessageReceiver('');
     setMessageTitle('');
     setMessageContent('');
@@ -84,6 +86,11 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   function onMessageSelection(message: IMessage) {
     setSelectedMessage(message);
     setShowSingleMessageDialog(true);
+  }
+
+  function displayDeleteDialog() {
+    setShowSingleMessageDialog(false);
+    setShowDeleteDialog(true);
   }
 
   // Async Methods
@@ -131,6 +138,18 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
       }
+    }
+  }
+
+  async function deleteMessage() {
+    try {
+      await MessageService.getInstance().deleteMessage(selectedMessage?.id as string, token);
+      const updatedMessages = messages.filter(message => message.id !== selectedMessage?.id);
+      setMessages(updatedMessages);
+      resetDialogs();
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
@@ -200,22 +219,47 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     const linkedWord = isMessageFromCurrentUser ? t('chat.dialog.to') : t('chat.dialog.from');
     const dialogTitle = `${t('chat.dialog.message')} ${linkedWord} ${emailToDisplay}`;
 
+    // Here the cancel button show a confirmation dialog to delete the message
     return (
       <>
         {
           showSingleMessageDialog && (
             <Dialog
               title={dialogTitle}
-              isConfirmAvailable={false}
-              onConfirm={() => {}}
+              isConfirmAvailable={true}
+              confirmTitle={t('chat.singleMessageDialog.confirmButton')}
+              onConfirm={resetDialogs}
               isCancelAvailable={true}
-              onCancel={resetDialogs}
+              cancelTitle={t('chat.singleMessageDialog.cancelButton')}
+              onCancel={displayDeleteDialog}
             >
               <>
                 <Text style={styles.messageTitle}>{selectedMessage?.title}</Text>
                 <Text style={styles.messageContent}>{selectedMessage?.content}</Text>
               </>
             </Dialog>
+          )
+        }
+      </>
+    )
+  }
+
+  function DeleteDialog() {
+    // The confirm and cancel buttons are inverted
+    return (
+      <>
+        {
+          showDeleteDialog && (
+            <Dialog
+              title={t('chat.deleteDialog.title')}
+              isConfirmAvailable={true}
+              confirmTitle={t('chat.deleteDialog.cancelButton')}
+              onConfirm={deleteMessage}
+              isCancelAvailable={true}
+              cancelTitle={t('chat.deleteDialog.confirmButton')}
+              onCancel={resetDialogs}
+              description={t('chat.deleteDialog.message')}
+            />
           )
         }
       </>
@@ -253,6 +297,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
       </AppContainer>
       {NewMessageDialog()}
       {SingleMessageDialog()}
+      {DeleteDialog()}
       {ToastContent()}
     </>
   );

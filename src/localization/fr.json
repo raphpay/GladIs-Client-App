@@ -222,6 +222,16 @@
       "message": "Message",
       "to": "De",
       "from": "A"
+    },
+    "singleMessageDialog": {
+      "confirmButton": "Fermer",
+      "cancelButton": "Supprimer"
+    },
+    "deleteDialog": {
+      "title": "Etes-vous sûr de vouloir supprimer ce message ?",
+      "message": "La suppression est définitive.",
+      "confirmButton": "Non",
+      "cancelButton": "Oui"
     }
   },
   "components": {

@@ -74,6 +74,22 @@ class MessageService {
       throw error;
     }
   }
+
+  // DELETE
+  /**
+   * Deletes a message.
+   * @param messageID The ID of the message to delete.
+   * @param token The token to use for authentication.
+   * @throws An error if the request fails.
+   * @returns A promise that resolves when the message is deleted.
+   */
+  async deleteMessage(messageID: string, token: IToken | null): Promise<void> {
+    try {
+      await APIService.delete(`${this.baseRoute}/${messageID}`, token?.value as string);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default MessageService;
