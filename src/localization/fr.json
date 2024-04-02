@@ -407,7 +407,8 @@
     "api": {
       "notFound": {
         "user": "Utilisateur non trouvé",
-        "resetToken": "Clé de réinitialisation non trouvée"
+        "resetToken": "Clé de réinitialisation non trouvée",
+        "file": "Fichier non trouvé",
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
@@ -438,6 +439,9 @@
           "contentLength": "Le contenu du message ne doit pas dépasser 300 caractères",
           "senderAndReceiverSame": "Vous ne pouvez pas vous envoyer de message à vous-même"
         }
+      },
+      "internalServerError": {
+        "failedToCreateDirectory": "Echec de la création du dossier",
       }
     }
   },

@@ -407,7 +407,8 @@
     "api": {
       "notFound": {
         "user": "User not found with this id",
-        "resetToken": "Reset token not found"
+        "resetToken": "Reset token not found",
+        "file": "File not found",
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
@@ -435,6 +436,9 @@
           "contentLength": "The message should not contain more than 300 characters",
           "senderAndReceiverSame": "You can't send a message to yourself"
         }
+      },
+      "internalServerError": {
+        "failedToCreateDirectory": "Failed to create directory",
       }
     }
   },

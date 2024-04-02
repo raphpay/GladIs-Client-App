@@ -31,7 +31,6 @@ class DocumentActivityLogsService {
     try {
       await APIService.post<IDocumentActivityLog>(this.baseRoute, logInput, token?.value);
     } catch (error) {
-      console.log('Error posting log for client:', logInput.clientID, 'for doc:', logInput.documentID, error);
       throw error;
     }
   }

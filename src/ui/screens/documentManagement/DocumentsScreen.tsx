@@ -36,6 +36,7 @@ import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 import Pagination from '../../components/Pagination';
+import Toast from '../../components/Toast';
 import Tooltip from '../../components/Tooltip';
 import TooltipAction from '../../components/TooltipAction';
 
@@ -49,6 +50,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
   const [documentName, setDocumentName] = useState<string>('');
   const [selectedDocument, setSelectedDocument] = useState<IDocument>();
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -107,6 +111,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
   ];
 
+  // Sync Methods
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
   }
@@ -120,25 +125,36 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
-  async function navigateToDocument(doc: IDocument) {
-    const logInput: IDocumentActivityLogInput = {
-      action: DocumentLogAction.Visualisation,
-      actorIsAdmin: currentUser?.userType == UserType.Admin,
-      actorID: currentUser?.id as string,
-      clientID: currentClient?.id as string,
-      documentID: doc.id,
-    }
-    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
-    navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
-  }
-
-  async function addDocument() {
-    setShowDialog(true);
-  }
-
   function showDocumentDialog(item: IDocument) {
     setSelectedDocument(item);
     setShowDocumentActionDialog(true);
+  }
+
+  function addDocument() {
+    setShowDialog(true);
+  }
+
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  // Async Methods
+  async function navigateToDocument(doc: IDocument) {
+    try {
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Visualisation,
+        actorIsAdmin: currentUser?.userType == UserType.Admin,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: doc.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
+    } catch (error) {
+      console.log('Error recording log for document:', doc.id, error);
+    }
   }
 
   async function pickAFile() {
@@ -151,37 +167,45 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     } else {
       data = await FinderModule.getInstance().pickPDF();
     }
-    const file: IFile = { data, filename: filename}
-    const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
-    const logInput: IDocumentActivityLogInput = {
-      action: DocumentLogAction.Creation,
-      actorIsAdmin: true,
-      actorID: currentUser?.id as string,
-      clientID: currentClient?.id as string,
-      documentID: createdDocument.id,
-    }
-    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
-    setDocumentName('');
-    setShowDialog(false);
-    await loadDocuments();
-  }
-
-  async function download(document: IDocument) {
-    const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
-    if (cachedData === null || cachedData == undefined) {
-      let docData = await DocumentService.getInstance().download(document.id, token);
-      docData = Utils.changeMimeType(docData, 'application/pdf');
-      await CacheService.getInstance().storeValue(document.id as string, docData);
+    try {
+      const file: IFile = { data, filename: filename}
+      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
       const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Loaded,
+        action: DocumentLogAction.Creation,
         actorIsAdmin: true,
         actorID: currentUser?.id as string,
         clientID: currentClient?.id as string,
-        documentID: document.id,
+        documentID: createdDocument.id,
       }
       await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      setDocumentName('');
+      setShowDialog(false);
+      await loadDocuments();
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
     }
-    setShowDocumentActionDialog(false);
+  }
+
+  async function download(document: IDocument) {
+    try {
+      const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
+      if (cachedData === null || cachedData == undefined) {
+        let docData = await DocumentService.getInstance().download(document.id, token);
+        docData = Utils.changeMimeType(docData, 'application/pdf');
+        await CacheService.getInstance().storeValue(document.id as string, docData);
+        const logInput: IDocumentActivityLogInput = {
+          action: DocumentLogAction.Loaded,
+          actorIsAdmin: true,
+          actorID: currentUser?.id as string,
+          clientID: currentClient?.id as string,
+          documentID: document.id,
+        }
+        await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      }
+      setShowDocumentActionDialog(false);
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
+    }
   }
 
   async function approveDocument(document: IDocument) {
@@ -207,6 +231,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setIsLoading(false);
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadDocuments();
@@ -232,6 +257,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     init();
   }, [documentListCount]);
 
+  // Components
   function DocumentRow(item: IDocument) {
     return (
       <View style={styles.documentLineContainer}>
@@ -267,6 +293,23 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               title={t('documentsScreen.noDocs.title')}
               message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
               image={docIcon}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
             />
           )
         }
@@ -339,6 +382,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         onCancel={() => setShowDocumentActionDialog(false)}
         popoverActions={popoverActions}
       />
+      {ToastContent()}
     </>
   );
 }

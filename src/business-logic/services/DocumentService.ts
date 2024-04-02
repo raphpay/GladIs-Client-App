@@ -68,18 +68,12 @@ class DocumentService {
    * @throws If an error occurs while downloading the document.
    */
   async download(id: string, token: IToken | null): Promise<any> {
-    const tokenValue = token?.value as string;
-    if (tokenValue) {
-      try {
-        const url = `${this.baseRoute}/download/${id}`;
-        const data = await APIService.download(url, token?.value as string);
-        return data;
-      } catch (error) {
-        console.log('Error downloading document at id:', id, error);
-        throw error;
-      }
-    } else {
-      throw new Error('No token provided for download');
+    try {
+      const url = `${this.baseRoute}/download/${id}`;
+      const data = await APIService.download(url, token?.value as string);
+      return data;
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -95,10 +89,9 @@ class DocumentService {
   async upload(file: IFile, name: string, path: string, token: IToken | null): Promise<IDocument> {
     try {
       const params = { name, path, file };
-      const response = await APIService.post<IDocument>('documents', params, token?.value as string);
+      const response = await APIService.post<IDocument>(this.baseRoute, params, token?.value as string);
       return response as IDocument;
     } catch (error) {
-      console.log('Error uploading document', name, 'at path', path, error);
       throw error;
     }
   }
