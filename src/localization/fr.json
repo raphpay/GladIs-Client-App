@@ -368,7 +368,8 @@
           "title": "Votre compte est bloqué",
           "message": "Veuillez contacter votre fournisseur"
         }
-      }
+      },
+      "tooManyAttempts": "Too many attempts. Your provider will contact you soon"
     },
     "logout": {
       "title": "Erreur lors de la déconnexion",

@@ -6,9 +6,11 @@ import { SafeAreaView, Text } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import IToken from '../../../business-logic/model/IToken';
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import CacheService from '../../../business-logic/services/CacheService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
@@ -84,10 +86,24 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   async function login() {
     let token: IToken | undefined;
+    const loginTryCount = await CacheService.getInstance().retrieveValue(CacheKeys.loginTryCount);
+    const loginTryCountValue = loginTryCount as number;
+    if (loginTryCount && loginTryCountValue >= 5) {
+      displayToast(t('errors.login.tooManyAttempts'), true);
+      // TODO: Send email to admin
+      // TODO: See CDC
+      return;
+    }
+
     try {
       token = await AuthenticationService.getInstance().login(identifier, password);
     } catch (error) {
       const errorMessage = (error as Error).message;
+      if (loginTryCountValue) {
+        await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, loginTryCountValue + 1);
+      } else {
+        await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, 1);
+      }
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
 
