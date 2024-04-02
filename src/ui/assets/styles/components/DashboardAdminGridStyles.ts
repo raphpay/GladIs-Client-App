@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
   actionRowContainer: {
     flexDirection: 'row',
   },
+  actionScrollView: {
+    height: 100,
+    justifyContent: 'center',
+  },
   actionRow: {
     flexDirection: 'row',
     alignItems: 'center',

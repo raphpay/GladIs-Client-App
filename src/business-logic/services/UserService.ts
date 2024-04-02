@@ -3,6 +3,7 @@ import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
+import { extractValidationErrors } from '../model/ValidationError';
 import CacheKeys from '../model/enums/CacheKeys';
 
 import APIService from './APIService';
@@ -167,6 +168,24 @@ class UserService {
     } catch (error) {
       console.log('Error getting user by id:', id, error);
       throw error;
+    }
+  }
+
+  /**
+   * Retrieves a user by email.
+   * @param email - The email of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the user.
+   * @throws If an error occurs while retrieving the user.
+   */
+  async getUserByEmail(email: string, token: IToken | null): Promise<IUser> {
+    try {
+      const user = await APIService.post<IUser>(`${this.baseRoute}/byMail`, { email }, token?.value as string);
+      return user;
+    } catch (error) {
+      const errorMessage = (error as Error).message
+      const errorKeys = extractValidationErrors(errorMessage);
+      throw errorKeys;
     }
   }
 

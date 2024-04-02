@@ -200,6 +200,27 @@ class Utils {
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return `${hours}:${minutes}`;
   }
+
+  /**
+   * Handle error keys to display the correct error message.
+   * @param keys - The keys of the error messages.
+   * @returns The title of the error message to display.
+   */
+  static handleErrorKeys(keys: string[]): string {
+    let errorTitle = 'errors.api.badRequest.default';
+    if (keys.length > 0) {
+      if (keys.includes('badRequest.email.invalid')) {
+        if (keys.includes('badRequest.phoneNumber.invalid')) {
+          errorTitle = 'errors.api.badRequest.phoneAndEmail';
+        } else {
+          errorTitle = 'errors.api.badRequest.email';
+        }
+      } else if (keys.includes('badRequest.phoneNumber.invalid')) {
+        errorTitle = 'errors.api.badRequest.phoneNumber';
+      }
+    }
+    return errorTitle;
+  }
 }
 
 export default Utils;

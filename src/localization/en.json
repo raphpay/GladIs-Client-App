@@ -46,6 +46,7 @@
       "actions": {
         "title": "Actions",
         "passwordsToReset": "Passwords to reset",
+        "messages": "Messages",
         "events": "Events"
       },
       "clients": "Clients"
@@ -196,6 +197,41 @@
       "checkPassword": "Enter your current password",
       "tokenGenerated": "The reset token is: ",
       "confirmButton": "Verify"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "emptyState": {
+      "title": "No messages yet",
+      "description": "You have no messages yet. Start a conversation now."
+    },
+    "table": {
+      "title": "Object",
+      "dateSent": "Date Sent",
+      "userMail": "Contact"
+    },
+    "button": {
+      "sendMessage": "Send Message"
+    },
+    "dialog": {
+      "confirmButton": "Send",
+      "messageReceiverPlaceholder": "Contact",
+      "messageTitlePlaceholder": "Message object",
+      "messageContentPlaceholder": "Message content",
+      "charactersLeft": "Characters left",
+      "message": "Message",
+      "to": "To",
+      "from": "From"
+    },
+    "singleMessageDialog": {
+      "confirmButton": "Close",
+      "cancelButton": "Delete"
+    },
+    "deleteDialog": {
+      "title": "Do you really want to delete this message ?",
+      "message": "The deletion is definitive.",
+      "confirmButton": "No",
+      "cancelButton": "Yes"
     }
   },
   "components": {
@@ -383,14 +419,18 @@
           "missingUppercase": "The password should contain at least one uppercased letter",
           "missingDigit": "The password should contain at least one digit",
           "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
-        },
+        }
       },
       "badRequest": {
         "tokenExpired": "Token expired. Please request a new one",
         "phoneAndEmail": "Please verify the email address and the phone number",
         "email": "Please verify the email address",
         "phone": "Please verify the phone number",
-        "default": "Please verify the informations you entered"
+        "default": "Please verify the informations you entered",
+        "message": {
+          "contentLength": "The message should not contain more than 300 characters",
+          "senderAndReceiverSame": "You can't send a message to yourself"
+        }
       }
     }
   },
