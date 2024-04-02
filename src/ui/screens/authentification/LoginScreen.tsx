@@ -5,10 +5,15 @@ import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
+import IUser from '../../../business-logic/model/IUser';
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import CacheService from '../../../business-logic/services/CacheService';
+import EventService from '../../../business-logic/services/EventService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
@@ -82,26 +87,72 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     }
   }
 
-  async function login() {
-    let token: IToken | undefined;
+  async function findUser(): Promise<IUser> {
     try {
-      token = await AuthenticationService.getInstance().login(identifier, password);
+      const user = await UserService.getInstance().getUserByUsername(identifier);
+      return user;
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
+      throw error;
     }
+  }
 
-    if (token) {
-      try {
-        const user = await UserService.getInstance().getUserByID(token.user.id, token);
-        dispatch(setCurrentUser(user));
-        if (user.userType !== UserType.Admin) {
-          dispatch(setCurrentClient(user));
+  async function handleMaxLoginAttempts(count: number): Promise<boolean> {
+    let shouldContinue = true;
+    if (count >= 5) {
+      shouldContinue = false;
+      displayToast(t('errors.login.tooManyAttempts'), true);
+      if (count == 5) {
+        const attemptUser = await findUser();
+        if (attemptUser) {
+          try {
+            const event: IEventInput = {
+              name: `t(${'login.tooManyAttempts.eventName'}) ${identifier} : ${attemptUser.email}`,
+              date: Date.now(),
+              clientID: attemptUser.id ?? '0',
+            }
+            await EventService.getInstance().createMaxAttemptsEvent(event);
+            await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, count + 1);
+          } catch (error) {
+            console.log('Error sending max attempt event', error);
+          }
         }
-        dispatch(setToken(token));
+      }
+    }
+    return shouldContinue;
+  }
+
+  async function login() {
+    let token: IToken | undefined;
+    const loginTryCount = await CacheService.getInstance().retrieveValue(CacheKeys.loginTryCount);
+    const loginTryCountValue = loginTryCount as number;
+    const shouldContinue = await handleMaxLoginAttempts(loginTryCountValue);
+    if (shouldContinue) {
+      try {
+        token = await AuthenticationService.getInstance().login(identifier, password);
       } catch (error) {
         const errorMessage = (error as Error).message;
+        if (loginTryCountValue) {
+          await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, loginTryCountValue + 1);
+        } else {
+          await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, 1);
+        }
         displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+  
+      if (token) {
+        try {
+          const user = await UserService.getInstance().getUserByID(token.user.id, token);
+          dispatch(setCurrentUser(user));
+          if (user.userType !== UserType.Admin) {
+            dispatch(setCurrentClient(user));
+          }
+          dispatch(setToken(token));
+        } catch (error) {
+          const errorMessage = (error as Error).message;
+          displayToast(t(`errors.api.${errorMessage}`), true);
+        }
       }
     }
   }

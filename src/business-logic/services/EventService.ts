@@ -39,6 +39,21 @@ class EventService {
   }
 
   /**
+   * Create a new event for a login attempt.
+   * @param event - The event to create.
+   * @returns A promise that resolves to the created event.
+   * @throws If an error occurs while creating the event.
+   */
+  async createMaxAttemptsEvent(event: IEventInput): Promise<IEvent> {
+    try {
+      const newEvent = await APIService.post<IEvent>(`${this.baseRoute}/maxLogin`, event);
+      return newEvent;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Retrieves all events.
    * @param token - The authentication token.
    * @returns A promise that resolves to an array of events.
