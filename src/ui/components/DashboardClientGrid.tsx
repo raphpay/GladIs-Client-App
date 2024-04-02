@@ -46,12 +46,14 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
       dispatch(setModule(module));
-      if (module.name == 'documentManagement') {
+      if (module.name === 'documentManagement') {
         navigation.navigate(NavigationRoutes.DocumentManagementScreen);
-      } else if (module.name == 'tracking') {
+      } else if (module.name === 'tracking') {
         navigation.navigate(NavigationRoutes.TrackingScreen);
-      } else if (module.name == 'reminders') {
+      } else if (module.name === 'reminders') {
         navigation.navigate(NavigationRoutes.RemindersScreen);
+      } else if (module.name === 'chat') {
+        navigation.navigate(NavigationRoutes.MessagesScreen);
       }
     } else {
       setShowErrorDialog && setShowErrorDialog(true);
