@@ -190,6 +190,24 @@ class UserService {
   }
 
   /**
+   * Retrieves a user by username.
+   * @param username - The username of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the user.
+   * @throws If an error occurs while retrieving the user.
+   */
+  async getUserByUsername(username: string): Promise<IUser> {
+    try {
+      const user = await APIService.post<IUser>(`${this.baseRoute}/byUsername`, { username });
+      return user;
+    } catch (error) {
+      const errorMessage = (error as Error).message
+      const errorKeys = extractValidationErrors(errorMessage);
+      throw errorKeys;
+    }
+  }
+
+  /**
    * Retrieves the modules of a user.
    * @param id - The ID of the user.
    * @param token - The authentication token.

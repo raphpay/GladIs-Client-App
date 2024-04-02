@@ -5,7 +5,10 @@
     "password": "Mot de passe",
     "login": "Se connecter",
     "signUp": "Pas de compte ? Demandez un devis.",
-    "forgottenPassword": "Mot de passe oublié ?"
+    "forgottenPassword": "Mot de passe oublié ?",
+    "tooManyAttempts": {
+      "eventName": "Trop de tentatives pour",
+    }
   },
   "quotation": {
     "title": "Demande de devis",
@@ -369,7 +372,7 @@
           "message": "Veuillez contacter votre fournisseur"
         }
       },
-      "tooManyAttempts": "Too many attempts. Your provider will contact you soon"
+      "tooManyAttempts": "Trop de tentatives de connexion. Votre fournisseur a été notifié."
     },
     "logout": {
       "title": "Erreur lors de la déconnexion",

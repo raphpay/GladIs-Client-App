@@ -5,7 +5,10 @@
     "password": "Password",
     "login": "Log in",
     "signUp": "No account yet? Ask for a quotation.",
-    "forgottenPassword": "Forgot password?"
+    "forgottenPassword": "Forgot password?",
+    "tooManyAttempts": {
+      "eventName": "Too many login attempts for",
+    }
   },
   "quotation": {
     "title": "Request for quotation",
