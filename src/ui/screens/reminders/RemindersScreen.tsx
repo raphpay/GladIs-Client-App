@@ -56,6 +56,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     init();
   }, []);
   
+  // TODO: Add translations
   return (
     <>
       <AppContainer
