@@ -201,9 +201,7 @@ class UserService {
       const user = await APIService.post<IUser>(`${this.baseRoute}/byUsername`, { username });
       return user;
     } catch (error) {
-      const errorMessage = (error as Error).message
-      const errorKeys = extractValidationErrors(errorMessage);
-      throw errorKeys;
+      throw error;
     }
   }
 

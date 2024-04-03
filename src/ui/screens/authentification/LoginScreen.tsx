@@ -11,7 +11,6 @@ import IUser from '../../../business-logic/model/IUser';
 import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import CacheService from '../../../business-logic/services/CacheService';
 import EventService from '../../../business-logic/services/EventService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
@@ -20,6 +19,7 @@ import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
 import { setCurrentClient, setCurrentUser } from '../../../business-logic/store/slices/userReducer';
 
+import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import AppIcon from '../../components/AppIcon';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
@@ -28,6 +28,10 @@ import TextButton from '../../components/TextButton';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
+
+interface ILoginTries {
+  [key: string]: number;
+}
 
 type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
 
@@ -92,31 +96,37 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const user = await UserService.getInstance().getUserByUsername(identifier);
       return user;
     } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(t(`errors.api.${errorMessage}`), true);
       throw error;
     }
   }
 
-  async function handleMaxLoginAttempts(count: number): Promise<boolean> {
+  async function setLoginAttemptToUser(count: number) {
+    const tries = await CacheService.getInstance().retrieveValue(CacheKeys.loginTries);
+    const loginTries = tries as ILoginTries;
+    const toStore = { ...loginTries, [identifier]: count };
+    await CacheService.getInstance().storeValue(CacheKeys.loginTries, toStore);
+  }
+
+  async function handleMaxLoginAttempts(tries: ILoginTries): Promise<boolean> {
     let shouldContinue = true;
+    let count = tries ? tries[identifier] : 0;
     if (count >= 5) {
       shouldContinue = false;
       displayToast(t('errors.login.tooManyAttempts'), true);
       if (count == 5) {
-        const attemptUser = await findUser();
-        if (attemptUser) {
-          try {
-            const event: IEventInput = {
-              name: `t(${'login.tooManyAttempts.eventName'}) ${identifier} : ${attemptUser.email}`,
-              date: Date.now(),
-              clientID: attemptUser.id ?? '0',
-            }
-            await EventService.getInstance().createMaxAttemptsEvent(event);
-            await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, count + 1);
-          } catch (error) {
-            console.log('Error sending max attempt event', error);
+        try {
+          const attemptUser = await findUser();
+          const event: IEventInput = {
+            name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${attemptUser.email}`,
+            date: Date.now(),
+            clientID: attemptUser.id ?? '0',
           }
+          await EventService.getInstance().createMaxAttemptsEvent(event);
+          await setLoginAttemptToUser(count + 1);
+        } catch (error) {
+          const errorMessage = (error as Error).message;
+          await setLoginAttemptToUser(count + 1);
+          displayToast(t(`errors.api.${errorMessage}`), true);
         }
       }
     }
@@ -125,22 +135,22 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   async function login() {
     let token: IToken | undefined;
-    const loginTryCount = await CacheService.getInstance().retrieveValue(CacheKeys.loginTryCount);
-    const loginTryCountValue = loginTryCount as number;
-    const shouldContinue = await handleMaxLoginAttempts(loginTryCountValue);
+    const loginTries = await CacheService.getInstance().retrieveValue(CacheKeys.loginTries);
+    const loginTriesValue = loginTries as ILoginTries;
+    const shouldContinue = await handleMaxLoginAttempts(loginTriesValue);
     if (shouldContinue) {
       try {
         token = await AuthenticationService.getInstance().login(identifier, password);
       } catch (error) {
         const errorMessage = (error as Error).message;
-        if (loginTryCountValue) {
-          await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, loginTryCountValue + 1);
+        if (loginTriesValue) {
+          await setLoginAttemptToUser(loginTriesValue[identifier] + 1);
         } else {
-          await CacheService.getInstance().storeValue(CacheKeys.loginTryCount, 1);
+          await setLoginAttemptToUser(1);
         }
         displayToast(t(`errors.api.${errorMessage}`), true);
       }
-  
+
       if (token) {
         try {
           const user = await UserService.getInstance().getUserByID(token.user.id, token);
@@ -149,6 +159,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
             dispatch(setCurrentClient(user));
           }
           dispatch(setToken(token));
+          await setLoginAttemptToUser(0);
         } catch (error) {
           const errorMessage = (error as Error).message;
           displayToast(t(`errors.api.${errorMessage}`), true);
@@ -178,6 +189,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       try {
         await PasswordResetService.getInstance().resetPassword(token, newPassword);
         resetDialogs();
+        await CacheService.getInstance().clearStorage();
         displayToast(t('components.toast.passwordReset.success'));
       } catch (error) {
         const errorMessage = (error as Error).message;
