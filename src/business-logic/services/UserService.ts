@@ -244,7 +244,6 @@ class UserService {
       const tabs = await APIService.get<ITechnicalDocTab[]>(`${this.baseRoute}/${id}/technicalDocumentationTabs`, usedToken?.value);
       return tabs;
     } catch (error) {
-      console.log('Error getting user\'s technical documentation tabs:', id, error);
       throw error;
     }
   }
