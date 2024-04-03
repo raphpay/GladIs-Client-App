@@ -117,7 +117,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         try {
           const attemptUser = await findUser();
           const event: IEventInput = {
-            name: `t(${'login.tooManyAttempts.eventName'}) ${identifier} : ${attemptUser.email}`,
+            name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${attemptUser.email}`,
             date: Date.now(),
             clientID: attemptUser.id ?? '0',
           }
