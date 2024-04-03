@@ -64,6 +64,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     technicalTab.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
@@ -86,6 +87,15 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     });
   }
 
+  function getUser() {
+    if (currentUser) {
+      setIsAdmin(currentUser.userType == UserType.Admin);
+    } else {
+      setIsAdmin(false);
+    }
+  }
+
+  // Async Methods
   async function addTab() {
     const newTab: ITechnicalDocTab = {
       name: newTabName,
@@ -96,14 +106,6 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     setShowDialog(false);
   }
 
-  function getUser() {
-    if (currentUser) {
-      setIsAdmin(currentUser.userType == UserType.Admin);
-    } else {
-      setIsAdmin(false);
-    }
-  }
-
   async function getTabs() {
     const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
     const areaTabs = tabs.filter(tab => {
@@ -112,6 +114,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     setTechnicalTabs(areaTabs);
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     getUser();
     async function init() {
@@ -120,6 +123,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     init();
   }, []);
 
+  // Components
   function TabGridItem(item: ITechnicalDocTab) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
