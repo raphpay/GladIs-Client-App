@@ -189,6 +189,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       try {
         await PasswordResetService.getInstance().resetPassword(token, newPassword);
         resetDialogs();
+        await CacheService.getInstance().clearStorage();
         displayToast(t('components.toast.passwordReset.success'));
       } catch (error) {
         const errorMessage = (error as Error).message;
