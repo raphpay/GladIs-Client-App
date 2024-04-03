@@ -28,10 +28,10 @@ import { IClientCreationStack } from '../../../navigation/Routes';
 
 import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
-import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
+import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
@@ -51,14 +51,15 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [sales, setSales] = useState<string>('');
   // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
-  const [errorTitle, setErrorTitle] = useState<string>('');
-  const [errorDescription, setErrorDescription] = useState<string>('');
   // Potential employee
   const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
   // Logo
   const [imageData, setImageData] = useState<string>('');
   const [logoURI, setLogoURI] = useState<string>('');
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { navigation } = props;
   const { pendingUser } = props.route.params;
@@ -69,32 +70,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
   const { t } = useTranslation();
 
-  async function submit() {
-    if (pendingUser == null) {
-      createPendingUser();
-    } else {
-      convertPendingUser();
-    }
-  }
-
-  function showError(errorKeys: string []) {
-    if (errorKeys.length > 0) {
-      if (errorKeys.includes('email.invalid')) {
-        if (errorKeys.includes('phoneNumber.invalid')) {
-          setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-          setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-        } else {
-          setErrorTitle(t('errors.signup.email.title'));
-          setErrorDescription(t('errors.signup.email.description'));
-        }
-      } else if (errorKeys.includes('phoneNumber.invalid')) {
-        setErrorTitle(t('errors.signup.phoneNumber.title'));
-        setErrorDescription(t('errors.signup.phoneNumber.description'));
-      }
-      setShowErrorDialog(true);
-    }
-  }
-
+  // Sync Methods
   function retrieveSelectedModules(): IModule[] {
     const selectedModules: IModule[] = [];
     for (const id of selectedModulesIDs) {
@@ -102,83 +78,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       selectedModules.push(module);
     }
     return selectedModules;
-  }
-
-  async function createPendingUser() {
-    const newPendingUser: IPendingUser = {
-      firstName,
-      lastName,
-      phoneNumber,
-      companyName,
-      email,
-      products,
-      numberOfEmployees: parseInt(employees),
-      numberOfUsers: parseInt(numberOfUsers),
-      salesAmount: parseFloat(sales),
-      status: PendingUserStatus.pending
-    };
-    const selectedModules = retrieveSelectedModules();
-    // TODO: remove thens in the application
-    try {
-      const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
-      await createEmployees(createdUser.id as string);
-      await uploadLogo();
-      navigateBack();
-    } catch (error) {
-      const errorKeys: string[] = error as string[];
-      showError(errorKeys);
-    }
-  }
-
-  async function createEmployees(pendingUserID: string) {
-    // Update all employees with pendingUserID
-    const updatedPotentialEmployees = potentialEmployees.map(employee => {
-      return {
-        ...employee,
-        pendingUserID,
-      };
-    });
-    for (const employee of updatedPotentialEmployees) {
-      if (employee.pendingUserID !== null) {
-        try {
-          await PotentialEmployeeService.getInstance().create(employee)
-        } catch (error) {
-          console.log('Error creating employee', employee, error);
-        }
-      }
-    }
-  }
-
-  async function convertEmployeesToUser(): Promise<IUser[]> {
-    const newUsers: IUser[] = [];
-    for (const employee of potentialEmployees) {
-      const newUserEmployee = await PotentialEmployeeService.getInstance().convertToUser(employee.id as string, token);
-      newUsers.push(newUserEmployee);
-    }
-    return newUsers;
-  }
-
-  async function convertPendingUser() {
-    const id = pendingUser?.id as string;
-    const castedToken = token as IToken;
-    try {
-      // 1 Convert manager
-      const createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
-      const selectedModules = retrieveSelectedModules();
-      await UserService.getInstance().addModules(createdUser.id as string, selectedModules, castedToken)
-      // 2 Convert employees
-      const createdEmployees = await convertEmployeesToUser();
-      // 3 Add manager to employees
-      for (const employee of createdEmployees) {
-        await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
-      }
-      await uploadLogo();
-      dispatch(setClientListCount(clientListCount + 1));
-      navigateBack();
-    } catch (error) {
-      const errorKeys = error as string[];
-      showError(errorKeys);
-    }
   }
 
   function toggleCheckbox(module: IModule) {
@@ -220,6 +119,124 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     navigation.goBack();
   }
 
+  function isFormFilled() {
+    let isFilled = false;
+    if (products && employees && numberOfUsers && sales) {
+      isFilled = firstName.length > 0 &&
+      lastName.length > 0 &&
+      phoneNumber.length > 0 &&
+      companyName.length > 0 &&
+      email.length > 0 &&
+      products.length > 0 &&
+      employees.length > 0 &&
+      Utils.isANumber(employees) &&
+      numberOfUsers.length > 0 &&
+      Utils.isANumber(numberOfUsers) &&
+      parseInt(employees) >= parseInt(numberOfUsers) &&
+      sales.length > 0 &&
+      Utils.isANumber(sales);
+    }
+    return isFilled;
+  }
+
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  // Async Methods
+  async function submit() {
+    if (pendingUser == null) {
+      createPendingUser();
+    } else {
+      convertPendingUser();
+    }
+  }
+
+  async function createPendingUser() {
+    const newPendingUser: IPendingUser = {
+      firstName,
+      lastName,
+      phoneNumber,
+      companyName,
+      email,
+      products,
+      numberOfEmployees: parseInt(employees),
+      numberOfUsers: parseInt(numberOfUsers),
+      salesAmount: parseFloat(sales),
+      status: PendingUserStatus.pending
+    };
+    const selectedModules = retrieveSelectedModules();
+    try {
+      const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+      await createEmployees(createdUser.id as string);
+      await uploadLogo();
+      navigateBack();
+    } catch (error) {
+      const errorKeys: string[] = error as string[];
+      const errorTitle = Utils.handleErrorKeys(errorKeys);
+      displayToast(errorTitle, true)
+    }
+  }
+
+  async function createEmployees(pendingUserID: string) {
+    // Update all employees with pendingUserID
+    const updatedPotentialEmployees = potentialEmployees.map(employee => {
+      return {
+        ...employee,
+        pendingUserID,
+      };
+    });
+    for (const employee of updatedPotentialEmployees) {
+      if (employee.pendingUserID !== null) {
+        try {
+          await PotentialEmployeeService.getInstance().create(employee)
+        } catch (error) {
+          console.log('Error creating employee', employee, error);
+        }
+      }
+    }
+  }
+
+  async function convertEmployeesToUser(): Promise<IUser[]> {
+    const newUsers: IUser[] = [];
+    for (const employee of potentialEmployees) {
+      try {
+        const newUserEmployee = await PotentialEmployeeService.getInstance().convertToUser(employee.id as string, token);
+        newUsers.push(newUserEmployee);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(errorMessage, true);
+      }
+    }
+    return newUsers;
+  }
+
+  async function convertPendingUser() {
+    const id = pendingUser?.id as string;
+    const castedToken = token as IToken;
+    try {
+      // 1 Convert manager
+      const createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
+      const selectedModules = retrieveSelectedModules();
+      await UserService.getInstance().addModules(createdUser.id as string, selectedModules, castedToken)
+      // 2 Convert employees
+      const createdEmployees = await convertEmployeesToUser();
+      // 3 Add manager to employees
+      for (const employee of createdEmployees) {
+        await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
+      }
+      await uploadLogo();
+      dispatch(setClientListCount(clientListCount + 1));
+      navigateBack();
+    } catch (error) {
+      const errorKeys = error as string[];
+      const errorTitle = Utils.handleErrorKeys(errorKeys);
+      displayToast(errorTitle, true);
+    }
+  }
+
   async function addLogo() {
     if (Platform.OS === PlatformName.Mac) {
       const data = await FinderModule.getInstance().pickImage();
@@ -242,30 +259,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       }
       await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
     }
-  }
-
-  function isANumber(value: string) {
-    return !isNaN(Number(value));
-  }
-
-  function isFormFilled() {
-    let isFilled = false;
-    if (products && employees && numberOfUsers && sales) {
-      isFilled = firstName.length > 0 &&
-      lastName.length > 0 &&
-      phoneNumber.length > 0 &&
-      companyName.length > 0 &&
-      email.length > 0 &&
-      products.length > 0 &&
-      employees.length > 0 &&
-      isANumber(employees) &&
-      numberOfUsers.length > 0 &&
-      isANumber(numberOfUsers) &&
-      parseInt(employees) >= parseInt(numberOfUsers) &&
-      sales.length > 0 &&
-      isANumber(sales);
-    }
-    return isFilled;
   }
   
   async function loadModules() {
@@ -308,6 +301,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     setDefaultValues();
     async function init() {
@@ -318,23 +312,28 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     init();
   }, []);
 
+  // Components
   function PotentialEmployeeGridItem(item: IPotentialEmployee, index: number) {
     return (
       <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
     )
   }
 
-  function errorDialog() {
+  function ToastContent() {
     return (
-      showErrorDialog && (
-        <ErrorDialog
-          title={errorTitle}
-          description={errorDescription}
-          cancelTitle={t('errors.modules.cancelButton')}
-          onCancel={() => setShowErrorDialog(false)}
-        />
-      )
-    );
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
   }
 
   return (
@@ -361,37 +360,31 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             value={firstName}
             onValueChange={setFirstName}
             placeholder={t('quotation.firstName')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <GladisTextInput
             value={lastName}
             onValueChange={setLastName}
             placeholder={t('quotation.lastName')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <GladisTextInput
             value={phoneNumber}
             onValueChange={setPhoneNumber}
             placeholder={t('quotation.phone')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <GladisTextInput
             value={companyName}
             onValueChange={setCompanyName}
             placeholder={t('quotation.companyName')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <GladisTextInput
             value={email}
             onValueChange={setEmail}
             placeholder={t('quotation.email')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <GladisTextInput
             value={products}
             onValueChange={setProducts}
             placeholder={t('quotation.products')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
           {modules.map((module) => (
@@ -406,19 +399,16 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
             value={employees}
             onValueChange={setEmployees}
             placeholder={t('quotation.employees')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <GladisTextInput
             value={numberOfUsers}
             onValueChange={setNumberOfUsers}
             placeholder={t('quotation.users')} showTitle={true}
-            editable={!showErrorDialog}
           />
           <GladisTextInput
             value={sales}
             onValueChange={setSales}
             placeholder={t('quotation.capital')} showTitle={true}
-            editable={!showErrorDialog}
           />
           {
             pendingUser == null && (
@@ -454,7 +444,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
           setPotentialEmployees={setPotentialEmployees}
         />
       }
-      {errorDialog()}
+      {ToastContent()}
     </>
   );
 }

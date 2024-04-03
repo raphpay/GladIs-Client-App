@@ -43,10 +43,9 @@ class PotentialEmployeeService {
    */
   async convertToUser(id: string, token: IToken | null): Promise<IUser> {
     try {
-      const createdUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, null, token.value as string);
+      const createdUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, null, token?.value as string);
       return createdUser;
     } catch (error) {
-      console.log('Error converting potential employee to user:', id);
       throw error;
     }
   }

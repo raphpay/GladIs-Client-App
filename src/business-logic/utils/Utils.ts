@@ -221,6 +221,11 @@ class Utils {
     }
     return errorTitle;
   }
+
+  // TODO: Add documentation
+  isANumber(value: string): boolean {
+    return !isNaN(Number(value));
+  } 
 }
 
 export default Utils;
