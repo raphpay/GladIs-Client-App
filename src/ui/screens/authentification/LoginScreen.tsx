@@ -46,6 +46,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [resetEmail, setResetEmail] = useState<string>('');
   const [token, onTokenChange] = useState<string>('');
   const [newPassword, onNewPasswordChange] = useState<string>('');
+  // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);

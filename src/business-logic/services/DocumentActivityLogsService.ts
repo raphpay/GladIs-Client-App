@@ -46,7 +46,6 @@ class DocumentActivityLogsService {
       const logs = await APIService.get<IDocumentActivityLog[]>(`${this.baseRoute}/${clientID}`, token?.value);
       return logs;
     } catch (error) {
-      console.log('Error getting logs for client:', clientID, error);
       throw error;
     }
   }

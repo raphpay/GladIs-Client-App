@@ -63,6 +63,7 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
     area.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
@@ -75,6 +76,7 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
     navigation.navigate(NavigationRoutes.TechnicalDocAreaScreen, { area: item })
   }
 
+  // Components
   function AreaGridItem(item: IArea) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>

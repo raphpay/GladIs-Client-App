@@ -435,7 +435,9 @@
         "message": {
           "contentLength": "The message should not contain more than 300 characters",
           "senderAndReceiverSame": "You can't send a message to yourself"
-        }
+        },
+        "page": "Missing page number",
+        "perPage": "Missing per page number"
       },
       "internalServerError": {
         "failedToCreateDirectory": "Failed to create directory",

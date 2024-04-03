@@ -438,7 +438,9 @@
         "message": {
           "contentLength": "Le contenu du message ne doit pas dépasser 300 caractères",
           "senderAndReceiverSame": "Vous ne pouvez pas vous envoyer de message à vous-même"
-        }
+        },
+        "page": "Numéro de page manquant",
+        "perPage": "Nombre d'éléments par page manquant"
       },
       "internalServerError": {
         "failedToCreateDirectory": "Echec de la création du dossier",
