@@ -222,7 +222,11 @@ class Utils {
     return errorTitle;
   }
 
-  // TODO: Add documentation
+  /**
+   * Checks if a value is a valid number.
+   * @param value - The value to check.
+   * @returns `true` if the value is a valid number, `false` otherwise.
+   */
   isANumber(value: string): boolean {
     return !isNaN(Number(value));
   } 
