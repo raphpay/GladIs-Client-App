@@ -7,6 +7,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import { IMessage, IMessageInput, IUserID } from '../../../business-logic/model/IMessage';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../business-logic/model/enums/UserType';
 import MessageService from '../../../business-logic/services/MessageService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -47,7 +48,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
 
   const { t } = useTranslation();
 
@@ -105,12 +106,21 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
 
   // Async Methods
   async function loadMessages() {
-    if (currentUser) {
+    if (currentClient) {
       try {
-        const messages = await MessageService.getInstance().getMessagesForUser(currentUser.id as string, token);
+        const messages = await MessageService.getInstance().getMessagesForUser(currentClient.id as string, token);
         setMessages(messages);
       } catch (error) {
         console.error('Error loading messages:', error);
+      }
+    } else {
+      if (currentUser?.userType == UserType.Admin) {
+        try {
+          const messages = await MessageService.getInstance().getAllMessages(token);
+          setMessages(messages);
+        } catch (error) {
+          console.error('Error loading messages:', error);
+        }
       }
     }
   }

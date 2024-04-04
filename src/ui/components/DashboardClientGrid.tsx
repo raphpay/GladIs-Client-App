@@ -1,10 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Text,
-  TouchableOpacity
-} from 'react-native';
 
 import IModule from '../../business-logic/model/IModule';
 import IToken from '../../business-logic/model/IToken';
@@ -17,8 +13,7 @@ import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
 import Grid from './Grid';
-
-import styles from '../assets/styles/components/DashboardClientGridStyles';
+import GridModuleItem from './GridModuleItem';
 
 type DashboardClientGridProps = {
   searchText: string;
@@ -32,9 +27,8 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
   const clipboardIcon = require('../assets/images/list.clipboard.png');
 
-  const navigation = useNavigation();
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const modulesFiltered = modules.filter(module =>
     module.name.toLowerCase().includes(searchText?.toLowerCase()),
@@ -42,6 +36,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const dispatch = useAppDispatch();
 
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
@@ -58,14 +53,6 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
     } else {
       setShowErrorDialog && setShowErrorDialog(true);
     }
-  }
-
-  function GridModuleItem(module: IModule) {
-    return (
-      <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
-        <Text style={styles.moduleText}>{t(`modules.${module.name}`)}</Text>
-      </TouchableOpacity>
-    )
   }
 
   async function loadModules() {
@@ -105,7 +92,12 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
       ) : (
         <Grid
           data={modulesFiltered}
-          renderItem={(renderItem) => GridModuleItem(renderItem.item)}
+          renderItem={(renderItem) => (
+            <GridModuleItem
+              module={renderItem.item}
+              onPress={navigateToModule}
+            />
+          )}
         />
       )
     }
