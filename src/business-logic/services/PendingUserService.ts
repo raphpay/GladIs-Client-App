@@ -165,7 +165,6 @@ class PendingUserService {
       const id = pendingUser.id as string;
       await APIService.put(`${this.baseRoute}/${id}/status`, { "type": status }, token?.value);
     } catch (error) {
-      console.log('Error updating pending user status', pendingUser, status, error);
       throw error;
     }
   }
@@ -181,7 +180,6 @@ class PendingUserService {
     try {
       await APIService.delete(`${this.baseRoute}/${id}`, token?.value);
     } catch (error) {
-      console.log('Error deleting pending user', id, error);
       throw error;
     }
   }

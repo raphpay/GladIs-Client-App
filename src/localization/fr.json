@@ -409,7 +409,8 @@
         "user": "Utilisateur non trouvé",
         "resetToken": "Clé de réinitialisation non trouvée",
         "file": "Fichier non trouvé",
-        "employee": "Employé non trouvé"
+        "employee": "Employé non trouvé",
+        "pendingUser": "Utilisateur en attente non trouvé",
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",

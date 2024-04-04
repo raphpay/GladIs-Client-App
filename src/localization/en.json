@@ -409,7 +409,8 @@
         "user": "User not found with this id",
         "resetToken": "Reset token not found",
         "file": "File not found",
-        "employee": "Employee not found"
+        "employee": "Employee not found",
+        "pendingUser": "Pending user not found",
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
