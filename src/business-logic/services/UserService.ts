@@ -78,7 +78,6 @@ class UserService {
       try {
         await APIService.post(`${this.baseRoute}/${id}/modules/${moduleID}`, null, token?.value as string)
       } catch (error) {
-        console.log('Error adding module', moduleID, 'to user', id, error);
         throw error;
       }
     }
@@ -213,15 +212,9 @@ class UserService {
    */
   async getUsersModules(id: string | undefined, token: IToken | null): Promise<IModule[]> {
     try {
-      let usedToken = token;
-      if (!usedToken) {
-        const cachedToken = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-        usedToken = cachedToken as IToken;
-      }
-      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, usedToken?.value);
+      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, token?.value);
       return modules;
     } catch (error) {
-      console.log('Error getting user\'s modules:', id, error);
       throw error;
     }
   }

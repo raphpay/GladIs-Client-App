@@ -411,6 +411,7 @@
         "file": "File not found",
         "employee": "Employee not found",
         "pendingUser": "Pending user not found",
+        "module": "Module not found",
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
@@ -441,7 +442,9 @@
         "page": "Missing page number",
         "perPage": "Missing per page number",
         "emailAlreadyExists": "This email already exists",
-        "managerAlreadySet": "A manager is already set for this employee"
+        "managerAlreadySet": "A manager is already set for this employee",
+        "company": "A company name is required",
+        "password": "The password should not be empty",
       },
       "internalServerError": {
         "failedToCreateDirectory": "Failed to create directory",

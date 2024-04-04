@@ -411,6 +411,7 @@
         "file": "Fichier non trouvé",
         "employee": "Employé non trouvé",
         "pendingUser": "Utilisateur en attente non trouvé",
+        "module": "Module non trouvé",
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
@@ -445,6 +446,8 @@
         "perPage": "Nombre d'éléments par page manquant",
         "emailAlreadyExists": "Cet email est déjà utilisé",
         "managerAlreadySet": "Un manager est déjà défini pour cet employé",
+        "company": "Un nom d'entreprise est requis",
+        "password": "Le mot de passe ne doit pas être vide",
       },
       "internalServerError": {
         "failedToCreateDirectory": "Echec de la création du dossier",
