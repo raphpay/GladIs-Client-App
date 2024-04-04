@@ -42,6 +42,21 @@ class MessageService {
 
   // READ
   /**
+   * Gets all messages.
+   * @param token The token to use for authentication.
+   * @returns A promise that resolves to an array of messages.
+   * @throws An error if the request fails.
+   */
+  async getAllMessages(token: IToken | null) : Promise<IMessage[]> {
+    try {
+      const messages = await APIService.get<IMessage[]>(this.baseRoute, token?.value as string);
+      return messages;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Gets all received messages for a user.
    * @param userID The ID of the user to get messages for.
    * @param token The token to use for authentication.
