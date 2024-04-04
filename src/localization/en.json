@@ -415,7 +415,8 @@
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
-        "access": "You don't have access to this route"
+        "access": "You don't have access to this route",
+        "wrongUser": "You can't access another user's data"
       },
       "unauthorized": {
         "invalidCurrentPassword": "Invalid current password",
@@ -449,6 +450,11 @@
       "internalServerError": {
         "failedToCreateDirectory": "Failed to create directory",
       }
+    }
+  },
+  "api": {
+    "success": {
+      "passwordChanged": "Password successfully changed",
     }
   },
   "legal": {

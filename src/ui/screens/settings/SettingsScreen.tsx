@@ -16,9 +16,9 @@ import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
-import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
+import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
@@ -42,8 +42,10 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const [newPassword, setNewPassword] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState<boolean>(false);
-  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
-
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const settingsActions: ISettingsAction[] = [
     {
@@ -66,6 +68,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     },
   ];
 
+  // Sync Methods
   function showModifyPasswordDialog() {
     setShowDialog(true);
   }
@@ -76,26 +79,6 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
   function navigateBack() {
     navigation.goBack()
-  }
-
-  async function submitPasswordChange() {
-    if (oldPassword.length !== 0 && newPassword.length !== 0) {
-      try {
-        await UserService.getInstance().changePassword(oldPassword, newPassword);
-        setShowDialog(false);
-      } catch (error) {
-        console.log('Error changing password', error);
-      }
-    }
-  }
-
-  async function logout() {
-    try {
-      await AuthenticationService.getInstance().logout(token);
-      removeAllReduxStates();
-    } catch (error) {
-      setShowErrorDialog(true);
-    }
   }
 
   function removeAllReduxStates() {
@@ -110,6 +93,37 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     dispatch(removeCurrentClient());
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  // Async Methods
+  async function submitPasswordChange() {
+    if (oldPassword.length !== 0 && newPassword.length !== 0) {
+      try {
+        await UserService.getInstance().changePassword(currentUser?.id as string, oldPassword, newPassword, token);
+        setShowDialog(false);
+        displayToast(t('api.success.passwordChanged'), false);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(errorMessage, true);
+      }
+    }
+  }
+
+  async function logout() {
+    try {
+      await AuthenticationService.getInstance().logout(token);
+      removeAllReduxStates();
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+    }
+  }
+
+  // Components
   function additionalMentions() {
     // TODO: Add app version number to API
     return (
@@ -179,23 +193,6 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     )
   }
 
-  function errorDialog() {
-    return (
-      <>
-        {
-          showErrorDialog && (
-            <ErrorDialog
-              title={t('errors.logout.title')}
-              description={t('errors.logout.message')}
-              cancelTitle={t('errors.modules.cancelButton')}
-              onCancel={() => setShowErrorDialog(false)}
-            />
-          )
-        }
-      </>
-    )
-  }
-
   function SettingsActionGridItem(item: ISettingsAction) {
     return (
       <TouchableOpacity
@@ -206,6 +203,23 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
         <Text style={item.isActionDisabled ? styles.text : styles.actionText}>{item.title}</Text>
         <View style={styles.separator} />
       </TouchableOpacity>
+    )
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
     )
   }
 
@@ -226,7 +240,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       </AppContainer>
       {dialogContent()}
       {logoutDialog()}
-      {errorDialog()}
+      {ToastContent()}
     </>
   );
 }

@@ -415,7 +415,8 @@
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
-        "access": "Vous n'avez pas les droits pour accéder à cette page"
+        "access": "Vous n'avez pas les droits pour accéder à cette page",
+        "wrongUser": "Vous n'êtes pas autorisé à accéder aux informations d'un autre utilisateur",
       },
       "unauthorized": {
         "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
@@ -452,6 +453,11 @@
       "internalServerError": {
         "failedToCreateDirectory": "Echec de la création du dossier",
       }
+    }
+  },
+  "api": {
+    "success": {
+      "passwordChanged": "Mot de passe modifié avec succès",
     }
   },
   "legal": {
