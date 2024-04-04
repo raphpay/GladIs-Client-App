@@ -72,6 +72,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     }
   ]
 
+  // Sync Methods
   function navigateToDashboard() {
     navigation.navigate(NavigationRoutes.DashboardScreen)
   }
@@ -94,6 +95,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     });
   }
 
+  // Components
   function ProcessusGridItem(item: IProcessItem) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>

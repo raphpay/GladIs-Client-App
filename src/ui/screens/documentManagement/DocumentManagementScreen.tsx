@@ -53,8 +53,9 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
       title: t('dashboard.title'),
       onPress: () => navigateBack()
     }
-  ]
+  ];
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
@@ -67,6 +68,7 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
     }
   }
 
+  // Components
   function SubCategoryGridItem(item: ISubCategory) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>

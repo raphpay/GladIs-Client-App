@@ -17,6 +17,7 @@ import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid';
 import Pagination from '../../components/Pagination';
+import Toast from '../../components/Toast';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/tracking/TrackingScreenStyles';
@@ -28,6 +29,10 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
   
   const { navigation } = props;
   
@@ -49,30 +54,75 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
     }
   ];
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
 
-  useEffect(() => {
-    async function init() {
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  // Async Methods
+  async function loadPaginatedLogs() {
+    try {
       setIsLoading(true);
       const logs = await DocumentActivityLogsService.getInstance().getPaginatedLogsForClient(currentClient?.id, token, currentPage);
       setLogs(logs);
       setIsLoading(false);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+    }
+  }
+
+  async function loadLogsForClient() {
+    try {
+      const totalLogs = await DocumentActivityLogsService.getInstance().getLogsForClient(currentClient?.id, token);
+      setTotalPages(Math.ceil(totalLogs.length / 5));
+      const initialLogsToShow = totalLogs.slice(0, 5);
+      setLogs(initialLogsToShow);
+      setIsLoading(false);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+    }
+  }
+
+  // Lifecycle Methods
+  useEffect(() => {
+    async function init() {
+      await loadPaginatedLogs(); 
     }
     init();
   }, [currentPage]);
 
   useEffect(() => {
     async function init() {
-      const totalLogs = await DocumentActivityLogsService.getInstance().getLogsForClient(currentClient?.id, token);
-      setTotalPages(Math.ceil(totalLogs.length / 5));
-      const initialLogsToShow = totalLogs.slice(0, 5);
-      setLogs(initialLogsToShow);
-      setIsLoading(false);
+      await loadLogsForClient();
     }
     init();
   }, []);
+
+  // Components
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
 
   function LogGridItem(item: IDocumentActivityLog) {
     const actorName = item.actorIsAdmin ? 'MD Consulting' : item.actorUsername;
@@ -122,33 +172,36 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   }
 
   return (
-    <AppContainer
-      mainTitle={t('modules.tracking')}
-      searchText={searchText}
-      setSearchText={setSearchText}
-      showBackButton={true}
-      showSearchText={true}
-      showSettings={true}
-      navigateBack={navigateBack}
-      navigationHistoryItems={navigationHistoryItems}
-      additionalComponent={
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={(page: number) => setCurrentPage(page)}
-        />
-      }
-    >
-      <>
-        {
-          isLoading ? (
-            <ActivityIndicator size="large" color={Colors.primary} />
-          ) : (
-            LogGrid()
-          )
+    <>
+      <AppContainer
+        mainTitle={t('modules.tracking')}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showBackButton={true}
+        showSearchText={true}
+        showSettings={true}
+        navigateBack={navigateBack}
+        navigationHistoryItems={navigationHistoryItems}
+        additionalComponent={
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page: number) => setCurrentPage(page)}
+          />
         }
-      </>
-    </AppContainer>
+      >
+        <>
+          {
+            isLoading ? (
+              <ActivityIndicator size="large" color={Colors.primary} />
+            ) : (
+              LogGrid()
+            )
+          }
+        </>
+      </AppContainer>
+      {ToastContent()}
+    </>
   );
 }
 

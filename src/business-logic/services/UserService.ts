@@ -42,7 +42,6 @@ class UserService {
       const createdUser = await APIService.post<IUser>(this.baseRoute, user, token?.value as string);
       return createdUser;
     } catch (error) {
-      console.log('Error creating user:', error);
       throw error;
     }
   }
@@ -79,7 +78,6 @@ class UserService {
       try {
         await APIService.post(`${this.baseRoute}/${id}/modules/${moduleID}`, null, token?.value as string)
       } catch (error) {
-        console.log('Error adding module', moduleID, 'to user', id, error);
         throw error;
       }
     }
@@ -214,15 +212,9 @@ class UserService {
    */
   async getUsersModules(id: string | undefined, token: IToken | null): Promise<IModule[]> {
     try {
-      let usedToken = token;
-      if (!usedToken) {
-        const cachedToken = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-        usedToken = cachedToken as IToken;
-      }
-      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, usedToken?.value);
+      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, token?.value);
       return modules;
     } catch (error) {
-      console.log('Error getting user\'s modules:', id, error);
       throw error;
     }
   }
@@ -244,7 +236,6 @@ class UserService {
       const tabs = await APIService.get<ITechnicalDocTab[]>(`${this.baseRoute}/${id}/technicalDocumentationTabs`, usedToken?.value);
       return tabs;
     } catch (error) {
-      console.log('Error getting user\'s technical documentation tabs:', id, error);
       throw error;
     }
   }
@@ -260,7 +251,6 @@ class UserService {
       const employees = await APIService.get<IUser[]>(`${this.baseRoute}/${clientID}/employees`, token?.value as string);
       return employees;
     } catch (error) {
-      console.log('Error getting client employees', error);
       throw error;
     }
   }
@@ -292,7 +282,6 @@ class UserService {
     try {
       await APIService.put(`${this.baseRoute}/${user.id}/updateInfos/`, user, token?.value as string);
     } catch (error) {
-      console.log('Error updating user:', user, error);
       throw error;
     }
   }
@@ -340,7 +329,6 @@ class UserService {
     try {
       await APIService.put(`${this.baseRoute}/${userID}/addManager/${managerID}`, null, token?.value as string);
     } catch (error) {
-      console.log('Error adding manager to user', error);
       throw error;
     }
   }
@@ -386,7 +374,6 @@ class UserService {
       const manager = await APIService.put(`${this.baseRoute}/${managerID}/remove/${employeeID}`, null, token?.value as string);
       return manager;
     } catch (error) {
-      console.log('Error removing employee from manager', error);
       throw error;
     }
   }

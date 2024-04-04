@@ -407,11 +407,20 @@
     "api": {
       "notFound": {
         "user": "User not found with this id",
-        "resetToken": "Reset token not found"
+        "resetToken": "Reset token not found",
+        "file": "File not found",
+        "employee": "Employee not found",
+        "pendingUser": "Pending user not found",
+        "module": "Module not found",
+        "event": "Event not found"
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
-        "access": "You don't have access to this route"
+        "access": "You don't have access to this route",
+        "wrongUser": "You can't access another user's data",
+        "event": {
+          "tooManyEvents": "You can't create more than 5 events"
+        }
       },
       "unauthorized": {
         "invalidCurrentPassword": "Invalid current password",
@@ -423,6 +432,9 @@
           "missingUppercase": "The password should contain at least one uppercased letter",
           "missingDigit": "The password should contain at least one digit",
           "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
+        },
+        "event": {
+          "employee": "You are not allowed to create an event"
         }
       },
       "badRequest": {
@@ -434,8 +446,23 @@
         "message": {
           "contentLength": "The message should not contain more than 300 characters",
           "senderAndReceiverSame": "You can't send a message to yourself"
-        }
+        },
+        "page": "Missing page number",
+        "perPage": "Missing per page number",
+        "emailAlreadyExists": "This email already exists",
+        "managerAlreadySet": "A manager is already set for this employee",
+        "company": "A company name is required",
+        "password": "The password should not be empty",
+        "uuid": "The uuid is invalid"
+      },
+      "internalServerError": {
+        "failedToCreateDirectory": "Failed to create directory"
       }
+    }
+  },
+  "api": {
+    "success": {
+      "passwordChanged": "Password successfully changed",
     }
   },
   "legal": {

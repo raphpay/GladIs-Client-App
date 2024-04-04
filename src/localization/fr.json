@@ -407,11 +407,20 @@
     "api": {
       "notFound": {
         "user": "Utilisateur non trouvé",
-        "resetToken": "Clé de réinitialisation non trouvée"
+        "resetToken": "Clé de réinitialisation non trouvée",
+        "file": "Fichier non trouvé",
+        "employee": "Employé non trouvé",
+        "pendingUser": "Utilisateur en attente non trouvé",
+        "module": "Module non trouvé",
+        "event": "Evénement non trouvé",
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
-        "access": "Vous n'avez pas les droits pour accéder à cette page"
+        "access": "Vous n'avez pas les droits pour accéder à cette page",
+        "wrongUser": "Vous n'êtes pas autorisé à accéder aux informations d'un autre utilisateur",
+        "event": {
+          "tooManyEvents": "Vous avez atteint le nombre maximum d'événements"
+        }
       },
       "unauthorized": {
         "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
@@ -426,6 +435,9 @@
           "missingUppercase": "Le mot de passe doit contenir au moins une majuscule",
           "missingDigit": "Le mot de passe doit contenir au moins un chiffre",
           "missingSpecialCharacter": "Le mot de passe doit contenir au moins un caractère spécial parmi !@#$%^&*.()"
+        },
+        "event": {
+          "employee": "Vous n'avez pas les droits pour créer un évènement."
         }
       },
       "badRequest": {
@@ -437,8 +449,23 @@
         "message": {
           "contentLength": "Le contenu du message ne doit pas dépasser 300 caractères",
           "senderAndReceiverSame": "Vous ne pouvez pas vous envoyer de message à vous-même"
-        }
+        },
+        "page": "Numéro de page manquant",
+        "perPage": "Nombre d'éléments par page manquant",
+        "emailAlreadyExists": "Cet email est déjà utilisé",
+        "managerAlreadySet": "Un manager est déjà défini pour cet employé",
+        "company": "Un nom d'entreprise est requis",
+        "password": "Le mot de passe ne doit pas être vide",
+        "uuid": "L'identifiant est invalide"
+      },
+      "internalServerError": {
+        "failedToCreateDirectory": "Echec de la création du dossier"
       }
+    }
+  },
+  "api": {
+    "success": {
+      "passwordChanged": "Mot de passe modifié avec succès",
     }
   },
   "legal": {

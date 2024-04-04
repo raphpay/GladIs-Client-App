@@ -19,6 +19,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Toast from '../../components/Toast';
 import PendingUserRow from './PendingUserRow';
 
 import styles from '../../assets/styles/clientManagement/PendingClientListScreenStyles';
@@ -32,6 +33,10 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const [selectedPendingUser, setSelectedPendingUser] = useState<IPendingUser>();
   const [showPendingUserDialog, setShowPendingUserDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const plusIcon = require('../../assets/images/plus.png');
   const docIcon = require('../../assets/images/doc.fill.png');
@@ -46,6 +51,30 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   const { navigation } = props;
 
+  const popoverActions: IAction[] = [
+    {
+      title: t('components.tooltip.open'),
+      onPress: () => navigateToSpecificClientCreation(selectedPendingUser as IPendingUser),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.status.pending'),
+      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.pending),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.status.inReview'),
+      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.inReview),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.status.rejected'),
+      onPress: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.rejected),
+    },
+    {
+      title: t('components.tooltip.pendingUserManagement.delete'),
+      onPress: showAlert,
+    },
+  ];
+
+  // Sync Methods
   function navigateToCreateClient() {
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
   }
@@ -53,29 +82,6 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   function navigateBack() {
     navigation.goBack();
   }
-
-  const popoverActions: IAction[] = [
-    {
-      title: t('components.tooltip.open'),
-      action: () => navigateToSpecificClientCreation(selectedPendingUser as IPendingUser),
-    },
-    {
-      title: t('components.tooltip.pendingUserManagement.status.pending'),
-      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.pending),
-    },
-    {
-      title: t('components.tooltip.pendingUserManagement.status.inReview'),
-      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.inReview),
-    },
-    {
-      title: t('components.tooltip.pendingUserManagement.status.rejected'),
-      action: () => updatePendingUserStatus(selectedPendingUser as IPendingUser, PendingUserStatus.rejected),
-    },
-    {
-      title: t('components.tooltip.pendingUserManagement.delete'),
-      action: showAlert,
-    },
-  ];
   
   function navigateToSpecificClientCreation(client: IPendingUser) {
     setShowPendingUserDialog(false);
@@ -83,33 +89,57 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: client });
   }
 
-  async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {
-    await PendingUserService.getInstance().updatePendingUserStatus(pendingUser, token, status);
-    // Update the grid
-    await loadPendingUsers();
-    // Close the dialogs
-    setShowPendingUserDialog(false);
-    setShowDeleteDialog(false);
-  }
-
   function showAlert() {
     setShowPendingUserDialog(false);
     setShowDeleteDialog(true);
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  // Async Methods
+  async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {
+    try {
+      await PendingUserService.getInstance().updatePendingUserStatus(pendingUser, token, status);
+      // Update the grid
+      await loadPendingUsers();
+      // Close the dialogs
+      setShowPendingUserDialog(false);
+      setShowDeleteDialog(false);
+    } catch (error) {
+      const errorMessage = (error as Error).message
+      displayToast(errorMessage, true);
+    }
+  }
+
   async function loadPendingUsers() {
-    const castedToken = token as IToken;
-    const users = await PendingUserService.getInstance().getUsers(castedToken);
-    setPendingUsers(users);
+    try {
+      const castedToken = token as IToken;
+      const users = await PendingUserService.getInstance().getUsers(castedToken);
+      setPendingUsers(users); 
+    } catch (error) {
+      console.log('Error loading pending users', error);
+    }
   }
 
   async function removePendingUser() {
-    await PendingUserService.getInstance().removePendingUser(selectedPendingUser?.id, token);
+    try {
+      await PendingUserService.getInstance().removePendingUser(selectedPendingUser?.id, token);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+      return;
+    }
+
     await loadPendingUsers();
     setShowPendingUserDialog(false);
-    setShowDeleteDialog(false);
+    setShowDeleteDialog(false); 
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadPendingUsers();
@@ -124,6 +154,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     init();
   }, [pendingUserListCount]);
 
+  // Components
   function pendingUserDialog() {
     return (
       <>
@@ -161,6 +192,23 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
               onConfirm={removePendingUser}
               isCancelAvailable={true}
               onCancel={() => setShowDeleteDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
             />
           )
         }
@@ -211,6 +259,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       </AppContainer>
       {pendingUserDialog()}
       {deleteDialog()}
+      {ToastContent()}
     </>
   );
 }

@@ -17,7 +17,7 @@ type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackPara
 
 function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminProps): any {
   const [searchText,setSearchText] = useState<string>('');
-  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const { navigation } = props;
 
   const { t } = useTranslation();
@@ -31,11 +31,13 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
     }
   ]
 
+  // Sync Methods
   function navigateBack() {
     dispatch(removeCurrentClient());
     navigation.goBack();
   }
 
+  // Components
   return (
     <>
       <AppContainer
@@ -46,18 +48,18 @@ function ClientDashboardScreenFromAdmin(props: ClientDashboardScreenFromAdminPro
         showBackButton={true}
         showSearchText={true}
         navigateBack={navigateBack}
-        dialogIsShown={showDialog}
+        dialogIsShown={showErrorDialog}
         showSettings={true}
       >
-        <DashboardClientGrid searchText={searchText} setShowDialog={setShowDialog} />
+        <DashboardClientGrid searchText={searchText} setShowErrorDialog={setShowErrorDialog} />
       </AppContainer>
       {
-        showDialog && (
+        showErrorDialog && (
           <ErrorDialog
             title={t('errors.modules.title')}
             description={t('errors.modules.description')}
             cancelTitle={t('errors.modules.cancelButton')}
-            onCancel={() => setShowDialog(false)}
+            onCancel={() => setShowErrorDialog(false)}
           />
         )
       }

@@ -32,7 +32,6 @@ class ModuleService {
       const modules = await APIService.get<IModule[]>(this.baseRoute);
       return modules;
     } catch (error) {
-      console.log('Error getting modules', error);
       throw error;
     }
   }
