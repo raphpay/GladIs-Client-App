@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 
 import { IEvent } from '../../../business-logic/model/IEvent';
+import UserType from '../../../business-logic/model/enums/UserType';
 import EventService from '../../../business-logic/services/EventService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
@@ -28,7 +29,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
   const [daysEvents, setDaysEvents] = useState<IEvent[]>([]);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
 
   const { navigation } = props;
 
@@ -41,11 +42,22 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
 
   // Async Methods
   async function loadEvents() {
-    try {
-      const events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
-      setEvents(events);
-    } catch (error) {
-      console.log("Error loading events", error);
+    if (currentClient) {
+      try {
+        const events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
+        setEvents(events);
+      } catch (error) {
+        console.log("Error loading events", error);
+      }
+    } else {
+      if (currentUser?.userType === UserType.Admin) {
+        try {
+          const events = await EventService.getInstance().getAll(token);
+          setEvents(events);
+        } catch (error) {
+          console.log("Error loading events", error);
+        }
+      }
     }
   }
 
