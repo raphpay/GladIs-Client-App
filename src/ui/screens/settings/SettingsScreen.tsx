@@ -108,7 +108,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
         displayToast(t('api.success.passwordChanged'), false);
       } catch (error) {
         const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
@@ -119,7 +119,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       removeAllReduxStates();
     } catch (error) {
       const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 

@@ -198,7 +198,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
           await PotentialEmployeeService.getInstance().create(employee)
         } catch (error) {
           const errorMessage = (error as Error).message;
-          displayToast(errorMessage, true);
+          displayToast(t(`errors.api.${errorMessage}`), true);
         }
       }
     }
@@ -212,7 +212,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         newUsers.push(newUserEmployee);
       } catch (error) {
         const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
     return newUsers;
@@ -242,7 +242,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         }
       } catch (error) {
         const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
 
