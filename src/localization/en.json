@@ -343,7 +343,8 @@
       "passwordsToReset": {
         "title": "Actions for:",
         "copyEmail": "Copy email",
-        "showToken": "Show reset token"
+        "showToken": "Show reset token",
+        "delete": "Delete"
       },
       "download": "Download",
       "request": "Make a request",

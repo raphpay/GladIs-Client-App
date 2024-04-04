@@ -45,6 +45,11 @@ const styles = StyleSheet.create({
     height: 20,
     resizeMode: 'contain',
   },
+  clockIcon: {
+    width: 25,
+    height: 20,
+    resizeMode: 'contain',
+  },
 });
 
 export default styles;

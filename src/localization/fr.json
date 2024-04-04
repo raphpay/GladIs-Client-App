@@ -343,7 +343,8 @@
       "passwordsToReset": {
         "title": "Actions pour:",
         "copyEmail": "Copier l'email",
-        "showToken": "Afficher la clé de réinitialisation"
+        "showToken": "Afficher la clé de réinitialisation",
+        "delete": "Supprimer"
       },
       "download": "Télécharger",
       "request": "Faire une demande",

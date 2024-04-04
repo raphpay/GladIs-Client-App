@@ -54,6 +54,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   const [selectedItem, setSelectedItem] = useState<IPasswordResetToken>();
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
+  const expiredClockIcon = require('../../assets/images/clock.badge.exclamationmark.png');
 
   const popoverActions: IAction[] = [
     {
@@ -63,6 +64,11 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     {
       title: t('components.tooltip.passwordsToReset.showToken'),
       onPress: () => openAdminPasswordDialog(selectedUserID)
+    },
+    {
+      title: t('components.tooltip.passwordsToReset.delete'),
+      onPress: () => deleteResetToken(),
+      isDestructive: true
     }
   ];
 
@@ -152,6 +158,10 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     }
   }
 
+  async function deleteResetToken() {
+    // TODO: Handle deletion
+  }
+
   // Effects
   useEffect(() => {
     async function init() {
@@ -171,6 +181,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   // Components
   function PasswordRow(item: IPasswordResetToken) {
     const expirationDate = new Date(item.expiresAt);
+    const isExpired = expirationDate < new Date();
     const dateString = Utils.formatDate(expirationDate);
     const timeString = Utils.formatTime(expirationDate);
     const dateTimeString = `${dateString} ${t('tracking.at')} ${timeString}`
@@ -186,6 +197,11 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
               <Text style={styles.dateText}>{dateTimeString}</Text>
             </View>
           </TouchableOpacity>
+          {
+            isExpired && (
+              <Image source={expiredClockIcon} style={styles.clockIcon} />
+            )
+          }
           <Tooltip action={() => displayTooltipDialog(userID as string, item)}/>
         </View>
         <View style={styles.separator} />
