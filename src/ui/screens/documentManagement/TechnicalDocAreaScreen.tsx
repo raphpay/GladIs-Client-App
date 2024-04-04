@@ -118,7 +118,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
       setShowDialog(false);
     } catch (error) {
       const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 

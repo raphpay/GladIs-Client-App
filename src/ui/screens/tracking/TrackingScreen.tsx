@@ -74,7 +74,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
       setIsLoading(false);
     } catch (error) {
       const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
@@ -87,7 +87,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
       setIsLoading(false);
     } catch (error) {
       const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 

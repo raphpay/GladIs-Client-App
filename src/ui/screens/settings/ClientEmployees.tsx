@@ -205,7 +205,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         await UserService.getInstance().addManagerToUser(user.id as string, currentClient.id as string, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
       // Reload employees
       await loadEmployees();
@@ -229,7 +229,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         await UserService.getInstance().updateUser(modifiedEmployee, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
 
       await loadEmployees();
@@ -244,7 +244,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         await UserService.getInstance().removeEmployeeFromManager(currentClient?.id as string, selectedEmployee.id as string, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
 
       resetDialog();

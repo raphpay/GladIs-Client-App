@@ -46,7 +46,6 @@ class ModuleService {
       const modules = await APIService.get<IModule[]>(`${this.baseRoute}/sorted`, token?.value as string);
       return modules;
     } catch (error) {
-      console.log('Error getting modules', error);
       throw error;
     }
   }

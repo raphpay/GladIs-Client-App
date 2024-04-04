@@ -111,7 +111,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       setShowDeleteDialog(false);
     } catch (error) {
       const errorMessage = (error as Error).message
-      displayToast(errorMessage, true);
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
@@ -130,7 +130,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
       await PendingUserService.getInstance().removePendingUser(selectedPendingUser?.id, token);
     } catch (error) {
       const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
+      displayToast(t(`errors.api.${errorMessage}`), true);
       return;
     }
 

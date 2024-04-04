@@ -115,7 +115,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
         navigation.goBack();
       } catch (error) {
         const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
