@@ -71,6 +71,22 @@ class PasswordResetService {
       throw error;
     }
   }
+
+  // DELETE
+  /**
+   * Deletes a password reset token.
+   * @param id The ID of the password reset token to delete.
+   * @param token The token to use for authentication.
+   * @returns A promise that resolves when the request is complete.
+   * @throws An error if the request fails.
+   */
+  async delete(id: string, token: IToken | null): Promise<void> {
+    try {
+      await APIService.delete(`${this.baseRoute}/${id}`, token?.value as string);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default PasswordResetService;

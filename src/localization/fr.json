@@ -359,7 +359,8 @@
       "passwordsToReset": {
         "tokenCopied": "Clé copiée dans le presse-papier",
         "emailCopied": "Email copié dans le presse-papier",
-        "emailNotFound": "Email non trouvé"
+        "emailNotFound": "Email non trouvé",
+        "tokenDeleted": "Clé supprimée"
       }
     }
   },
@@ -466,7 +467,7 @@
   },
   "api": {
     "success": {
-      "passwordChanged": "Mot de passe modifié avec succès",
+      "passwordChanged": "Mot de passe modifié avec succès"
     }
   },
   "legal": {

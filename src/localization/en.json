@@ -359,7 +359,8 @@
       "passwordsToReset": {
         "tokenCopied": "Token copied to clipboard",
         "emailCopied": "Email copied to clipboard",
-        "emailNotFound": "Email not found"
+        "emailNotFound": "Email not found",
+        "tokenDeleted": "Token deleted successfully"
       }
     }
   },
