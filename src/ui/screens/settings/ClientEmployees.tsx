@@ -20,28 +20,36 @@ import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Toast from '../../components/Toast';
 import Tooltip from '../../components/Tooltip';
+import TooltipAction from '../../components/TooltipAction';
 
 import styles from '../../assets/styles/settings/ClientEmployeesStyles';
-import TooltipAction from '../../components/TooltipAction';
 
 type ClientEmployeesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientEmployees>;
 
 function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
+  // Dialogs
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogDescription, setDialogDescription] = useState<string>('');
+  const [showEmployeeDialog, setShowEmployeeDialog] = useState<boolean>(false);
+  const [showDeleteEmployeeDialog, setShowDeleteEmployeeDialog] = useState<boolean>(false);
+  // Potential Employee
   const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
   const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployeeEmail, setPotentialEmployeeEmail] = useState<string>('');
   const [potentialEmployeePhoneNumber, setPotentialEmployeePhoneNumber] = useState<string>('');
-  const [isModifyingEmployee, setIsModifiyingEmployee] = useState<boolean>(false);
   const [selectedEmployee, setSelectedEmployee] = useState<IUser>();
-  const [showEmployeeDialog, setShowEmployeeDialog] = useState<boolean>(false);
-  const [showDeleteEmployeeDialog, setShowDeleteEmployeeDialog] = useState<boolean>(false);
-
+  // Modifying Employee
+  const [isModifyingEmployee, setIsModifiyingEmployee] = useState<boolean>(false);
   const [employees, setEmployees] = useState<IUser[]>([]);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+
   const employeesFiltered = employees.filter(employee =>
     employee.firstName.toLowerCase().includes(searchText?.toLowerCase()) || employee.lastName.toLowerCase().includes(searchText?.toLowerCase()),  
   );
@@ -74,15 +82,9 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   ];
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
-  }
-
-  async function loadEmployees() {
-    if (currentClient && token) {
-      const clientEmployees = await UserService.getInstance().getClientEmployees(currentClient.id as string, token);
-      setEmployees(clientEmployees);
-    }
   }
 
   function isContactDetailsValid(): boolean {
@@ -109,59 +111,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         isFilled = true;
     }
     return isFilled;
-  }
-
-  async function addOrModifyEmployee() {
-    if (isModifyingEmployee) {
-      await modifyEmployee(selectedEmployee as IUser);
-    } else {
-      await addEmployee();
-    }
-  }
-  
-  async function addEmployee() {
-    if (isFormFilled() && isContactDetailsValid() && currentClient) {
-      const newEmployee: IUser = {
-        firstName: potentialEmployeeFirstName,
-        lastName: potentialEmployeeLastName,
-        email: potentialEmployeeEmail,
-        phoneNumber: potentialEmployeePhoneNumber,
-        companyName: currentClient?.companyName || '',
-        userType: UserType.Employee,
-      }
-      // Create user and add manager to user
-      const user = await UserService.getInstance().createUser(newEmployee, token);
-      await UserService.getInstance().addManagerToUser(user.id as string, currentClient.id as string, token);
-      // Reload employees
-      await loadEmployees();
-      // Reset form
-      setPotentialEmployeeFirstName('');
-      setPotentialEmployeeLastName('');
-      setPotentialEmployeeEmail('');
-      setPotentialEmployeePhoneNumber('');
-      setShowDialog(false);
-    }
-  }
-
-  async function modifyEmployee(employee: IUser) {
-    if (isFormFilled() && isContactDetailsValid() && currentClient) {
-      const modifiedEmployee: IUser = {
-        id: employee.id,
-        firstName: potentialEmployeeFirstName,
-        lastName: potentialEmployeeLastName,
-        email: potentialEmployeeEmail,
-        phoneNumber: potentialEmployeePhoneNumber,
-        companyName: currentClient?.companyName || '',
-        userType: UserType.Employee,
-      }
-      await UserService.getInstance().updateUser(modifiedEmployee, token);
-      await loadEmployees();
-      setPotentialEmployeeFirstName('');
-      setPotentialEmployeeLastName('');
-      setPotentialEmployeeEmail('');
-      setPotentialEmployeePhoneNumber('');
-      setShowDialog(false);
-    }
   }
 
   function showModifyEmployeeDialog(employee: IUser) {
@@ -205,19 +154,105 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     setDialogDescription('');
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  function resetForm() {
+    setPotentialEmployeeFirstName('');
+    setPotentialEmployeeLastName('');
+    setPotentialEmployeeEmail('');
+    setPotentialEmployeePhoneNumber('');
+    setShowDialog(false);
+  }
+
+  // Async Methods
+  async function loadEmployees() {
+    if (currentClient && token) {
+      try {
+        const clientEmployees = await UserService.getInstance().getClientEmployees(currentClient.id as string, token);
+        setEmployees(clientEmployees);
+      } catch (error) {
+        console.log('Error loading employees', error);
+      }
+    }
+  }
+
+  async function addOrModifyEmployee() {
+    if (isModifyingEmployee) {
+      await modifyEmployee(selectedEmployee as IUser);
+    } else {
+      await addEmployee();
+    }
+  }
+  
+  async function addEmployee() {
+    if (isFormFilled() && isContactDetailsValid() && currentClient) {
+      const newEmployee: IUser = {
+        firstName: potentialEmployeeFirstName,
+        lastName: potentialEmployeeLastName,
+        email: potentialEmployeeEmail,
+        phoneNumber: potentialEmployeePhoneNumber,
+        companyName: currentClient?.companyName || '',
+        userType: UserType.Employee,
+      }
+      // Create user and add manager to user
+      let user: IUser | undefined;
+      try {
+        user = await UserService.getInstance().createUser(newEmployee, token);
+        await UserService.getInstance().addManagerToUser(user.id as string, currentClient.id as string, token);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(errorMessage, true);
+      }
+      // Reload employees
+      await loadEmployees();
+      resetForm();
+    }
+  }
+
+  async function modifyEmployee(employee: IUser) {
+    if (isFormFilled() && isContactDetailsValid() && currentClient) {
+      const modifiedEmployee: IUser = {
+        id: employee.id,
+        firstName: potentialEmployeeFirstName,
+        lastName: potentialEmployeeLastName,
+        email: potentialEmployeeEmail,
+        phoneNumber: potentialEmployeePhoneNumber,
+        companyName: currentClient?.companyName || '',
+        userType: UserType.Employee,
+      }
+
+      try {
+        await UserService.getInstance().updateUser(modifiedEmployee, token);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(errorMessage, true);
+      }
+
+      await loadEmployees();
+      resetForm();
+    }
+  }
+
   async function deleteSelectedEmployee() {
     if (selectedEmployee) {
       try {
         await UserService.getInstance().removeUser(selectedEmployee?.id as string, token);
         await UserService.getInstance().removeEmployeeFromManager(currentClient?.id as string, selectedEmployee.id as string, token);
-        resetDialog();
-        await loadEmployees();
       } catch (error) {
-        console.log('Error deleting selected employee', error);
+        const errorMessage = (error as Error).message;
+        displayToast(errorMessage, true);
       }
+
+      resetDialog();
+      await loadEmployees();
     }
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadEmployees();
@@ -225,6 +260,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     init();
   }, []);
 
+  // Components
   function EmployeeRow(item: IUser) {
     return (
       <View style={styles.employeeLineContainer}>
@@ -296,6 +332,23 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     )
   }
 
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -344,6 +397,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         onCancel={() => setShowEmployeeDialog(false)}
         popoverActions={popoverActions}
       />
+      {ToastContent()}
     </>
   );
 }

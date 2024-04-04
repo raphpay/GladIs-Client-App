@@ -439,7 +439,9 @@
           "senderAndReceiverSame": "You can't send a message to yourself"
         },
         "page": "Missing page number",
-        "perPage": "Missing per page number"
+        "perPage": "Missing per page number",
+        "emailAlreadyExists": "This email already exists",
+        "managerAlreadySet": "A manager is already set for this employee"
       },
       "internalServerError": {
         "failedToCreateDirectory": "Failed to create directory",

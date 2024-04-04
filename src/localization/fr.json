@@ -442,7 +442,9 @@
           "senderAndReceiverSame": "Vous ne pouvez pas vous envoyer de message à vous-même"
         },
         "page": "Numéro de page manquant",
-        "perPage": "Nombre d'éléments par page manquant"
+        "perPage": "Nombre d'éléments par page manquant",
+        "emailAlreadyExists": "Cet email est déjà utilisé",
+        "managerAlreadySet": "Un manager est déjà défini pour cet employé",
       },
       "internalServerError": {
         "failedToCreateDirectory": "Echec de la création du dossier",
