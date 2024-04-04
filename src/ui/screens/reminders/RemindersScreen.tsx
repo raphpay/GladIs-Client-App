@@ -34,21 +34,22 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
 
   const { t } = useTranslation();
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
 
+  // Async Methods
   async function loadEvents() {
     try {
-      if (currentClient?.id) {
-        const events = await EventService.getInstance().getAllForClient(currentClient.id as string, token);
-        setEvents(events);
-      }
+      const events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
+      setEvents(events);
     } catch (error) {
-      // Show alert
+      console.log("Error loading events", error);
     }
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadEvents();
@@ -56,11 +57,10 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     init();
   }, []);
   
-  // TODO: Add translations
   return (
     <>
       <AppContainer
-        mainTitle='Reminders'
+        mainTitle={t('modules.reminders')}
         showBackButton={true}
         showSearchText={false}
         showSettings={true}
