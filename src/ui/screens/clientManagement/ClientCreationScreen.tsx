@@ -168,15 +168,19 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       status: PendingUserStatus.pending
     };
     const selectedModules = retrieveSelectedModules();
+    let createdUser: IPendingUser | undefined;
     try {
-      const createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
-      await createEmployees(createdUser.id as string);
-      await uploadLogo();
-      navigateBack();
+      createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
     } catch (error) {
       const errorKeys: string[] = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
       displayToast(errorTitle, true)
+    }
+
+    if (createdUser) {
+      await createEmployees(createdUser.id as string);
+      await uploadLogo();
+      navigateBack();
     }
   }
 
@@ -193,7 +197,8 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         try {
           await PotentialEmployeeService.getInstance().create(employee)
         } catch (error) {
-          console.log('Error creating employee', employee, error);
+          const errorMessage = (error as Error).message;
+          displayToast(errorMessage, true);
         }
       }
     }
@@ -216,25 +221,34 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   async function convertPendingUser() {
     const id = pendingUser?.id as string;
     const castedToken = token as IToken;
+    let createdUser: IUser | undefined;
+
     try {
-      // 1 Convert manager
-      const createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
-      const selectedModules = retrieveSelectedModules();
-      await UserService.getInstance().addModules(createdUser.id as string, selectedModules, castedToken)
-      // 2 Convert employees
-      const createdEmployees = await convertEmployeesToUser();
-      // 3 Add manager to employees
-      for (const employee of createdEmployees) {
-        await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
-      }
-      await uploadLogo();
-      dispatch(setClientListCount(clientListCount + 1));
-      navigateBack();
+      createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
     } catch (error) {
       const errorKeys = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
       displayToast(errorTitle, true);
     }
+
+    const selectedModules = retrieveSelectedModules();
+
+    if (createdUser) {
+      try {
+        await UserService.getInstance().addModules(createdUser.id as string, selectedModules, castedToken);
+        const createdEmployees = await convertEmployeesToUser();
+        for (const employee of createdEmployees) {
+          await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
+        }
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(errorMessage, true);
+      }
+    }
+
+    await uploadLogo();
+    dispatch(setClientListCount(clientListCount + 1));
+    navigateBack();
   }
 
   async function addLogo() {

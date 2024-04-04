@@ -41,8 +41,8 @@ class PendingUserService {
       const newUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, null, token.value);
       return newUser;
     } catch (error) {
-      const errorKeys = extractValidationErrors(error.message);
-      console.log('Error converting pending user:', id, 'to user', errorKeys);
+      const errorMessage = (error as Error).message;
+      const errorKeys = extractValidationErrors(errorMessage);
       throw errorKeys;
     }
   }
