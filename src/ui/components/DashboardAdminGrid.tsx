@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
+import IModule from '../../business-logic/model/IModule';
 import IUser from '../../business-logic/model/IUser';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
+import MessageService from '../../business-logic/services/MessageService';
 import PasswordResetService from '../../business-logic/services/PasswordResetService';
 import UserService from '../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../business-logic/store/hooks';
@@ -15,9 +17,9 @@ import ContentUnavailableView from './ContentUnavailableView';
 import Grid from './Grid';
 import GridClientItem from './GridClientItem';
 
-import MessageService from '../../business-logic/services/MessageService';
 import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/DashboardAdminGridStyles';
+import GridModuleItem from './GridModuleItem';
 
 type DashboardAdminGridProps = {
   searchText: string;
@@ -52,10 +54,36 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   const { t } = useTranslation();
 
+  const modules: IModule[] = [
+    {
+      id: '1',
+      name: 'reminders',
+      index: 1,
+    },
+    {
+      id: '2',
+      name: 'chat',
+      index: 2,
+    },
+  ];
+
   // Synchronous Methods
   function navigateToClientDashboard(client: IUser) {
     dispatch(setCurrentClient(client));
     navigation.navigate(NavigationRoutes.ClientDashboardScreenFromAdmin)
+  }
+
+  function navigateToModule(module: IModule) {
+    switch (module.name) {
+      case 'reminders':
+        navigation.navigate(NavigationRoutes.RemindersScreen);
+        break;
+      case 'chat':
+        navigation.navigate(NavigationRoutes.MessagesScreen);
+        break;
+      default:
+        break;
+    }
   }
 
   // Asynchronous Methods
@@ -181,6 +209,24 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     )
   }
 
+  function ModulesSection() {
+    return (
+      <View style={styles.clientSectionContainer}>
+        <Text style={styles.sectionTitle}>{t('dashboard.sections.modules')}</Text>
+        <View style={styles.separator}/>
+        <Grid
+          data={modules}
+          renderItem={(renderItem) => 
+            <GridModuleItem 
+              module={renderItem.item}
+              onPress={navigateToModule}
+            />
+          }
+        />
+      </View>
+    );
+  }
+
   function ClientSection() {
     return (
       <View style={styles.clientSectionContainer}>
@@ -212,6 +258,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   return (
     <View style={styles.container}>
       {ActionSection()}
+      {ModulesSection()}
       {ClientSection()}
     </View>
   );
