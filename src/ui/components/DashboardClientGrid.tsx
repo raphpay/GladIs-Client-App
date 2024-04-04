@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import IModule from '../../business-logic/model/IModule';
-import IToken from '../../business-logic/model/IToken';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../business-logic/services/ModuleService';
 import UserService from '../../business-logic/services/UserService';
@@ -38,6 +37,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
 
+  // Sync Methods
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
       dispatch(setModule(module));
@@ -55,17 +55,22 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
     }
   }
 
+  // Async Methods
   async function loadModules() {
     if (currentClient) {
-      const apiModules = await ModuleService.getInstance().getSortedModules(token);
-      const castedToken = token as IToken;
-      const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
-      const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
-      setClientModulesIDs(usersModulesIDs);
-      setModules(apiModules);
+      try {
+        const apiModules = await ModuleService.getInstance().getSortedModules(token);
+        const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
+        const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
+        setClientModulesIDs(usersModulesIDs);
+        setModules(apiModules);
+      } catch (error) {
+        console.log('Error loading modules', error);
+      }
     }
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadModules();
@@ -80,6 +85,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
     reload();
   }, [currentClient]);
   
+  // Components
   return (
     <>
     {
