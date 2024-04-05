@@ -33,28 +33,24 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     setDaysEvents
   } = props;
 
-  // State to store the timestamp of the last tap
+  // States
   const [lastTap, setLastTap] = useState<number | null>(null);
   const [localEvents, setLocalEvents] = useState<EventsByDate>({});
 
   const daysItems = Array.from({ length: 7 }, (_, i) => i + 1);
-
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
+  // Calendar Logic
   // Get the number of days in the month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
   // Determine what day of the week the month starts on, correctly adjusting for a Monday start
   const startDayOfMonth = new Date(year, month).getDay();
-  
   // Determine what day of the week the month starts on, adjusting for a Monday start
   // const adjustedStartDay = startDayOfMonth === 0 ? 1 : startDayOfMonth - 1;
   const adjustedStartDay = startDayOfMonth === 0 ? 6 : startDayOfMonth - 1;
-
   // Create an array for the blank spaces before the first day of the month
   const blankDays = Array(adjustedStartDay).fill(null);
-
   // For ending blanks, ensure we're calculating the number correctly
   // Create an array for the blank spaces after the last day of the month
   const lastDayOfMonth = new Date(year, month, daysInMonth).getDay();
@@ -62,10 +58,10 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   // No adjustment needed if the month already ends on a Monday (adjustedLastDay == 0 in this setup)
   const endingBlankDays = adjustedLastDay == 6 ? 0 : 6 - adjustedLastDay;
   const endingBlanks = Array(endingBlankDays).fill(null);
-
   // Create an array for the days of the month
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
+  // Sync Methods
   function doubleTapDayCell(day: number) {
     const tappedDate = new Date(year, month, day);
 
@@ -91,7 +87,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     setShowListDialog(true)
   }
 
-  const groupEventsByDate = (): EventsByDate => {
+  function groupEventsByDate() {
     const eventsByDate: EventsByDate = {};
   
     if (events && events.length > 0) {
@@ -110,12 +106,11 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       });
     }
   
-    return eventsByDate;
-  };
+    setLocalEvents(eventsByDate);
+  }
 
   useEffect(() => {
-    const groupedEvents = groupEventsByDate();
-    setLocalEvents(groupedEvents);
+    groupEventsByDate();
   }, [events]);
 
   function DayCellContent(day: number, dayEvents: IEvent[]) {
