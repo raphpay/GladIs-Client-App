@@ -14,7 +14,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
 import Calendar from './Calendar';
-import EventDialog from './EventDialog';
+import CreateEventDialog from './CreateEventDialog';
 import ListEventsDialog from './ListDialog';
 
 type RemindersScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RemindersScreen>;
@@ -69,6 +69,34 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     init();
   }, []);
   
+  // Components
+  function EventDialogContent() {
+    return (
+      <CreateEventDialog
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}
+        events={events}
+        setEvents={setEvents}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+    )
+  }
+
+  function ListEventsDialogContent() {
+    return (
+      <ListEventsDialog
+        showListDialog={showListDialog}
+        setShowListDialog={setShowListDialog}
+        daysEvents={daysEvents}
+      />
+    )
+  }
+
+  function SingleEventDialogContent() {
+
+  }
+
   return (
     <>
       <AppContainer
@@ -90,23 +118,8 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
           setDaysEvents={setDaysEvents}
         />
       </AppContainer>
-      {
-        <EventDialog
-          showDialog={showDialog}
-          setShowDialog={setShowDialog}
-          events={events}
-          setEvents={setEvents}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-      }
-      {
-        <ListEventsDialog
-          showListDialog={showListDialog}
-          setShowListDialog={setShowListDialog}
-          daysEvents={daysEvents}
-        />
-      }
+      {EventDialogContent()}
+      {ListEventsDialogContent()}
     </>
   );
 }

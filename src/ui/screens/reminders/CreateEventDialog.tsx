@@ -12,7 +12,7 @@ import Dialog from '../../components/Dialog';
 import Dropdown from '../../components/Dropdown';
 import GladisTextInput from '../../components/GladisTextInput';
 
-type EventDialogProps = {
+type CreateEventDialogProps = {
   showDialog: boolean;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
   events: IEvent[];
@@ -21,7 +21,8 @@ type EventDialogProps = {
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
 };
 
-function EventDialog(props: EventDialogProps): React.JSX.Element {
+// TODO: Clean code
+function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
 
   const {
     showDialog, setShowDialog,
@@ -68,7 +69,7 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
         resetDialog();
       } catch (error) {
         console.log('Error adding event', error );
-        // Show alert
+        // TODO: Display toast
       }
     }
   }
@@ -165,4 +166,4 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
   );
 }
 
-export default EventDialog;
+export default CreateEventDialog;
