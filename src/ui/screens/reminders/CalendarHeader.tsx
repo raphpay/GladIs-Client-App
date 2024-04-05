@@ -62,9 +62,10 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
   }
 
   function goToToday() {
-    setCurrentDate(new Date());
-    setMonthValue(currentDate.getMonth());
-    setYearValue(currentDate.getFullYear());
+    const today = new Date();
+    setCurrentDate(today);
+    setMonthValue(today.getMonth());
+    setYearValue(today.getFullYear());
     closeDropdowns();
   }
 
