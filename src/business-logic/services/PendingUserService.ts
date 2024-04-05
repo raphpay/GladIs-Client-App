@@ -41,8 +41,8 @@ class PendingUserService {
       const newUser = await APIService.post<IUser>(`${this.baseRoute}/${id}/convertToUser`, null, token.value);
       return newUser;
     } catch (error) {
-      const errorKeys = extractValidationErrors(error.message);
-      console.log('Error converting pending user:', id, 'to user', errorKeys);
+      const errorMessage = (error as Error).message;
+      const errorKeys = extractValidationErrors(errorMessage);
       throw errorKeys;
     }
   }
@@ -60,8 +60,8 @@ class PendingUserService {
       await this.addModulesToPendingUser(modules, userAdded);
       return userAdded;
     } catch (error) {
-      const errorKeys = extractValidationErrors(error.message);
-      console.log('Error asking for sign up for user', pendingUser, errorKeys);
+      const errorMessage = (error as Error).message
+      const errorKeys = extractValidationErrors(errorMessage);
       throw errorKeys;
     }
   }
@@ -165,7 +165,6 @@ class PendingUserService {
       const id = pendingUser.id as string;
       await APIService.put(`${this.baseRoute}/${id}/status`, { "type": status }, token?.value);
     } catch (error) {
-      console.log('Error updating pending user status', pendingUser, status, error);
       throw error;
     }
   }
@@ -181,7 +180,6 @@ class PendingUserService {
     try {
       await APIService.delete(`${this.baseRoute}/${id}`, token?.value);
     } catch (error) {
-      console.log('Error deleting pending user', id, error);
       throw error;
     }
   }

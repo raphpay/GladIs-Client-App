@@ -98,6 +98,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     },
   ];
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
@@ -120,6 +121,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
+  // Components
   function SystemQualityGridItem(item: ISystemQualityItem) {
     return (
       <TouchableOpacity key={item.id} onPress={() => navigateTo(item)}>

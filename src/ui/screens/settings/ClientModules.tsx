@@ -16,6 +16,7 @@ import AppContainer from '../../components/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
+import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/settings/ClientModulesStyles';
 
@@ -25,6 +26,10 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   const [modules, setModules] = useState<IModule[]>([]);
   const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const plusIcon = require('../../assets/images/plus.png');
 
@@ -43,23 +48,15 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     }
   ];
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
-  }
-
-  async function loadModules() {
-    const apiModules = await ModuleService.getInstance().getModules();  
-    setModules(apiModules);
-    if (currentClient && currentClient.id && token) {
-      const usersModules = await UserService.getInstance().getUsersModules(currentClient.id as string, token);
-      setSelectedModules(usersModules);
-    }
   }
 
   function isModuleSelected(module: IModule): boolean {
     return selectedModules.some(selectedModule => selectedModule.id === module.id);
   }
-  
+
   function toggleCheckbox(module: IModule): void {
     if (isModuleSelected(module)) {
       // If the module is already selected, deselect it
@@ -76,7 +73,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
       moduleToAdd,
     ]);
   }
-  
+
   function removeModuleFromClient(moduleToRemove: IModule) {
     setSelectedModules((currentSelectedModules) =>
       currentSelectedModules.filter(
@@ -85,14 +82,45 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     );
   }
 
-  // TODO: Enhance save method ( should be disabled if no changes were made )
-  async function saveModules() {
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+  
+  // Async Methods
+  async function loadModules() {
+    try {
+      const apiModules = await ModuleService.getInstance().getModules();  
+      setModules(apiModules);
+    } catch (error) {
+      console.log('Error getting modules', error);
+    }
+
     if (currentClient && currentClient.id && token) {
-      await UserService.getInstance().addModules(currentClient.id, selectedModules, token);
-      navigation.goBack();
+      try {
+        const usersModules = await UserService.getInstance().getUsersModules(currentClient.id as string, token);
+        setSelectedModules(usersModules);
+      } catch (error) {
+        console.log('Error getting modules for current client', error);
+      }
     }
   }
 
+  async function saveModules() {
+    // TODO: Enhance save method ( should be disabled if no changes were made )
+    if (currentClient && currentClient.id && token) {
+      try {
+        await UserService.getInstance().addModules(currentClient.id, selectedModules, token);
+        navigation.goBack();
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+    }
+  }
+
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadModules();
@@ -100,44 +128,65 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     init();
   }, []);
 
-  return (
-    <AppContainer
-      mainTitle={t('settings.clientSettings.modules')}
-      showSearchText={true}
-      showSettings={false}
-      navigationHistoryItems={navigationHistoryItems}
-      showBackButton={true}
-      navigateBack={navigateBack}
-      showDialog= {showDialog}
-      setShowDialog={setShowDialog}
-      additionalComponent={
-        <IconButton
-          title={t('components.buttons.save')}
-          icon={plusIcon}
-          onPress={saveModules}
-          style={styles.saveButton}
-        />
-      }
-    >
+  function ToastContent() {
+    return (
       <>
-          {modules.length > 0 ? (
-            modules.map((module: IModule) => (
-              <ModuleCheckBox
-                key={module.id}
-                module={module}
-                isSelected={isModuleSelected(module)}
-                onSelectModule={() => toggleCheckbox(module)}
-              />
-            ))
-          ) : (
-            <ContentUnavailableView
-              title={t('dashboard.noModules.title')}
-              message={t('dashboard.noModules.message')}
-              image={clipboardIcon}
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
             />
-          )}
+          )
+        }
       </>
-    </AppContainer>
+    )
+  }
+
+  // Components
+  return (
+    <>
+      <AppContainer
+        mainTitle={t('settings.clientSettings.modules')}
+        showSearchText={true}
+        showSettings={false}
+        navigationHistoryItems={navigationHistoryItems}
+        showBackButton={true}
+        navigateBack={navigateBack}
+        showDialog= {showDialog}
+        setShowDialog={setShowDialog}
+        additionalComponent={
+          <IconButton
+            title={t('components.buttons.save')}
+            icon={plusIcon}
+            onPress={saveModules}
+            style={styles.saveButton}
+          />
+        }
+      >
+        <>
+            {modules.length > 0 ? (
+              modules.map((module: IModule) => (
+                <ModuleCheckBox
+                  key={module.id}
+                  module={module}
+                  isSelected={isModuleSelected(module)}
+                  onSelectModule={() => toggleCheckbox(module)}
+                />
+              ))
+            ) : (
+              <ContentUnavailableView
+                title={t('dashboard.noModules.title')}
+                message={t('dashboard.noModules.message')}
+                image={clipboardIcon}
+              />
+            )}
+        </>
+      </AppContainer>
+      {ToastContent()}
+    </>
   );
 }
 

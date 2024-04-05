@@ -5,7 +5,10 @@
     "password": "Password",
     "login": "Log in",
     "signUp": "No account yet? Ask for a quotation.",
-    "forgottenPassword": "Forgot password?"
+    "forgottenPassword": "Forgot password?",
+    "tooManyAttempts": {
+      "eventName": "Too many login attempts for",
+    }
   },
   "quotation": {
     "title": "Request for quotation",
@@ -41,6 +44,15 @@
     "noClients": {
       "title": "No clients yet",
       "message": "Add a client now"
+    },
+    "sections": {
+      "actions": {
+        "title": "Actions",
+        "passwordsToReset": "Passwords to reset",
+        "messages": "Messages",
+        "events": "Events"
+      },
+      "clients": "Clients"
     }
   },
   "modules": {
@@ -109,7 +121,8 @@
     "noLogs": {
       "title": "No document logs for now",
       "message": "Come back later"
-    }
+    },
+    "at": "at"
   },
   "process": {
     "title": {
@@ -177,6 +190,57 @@
     "modifyPassword": "Modify password",
     "logout": "Log out",
   },
+  "calendar": {
+    "today": "Today",
+    "more": "More...",
+  },
+  "passwordsToReset": {
+    "title": "Passwords to reset",
+    "dialog": {
+      "checkPassword": "Enter your current password",
+      "tokenGenerated": "The reset token is: ",
+      "confirmButton": "Verify"
+    },
+    "noTokens": {
+      "title": "No passwords to reset",
+      "message": "Come back later"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "emptyState": {
+      "title": "No messages yet",
+      "description": "You have no messages yet. Start a conversation now."
+    },
+    "table": {
+      "title": "Object",
+      "dateSent": "Date Sent",
+      "userMail": "Contact"
+    },
+    "button": {
+      "sendMessage": "Send Message"
+    },
+    "dialog": {
+      "confirmButton": "Send",
+      "messageReceiverPlaceholder": "Contact",
+      "messageTitlePlaceholder": "Message object",
+      "messageContentPlaceholder": "Message content",
+      "charactersLeft": "Characters left",
+      "message": "Message",
+      "to": "To",
+      "from": "From"
+    },
+    "singleMessageDialog": {
+      "confirmButton": "Close",
+      "cancelButton": "Delete"
+    },
+    "deleteDialog": {
+      "title": "Do you really want to delete this message ?",
+      "message": "The deletion is definitive.",
+      "confirmButton": "No",
+      "cancelButton": "Yes"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"
@@ -200,7 +264,11 @@
       "passwordReset": {
         "title": "Password reset",
         "confirmButton": "Send",
-        "placeholder": "Email"
+        "placeholder": "Email",
+        "token": "Got a reset token?",
+        "tokenInput": "6-digit token",
+        "resetDescription": "Enter your reset token and your new password",
+        "newPassword": "New password"
       },
       "firstConnection": {
         "title": "Modify your password",
@@ -252,6 +320,14 @@
         "download": "Download",
         "approve": "Approve"
       },
+      "calendar": {
+        "newEvent": {
+          "title": "New event",
+          "eventName": "Event name",
+          "confirm": "Save"
+        },
+        "eventsOn": "Events on",
+      },
       "blockClient": "Are you sure you want to block this client?",
       "unblockClient": "Are you sure you want to unblock this client?",
       "confirm": "OK",
@@ -268,10 +344,28 @@
         },
         "delete": "Delete"
       },
+      "passwordsToReset": {
+        "title": "Actions for:",
+        "copyEmail": "Copy email",
+        "showToken": "Show reset token",
+        "delete": "Delete"
+      },
       "download": "Download",
       "request": "Make a request",
       "approve": "Approve",
       "modify": "Modify"
+    },
+    "toast": {
+      "passwordReset": {
+        "requestSent": "You will receive an email with a reset token.",
+        "success": "Password successfully reset"
+      },
+      "passwordsToReset": {
+        "tokenCopied": "Token copied to clipboard",
+        "emailCopied": "Email copied to clipboard",
+        "emailNotFound": "Email not found",
+        "tokenDeleted": "Token deleted successfully"
+      }
     }
   },
   "errors": {
@@ -283,7 +377,8 @@
           "title": "Account blocked",
           "message": "Please contact your provider"
         }
-      }
+      },
+      "tooManyAttempts": "Too many attempts. Your provider will contact you soon"
     },
     "logout": {
       "title": "Error logging out",
@@ -303,16 +398,6 @@
         "description": "Please verify your email and phone number format. It should be a french phone"
       }
     },
-    "password": {
-      "current": {
-        "invalid": "Current Password is invalid"
-      },
-      "samePassword": "The new password should be different from the current one",
-      "invalidLength": "The password should contain at least 12 characters",
-      "missingUppercase": "The password should contain at least one uppercased letter",
-      "missingDigit": "The password should contain at least one digit",
-      "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
-    },
     "modules": {
       "title": "This module is not part of your subscription",
       "description": "Please contact you provider.",
@@ -321,6 +406,69 @@
     "Unauthorized": {
       "title": "Wrong username or password",
       "message": "Please verify your credentials"
+    },
+    "passwordReset": {
+      "userNotFound": "No user found with this email. Please contact your provider"
+    },
+    "api": {
+      "notFound": {
+        "user": "User not found with this id",
+        "resetToken": "Reset token not found",
+        "file": "File not found",
+        "employee": "Employee not found",
+        "pendingUser": "Pending user not found",
+        "module": "Module not found",
+        "event": "Event not found"
+      },
+      "forbidden": {
+        "userShouldBeAdmin": "User should be an admin to access this route",
+        "access": "You don't have access to this route",
+        "wrongUser": "You can't access another user's data",
+        "event": {
+          "tooManyEvents": "You can't create more than 5 events"
+        }
+      },
+      "unauthorized": {
+        "invalidCurrentPassword": "Invalid current password",
+        "accountBlocked": "Account blocked. Please contact your provider",
+        "login": "Wrong username or password",
+        "password": {
+          "samePassword": "The new password should be different from the current one",
+          "invalidLength": "The password should contain at least 12 characters",
+          "missingUppercase": "The password should contain at least one uppercased letter",
+          "missingDigit": "The password should contain at least one digit",
+          "missingSpecialCharacter": "The password should contain at least one character within !@#$%^&*.()"
+        },
+        "event": {
+          "employee": "You are not allowed to create an event"
+        }
+      },
+      "badRequest": {
+        "tokenExpired": "Token expired. Please request a new one",
+        "phoneAndEmail": "Please verify the email address and the phone number",
+        "email": "Please verify the email address",
+        "phone": "Please verify the phone number",
+        "default": "Please verify the informations you entered",
+        "message": {
+          "contentLength": "The message should not contain more than 300 characters",
+          "senderAndReceiverSame": "You can't send a message to yourself"
+        },
+        "page": "Missing page number",
+        "perPage": "Missing per page number",
+        "emailAlreadyExists": "This email already exists",
+        "managerAlreadySet": "A manager is already set for this employee",
+        "company": "A company name is required",
+        "password": "The password should not be empty",
+        "uuid": "The uuid is invalid"
+      },
+      "internalServerError": {
+        "failedToCreateDirectory": "Failed to create directory"
+      }
+    }
+  },
+  "api": {
+    "success": {
+      "passwordChanged": "Password successfully changed",
     }
   },
   "legal": {

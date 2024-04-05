@@ -18,6 +18,7 @@ import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
@@ -27,12 +28,11 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer';
-import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
+import Toast from '../../components/Toast';
 
-import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
 type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
@@ -51,19 +51,63 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [sales, setSales] = useState<string>('');
   // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
-  const [errorTitle, setErrorTitle] = useState<string>('');
-  const [errorDescription, setErrorDescription] = useState<string>('');
   // Potential employee
   const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
   // Logo
   const [imageData, setImageData] = useState<string>('');
   const [logoURI, setLogoURI] = useState<string>('');
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { navigation } = props;
 
   const { t } = useTranslation();
 
+  // Sync Methods
+  function toggleCheckbox(module: IModule) {
+    setSelectedModules((prevSelectedObjects) => {
+      if (prevSelectedObjects.includes(module)) {
+        return prevSelectedObjects.filter((objectModule) => objectModule.id !== module.id);
+      } else {
+        return [...prevSelectedObjects, module];
+      }
+    });
+  }
+
+  function isModuleSelected(module: IModule): boolean {
+    return selectedModules.includes(module);
+  }
+
+  function navigateBack() {
+    navigation.goBack();
+  }
+
+  function isFormFilled(): boolean {
+    let isFilled = false;
+    isFilled = firstName.length > 0 &&
+    lastName.length > 0 &&
+    phoneNumber.length > 0 &&
+    companyName.length > 0 &&
+    email.length > 0 &&
+    products.length > 0 &&
+    numberOfEmployees.length > 0 &&
+    Utils.isANumber(numberOfEmployees) &&
+    numberOfUsers.length > 0 &&
+    Utils.isANumber(numberOfUsers) &&
+    sales.length > 0 &&
+    Utils.isANumber(sales);
+    return isFilled;
+  }
+
+  function displayToast(message: string, isShowingError: boolean) {
+    setShowToast(true);
+    setToastMessage(message);
+    setToastIsShowingError(isShowingError);
+  }
+
+  // Async Methods
   async function submit() {
     const pendingUser: IPendingUser = {
       firstName,
@@ -85,32 +129,23 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
-      if (errorKeys.length > 0) {
-        if (errorKeys.includes('email.invalid')) {
-          if (errorKeys.includes('phoneNumber.invalid')) {
-            setErrorTitle(t('errors.signup.phoneAndEmail.title'));
-            setErrorDescription(t('errors.signup.phoneAndEmail.description'));
-          } else {
-            setErrorTitle(t('errors.signup.email.title'));
-            setErrorDescription(t('errors.signup.email.description'));
-          }
-        } else if (errorKeys.includes('phoneNumber.invalid')) {
-          setErrorTitle(t('errors.signup.phoneNumber.title'));
-          setErrorDescription(t('errors.signup.phoneNumber.description'));
-        }
-      }
-      setShowErrorDialog(true);
+      const errorTitle = Utils.handleErrorKeys(errorKeys);
+      displayToast(t(errorTitle), true);
     }
   }
 
   async function uploadLogo() {
     if (imageData) {
-      const fileName = 'logo.png';
-      const file: IFile = {
-        data: imageData,
-        filename: fileName
+      try {
+        const fileName = 'logo.png';
+        const file: IFile = {
+          data: imageData,
+          filename: fileName
+        }
+        await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
+      } catch (error) {
+        console.log('Error uploading logo', error);
       }
-      await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
     }
   }
 
@@ -127,28 +162,10 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         try {
           await PotentialEmployeeService.getInstance().create(employee)
         } catch (error) {
-          console.log('Error creating employee', employee, error);
+          console.log('Error creating potential employee:', employee, error);
         }
       }
     }
-  }
-
-  function toggleCheckbox(module: IModule) {
-    setSelectedModules((prevSelectedObjects) => {
-      if (prevSelectedObjects.includes(module)) {
-        return prevSelectedObjects.filter((objectModule) => objectModule.id !== module.id);
-      } else {
-        return [...prevSelectedObjects, module];
-      }
-    });
-  }
-
-  function isModuleSelected(module: IModule): boolean {
-    return selectedModules.includes(module);
-  }
-
-  function navigateBack() {
-    navigation.goBack();
   }
 
   async function addLogo() {
@@ -164,23 +181,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     }
   }
 
-  function isFormFilled(): boolean {
-    let isFilled = false;
-    isFilled = firstName.length > 0 &&
-    lastName.length > 0 &&
-    phoneNumber.length > 0 &&
-    companyName.length > 0 &&
-    email.length > 0 &&
-    products.length > 0 &&
-    numberOfEmployees.length > 0 &&
-    Utils.isANumber(numberOfEmployees) &&
-    numberOfUsers.length > 0 &&
-    Utils.isANumber(numberOfUsers) &&
-    sales.length > 0 &&
-    Utils.isANumber(sales);
-    return isFilled;
-  }
-
+  // Lifecycle
   useEffect(() => {
     async function init() {
       const apiModules = await ModuleService.getInstance().getModules();  
@@ -190,22 +191,116 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     init();
   }, []);
 
+  // Components
   function PotentialEmployeeGridItem(item: IPotentialEmployee, index: number) {
     return (
       <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
     )
   }
 
-  function errorDialog() {
+  function ToastContent() {
     return (
-      showErrorDialog && (
-        <ErrorDialog
-          title={errorTitle}
-          description={errorDescription}
-          cancelTitle={t('errors.modules.cancelButton')}
-          onCancel={() => setShowErrorDialog(false)}
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function ScreenContent() {
+    return (
+      <ScrollView>
+        <GladisTextInput
+          value={firstName}
+          onValueChange={setFirstName}
+          placeholder={t('quotation.firstName')} showTitle={true}
+          editable={!showDialog}
         />
-      )
+        <GladisTextInput
+          value={lastName}
+          onValueChange={setLastName}
+          placeholder={t('quotation.lastName')} showTitle={true}
+          editable={!showDialog}
+          />
+        <GladisTextInput
+          value={phoneNumber}
+          onValueChange={setPhoneNumber}
+          placeholder={t('quotation.phone')} showTitle={true}
+          editable={!showDialog}
+        />
+        <GladisTextInput
+          value={companyName}
+          onValueChange={setCompanyName}
+          placeholder={t('quotation.companyName')} showTitle={true}
+          editable={!showDialog}
+        />
+        <GladisTextInput
+          value={email}
+          onValueChange={setEmail}
+          placeholder={t('quotation.email')} showTitle={true}
+          editable={!showDialog}
+        />
+        <GladisTextInput
+          value={products}
+          onValueChange={setProducts}
+          placeholder={t('quotation.products')} showTitle={true}
+          editable={!showDialog}
+        />
+        <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
+        {modules.map((module) => (
+          <ModuleCheckBox
+            key={module.id}
+            module={module}
+            isSelected={isModuleSelected(module)}
+            onSelectModule={() => toggleCheckbox(module)}
+          />
+        ))}
+        <GladisTextInput
+          value={numberOfEmployees}
+          onValueChange={setNumberOfEmployees}
+          placeholder={t('quotation.employees')} showTitle={true}
+          editable={!showDialog}
+        />
+        <GladisTextInput
+          value={numberOfUsers}
+          onValueChange={setNumberOfUsers}
+          placeholder={t('quotation.users')} showTitle={true}
+          editable={!showDialog}
+        />
+        <GladisTextInput
+          value={sales}
+          onValueChange={setSales}
+          placeholder={t('quotation.capital')} showTitle={true}
+          editable={!showDialog}
+        />
+        <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
+        {
+          potentialEmployees.length > 0 && (
+            <>
+              <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
+              {potentialEmployees.map((employee, index) => (
+                PotentialEmployeeGridItem(employee, index)
+              ))}
+            </>
+          )
+        }
+        <View style={styles.logoContainer}>
+          <TextButton width={'30%'} title={t('quotation.logo.add')} onPress={addLogo} />
+          {
+            logoURI && (
+              <Image source={{uri: logoURI}} style={styles.logo}/>
+            )
+          }
+        </View>
+      </ScrollView>
     )
   }
 
@@ -229,90 +324,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           </View>
         )}
       >
-        <ScrollView>
-          <GladisTextInput
-            value={firstName}
-            onValueChange={setFirstName}
-            placeholder={t('quotation.firstName')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <GladisTextInput
-            value={lastName}
-            onValueChange={setLastName}
-            placeholder={t('quotation.lastName')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-            />
-          <GladisTextInput
-            value={phoneNumber}
-            onValueChange={setPhoneNumber}
-            placeholder={t('quotation.phone')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <GladisTextInput
-            value={companyName}
-            onValueChange={setCompanyName}
-            placeholder={t('quotation.companyName')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <GladisTextInput
-            value={email}
-            onValueChange={setEmail}
-            placeholder={t('quotation.email')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <GladisTextInput
-            value={products}
-            onValueChange={setProducts}
-            placeholder={t('quotation.products')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
-          {modules.map((module) => (
-            <ModuleCheckBox
-              key={module.id}
-              module={module}
-              isSelected={isModuleSelected(module)}
-              onSelectModule={() => toggleCheckbox(module)}
-            />
-          ))}
-          <GladisTextInput
-            value={numberOfEmployees}
-            onValueChange={setNumberOfEmployees}
-            placeholder={t('quotation.employees')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <GladisTextInput
-            value={numberOfUsers}
-            onValueChange={setNumberOfUsers}
-            placeholder={t('quotation.users')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <GladisTextInput
-            value={sales}
-            onValueChange={setSales}
-            placeholder={t('quotation.capital')} showTitle={true}
-            editable={!showErrorDialog && !showDialog}
-          />
-          <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
-          {
-            potentialEmployees.length > 0 && (
-              <>
-                <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
-                {potentialEmployees.map((employee, index) => (
-                  PotentialEmployeeGridItem(employee, index)
-                ))}
-              </>
-            )
-          }
-          <View style={styles.logoContainer}>
-            <TextButton width={'30%'} title={t('quotation.logo.add')} onPress={addLogo} />
-            {
-              logoURI && (
-                <Image source={{uri: logoURI}} style={styles.logo}/>
-              )
-            }
-          </View>
-        </ScrollView>
+        {ScreenContent()}
       </AppContainer>
       {
         <AddEmployeeDialog
@@ -323,7 +335,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           setPotentialEmployees={setPotentialEmployees}
         />
       }
-      {errorDialog()}
+      {ToastContent()}
     </>
   );
 }

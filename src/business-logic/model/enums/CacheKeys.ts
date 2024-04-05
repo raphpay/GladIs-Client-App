@@ -1,6 +1,7 @@
 enum CacheKeys {
   currentUserID = 'currentUserID',
-  currentUserToken = 'currentUserToken'
+  currentUserToken = 'currentUserToken',
+  loginTries = 'loginTries',
 }
 
 export default CacheKeys;

@@ -40,6 +40,12 @@ import ClientModules from '../ui/screens/settings/ClientModules';
 import ClientSettingsScreenFromAdmin from '../ui/screens/settings/ClientSettingsScreenFromAdmin';
 // Settings
 import SettingsScreen from '../ui/screens/settings/SettingsScreen';
+// Reminders
+import RemindersScreen from '../ui/screens/reminders/RemindersScreen';
+// Password Reset
+import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
+// Chat
+import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -65,6 +71,12 @@ export type IRootStackParams = {
   TrackingScreen: undefined,
   // Settings
   SettingsScreen: undefined,
+  // Reminders
+  RemindersScreen: undefined,
+  // Password Reset
+  PasswordResetScreen: undefined,
+  // Chat
+  MessagesScreen: undefined,
 }
 
 export type IClientCreationStack = {
@@ -197,6 +209,21 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SettingsScreen}
         component={SettingsScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.RemindersScreen}
+        component={RemindersScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.PasswordResetScreen}
+        component={PasswordResetScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.MessagesScreen}
+        component={MessagesScreen}
         options={{headerShown: false}}
       />
       <ClientCreationStack.Screen

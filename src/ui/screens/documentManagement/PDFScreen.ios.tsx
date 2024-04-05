@@ -14,6 +14,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import IconButton from '../../components/IconButton';
+import Toast from '../../components/Toast';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
@@ -24,6 +25,10 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   const [pdfData, setPDFData] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
 
   const { navigation } = props;
   const { documentInput } = props.route.params;
@@ -33,17 +38,31 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const docIcon = require('../../assets/images/doc.fill.png');
   const backIcon = require('../../assets/images/arrowshape.turn.up.left.png');
 
-  async function loadFromAPI() {
-    let data = await DocumentService.getInstance().download(documentInput.id as string, token)
-    await CacheService.getInstance().storeValue(documentInput.id as string, data);
-    setPDFData(data);
-    setIsLoading(false);
-  }
-
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  // Async Methods
+  async function loadFromAPI() {
+    try {
+      let data = await DocumentService.getInstance().download(documentInput.id as string, token)
+      await CacheService.getInstance().storeValue(documentInput.id as string, data);
+      setPDFData(data);
+      setIsLoading(false); 
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+  }
+
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       let cachedData = null;
@@ -62,6 +81,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
     init();
   }, []);
 
+  // Components
   function PDFView() {
     return (
       <>
@@ -87,6 +107,24 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
               title={t('documentsScreen.noDocs.title')}
               message={t('documentsScreen.noDocs.message.client')}
               image={docIcon}
+            />
+          )
+        }
+        {ToastContent()}
+      </>
+    )
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
             />
           )
         }

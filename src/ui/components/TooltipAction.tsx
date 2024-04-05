@@ -41,6 +41,16 @@ function TooltipAction(props: TooltipActionProps): React.JSX.Element {
     popoverActions,
   } = props;
 
+  function textColor(action: IAction): string {
+    let color: string = Colors.primary;
+    if (action.isDisabled) {
+      color = Colors.inactive;
+    } else if (action.isDestructive) {
+      color = Colors.danger;
+    }
+    return color
+  }
+
   return (
     <>
       {
@@ -63,7 +73,7 @@ function TooltipAction(props: TooltipActionProps): React.JSX.Element {
                   style={styles.popoverButton}
                   onPress={action.onPress} disabled={action.isDisabled}
                 >
-                  <Text style={[styles.popoverButtonText, {color: action.isDisabled ? Colors.inactive : Colors.primary}]}>{action.title}</Text>
+                  <Text style={[styles.popoverButtonText, {color: textColor(action)}]}>{action.title}</Text>
                 </TouchableOpacity>
               ))}
             </>

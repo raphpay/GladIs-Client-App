@@ -19,7 +19,10 @@ type DialogProps = {
   isCancelAvailable?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  descriptionChildren?: JSX.Element;
   children?: JSX.Element;
+  extraConfirmButtonTitle?: string;
+  extraConfirmButtonAction?: () => void,
 };
 
 function Dialog(props: DialogProps): React.JSX.Element {
@@ -34,7 +37,10 @@ function Dialog(props: DialogProps): React.JSX.Element {
     isCancelAvailable,
     onConfirm,
     onCancel,
+    descriptionChildren,
     children,
+    extraConfirmButtonTitle,
+    extraConfirmButtonAction,
   } = props;
   const { t } = useTranslation();
 
@@ -42,7 +48,13 @@ function Dialog(props: DialogProps): React.JSX.Element {
     <View style={styles.overlay}>
       <View style={styles.dialog}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        {
+          descriptionChildren ? (
+            descriptionChildren
+          ) : (
+            <Text style={styles.description}>{description}</Text>
+          )
+        }
         {children}
         <View style={styles.buttonContainer}>
           {
@@ -56,9 +68,16 @@ function Dialog(props: DialogProps): React.JSX.Element {
           }
           {
             isConfirmAvailable == true || isConfirmAvailable == undefined ? (
-              <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
-                <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
-              </TouchableOpacity>
+              <View style={{flexDirection: 'row-reverse'}}>
+                <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
+                  <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
+                </TouchableOpacity>
+                {extraConfirmButtonAction && extraConfirmButtonTitle && (
+                  <TouchableOpacity style={styles.extraButton} onPress={extraConfirmButtonAction}>
+                    <Text style={[styles.buttonText, { color: Colors.primary }]}>{extraConfirmButtonTitle}</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             ) : (
               <View style={{flex: 1}}/>
             )

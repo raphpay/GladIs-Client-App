@@ -5,7 +5,10 @@
     "password": "Mot de passe",
     "login": "Se connecter",
     "signUp": "Pas de compte ? Demandez un devis.",
-    "forgottenPassword": "Mot de passe oublié ?"
+    "forgottenPassword": "Mot de passe oublié ?",
+    "tooManyAttempts": {
+      "eventName": "Trop de tentatives pour",
+    }
   },
   "quotation": {
     "title": "Demande de devis",
@@ -41,6 +44,15 @@
     "noClients": {
       "title": "Pas de clients pour le moment",
       "message": "Ajoutez un client maintenant"
+    },
+    "sections": {
+      "actions": {
+        "title": "Actions",
+        "passwordsToReset": "Mots de passe à réinitialiser",
+        "messages": "Messages",
+        "events": "Evénements"
+      },
+      "clients": "Clients"
     }
   },
   "modules": {
@@ -109,7 +121,8 @@
     "noLogs": {
       "title": "Pas de suivi de documents pour le moment",
       "message": "Revenez plus tard"
-    }
+    },
+    "at": "à",
   },
   "process": {
     "title": {
@@ -177,6 +190,57 @@
       "message": "Revenez plus tard, ou enregistrez-en un maintenant"
     }
   },
+  "calendar": {
+    "today": "Aujourd'hui",
+    "more": "Plus...",
+  },
+  "passwordsToReset": {
+    "title": "Mot de passe à réinitialiser",
+    "dialog": {
+      "checkPassword": "Entrez votre mot de passe actuel",
+      "tokenGenerated": "La clé de réinitialisation générée est:",
+      "confirmButton": "Verifier"
+    },
+    "noTokens": {
+      "title": "Aucun mot de passe à réinitialiser pour le moment",
+      "message": "Revenez plus tard"
+    }
+  },
+  "chat": {
+    "title": "Chat",
+    "emptyState": {
+      "title": "Pas de messages pour le moment",
+      "description": "Vous n'avez pas de messages pour le moment. Commencez une conversation."
+    },
+    "table": {
+      "title": "Objet",
+      "dateSent": "Date envoyée",
+      "userMail": "Correspondant"
+    },
+    "button": {
+      "sendMessage": "Envoyer un Message"
+    },
+    "dialog": {
+      "confirmButton": "Send",
+      "messageReceiverPlaceholder": "Destinataire",
+      "messageTitlePlaceholder": "Objet du message",
+      "messageContentPlaceholder": "Contenu du message",
+      "charactersLeft": "Caractères restants",
+      "message": "Message",
+      "to": "De",
+      "from": "A"
+    },
+    "singleMessageDialog": {
+      "confirmButton": "Fermer",
+      "cancelButton": "Supprimer"
+    },
+    "deleteDialog": {
+      "title": "Etes-vous sûr de vouloir supprimer ce message ?",
+      "message": "La suppression est définitive.",
+      "confirmButton": "Non",
+      "cancelButton": "Oui"
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"
@@ -192,6 +256,14 @@
       "save": "Sauvegarder"
     },
     "dialog": {
+      "calendar": {
+        "newEvent": {
+          "title": "Nouvel événement",
+          "eventName": "Nom de l'événement",
+          "confirm": "Enregistrer"
+        },
+        "eventsOn": "Evénements le"
+      },
       "addDocument": {
         "title": "Ajouter un document",
         "confirmButton": "Selectionner un fichier",
@@ -200,7 +272,11 @@
       "passwordReset": {
         "title": "Réinitialisation du mot de passe",
         "confirmButton": "Envoyer",
-        "placeholder": "Email"
+        "placeholder": "Email",
+        "token": "Vous avez une clé ?",
+        "tokenInput": "Clé à 6 caractères",
+        "resetDescription": "Entrez votre clé de réinitialisation et votre nouveau mot de passe",
+        "newPassword": "Nouveau mot de passe"
       },
       "firstConnection": {
         "title": "Modification du mot de passe",
@@ -268,10 +344,28 @@
         },
         "delete": "Supprimer"
       },
+      "passwordsToReset": {
+        "title": "Actions pour:",
+        "copyEmail": "Copier l'email",
+        "showToken": "Afficher la clé de réinitialisation",
+        "delete": "Supprimer"
+      },
       "download": "Télécharger",
       "request": "Faire une demande",
       "approve": "Approuver",
       "modify": "Modifier"
+    },
+    "toast": {
+      "passwordReset": {
+        "requestSent": "Vous allez recevoir un email avec un lien de réinitialisation",
+        "success": "Mot de passe modifié avec succès"
+      },
+      "passwordsToReset": {
+        "tokenCopied": "Clé copiée dans le presse-papier",
+        "emailCopied": "Email copié dans le presse-papier",
+        "emailNotFound": "Email non trouvé",
+        "tokenDeleted": "Clé supprimée"
+      }
     }
   },
   "errors": {
@@ -283,7 +377,8 @@
           "title": "Votre compte est bloqué",
           "message": "Veuillez contacter votre fournisseur"
         }
-      }
+      },
+      "tooManyAttempts": "Trop de tentatives de connexion. Votre fournisseur a été notifié."
     },
     "logout": {
       "title": "Erreur lors de la déconnexion",
@@ -303,16 +398,6 @@
         "description": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agir d'un numéro français."
       }
     },
-    "password": {
-      "current": {
-        "invalid": "Le mot de passe actuel est incorrect"
-      },
-      "samePassword": "Le nouveau mot de passe doit être différent de l'ancien",
-      "invalidLength": "Le mot de passe doit contenir au moins 12 caractères",
-      "missingUppercase": "Le mot de passe doit contenir au moins une majuscule",
-      "missingDigit": "Le mot de passe doit contenir au moins un chiffre",
-      "missingSpecialCharacter": "Le mot de passe doit contenir au moins un caractère spécial parmi !@#$%^&*.()"
-    },
     "modules": {
       "title": "Ce module ne fait pas partie de votre abonnement",
       "description": "Veuillez contacter votre fournisseur.",
@@ -321,6 +406,72 @@
     "Unauthorized": {
       "title": "Identifiants incorrects",
       "message": "Veuillez vérifier vos identifiants"
+    },
+    "passwordReset": {
+      "userNotFound": "Pas d'utilisateur trouvé avec cet email. Veuillez contacter votre fournisseur."
+    },
+    "api": {
+      "notFound": {
+        "user": "Utilisateur non trouvé",
+        "resetToken": "Clé de réinitialisation non trouvée",
+        "file": "Fichier non trouvé",
+        "employee": "Employé non trouvé",
+        "pendingUser": "Utilisateur en attente non trouvé",
+        "module": "Module non trouvé",
+        "event": "Evénement non trouvé",
+      },
+      "forbidden": {
+        "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
+        "access": "Vous n'avez pas les droits pour accéder à cette page",
+        "wrongUser": "Vous n'êtes pas autorisé à accéder aux informations d'un autre utilisateur",
+        "event": {
+          "tooManyEvents": "Vous avez atteint le nombre maximum d'événements"
+        }
+      },
+      "unauthorized": {
+        "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
+        "accountBlocked": "Votre compte est bloqué. Veuillez contacter votre fournisseur.",
+        "login": "Identifiants incorrects",
+        "password": {
+          "current": {
+            "invalid": "Le mot de passe actuel est incorrect"
+          },
+          "samePassword": "Le nouveau mot de passe doit être différent de l'ancien",
+          "invalidLength": "Le mot de passe doit contenir au moins 12 caractères",
+          "missingUppercase": "Le mot de passe doit contenir au moins une majuscule",
+          "missingDigit": "Le mot de passe doit contenir au moins un chiffre",
+          "missingSpecialCharacter": "Le mot de passe doit contenir au moins un caractère spécial parmi !@#$%^&*.()"
+        },
+        "event": {
+          "employee": "Vous n'avez pas les droits pour créer un évènement."
+        }
+      },
+      "badRequest": {
+        "tokenExpired": "La clé de réinitialisation a expiré. Veuillez en demander une nouvelle.",
+        "phoneAndEmail": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agir d'un numéro français.",
+        "email": "Veuillez vérifier le format de votre email",
+        "phone": "Veuillez vérifier le format de votre numéro de téléphone. Il doit s'agir d'un numéro français.",
+        "default": "Une erreur est survenue. Veuillez vérifier les informations saisies.",
+        "message": {
+          "contentLength": "Le contenu du message ne doit pas dépasser 300 caractères",
+          "senderAndReceiverSame": "Vous ne pouvez pas vous envoyer de message à vous-même"
+        },
+        "page": "Numéro de page manquant",
+        "perPage": "Nombre d'éléments par page manquant",
+        "emailAlreadyExists": "Cet email est déjà utilisé",
+        "managerAlreadySet": "Un manager est déjà défini pour cet employé",
+        "company": "Un nom d'entreprise est requis",
+        "password": "Le mot de passe ne doit pas être vide",
+        "uuid": "L'identifiant est invalide"
+      },
+      "internalServerError": {
+        "failedToCreateDirectory": "Echec de la création du dossier"
+      }
+    }
+  },
+  "api": {
+    "success": {
+      "passwordChanged": "Mot de passe modifié avec succès"
     }
   },
   "legal": {

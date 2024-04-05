@@ -1,9 +1,10 @@
 import IModule from '../model/IModule';
+import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
 import IUser from '../model/IUser';
+import { extractValidationErrors } from '../model/ValidationError';
 import CacheKeys from '../model/enums/CacheKeys';
-import UserType from '../model/enums/UserType';
 
 import APIService from './APIService';
 import CacheService from './CacheService';
@@ -41,7 +42,6 @@ class UserService {
       const createdUser = await APIService.post<IUser>(this.baseRoute, user, token?.value as string);
       return createdUser;
     } catch (error) {
-      console.log('Error creating user:', error);
       throw error;
     }
   }
@@ -78,7 +78,6 @@ class UserService {
       try {
         await APIService.post(`${this.baseRoute}/${id}/modules/${moduleID}`, null, token?.value as string)
       } catch (error) {
-        console.log('Error adding module', moduleID, 'to user', id, error);
         throw error;
       }
     }
@@ -93,6 +92,26 @@ class UserService {
       console.log('Error removing module from client', error);
       throw error;
     }
+  }
+
+  /**
+   * Verify the password of a user.
+   * @param userID - The ID of the user.
+   * @param password - The password to verify.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to true if the password is valid, false otherwise.
+   * @throws If an error occurs while verifying the password.
+   */
+  async verifyPassword(userID: string, password: string, token: IToken | null): Promise<boolean> {
+    let isValid = false;
+    try {
+      await APIService.postWithoutResponse(`${this.baseRoute}/${userID}/verifyPassword`, { currentPassword: password }, token?.value as string);
+      isValid = true;
+    } catch (error) {
+      console.log('Error verifying password', error);
+      throw error;
+    }
+    return isValid;
   }
 
   // READ
@@ -121,11 +140,9 @@ class UserService {
    */
   async getClients(token: IToken | null): Promise<IUser[]> {
     try {
-      const users = await APIService.get<IUser[]>(this.baseRoute, token?.value as string);
-      const clients = users.filter((user) => user.userType !== UserType.Admin && user.userType !== UserType.Employee);
+      const clients = await APIService.get<IUser[]>(`${this.baseRoute}/clients`, token?.value as string);
       return clients;
     } catch (error) {
-      console.log('Error getting clients', error);
       throw error;
     }
   }
@@ -153,6 +170,40 @@ class UserService {
   }
 
   /**
+   * Retrieves a user by email.
+   * @param email - The email of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the user.
+   * @throws If an error occurs while retrieving the user.
+   */
+  async getUserByEmail(email: string, token: IToken | null): Promise<IUser> {
+    try {
+      const user = await APIService.post<IUser>(`${this.baseRoute}/byMail`, { email }, token?.value as string);
+      return user;
+    } catch (error) {
+      const errorMessage = (error as Error).message
+      const errorKeys = extractValidationErrors(errorMessage);
+      throw errorKeys;
+    }
+  }
+
+  /**
+   * Retrieves a user by username.
+   * @param username - The username of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the user.
+   * @throws If an error occurs while retrieving the user.
+   */
+  async getUserByUsername(username: string): Promise<IUser> {
+    try {
+      const user = await APIService.post<IUser>(`${this.baseRoute}/byUsername`, { username });
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Retrieves the modules of a user.
    * @param id - The ID of the user.
    * @param token - The authentication token.
@@ -161,15 +212,9 @@ class UserService {
    */
   async getUsersModules(id: string | undefined, token: IToken | null): Promise<IModule[]> {
     try {
-      let usedToken = token;
-      if (!usedToken) {
-        const cachedToken = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-        usedToken = cachedToken as IToken;
-      }
-      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, usedToken?.value);
+      const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`, token?.value);
       return modules;
     } catch (error) {
-      console.log('Error getting user\'s modules:', id, error);
       throw error;
     }
   }
@@ -191,7 +236,6 @@ class UserService {
       const tabs = await APIService.get<ITechnicalDocTab[]>(`${this.baseRoute}/${id}/technicalDocumentationTabs`, usedToken?.value);
       return tabs;
     } catch (error) {
-      console.log('Error getting user\'s technical documentation tabs:', id, error);
       throw error;
     }
   }
@@ -207,7 +251,23 @@ class UserService {
       const employees = await APIService.get<IUser[]>(`${this.baseRoute}/${clientID}/employees`, token?.value as string);
       return employees;
     } catch (error) {
-      console.log('Error getting client employees', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves the reset token value of a user.
+   * @param userID - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the reset token value.
+   * @throws If an error occurs while retrieving the reset token value.
+   */
+  async getResetTokenValue(userID: string, token: IToken | null): Promise<string> {
+    try {
+      const resetToken = await APIService.get<IPasswordResetToken>(`${this.baseRoute}/${userID}/resetToken`, token?.value as string);
+      const value = resetToken.token as string;
+      return value;
+    } catch (error) {
       throw error;
     }
   }
@@ -222,43 +282,38 @@ class UserService {
     try {
       await APIService.put(`${this.baseRoute}/${user.id}/updateInfos/`, user, token?.value as string);
     } catch (error) {
-      console.log('Error updating user:', user, error);
       throw error;
     }
   }
 
   /**
    * Changes the password of the current user.
+   * @param userID - The ID of the user.
    * @param currentPassword - The current password.
    * @param newPassword - The new password.
+   * @param token - The authentication token.
+   * @returns A promise that resolves when the password is changed.
    * @throws If an error occurs while changing the user's password.
    */
-  async changePassword(currentPassword: string, newPassword: string) {
+  async changePassword(userID: string, currentPassword: string, newPassword: string, token: IToken | null): Promise<void> {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-      const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      await APIService.put(`${this.baseRoute}/${castedUserID}/changePassword`, { currentPassword, newPassword }, castedToken.value);
+      await APIService.put(`${this.baseRoute}/${userID}/changePassword`, { currentPassword, newPassword }, token?.value as string);
     } catch (error) {
-      console.log('Error changing user password', error);
       throw error;
     }
   }
 
   /**
    * Sets the first connection parameter of the current user to false.
+   * @param userID - The ID of the user.
+   * @param token - The authentication token.
+   * @returns A promise that resolves when the first connection parameter is changed.
    * @throws If an error occurs while changing the user's first connection parameter.
    */
-  async setUserFirstConnectionToFalse() {
+  async setUserFirstConnectionToFalse(userID: string, token: IToken | null): Promise<void> {
     try {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-      const castedUserID = userID as string;
-      const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
-      const castedToken = token as IToken;
-      await APIService.put(`${this.baseRoute}/${castedUserID}/setFirstConnectionToFalse`, null, castedToken.value);
+      await APIService.put(`${this.baseRoute}/${userID}/setFirstConnectionToFalse`, null, token?.value as string);
     } catch (error) {
-      console.log('Error changing user first connection parameter', error);
       throw error;
     }
   }
@@ -274,7 +329,6 @@ class UserService {
     try {
       await APIService.put(`${this.baseRoute}/${userID}/addManager/${managerID}`, null, token?.value as string);
     } catch (error) {
-      console.log('Error adding manager to user', error);
       throw error;
     }
   }
@@ -320,7 +374,6 @@ class UserService {
       const manager = await APIService.put(`${this.baseRoute}/${managerID}/remove/${employeeID}`, null, token?.value as string);
       return manager;
     } catch (error) {
-      console.log('Error removing employee from manager', error);
       throw error;
     }
   }

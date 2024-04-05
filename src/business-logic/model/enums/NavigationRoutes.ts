@@ -26,6 +26,12 @@ enum NavigationRoutes {
   ClientSettingsScreenFromAdmin = 'ClientSettingsScreenFromAdmin',
   ClientEmployees = 'ClientEmployees',
   ClientModules = 'ClientModules',
+  // Reminders
+  RemindersScreen = 'RemindersScreen',
+  // Password Reset
+  PasswordResetScreen = 'PasswordResetScreen',
+  // Chat
+  MessagesScreen = 'MessagesScreen',
 }
 
 export default NavigationRoutes;

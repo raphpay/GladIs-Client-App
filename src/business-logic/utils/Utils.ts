@@ -28,10 +28,10 @@ class Utils {
   }
 
   /**
- * Function to convert a URI to a Blob object
- * @param {string} uri - The URI of the file
- * @returns {Promise} - Returns a promise that resolves with the Blob object
- */
+   * Function to convert a URI to a Blob object
+   * @param {string} uri - The URI of the file
+   * @returns {Promise} - Returns a promise that resolves with the Blob object
+   */
   private static async uriToBlob(uri: string): Promise<Blob> {
     try {
       const xhr = new XMLHttpRequest();
@@ -130,6 +130,106 @@ class Utils {
   static isANumber(value: string) {
     return !isNaN(Number(value));
   }
+  
+  /**
+  * Formats a number with a leading zero if it is less than 10.
+  * @param number - The number to format.
+  * @returns A string representation of the number with a leading zero if it is less than 10.
+  */
+  static formatWithLeadingZero(number: number): string {
+    let stringNumber = number.toString();
+    if (number < 10) {
+      stringNumber = `0${number}`;
+    }
+    return stringNumber;
+  }
+
+  /**
+   * Formats a month number to its corresponding name.
+   * @param month - The month number to format.
+   * @returns The name of the month.
+   */
+  static formatMonth(month: number): string {
+    const newDate = new Date(new Date().getFullYear(), month, 1);
+    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(newDate);
+  }
+
+  /**
+   * Formats a date to a string in the format 'YYYY-MM-DD'.
+   * @param date - The date to format.
+   * @returns A string representation of the date in the format 'YYYY-MM-DD'.
+   */
+  static formatDate(date: Date): string {
+    const year = date.getFullYear();
+    // Months are zero-indexed, so add 1 for correct month number
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+  
+    return `${year}-${month}-${day}`;
+  };
+
+  /**
+   * Formats a date to a string in the format 'DD/MM/YYYY'.
+   * @param date - The date to format.
+   * @returns A string representation of the date in the format 'DD/MM/YYYY'.
+   */
+  static formatStringDate(date: Date): string {
+    return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', }).format(date);
+  }
+
+  /**
+   * Formats a day number to its corresponding name.
+   * @param day - The day number to format.
+   * @returns The name of the day.
+   */
+  static formatDay(day: number): string {
+    const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
+    const dayDate = new Date(baseDate);
+    dayDate.setDate(dayDate.getDate() + day - 1);
+    const dayName = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' }).format(dayDate);
+    return dayName;
+  }
+
+  /**
+   * Formats a time to a string in the format 'HH:MM'.
+   * @param date - The date to format.
+   * @returns A string representation of the time in the format 'HH:MM'.
+   */
+  static formatTime(date: Date): string {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  }
+
+  /**
+   * Handle error keys to display the correct error message.
+   * @param keys - The keys of the error messages.
+   * @returns The title of the error message to display.
+   */
+  static handleErrorKeys(keys: string[]): string {
+    let errorTitle = 'errors.api.badRequest.default';
+    if (keys.length > 0) {
+      if (keys.includes('badRequest.email.invalid')) {
+        if (keys.includes('badRequest.phoneNumber.invalid')) {
+          errorTitle = 'errors.api.badRequest.phoneAndEmail';
+        } else {
+          errorTitle = 'errors.api.badRequest.email';
+        }
+      } else if (keys.includes('badRequest.phoneNumber.invalid')) {
+        errorTitle = 'errors.api.badRequest.phoneNumber';
+      }
+    }
+    return errorTitle;
+  }
+
+  /**
+   * Checks if a value is a valid number.
+   * @param value - The value to check.
+   * @returns `true` if the value is a valid number, `false` otherwise.
+   */
+  isANumber(value: string): boolean {
+    return !isNaN(Number(value));
+  } 
 }
 
 export default Utils;

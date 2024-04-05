@@ -20,6 +20,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
+import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 
@@ -31,6 +32,10 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [newTabName, setNewTabName] = useState<string>('');
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const plusIcon = require('../../assets/images/plus.png');
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
@@ -64,6 +69,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     technicalTab.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
@@ -86,16 +92,6 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     });
   }
 
-  async function addTab() {
-    const newTab: ITechnicalDocTab = {
-      name: newTabName,
-      area: area.id
-    };
-    const createdTab = await TechnicalDocumentationTabService.getInstance().createTab(newTab, token);
-    await UserService.getInstance().addTabToUser(currentClient?.id, createdTab, token);
-    setShowDialog(false);
-  }
-
   function getUser() {
     if (currentUser) {
       setIsAdmin(currentUser.userType == UserType.Admin);
@@ -104,14 +100,41 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     }
   }
 
-  async function getTabs() {
-    const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
-    const areaTabs = tabs.filter(tab => {
-      return tab.area === area.id.toLowerCase();
-    })
-    setTechnicalTabs(areaTabs);
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
   }
 
+  // Async Methods
+  async function addTab() {
+    try {
+      const newTab: ITechnicalDocTab = {
+        name: newTabName,
+        area: area.id
+      };
+      const createdTab = await TechnicalDocumentationTabService.getInstance().createTab(newTab, token);
+      await UserService.getInstance().addTabToUser(currentClient?.id, createdTab, token);
+      setShowDialog(false);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+  }
+
+  async function getTabs() {
+    try {
+      const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
+      const areaTabs = tabs.filter(tab => {
+        return tab.area === area.id.toLowerCase();
+      })
+      setTechnicalTabs(areaTabs);
+    } catch (error) {
+      console.log('Error getting tabs', error);
+    }
+  }
+
+  // Lifecycle Methods
   useEffect(() => {
     getUser();
     async function init() {
@@ -120,6 +143,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
     init();
   }, []);
 
+  // Components
   function TabGridItem(item: ITechnicalDocTab) {
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
@@ -153,6 +177,23 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
         }
       </>
     );
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
   }
 
   return (
@@ -196,6 +237,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
           </Dialog>
         )
       }
+      {ToastContent()}
     </>
   );
 }

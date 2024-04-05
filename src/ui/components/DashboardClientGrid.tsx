@@ -1,13 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Text,
-  TouchableOpacity
-} from 'react-native';
 
 import IModule from '../../business-logic/model/IModule';
-import IToken from '../../business-logic/model/IToken';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../business-logic/services/ModuleService';
 import UserService from '../../business-logic/services/UserService';
@@ -17,24 +12,22 @@ import { RootState } from '../../business-logic/store/store';
 
 import ContentUnavailableView from './ContentUnavailableView';
 import Grid from './Grid';
-
-import styles from '../assets/styles/components/DashboardClientGridStyles';
+import GridModuleItem from './GridModuleItem';
 
 type DashboardClientGridProps = {
   searchText: string;
-  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowErrorDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element {
-  const { searchText, setShowDialog } = props;
+  const { searchText, setShowErrorDialog } = props;
 
   const [modules, setModules] = useState<IModule[]>([]);
   const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
   const clipboardIcon = require('../assets/images/list.clipboard.png');
 
-  const navigation = useNavigation();
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   const modulesFiltered = modules.filter(module =>
     module.name.toLowerCase().includes(searchText?.toLowerCase()),
@@ -42,39 +35,42 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const dispatch = useAppDispatch();
 
+  // Sync Methods
   function navigateToModule(module: IModule) {
     if (clientModulesIDs.includes(module.id)) {
       dispatch(setModule(module));
-      if (module.name == 'documentManagement') {
+      if (module.name === 'documentManagement') {
         navigation.navigate(NavigationRoutes.DocumentManagementScreen);
-      } else if (module.name == 'tracking') {
+      } else if (module.name === 'tracking') {
         navigation.navigate(NavigationRoutes.TrackingScreen);
+      } else if (module.name === 'reminders') {
+        navigation.navigate(NavigationRoutes.RemindersScreen);
+      } else if (module.name === 'chat') {
+        navigation.navigate(NavigationRoutes.MessagesScreen);
       }
     } else {
-      setShowDialog && setShowDialog(true);
+      setShowErrorDialog && setShowErrorDialog(true);
     }
   }
 
-  function GridModuleItem(module: IModule) {
-    return (
-      <TouchableOpacity onPress={() => navigateToModule(module)} style={styles.moduleContainer}>
-        <Text style={styles.moduleText}>{t(`modules.${module.name}`)}</Text>
-      </TouchableOpacity>
-    )
-  }
-
+  // Async Methods
   async function loadModules() {
     if (currentClient) {
-      const apiModules = await ModuleService.getInstance().getSortedModules(token);
-      const castedToken = token as IToken;
-      const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, castedToken);
-      const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
-      setClientModulesIDs(usersModulesIDs);
-      setModules(apiModules);
+      try {
+        const apiModules = await ModuleService.getInstance().getSortedModules(token);
+        const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
+        const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
+        setClientModulesIDs(usersModulesIDs);
+        setModules(apiModules);
+      } catch (error) {
+        console.log('Error loading modules', error);
+      }
     }
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadModules();
@@ -89,6 +85,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
     reload();
   }, [currentClient]);
   
+  // Components
   return (
     <>
     {
@@ -101,7 +98,12 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
       ) : (
         <Grid
           data={modulesFiltered}
-          renderItem={(renderItem) => GridModuleItem(renderItem.item)}
+          renderItem={(renderItem) => (
+            <GridModuleItem
+              module={renderItem.item}
+              onPress={navigateToModule}
+            />
+          )}
         />
       )
     }

@@ -31,7 +31,6 @@ class DocumentActivityLogsService {
     try {
       await APIService.post<IDocumentActivityLog>(this.baseRoute, logInput, token?.value);
     } catch (error) {
-      console.log('Error posting log for client:', logInput.clientID, 'for doc:', logInput.documentID, error);
       throw error;
     }
   }
@@ -45,6 +44,23 @@ class DocumentActivityLogsService {
   async getLogsForClient(clientID: string | undefined, token: IToken | null): Promise<IDocumentActivityLog[]> {
     try {
       const logs = await APIService.get<IDocumentActivityLog[]>(`${this.baseRoute}/${clientID}`, token?.value);
+      return logs;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves the document activity logs for a client, paginated.
+   * @param clientID - The ID of the client.
+   * @param token - The authentication token.
+   * @param page - The page number.
+   * @returns A promise that resolves to an array of document activity logs.
+   * @throws An error if the logs cannot be retrieved.
+   */
+  async getPaginatedLogsForClient(clientID: string | undefined, token: IToken | null, page: number): Promise<IDocumentActivityLog[]> {
+    try {
+      const logs = await APIService.get<IDocumentActivityLog[]>(`${this.baseRoute}/paginate/${clientID}?page=${page}&perPage=5`, token?.value);
       return logs;
     } catch (error) {
       console.log('Error getting logs for client:', clientID, error);

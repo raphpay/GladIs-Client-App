@@ -35,7 +35,6 @@ class TechnicalDocumentationTabService {
       const createdTab = await APIService.post<ITechnicalDocTab>(this.baseRoute, tab, token?.value);
       return createdTab;
     } catch (error) {
-      console.log('Error creating tab:', error);
       throw error;
     }
   }
