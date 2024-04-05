@@ -61,10 +61,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
   async function loadAllEvents() {
     const currentEvents = await loadEvents();
     const archivedEvents = await loadArchivedEvents();
-    console.log('currentEvents', currentEvents);
-    console.log('archivedEvents', archivedEvents);
     const allEvents = currentEvents.concat(archivedEvents);
-    console.log('all', allEvents );
     setEvents(allEvents);
   }
 
