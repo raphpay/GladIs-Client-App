@@ -14,7 +14,7 @@ import IPasswordResetToken from '../../../business-logic/model/IPasswordResetTok
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
@@ -28,7 +28,9 @@ import Toast from '../../components/Toast';
 import Tooltip from '../../components/Tooltip';
 import TooltipAction from '../../components/TooltipAction';
 
+import { setPasswordResetTokenCount } from '../../../business-logic/store/slices/appStateReducer';
 import styles from '../../assets/styles/dashboard/PasswordResetScreenStyles';
+import ContentUnavailableView from '../../components/ContentUnavailableView';
 
 type PasswordResetScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PasswordResetScreen>;
 
@@ -40,6 +42,8 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { passwordResetTokenCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
 
   const [passwordsToReset, setPasswordsToReset] = useState<IPasswordResetToken[]>([]);
   const [showAdminPasswordDialog, setShowAdminPasswordDialog] = useState<boolean>(false);
@@ -54,6 +58,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   const [selectedItem, setSelectedItem] = useState<IPasswordResetToken>();
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
+  const expiredClockIcon = require('../../assets/images/clock.badge.exclamationmark.png');
 
   const popoverActions: IAction[] = [
     {
@@ -63,6 +68,11 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     {
       title: t('components.tooltip.passwordsToReset.showToken'),
       onPress: () => openAdminPasswordDialog(selectedUserID)
+    },
+    {
+      title: t('components.tooltip.passwordsToReset.delete'),
+      onPress: () => deleteResetToken(),
+      isDestructive: true
     }
   ];
 
@@ -118,6 +128,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     try {
       const apiTokens = await PasswordResetService.getInstance().getAll(token);
       setPasswordsToReset(apiTokens);
+      dispatch(setPasswordResetTokenCount(apiTokens.length));
     } catch (error) {
       console.log('Error loading password reset tokens', error);
     }
@@ -152,6 +163,20 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     }
   }
 
+  async function deleteResetToken() {
+    if (selectedItem) {
+      try {
+        await PasswordResetService.getInstance().delete(selectedItem.id as string, token);
+        displayToast(t('components.toast.passwordsToReset.tokenDeleted'), false);
+        resetDialogs();
+        await loadPasswordsToReset();
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+    }
+  }
+
   // Effects
   useEffect(() => {
     async function init() {
@@ -171,6 +196,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   // Components
   function PasswordRow(item: IPasswordResetToken) {
     const expirationDate = new Date(item.expiresAt);
+    const isExpired = expirationDate < new Date();
     const dateString = Utils.formatDate(expirationDate);
     const timeString = Utils.formatTime(expirationDate);
     const dateTimeString = `${dateString} ${t('tracking.at')} ${timeString}`
@@ -186,6 +212,11 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
               <Text style={styles.dateText}>{dateTimeString}</Text>
             </View>
           </TouchableOpacity>
+          {
+            isExpired && (
+              <Image source={expiredClockIcon} style={styles.clockIcon} />
+            )
+          }
           <Tooltip action={() => displayTooltipDialog(userID as string, item)}/>
         </View>
         <View style={styles.separator} />
@@ -286,10 +317,20 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
         showSettings={true}
         navigateBack={navigateBack}
       >
-        <Grid
-          data={passwordsToReset}
-          renderItem={({ item }) => PasswordRow(item)}
-        />
+        {
+          passwordsToReset.length === 0 ? (
+            <ContentUnavailableView
+              title={t('passwordsToReset.noTokens.title')}
+              message={t('passwordsToReset.noTokens.message')}
+              image={clipboardIcon}
+            />
+          ) : (
+            <Grid
+              data={passwordsToReset}
+              renderItem={(renderItem) => PasswordRow(renderItem.item)}
+            />
+          )
+        }
       </AppContainer>
       {AdminPasswordDialog()}
       {ResetTokenDialog()}
