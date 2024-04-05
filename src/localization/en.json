@@ -197,7 +197,8 @@
     "dueDate": "Due date",
     "dialog": {
       "cancelTitle": "Close",
-      "confirmTitle": "Mark as done"
+      "confirmTitle": "Mark as done",
+      "restore": "Restore"
     }
   },
   "passwordsToReset": {

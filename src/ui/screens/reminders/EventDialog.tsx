@@ -19,8 +19,8 @@ type EventDialogProps = {
 function EventDialog(props: EventDialogProps): React.JSX.Element {
 
   const { selectedEvent, setShowEventDialog, displayToast, loadAllEvents } = props;
-  
-  const formattedDate = Utils.formatStringDate(new Date(selectedEvent?.date));
+  const formattedDate = Utils.formatStringDate(new Date(selectedEvent.date));
+  const isArchived = selectedEvent.deletedAt !== null;
 
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
@@ -30,9 +30,8 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
   }
 
   async function tappedOnDone() {
-    if (selectedEvent?.deletedAt) {
-      // Event is archived
-      deleteEvent();
+    if (isArchived) {
+      await deleteEvent();
     } else {
       await archiveEvent();
     }
@@ -63,10 +62,23 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
       }
     }
   }
+
+  async function restoreEvent() {
+    if (selectedEvent as IEvent) {
+      try {
+        await EventService.getInstance().restore(selectedEvent.id, token);
+        setShowEventDialog(false);
+        await loadAllEvents();
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(errorMessage, true);
+      }
+    }
+  }
   
   return (
     <Dialog
-      title={selectedEvent?.name}
+      title={selectedEvent.name}
       description={`${t('calendar.dueDate')} : ${formattedDate}`}
       confirmTitle={t('calendar.dialog.confirmTitle')}
       isConfirmAvailable={true}
@@ -74,6 +86,8 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
       cancelTitle={t('calendar.dialog.cancelTitle')}
       isCancelAvailable={true}
       onCancel={closeDialog}
+      extraConfirmButtonAction={restoreEvent}
+      extraConfirmButtonTitle={isArchived ? t('calendar.dialog.restore') : undefined}
     />
   );
 }

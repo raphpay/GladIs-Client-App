@@ -53,6 +53,15 @@ class EventService {
     }
   }
 
+  async restore(eventID: string, token: IToken | null): Promise<void> {
+    try {
+      const url = `${this.baseRoute}/restore/${eventID}`;
+      await APIService.put(url, {}, token?.value as string);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   /**
    * Retrieves all events.
    * @param token - The authentication token.

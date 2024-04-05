@@ -198,6 +198,7 @@
     "dialog": {
       "cancelTitle": "Fermer",
       "confirmTitle": "Marqué comme fait",
+      "restore": "Restaurer"
     }
   },
   "passwordsToReset": {
