@@ -194,7 +194,11 @@
   "calendar": {
     "today": "Aujourd'hui",
     "more": "Plus...",
-    "dueDate": "Date d'échéance"
+    "dueDate": "Date d'échéance",
+    "dialog": {
+      "cancelTitle": "Fermer",
+      "confirmTitle": "Marqué comme fait",
+    }
   },
   "passwordsToReset": {
     "title": "Mot de passe à réinitialiser",

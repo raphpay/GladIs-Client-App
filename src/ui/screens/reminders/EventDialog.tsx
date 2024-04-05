@@ -29,8 +29,10 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
           <Dialog
             title={selectedEvent?.name}
             description={`${t('calendar.dueDate')} : ${formattedDate}`}
+            confirmTitle={t('calendar.dialog.confirmTitle')}
             isConfirmAvailable={true}
             onConfirm={() => { }}
+            cancelTitle={t('calendar.dialog.cancelTitle')}
             isCancelAvailable={true}
             onCancel={closeDialog}
           />
