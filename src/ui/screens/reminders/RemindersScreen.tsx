@@ -59,50 +59,53 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
 
   // Async Methods
   async function loadAllEvents() {
-    await loadEvents();
-    await loadArchivedEvents();
+    const currentEvents = await loadEvents();
+    const archivedEvents = await loadArchivedEvents();
+    console.log('currentEvents', currentEvents);
+    console.log('archivedEvents', archivedEvents);
+    const allEvents = currentEvents.concat(archivedEvents);
+    console.log('all', allEvents );
+    setEvents(allEvents);
   }
 
-  async function loadEvents() {
+  async function loadEvents(): Promise<IEvent[]> {
+    let events: IEvent[] = [];
     if (currentClient) {
       try {
-        const events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
-        setEvents(events);
+        events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
       } catch (error) {
         console.log("Error loading events", error);
       }
     } else {
       if (currentUser?.userType === UserType.Admin) {
         try {
-          const events = await EventService.getInstance().getAll(token);
-          setEvents(events);
+          events = await EventService.getInstance().getAll(token);
         } catch (error) {
           console.log("Error loading events", error);
         }
       }
     }
+    return events;
   }
 
-  async function loadArchivedEvents() {
+  async function loadArchivedEvents(): Promise<IEvent[]> {
+    let archivedEvents: IEvent[] = [];
     if (currentClient) {
       try {
-        const archivedEvents = await EventService.getInstance().getArchivedForClient(currentClient?.id as string, token);
-        const updatedEvents = events.concat(archivedEvents);
-        setEvents(updatedEvents);
+        archivedEvents = await EventService.getInstance().getArchivedForClient(currentClient?.id as string, token);
       } catch (error) {
         console.log("Error loading events", error);
       }
     } else {
       if (currentUser?.userType === UserType.Admin) {
         try {
-          const archivedEvents = await EventService.getInstance().getArchivedEvents(token);
-          const updatedEvents = events.concat(archivedEvents);
-          setEvents(updatedEvents);
+          archivedEvents = await EventService.getInstance().getArchivedEvents(token);
         } catch (error) {
           console.log("Error loading events", error);
         }
       }
     }
+    return archivedEvents;
   }
 
   // Lifecycle Methods
