@@ -18,18 +18,20 @@ type CalendarProps = {
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowCreateDialog: React.Dispatch<React.SetStateAction<boolean>>;
   setShowListDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowEventDialog: React.Dispatch<React.SetStateAction<boolean>>;
   setDaysEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
+  setSelectedEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
 };
 function Calendar(props: CalendarProps): React.JSX.Element {
   const { t } = useTranslation();
 
   const {
-    events,
+    events, setSelectedEvent,
     currentDate, setCurrentDate,
     setSelectedDate,
-    setShowDialog, setShowListDialog,
+    setShowCreateDialog, setShowListDialog, setShowEventDialog,
     setDaysEvents
   } = props;
 
@@ -72,7 +74,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       // Reset lastTap
       setLastTap(null);
       // Perform action on double tap
-      setShowDialog(true);
+      setShowCreateDialog(true);
       setSelectedDate(tappedDate);
     } else {
       // Update the lastTap timestamp
@@ -84,7 +86,16 @@ function Calendar(props: CalendarProps): React.JSX.Element {
 
   function openEventListDialog(dayEvents: IEvent[]) {
     setDaysEvents(dayEvents);
-    setShowListDialog(true)
+    setShowListDialog(true);
+    setShowCreateDialog(false);
+    setShowEventDialog(false);
+  }
+
+  function openSelectedEvent(event: IEvent) {
+    setSelectedEvent(event);
+    setShowEventDialog(true);
+    setShowCreateDialog(false);
+    setShowListDialog(false);
   }
 
   function groupEventsByDate() {
@@ -122,7 +133,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
         {dayEvents.slice(0, 1).map((event, index) => (
           <TouchableOpacity
             key={`event-${day}-${event.name}-${index}`}
-            onPress={() => console.log('open event')}
+            onPress={() => openSelectedEvent(event)}
             style={styles.eventIndicator}
           >
             <Text style={styles.eventName}>
@@ -167,7 +178,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       <CalendarHeader
         currentDate={currentDate}
         setCurrentDate={setCurrentDate}
-        setShowDialog={setShowDialog}
+        setShowCreateDialog={setShowCreateDialog}
       />
       <View style={styles.daysOfWeekContainer}>
         {daysItems.map((day) => (

@@ -16,13 +16,13 @@ import styles from '../../assets/styles/reminders/CalendarStyles';
 type CalendarHeaderProps = {
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
-  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowCreateDialog: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
   const { t } = useTranslation();
 
-  const { currentDate, setCurrentDate, setShowDialog } = props;
+  const { currentDate, setCurrentDate, setShowCreateDialog } = props;
 
   const [monthsOpen, setMonthsOpen] = useState(false);
   const [monthValue, setMonthValue] = useState(currentDate.getMonth());
@@ -113,7 +113,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
         </TouchableOpacity>
         {ArrowButton('left')}
         {ArrowButton('right')}
-        <TouchableOpacity onPress={() => setShowDialog(true)} style={styles.todayButton}>
+        <TouchableOpacity onPress={() => setShowCreateDialog(true)} style={styles.todayButton}>
           <Image source={plusIcon} style={styles.plusIcon}/>
         </TouchableOpacity>
       </View>

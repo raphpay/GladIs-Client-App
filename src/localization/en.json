@@ -194,6 +194,7 @@
   "calendar": {
     "today": "Today",
     "more": "More...",
+    "dueDate": "Due date"
   },
   "passwordsToReset": {
     "title": "Passwords to reset",

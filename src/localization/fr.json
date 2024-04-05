@@ -194,6 +194,7 @@
   "calendar": {
     "today": "Aujourd'hui",
     "more": "Plus...",
+    "dueDate": "Date d'échéance"
   },
   "passwordsToReset": {
     "title": "Mot de passe à réinitialiser",
