@@ -6,6 +6,7 @@ export interface AppState {
   pendingUserListCount: number,
   clientListCount: number,
   documentListCount: number,
+  passwordResetTokenCount: number,
 }
 
 const initialState: AppState = {
@@ -13,6 +14,7 @@ const initialState: AppState = {
   pendingUserListCount: 0,
   clientListCount: 0,
   documentListCount: 0,
+  passwordResetTokenCount: 0,
 };
 
 export const appStateSlice = createSlice({
@@ -34,7 +36,10 @@ export const appStateSlice = createSlice({
     },
     setDocumentListCount: (state, action: PayloadAction<number>) => {
       state.documentListCount = action.payload;
-    }
+    },
+    setPasswordResetTokenCount: (state, action: PayloadAction<number>) => {
+      state.passwordResetTokenCount = action.payload;
+    },
   },
 });
 
@@ -43,7 +48,8 @@ export const {
   removeModule,
   setPendingUserListCount,
   setClientListCount,
-  setDocumentListCount
+  setDocumentListCount,
+  setPasswordResetTokenCount
 } = appStateSlice.actions;
 
 export default appStateSlice.reducer;

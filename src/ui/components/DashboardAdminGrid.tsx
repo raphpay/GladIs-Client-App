@@ -49,7 +49,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   const navigation = useNavigation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
-  const { clientListCount } = useAppSelector((state: RootState) => state.appState);
+  const { clientListCount, passwordResetTokenCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
   const { t } = useTranslation();
@@ -160,6 +160,13 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     init();
   }, [clientListCount]);
 
+  useEffect(() => {
+    async function init() {
+      await loadPasswordReset();
+    }
+    init();
+  }, [passwordResetTokenCount]);
+
   // Components
   function ActionGridItem(item?: IActionItem) {
     function navigateTo() {
@@ -209,6 +216,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     )
   }
 
+  // TODO: add translations
   function ModulesSection() {
     return (
       <View style={styles.clientSectionContainer}>
@@ -256,11 +264,11 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       {ActionSection()}
       {ModulesSection()}
       {ClientSection()}
-    </View>
+    </ScrollView>
   );
 }
 

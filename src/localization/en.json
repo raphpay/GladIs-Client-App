@@ -200,6 +200,10 @@
       "checkPassword": "Enter your current password",
       "tokenGenerated": "The reset token is: ",
       "confirmButton": "Verify"
+    },
+    "noTokens": {
+      "title": "No passwords to reset",
+      "message": "Come back later"
     }
   },
   "chat": {
