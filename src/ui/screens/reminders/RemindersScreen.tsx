@@ -13,7 +13,9 @@ import { RootState } from '../../../business-logic/store/store';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
+import Toast from '../../components/Toast';
 import Calendar from './Calendar';
+import CreateEventDialog from './CreateEventDialog';
 import EventDialog from './EventDialog';
 import ListEventsDialog from './ListDialog';
 
@@ -21,12 +23,21 @@ type RemindersScreenProps = NativeStackScreenProps<IRootStackParams, NavigationR
 
 function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
 
-  const [showDialog, setShowDialog] = useState<boolean>(false);
+  // Dialog
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
   const [showListDialog, setShowListDialog] = useState<boolean>(false);
+  const [showEventDialog, setShowEventDialog] = useState<boolean>(false);
+  // Date
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [events, setEvents] = useState<IEvent[]>([]);
   const [daysEvents, setDaysEvents] = useState<IEvent[]>([]);
+  // Events
+  const [events, setEvents] = useState<IEvent[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<IEvent>();
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
@@ -40,35 +51,128 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
   // Async Methods
-  async function loadEvents() {
+  async function loadAllEvents() {
+    const currentEvents = await loadEvents();
+    const archivedEvents = await loadArchivedEvents();
+    const allEvents = currentEvents.concat(archivedEvents);
+    setEvents(allEvents);
+  }
+
+  async function loadEvents(): Promise<IEvent[]> {
+    let events: IEvent[] = [];
     if (currentClient) {
       try {
-        const events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
-        setEvents(events);
+        events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
       } catch (error) {
         console.log("Error loading events", error);
       }
     } else {
       if (currentUser?.userType === UserType.Admin) {
         try {
-          const events = await EventService.getInstance().getAll(token);
-          setEvents(events);
+          events = await EventService.getInstance().getAll(token);
         } catch (error) {
           console.log("Error loading events", error);
         }
       }
     }
+    return events;
+  }
+
+  async function loadArchivedEvents(): Promise<IEvent[]> {
+    let archivedEvents: IEvent[] = [];
+    if (currentClient) {
+      try {
+        archivedEvents = await EventService.getInstance().getArchivedForClient(currentClient?.id as string, token);
+      } catch (error) {
+        console.log("Error loading events", error);
+      }
+    } else {
+      if (currentUser?.userType === UserType.Admin) {
+        try {
+          archivedEvents = await EventService.getInstance().getArchivedEvents(token);
+        } catch (error) {
+          console.log("Error loading events", error);
+        }
+      }
+    }
+    return archivedEvents;
   }
 
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      await loadEvents();
+      await loadAllEvents();
     }
     init();
   }, []);
   
+  // Components
+  function CreateEventDialogContent() {
+    return (
+      <CreateEventDialog
+        showDialog={showCreateDialog}
+        setShowCreateDialog={setShowCreateDialog}
+        events={events}
+        setEvents={setEvents}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
+    )
+  }
+
+  function ListEventsDialogContent() {
+    return (
+      <ListEventsDialog
+        showListDialog={showListDialog}
+        setShowListDialog={setShowListDialog}
+        daysEvents={daysEvents}
+        setShowEventDialog={setShowEventDialog}
+        setSelectedEvent={setSelectedEvent}
+      />
+    )
+  }
+
+  function EventDialogContent() {
+    return (
+      <>
+        {
+          showEventDialog && (
+            <EventDialog
+              selectedEvent={selectedEvent as IEvent}
+              setShowEventDialog={setShowEventDialog}
+              displayToast={displayToast}
+              loadAllEvents={loadAllEvents}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -77,36 +181,25 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
         showSearchText={false}
         showSettings={true}
         navigateBack={navigateBack}
-        showDialog={showDialog}
-        setShowDialog={setShowDialog}
+        showDialog={showCreateDialog}
+        setShowDialog={setShowCreateDialog}
       >
         <Calendar
           events={events}
           currentDate={currentDate} 
           setCurrentDate={setCurrentDate}
           setSelectedDate={setSelectedDate}
-          setShowDialog={setShowDialog}
+          setShowCreateDialog={setShowCreateDialog}
           setShowListDialog={setShowListDialog}
+          setShowEventDialog={setShowEventDialog}
+          setSelectedEvent={setSelectedEvent}
           setDaysEvents={setDaysEvents}
         />
       </AppContainer>
-      {
-        <EventDialog
-          showDialog={showDialog}
-          setShowDialog={setShowDialog}
-          events={events}
-          setEvents={setEvents}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-        />
-      }
-      {
-        <ListEventsDialog
-          showListDialog={showListDialog}
-          setShowListDialog={setShowListDialog}
-          daysEvents={daysEvents}
-        />
-      }
+      {CreateEventDialogContent()}
+      {ListEventsDialogContent()}
+      {EventDialogContent()}
+      {ToastContent()}
     </>
   );
 }

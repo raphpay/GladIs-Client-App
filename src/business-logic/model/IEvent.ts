@@ -3,6 +3,7 @@ export interface IEvent {
   name: string;
   date: number;
   client: IClientID | null;
+  deletedAt: Date | null;
 }
 
 export interface IEventInput {

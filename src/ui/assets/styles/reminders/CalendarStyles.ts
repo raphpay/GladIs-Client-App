@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
   },
   eventIndicator: {
     backgroundColor: Colors.primary,
-    borderRadius: 5,
-    padding: 5,
+    maxHeight: 20,
+    padding: 3,
   },
   eventName: {
     fontSize: 12,

@@ -194,6 +194,12 @@
   "calendar": {
     "today": "Today",
     "more": "More...",
+    "dueDate": "Due date",
+    "dialog": {
+      "cancelTitle": "Close",
+      "confirmTitle": "Mark as done",
+      "restore": "Restore"
+    }
   },
   "passwordsToReset": {
     "title": "Passwords to reset",
