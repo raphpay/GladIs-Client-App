@@ -169,7 +169,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
             >
               <>
                 {popoverActions.map((action: IAction, index: number) => (
-                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.action}>
+                  <TouchableOpacity key={index} style={styles.popoverButton} onPress={action.onPress}>
                     <Text style={styles.popoverButtonText}>{action.title}</Text>
                   </TouchableOpacity>
                 ))}
