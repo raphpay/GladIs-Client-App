@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity } from 'react-native';
+import { Image, Text, TouchableOpacity } from 'react-native';
 
 import { IEvent } from '../../../business-logic/model/IEvent';
 import Utils from '../../../business-logic/utils/Utils';
@@ -28,6 +28,7 @@ function ListEventsDialog(props: ListEventsDialogProps): React.JSX.Element {
 
   const eventsDate = daysEvents.length > 0 && new Date(daysEvents[0].date);
   const formatedEventsDate = eventsDate && Utils.formatStringDate(eventsDate);
+  const achivedIcon = require('../../assets/images/archivebox.png');
 
   const { t } = useTranslation();
 
@@ -39,10 +40,15 @@ function ListEventsDialog(props: ListEventsDialogProps): React.JSX.Element {
 
   function DayButton(event: IEvent) {
     const isArchived = event.deletedAt !== null;
-    const opacity = isArchived ? 0.8 : 1;
+    const opacity = isArchived ? 0.7 : 1;
 
     return (
-      <TouchableOpacity key={event.id} onPress={() => openSingleEventDialog(event)}>
+      <TouchableOpacity
+        key={event.id}
+        onPress={() => openSingleEventDialog(event)}
+        style={styles.eventButton}
+      >
+        {isArchived && <Image source={achivedIcon} style={styles.archivedIcon} />}
         <Text style={{...styles.eventText, opacity}}>{event.name}</Text>
       </TouchableOpacity>
     );
