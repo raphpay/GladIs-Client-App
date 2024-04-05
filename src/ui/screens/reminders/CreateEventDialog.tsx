@@ -14,7 +14,7 @@ import GladisTextInput from '../../components/GladisTextInput';
 
 type CreateEventDialogProps = {
   showDialog: boolean;
-  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowCreateDialog: React.Dispatch<React.SetStateAction<boolean>>;
   events: IEvent[];
   setEvents: React.Dispatch<React.SetStateAction<IEvent[]>>;
   selectedDate: Date;
@@ -25,7 +25,7 @@ type CreateEventDialogProps = {
 function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
 
   const {
-    showDialog, setShowDialog,
+    showDialog, setShowCreateDialog,
     selectedDate, setSelectedDate,
     events, setEvents
   } = props;
@@ -76,7 +76,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
 
   function resetDialog() {
     setEventName('');
-    setShowDialog(false);
+    setShowCreateDialog(false);
   }
 
   const onDayOpen = () => {

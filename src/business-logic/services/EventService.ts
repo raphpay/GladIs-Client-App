@@ -69,6 +69,22 @@ class EventService {
   }
 
   /**
+   * Retrieves all archived events.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to an array of events.
+   * @throws If an error occurs while retrieving the events.
+   */
+  async getArchivedEvents(token: IToken | null): Promise<IEvent[]> {
+    try {
+      const url = `${this.baseRoute}/archived`;
+      const events = await APIService.get<IEvent[]>(url, token?.value as string);
+      return events;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Retrieves all events for the specified client.
    * @param clientID - The ID of the client to retrieve events for.
    * @param token - The authentication token.
@@ -78,6 +94,23 @@ class EventService {
   async getAllForClient(clientID: string, token: IToken | null): Promise<IEvent[]> {
     try {
       const url = `${this.baseRoute}/client/${clientID}`;
+      const events = await APIService.get<IEvent[]>(url, token?.value as string);
+      return events;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves all archived events for the specified client.
+   * @param clientID - The ID of the client to retrieve archived events for.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to an array of events.
+   * @throws If an error occurs while retrieving the events.
+   */
+  async getArchivedForClient(clientID: string, token: IToken | null): Promise<IEvent[]> {
+    try {
+      const url = `${this.baseRoute}/client/archived/${clientID}`;
       const events = await APIService.get<IEvent[]>(url, token?.value as string);
       return events;
     } catch (error) {
@@ -113,6 +146,21 @@ class EventService {
   async remove(eventID: string, token: IToken | null): Promise<void> {
     try {
       const url = `${this.baseRoute}/${eventID}`;
+      await APIService.delete(url, token?.value as string);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Archives the event with the specified ID.
+   * @param eventID - The ID of the event to archive.
+   * @param token - The authentication token.
+   * @returns A promise that resolves when the event is archived.
+   */
+  async archive(eventID: string, token: IToken | null): Promise<void> {
+    try {
+      const url = `${this.baseRoute}/archive/${eventID}`;
       await APIService.delete(url, token?.value as string);
     } catch (error) {
       throw error;

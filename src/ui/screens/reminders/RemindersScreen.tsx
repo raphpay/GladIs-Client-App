@@ -13,6 +13,7 @@ import { RootState } from '../../../business-logic/store/store';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
+import Toast from '../../components/Toast';
 import Calendar from './Calendar';
 import CreateEventDialog from './CreateEventDialog';
 import EventDialog from './EventDialog';
@@ -33,6 +34,10 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
   // Events
   const [events, setEvents] = useState<IEvent[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<IEvent>();
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
@@ -46,7 +51,18 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
   // Async Methods
+  async function loadAllEvents() {
+    await loadEvents();
+    await loadArchivedEvents();
+  }
+
   async function loadEvents() {
     if (currentClient) {
       try {
@@ -67,10 +83,32 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     }
   }
 
+  async function loadArchivedEvents() {
+    if (currentClient) {
+      try {
+        const archivedEvents = await EventService.getInstance().getArchivedForClient(currentClient?.id as string, token);
+        const updatedEvents = events.concat(archivedEvents);
+        setEvents(updatedEvents);
+      } catch (error) {
+        console.log("Error loading events", error);
+      }
+    } else {
+      if (currentUser?.userType === UserType.Admin) {
+        try {
+          const archivedEvents = await EventService.getInstance().getArchivedEvents(token);
+          const updatedEvents = events.concat(archivedEvents);
+          setEvents(updatedEvents);
+        } catch (error) {
+          console.log("Error loading events", error);
+        }
+      }
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      await loadEvents();
+      await loadAllEvents();
     }
     init();
   }, []);
@@ -80,7 +118,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     return (
       <CreateEventDialog
         showDialog={showCreateDialog}
-        setShowDialog={setShowCreateDialog}
+        setShowCreateDialog={setShowCreateDialog}
         events={events}
         setEvents={setEvents}
         selectedDate={selectedDate}
@@ -95,17 +133,43 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
         showListDialog={showListDialog}
         setShowListDialog={setShowListDialog}
         daysEvents={daysEvents}
+        setShowEventDialog={setShowEventDialog}
+        setSelectedEvent={setSelectedEvent}
       />
     )
   }
 
   function EventDialogContent() {
     return (
-      <EventDialog
-        selectedEvent={selectedEvent as IEvent}
-        showEventDialog={showEventDialog}
-        setShowEventDialog={setShowEventDialog}
-      />
+      <>
+        {
+          showEventDialog && (
+            <EventDialog
+              selectedEvent={selectedEvent as IEvent}
+              setShowEventDialog={setShowEventDialog}
+              displayToast={displayToast}
+              loadAllEvents={loadAllEvents}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
     )
   }
 
@@ -135,6 +199,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
       {CreateEventDialogContent()}
       {ListEventsDialogContent()}
       {EventDialogContent()}
+      {ToastContent()}
     </>
   );
 }
