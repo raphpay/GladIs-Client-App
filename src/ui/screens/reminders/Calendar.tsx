@@ -119,6 +119,8 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   }, [events]);
 
   function DayCellContent(day: number, dayEvents: IEvent[]) {
+    const maxlimit = 15;
+
     return (
       <View style={styles.dayTextContainer}>
         <Text style={styles.dayText}>{day}</Text>
@@ -128,7 +130,11 @@ function Calendar(props: CalendarProps): React.JSX.Element {
             onPress={() => console.log('open event')}
             style={styles.eventIndicator}
           >
-            <Text style={styles.eventName}>{event.name}</Text>
+            <Text style={styles.eventName}>
+            { ((event.name).length > maxlimit) ? 
+              (((event.name).substring(0,maxlimit-3)) + '...') : 
+              event.name }
+            </Text>
           </TouchableOpacity>
         ))}
         {dayEvents.length > 1 && (
