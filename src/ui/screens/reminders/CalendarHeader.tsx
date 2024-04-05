@@ -11,6 +11,8 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import Dropdown from '../../components/Dropdown';
 
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 import styles from '../../assets/styles/reminders/CalendarStyles';
 
 type CalendarHeaderProps = {
@@ -36,6 +38,8 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const formattedMonthYearDate = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(currentDate);
+
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
 
   const onMonthOpen = () => {
     setYearsOpen(false);
@@ -113,9 +117,13 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
         </TouchableOpacity>
         {ArrowButton('left')}
         {ArrowButton('right')}
-        <TouchableOpacity onPress={() => setShowCreateDialog(true)} style={styles.todayButton}>
-          <Image source={plusIcon} style={styles.plusIcon}/>
-        </TouchableOpacity>
+        {
+          currentClient && (
+            <TouchableOpacity onPress={() => setShowCreateDialog(true)} style={styles.todayButton}>
+              <Image source={plusIcon} style={styles.plusIcon}/>
+            </TouchableOpacity>
+          )
+        }
       </View>
     </View>
   );
