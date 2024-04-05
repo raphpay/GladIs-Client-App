@@ -52,6 +52,7 @@
         "messages": "Messages",
         "events": "Events"
       },
+      "modules": "Modules",
       "clients": "Clients"
     }
   },

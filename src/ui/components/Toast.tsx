@@ -11,7 +11,6 @@ type ToastProps = {
   isShowingError?: boolean;
 };
 
-// TODO: Use toast when succeeding after a Dialog close
 const Toast = (props: ToastProps) => {
   const [slideAnim] = useState(new Animated.Value(60));
 

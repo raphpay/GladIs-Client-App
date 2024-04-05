@@ -97,7 +97,6 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   }
 
   async function loadActions() {
-    // TODO: Load events too
     await loadPasswordReset();
     await loadChatMessages();
   }
@@ -128,7 +127,6 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
         if (messages.length === 0) {
           setMessagesAction(undefined);
         } else {
-          // TODO: Add translations
           const messageAction: IActionItem = {
             id: '2',
             number: messages.length,
@@ -138,8 +136,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
           setMessagesAction(messageAction);
         }
       } catch (error) {
-        // TODO: Handle error
-        console.log('error', error );
+        console.log('Error loading messages', error );
       }
     }
   }
@@ -216,7 +213,6 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     )
   }
 
-  // TODO: add translations
   function ModulesSection() {
     return (
       <View style={styles.clientSectionContainer}>
