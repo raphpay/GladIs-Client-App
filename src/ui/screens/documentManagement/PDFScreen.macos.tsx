@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Dimensions, SafeAreaView } from 'react-native';
+import { ActivityIndicator, SafeAreaView } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -38,7 +38,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   const docIcon = require('../../assets/images/doc.fill.png');
   const backIcon = require('../../assets/images/arrowshape.turn.up.left.png');
 
-  const { width, height } = Dimensions.get('window');
+  const minimumScreenSize = 850;
 
   // Sync Methods
   function displayToast(message: string, isError: boolean = false) {
@@ -106,7 +106,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
       <>
         {
           pdfData ? (
-            <PDFViewer style={{ width, height }} dataString={pdfData} />
+            <PDFViewer style={{ width: minimumScreenSize, height: minimumScreenSize }} dataString={pdfData} />
           ) : (
             <ContentUnavailableView
               title={t('document.noDocumentFound.title')}
