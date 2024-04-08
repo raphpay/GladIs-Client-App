@@ -30,6 +30,8 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
+  const gladisLogo = require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent_Square.png')
+
   async function getLogoDocument(): Promise<IDocument | undefined> {
     if (currentClient) {
       const company = currentClient.companyName;
@@ -96,7 +98,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
             />
           ) : (
             <Image
-              source={require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent.png')}
+              source={gladisLogo}
               style={styles.image}
             />
           )
