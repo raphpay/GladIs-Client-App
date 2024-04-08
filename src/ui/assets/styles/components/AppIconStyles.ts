@@ -1,8 +1,14 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "../../colors/colors";
+import { Fonts } from "../../fonts/fonts";
 
 const styles = StyleSheet.create({
   container: {
+    width: 150,
+    height: 170,
+    alignItems: 'center',
+  },
+  imageContainer: {
     borderRadius: 10,
     width: 150,
     height: 150,
@@ -28,6 +34,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     borderRadius: 10,
   },
+  clientName: {
+    color: Colors.black,
+    fontSize: 14,
+    fontFamily: Fonts.poppinsSemiBold,
+    marginTop: 5,
+  }
 });
 
 export default styles;
