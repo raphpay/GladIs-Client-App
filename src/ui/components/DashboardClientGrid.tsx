@@ -29,9 +29,10 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   const { t } = useTranslation();
   const navigation = useNavigation();
 
-  const modulesFiltered = modules.filter(module =>
-    module.name.toLowerCase().includes(searchText?.toLowerCase()),
-  );
+  const modulesFiltered = modules.filter(module => {
+      const translatedName = t(`modules.${module.name}`);
+      return translatedName.toLowerCase().includes(searchText?.toLowerCase());
+  });
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
@@ -63,6 +64,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
         const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
         const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
         setClientModulesIDs(usersModulesIDs);
+        console.log('apimodules',  apiModules);
         setModules(apiModules);
       } catch (error) {
         console.log('Error loading modules', error);
