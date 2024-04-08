@@ -484,6 +484,9 @@
   "api": {
     "success": {
       "passwordChanged": "Password successfully changed",
+      "logoUploaded": "Logo successfully uploaded",
+      "clientBlocked": "Client successfully blocked",
+      "clientUnblocked": "Client successfully unblocked"
     }
   },
   "legal": {

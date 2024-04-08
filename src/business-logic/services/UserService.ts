@@ -342,7 +342,6 @@ class UserService {
     try {
       await APIService.put(`${this.baseRoute}/${clientID}/block`, null, token?.value as string);
     } catch (error) {
-      console.log('Error blocking client', error);
       throw error;
     }
   }
@@ -356,7 +355,6 @@ class UserService {
     try {
       await APIService.put(`${this.baseRoute}/${clientID}/unblock`, null, token?.value as string);
     } catch (error) {
-      console.log('Error unblocking client', error);
       throw error;
     }
   }

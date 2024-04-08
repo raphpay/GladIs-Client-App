@@ -486,7 +486,10 @@
   },
   "api": {
     "success": {
-      "passwordChanged": "Mot de passe modifié avec succès"
+      "passwordChanged": "Mot de passe modifié avec succès",
+      "logoUploaded": "Logo téléchargé avec succès",
+      "clientBlocked": "Client bloqué avec succès",
+      "clientUnblocked": "Client débloqué avec succès",
     }
   },
   "legal": {
