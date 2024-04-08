@@ -70,6 +70,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
             await UserService.getInstance().changePassword(userID, oldPassword, newPassword, token);
             await UserService.getInstance().setUserFirstConnectionToFalse(userID, token);
             setShowDialog(false);
+            displayToast(t('api.success.passwordChanged'), false);
           } catch (error) {
             const errorMessage = (error as Error).message as string;
             displayToast(t(`errors.api.${errorMessage}`), true);
