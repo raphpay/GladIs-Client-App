@@ -3,6 +3,7 @@ import {
   Image,
   Platform,
   StyleProp,
+  Text,
   View,
   ViewStyle
 } from 'react-native';
@@ -86,17 +87,24 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
 
   return (
     <View style={[styles.container, style]}>
+      <View style={styles.imageContainer}>
+        {
+          logoURI ? (
+            <Image
+              source={{uri: logoURI}}
+              style={styles.logo}
+            />
+          ) : (
+            <Image
+              source={require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent.png')}
+              style={styles.image}
+            />
+          )
+        }
+      </View>
       {
-        logoURI ? (
-          <Image
-            source={{uri: logoURI}}
-            style={styles.logo}
-          />
-        ) : (
-          <Image
-            source={require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent.png')}
-            style={styles.image}
-          />
+        currentClient && (
+          <Text style={styles.clientName}>{currentClient.username}</Text>
         )
       }
     </View>
