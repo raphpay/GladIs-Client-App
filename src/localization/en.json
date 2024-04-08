@@ -157,6 +157,7 @@
       }
     },
     "downloadSuccess": "Document successfully downloaded",
+    "alreadyDownloaded": "Document already downloaded",
   },
   "pendingUserManagement": {
     "title": "Pending users list",

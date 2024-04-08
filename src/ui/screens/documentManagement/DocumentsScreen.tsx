@@ -203,9 +203,11 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           documentID: document.id,
         }
         await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+        displayToast(t('documentsScreen.downloadSuccess'));
+      } else {
+        displayToast(t('documentsScreen.alreadyDownloaded'));
       }
       setShowDocumentActionDialog(false);
-      displayToast(t('documentsScreen.downloadSuccess'));
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }

@@ -156,7 +156,8 @@
         "client": "Veuillez réessayer plus tard"
       }
     },
-    "downloadSuccess": "Document téléchargé avec succès"
+    "downloadSuccess": "Document téléchargé avec succès",
+    "alreadyDownloaded": "Document déjà téléchargé"
   },
   "settings": {
     "title": "Réglages",
