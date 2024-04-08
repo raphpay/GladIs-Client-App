@@ -1,4 +1,4 @@
-import IDocumentActivityLog, { IDocumentActivityLogInput } from '../model/IDocumentActivityLog';
+import IDocumentActivityLog, { IDocumentActivityLogInput, IDocumentActivityLogPaginatedOutput } from '../model/IDocumentActivityLog';
 import IToken from '../model/IToken';
 import APIService from './APIService';
 
@@ -58,10 +58,11 @@ class DocumentActivityLogsService {
    * @returns A promise that resolves to an array of document activity logs.
    * @throws An error if the logs cannot be retrieved.
    */
-  async getPaginatedLogsForClient(clientID: string | undefined, token: IToken | null, page: number): Promise<IDocumentActivityLog[]> {
+  async getPaginatedLogsForClient(clientID: string | undefined, token: IToken | null, page: number, perPage: number): Promise<IDocumentActivityLogPaginatedOutput> {
     try {
-      const logs = await APIService.get<IDocumentActivityLog[]>(`${this.baseRoute}/paginate/${clientID}?page=${page}&perPage=5`, token?.value);
-      return logs;
+      const url = `${this.baseRoute}/${clientID}/paginate?page=${page}&perPage=${perPage}`
+      const output = await APIService.get<IDocumentActivityLogPaginatedOutput>(url, token?.value);
+      return output;
     } catch (error) {
       console.log('Error getting logs for client:', clientID, error);
       throw error;
