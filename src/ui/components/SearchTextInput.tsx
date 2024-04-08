@@ -9,19 +9,27 @@ type SearchTextInputProps = {
   searchText: string;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   editable?: boolean,
+  placeholder?: string,
 };
 
 function SearchTextInput(props: SearchTextInputProps): React.JSX.Element {
 
   const { t } = useTranslation();
 
+  const {
+    searchText,
+    setSearchText,
+    editable,
+    placeholder = t('components.searchTextInput.placeholder')
+  } = props;
+
   return (
     <TextInput
-      value={props.searchText}
-      onChangeText={props.setSearchText}
-      placeholder={t('components.searchTextInput.placeholder')}
+      value={searchText}
+      onChangeText={setSearchText}
+      placeholder={placeholder}
       style={styles.textInput}
-      editable={props.editable}
+      editable={editable}
     />
   );
 }
