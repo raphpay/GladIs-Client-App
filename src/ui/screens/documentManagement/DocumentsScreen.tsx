@@ -75,6 +75,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { module, documentListCount } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+
+  const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+  const docsPerPage = 8;
   
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
@@ -158,7 +161,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   async function pickAFile() {
-    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
     const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
     let data: string = '';
     if (Platform.OS !== PlatformName.Mac) {
@@ -180,7 +182,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
       setDocumentName('');
       setShowDialog(false);
-      await loadDocuments();
+      await loadPaginatedDocuments();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
@@ -221,38 +223,32 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDocumentActionDialog(false);
   }
 
-  async function loadDocuments() {
+  async function loadPaginatedDocuments() {
     setIsLoading(true);
-    const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-    const totalDocs = await DocumentService.getInstance().getDocumentsAtPath(path, token);
-    setTotalPages(Math.ceil(totalDocs.length / 2));
-    const initialDocsToShow = totalDocs.slice(0, 2);
-    setDocuments(initialDocsToShow);
+    const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
+    setDocuments(paginatedOutput.documents);
+    setTotalPages(paginatedOutput.pageCount);
     setIsLoading(false);
   }
 
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      await loadDocuments();
+      await loadPaginatedDocuments();
     }
     init();
   }, []);
 
   useEffect(() => {
     async function init() {
-      setIsLoading(true);
-      const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
-      const docs = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage);
-      setDocuments(docs);
-      setIsLoading(false);
+      await loadPaginatedDocuments();
     }
     init();
   }, [currentPage]);
 
   useEffect(() => {
     async function init() {
-      await loadDocuments();
+      await loadPaginatedDocuments();
     }
     init();
   }, [documentListCount]);

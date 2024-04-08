@@ -33,6 +33,9 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [logs, setLogs] = useState<IDocumentActivityLog[]>([]);
+
+  const numberOfLogsPerPage = 8;
   
   const { navigation } = props;
   
@@ -42,7 +45,6 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
-  const [logs, setLogs] = useState<IDocumentActivityLog[]>([]);
   
   const logsFiltered = logs.filter(log =>
     log.name.toLowerCase().includes(searchText.toLowerCase()),
@@ -69,21 +71,9 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
   async function loadPaginatedLogs() {
     try {
       setIsLoading(true);
-      const logs = await DocumentActivityLogsService.getInstance().getPaginatedLogsForClient(currentClient?.id, token, currentPage);
-      setLogs(logs);
-      setIsLoading(false);
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(t(`errors.api.${errorMessage}`), true);
-    }
-  }
-
-  async function loadLogsForClient() {
-    try {
-      const totalLogs = await DocumentActivityLogsService.getInstance().getLogsForClient(currentClient?.id, token);
-      setTotalPages(Math.ceil(totalLogs.length / 5));
-      const initialLogsToShow = totalLogs.slice(0, 5);
-      setLogs(initialLogsToShow);
+      const logOutput = await DocumentActivityLogsService.getInstance().getPaginatedLogsForClient(currentClient?.id, token, currentPage, numberOfLogsPerPage);
+      setLogs(logOutput.logs);
+      setTotalPages(logOutput.pageCount);
       setIsLoading(false);
     } catch (error) {
       const errorMessage = (error as Error).message;
@@ -101,7 +91,7 @@ function TrackingScreen(props: TrackingScreenProps): React.JSX.Element {
 
   useEffect(() => {
     async function init() {
-      await loadLogsForClient();
+      await loadPaginatedLogs();
     }
     init();
   }, []);

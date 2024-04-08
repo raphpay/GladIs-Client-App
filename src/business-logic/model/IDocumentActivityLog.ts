@@ -26,3 +26,8 @@ export interface IDocumentActivityLogInput {
   clientID: string;
   documentID: string;
 }
+
+export interface IDocumentActivityLogPaginatedOutput {
+  logs: IDocumentActivityLog[];
+  pageCount: number;
+}

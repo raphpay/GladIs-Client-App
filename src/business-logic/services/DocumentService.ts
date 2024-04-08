@@ -1,4 +1,4 @@
-import IDocument from '../model/IDocument';
+import IDocument, { IDocumentPaginatedOutput } from '../model/IDocument';
 import IFile from '../model/IFile';
 import IToken from '../model/IToken';
 import APIService from './APIService';
@@ -46,14 +46,14 @@ class DocumentService {
    * @param path - The path to retrieve the documents from.
    * @param token - The authentication token (optional).
    * @param page - The page number.
-   * @returns A promise that resolves to an array of documents.
+   * @returns A promise that resolves to the paginated documents.
    * @throws If an error occurs while retrieving the documents.
    */
-  async getPaginatedDocumentsAtPath(path: string, token: IToken | null, page: number): Promise<IDocument[]> {
+  async getPaginatedDocumentsAtPath(path: string, token: IToken | null, page: number, perPage: number): Promise<IDocumentPaginatedOutput> {
     try {
-      const url = `${this.baseRoute}/paginated/path?page=${page}&perPage=5`;
-      const documents = await APIService.post<IDocument[]>(url, { value: path }, token?.value as string);
-      return documents;
+      const url = `${this.baseRoute}/paginated/path?page=${page}&perPage=${perPage}`;
+      const output = await APIService.post<IDocumentPaginatedOutput>(url, { value: path }, token?.value as string);
+      return output;
     } catch (error) {
       console.log('Error getting documents at path:', path, error);
       throw error;
