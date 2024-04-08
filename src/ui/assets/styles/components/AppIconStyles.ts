@@ -21,11 +21,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     borderColor: Colors.black,
-    borderWidth: 1,
   },
   image: {
     width: 150,
-    height: 97.61,
+    height: 150,
     resizeMode: 'contain'
   },
   logo: {
