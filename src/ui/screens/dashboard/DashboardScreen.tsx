@@ -44,6 +44,9 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const { currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
+  const userIsAdmin = currentUser?.userType == UserType.Admin;
+  const searchTextPlaceholder = userIsAdmin ? t('dashboard.searchTextPlaceholder.admin') : t('dashboard.searchTextPlaceholder.client');
+
   // Sync Methods
   function navigateToClientList() {
     navigation.navigate(NavigationRoutes.ClientCreationStack);
@@ -78,13 +81,13 @@ function DashboardScreen(props: DashboardScreenProps): any {
 
   async function loadView() {
     if (currentUser) {
-      setIsAdmin(currentUser.userType == UserType.Admin);
+      setIsAdmin(userIsAdmin);
       setDialogDescription(t('components.dialog.firstConnection.description'))
       setShowDialog(currentUser.firstConnection ?? false);
     } else {
       const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
       const user = await UserService.getInstance().getUserByID(userID as string, token);
-      setIsAdmin(user.userType == UserType.Admin);
+      setIsAdmin(userIsAdmin);
       setDialogDescription(t('components.dialog.firstConnection.description'))
       setShowDialog(user.firstConnection ?? false);
     }
@@ -196,6 +199,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
         setSearchText={setSearchText}
         showSearchText={true}
         showSettings={true}
+        searchTextPlaceholder={searchTextPlaceholder}
         adminButton={(
           isAdmin ? (
             <IconButton

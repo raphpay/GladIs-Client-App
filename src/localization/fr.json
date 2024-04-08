@@ -54,6 +54,10 @@
       },
       "modules": "Modules",
       "clients": "Clients"
+    },
+    "searchTextPlaceholder": {
+      "admin": "Rechercher un client",
+      "client": "Rechercher un module"
     }
   },
   "modules": {
