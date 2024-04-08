@@ -155,7 +155,8 @@
         "admin": "Add a document now",
         "client": "Please come back later"
       }
-    }
+    },
+    "downloadSuccess": "Document successfully downloaded",
   },
   "pendingUserManagement": {
     "title": "Pending users list",
@@ -425,7 +426,8 @@
         "employee": "Employee not found",
         "pendingUser": "Pending user not found",
         "module": "Module not found",
-        "event": "Event not found"
+        "event": "Event not found",
+        "document": "Document not found"
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",

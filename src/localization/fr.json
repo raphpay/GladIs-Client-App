@@ -155,7 +155,8 @@
         "admin": "Ajoutez un document maintenant",
         "client": "Veuillez réessayer plus tard"
       }
-    }
+    },
+    "downloadSuccess": "Document téléchargé avec succès"
   },
   "settings": {
     "title": "Réglages",
@@ -426,6 +427,7 @@
         "pendingUser": "Utilisateur en attente non trouvé",
         "module": "Module non trouvé",
         "event": "Evénement non trouvé",
+        "document": "Document non trouvé"
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
