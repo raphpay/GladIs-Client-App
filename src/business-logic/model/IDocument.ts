@@ -5,6 +5,11 @@ export default interface IDocument {
   lastModified: Date,
 }
 
+export interface IDocumentPaginatedOutput {
+  documents: IDocument[],
+  pageCount: number,
+}
+
 export enum DocumentStatus {
   DRAFT = 'draft',
   PENDING_REVIEW = 'pendingReview',
