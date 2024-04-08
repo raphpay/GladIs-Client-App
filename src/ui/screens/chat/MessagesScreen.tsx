@@ -31,6 +31,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   const plusIcon = require('../../assets/images/plus.png');
 
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [searchText, setSearchText] = useState<string>('');
   // Dialog
   const [showNewMessageDialog, setShowNewMessageDialog] = useState<boolean>(false);
   const [showSingleMessageDialog, setShowSingleMessageDialog] = useState<boolean>(false);
@@ -55,6 +56,11 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
   const { navigation } = props;
 
   const isFormFilled = messageReceiver.length > 0 && messageTitle.length > 0 && messageContent.length > 0;
+
+  const messagesFiltered = messages.filter(message =>
+    message.receiverMail.toLowerCase().includes(searchText.toLowerCase()) ||
+      message.senderMail.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   // Synchronous Methods
   function navigateBack() {
@@ -310,13 +316,16 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     <>
       <AppContainer
         mainTitle={t('chat.title')}
-        showSearchText={false}
         showSettings={true}
         showBackButton={true}
         navigateBack={navigateBack}
         adminButton={AddMessageButton()}
+        showSearchText={true}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        searchTextPlaceholder={t('chat.searchTextPlaceholder')}
       >
-        <MessageTable messages={messages} onMessageSelection={onMessageSelection}/>
+        <MessageTable messages={messagesFiltered} onMessageSelection={onMessageSelection}/>
       </AppContainer>
       {NewMessageDialog()}
       {SingleMessageDialog()}
