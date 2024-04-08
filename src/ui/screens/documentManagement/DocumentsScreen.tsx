@@ -203,6 +203,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           documentID: document.id,
         }
         await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+        displayToast(t('documentsScreen.downloadSuccess'));
+      } else {
+        displayToast(t('documentsScreen.alreadyDownloaded'));
       }
       setShowDocumentActionDialog(false);
     } catch (error) {
@@ -211,24 +214,32 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   async function approveDocument(document: IDocument) {
-    await DocumentService.getInstance().updateStatus(document.id, DocumentStatus.APPROVED, token);
-    const logInput: IDocumentActivityLogInput = {
-      action: DocumentLogAction.Approbation,
-      actorIsAdmin: true,
-      actorID: currentUser?.id as string,
-      clientID: currentClient?.id as string,
-      documentID: document.id,
+    try {
+      await DocumentService.getInstance().updateStatus(document.id, DocumentStatus.APPROVED, token);
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Approbation,
+        actorIsAdmin: true,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: document.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      setShowDocumentActionDialog(false);
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
     }
-    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
-    setShowDocumentActionDialog(false);
   }
 
   async function loadPaginatedDocuments() {
-    setIsLoading(true);
-    const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
-    setDocuments(paginatedOutput.documents);
-    setTotalPages(paginatedOutput.pageCount);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
+      setDocuments(paginatedOutput.documents);
+      setTotalPages(paginatedOutput.pageCount);
+      setIsLoading(false); 
+    } catch (error) {
+      console.log('Error getting paginated documents:', error);
+    }
   }
 
   // Lifecycle Methods

@@ -33,6 +33,7 @@ type AppContainerProps = {
   setShowDialog?: React.Dispatch<React.SetStateAction<boolean>>;
   showSearchText: boolean;
   showSettings: boolean;
+  searchTextPlaceholder?: string;
 };
 
 function AppContainer(props: AppContainerProps): React.JSX.Element {
@@ -55,6 +56,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     additionalComponent,
     showSearchText,
     showSettings,
+    searchTextPlaceholder,
   } = props;
 
   const { t } = useTranslation();
@@ -124,6 +126,7 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
                     searchText={searchText}
                     setSearchText={setSearchText}
                     editable={!dialogIsShown}
+                    placeholder={searchTextPlaceholder}
                   />
                 )
               }

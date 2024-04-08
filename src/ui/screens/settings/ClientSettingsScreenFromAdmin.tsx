@@ -26,6 +26,7 @@ import AppContainer from '../../components/AppContainer';
 import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import Grid from '../../components/Grid';
+import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
@@ -45,6 +46,10 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   const [showBlockDialog, setShowBlockDialog] = useState<boolean>(false);
   const [blockTitle, setBlockTitle] = useState<string>('');
   const [dialogTitle, setDialogTitle] = useState<string>('');
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const navigationHistoryItems: IAction[] = [
     {
@@ -91,6 +96,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     },
   ];
 
+  // Sync Methods
   function navigateBack() {
     navigation.goBack()
   }
@@ -113,6 +119,22 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     navigation.navigate(NavigationRoutes.ClientModules);
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
+  function showBlockClient() {
+    setDialogTitle(currentClient?.isBlocked ? t('components.dialog.unblockClient') : t('components.dialog.blockClient'));
+    setShowBlockDialog(true);
+  }
+
+  function reloadBlockTitle() {
+    currentClient?.isBlocked ? setBlockTitle(t('settings.clientSettings.unblockClient')) : setBlockTitle(t('settings.clientSettings.blockClient'));
+  }
+
+  // Async Methods
   async function modifyLogo() {
     if (currentClient) {
       try {
@@ -132,12 +154,77 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
         await DocumentService.getInstance().uploadLogo(file, filename, `${currentClient.companyName}/logos/`);
         await CacheService.getInstance().storeValue(`${currentClient?.id}/logo`, data);
         await CacheService.getInstance().storeValue(`${currentClient?.id}/logo-lastModified`, new Date());
+        displayToast(t('api.success.logoUploaded'), false);
       } catch (error) {
-        console.log('Error modifying logo', error);
+        displayToast(t('errors.api.uploadLogo'), true);
       }
     }
   }
 
+  async function toggleClientBlock() {
+    if (currentClient?.isBlocked) {
+      await unblockClient();
+    } else {
+      await blockClient();
+    }
+    setShowBlockDialog(false);
+    reloadBlockTitle();
+  }
+
+  async function blockClient() {
+    // Block the client and its employees
+    try {
+      await UserService.getInstance().blockUser(currentClient?.id as string, token);
+      await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+      const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+      if (employees && employees.length !== 0) {
+        for (const employee of employees) {
+          await UserService.getInstance().blockUser(employee.id as string, token);
+          await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+        }
+      }
+      dispatch(changeClientBlockedStatus(true));
+      displayToast(t('api.success.clientBlocked'), false);
+    } catch (error) {
+      const errorMessage = (error as Error).message as string;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+  }
+
+  async function unblockClient() {
+    // Unblock the client and its employees
+    try {
+      await UserService.getInstance().unblockUser(currentClient?.id as string, token);
+      const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+      if (employees && employees.length !== 0) {
+        for (const employee of employees) {
+          await UserService.getInstance().blockUser(employee.id as string, token);
+          await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+        }
+      }
+      dispatch(changeClientBlockedStatus(false));
+      displayToast(t('api.success.clientUnblocked'), false);
+    } catch (error) {
+      const errorMessage = (error as Error).message as string;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+  }
+
+  async function loadClientIsBlocked() {
+    const client = await UserService.getInstance().getUserByID(currentClient?.id as string, token);
+    dispatch(changeClientBlockedStatus(client.isBlocked as boolean));
+    reloadBlockTitle();
+  }
+
+  // Lifecycle Methods
+  useEffect(() => {
+    async function init() {
+      await loadClientIsBlocked();
+    }
+    init();
+  }, []);
+
+  // Components
   function additionalMentions() {
     // TODO: Add app version number to API
     return (
@@ -147,61 +234,6 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       </View>
     )
   }
-
-  async function toggleClientBlock() {
-    try {
-      if (currentClient?.isBlocked) {
-        // Unblock the client and its employees
-        await UserService.getInstance().unblockUser(currentClient?.id as string, token);
-        const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
-        if (employees && employees.length !== 0) {
-          for (const employee of employees) {
-            await UserService.getInstance().blockUser(employee.id as string, token);
-            await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
-          }
-        }
-        dispatch(changeClientBlockedStatus(false));
-      } else {
-        // Block the client and its employees
-        await UserService.getInstance().blockUser(currentClient?.id as string, token);
-        await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
-        const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
-        if (employees && employees.length !== 0) {
-          for (const employee of employees) {
-            await UserService.getInstance().blockUser(employee.id as string, token);
-            await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
-          }
-        }
-        dispatch(changeClientBlockedStatus(true));
-      }
-      setShowBlockDialog(false);
-      reloadBlockTitle();
-    } catch (error) {
-      console.log('error', error);
-    }
-  }
-
-  function showBlockClient() {
-    setDialogTitle(currentClient?.isBlocked ? t('components.dialog.unblockClient') : t('components.dialog.blockClient'));
-    setShowBlockDialog(true);
-  }
-
-  function reloadBlockTitle() {
-    currentClient?.isBlocked ? setBlockTitle(t('settings.clientSettings.unblockClient')) : setBlockTitle(t('settings.clientSettings.blockClient'));
-  }
-
-  async function loadClientIsBlocked() {
-    const client = await UserService.getInstance().getUserByID(currentClient?.id as string, token);
-    dispatch(changeClientBlockedStatus(client.isBlocked as boolean));
-    reloadBlockTitle();
-  }
-
-  useEffect(() => {
-    async function init() {
-      await loadClientIsBlocked();
-    }
-    init();
-  }, []);
 
   function errorDialog() {
     return (
@@ -250,6 +282,23 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     )
   }
 
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -269,6 +318,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       </AppContainer>
       {blockDialog()}
       {errorDialog()}
+      {ToastContent()}
     </>
   );
 }

@@ -54,6 +54,10 @@
       },
       "modules": "Modules",
       "clients": "Clients"
+    },
+    "searchTextPlaceholder": {
+      "admin": "Rechercher un client",
+      "client": "Rechercher un module"
     }
   },
   "modules": {
@@ -155,7 +159,9 @@
         "admin": "Ajoutez un document maintenant",
         "client": "Veuillez réessayer plus tard"
       }
-    }
+    },
+    "downloadSuccess": "Document téléchargé avec succès",
+    "alreadyDownloaded": "Document déjà téléchargé"
   },
   "settings": {
     "title": "Réglages",
@@ -246,7 +252,8 @@
       "message": "La suppression est définitive.",
       "confirmButton": "Non",
       "cancelButton": "Oui"
-    }
+    },
+    "searchTextPlaceholder": "Rechercher un message"
   },
   "components": {
     "searchTextInput": {
@@ -426,6 +433,7 @@
         "pendingUser": "Utilisateur en attente non trouvé",
         "module": "Module non trouvé",
         "event": "Evénement non trouvé",
+        "document": "Document non trouvé"
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
@@ -478,7 +486,10 @@
   },
   "api": {
     "success": {
-      "passwordChanged": "Mot de passe modifié avec succès"
+      "passwordChanged": "Mot de passe modifié avec succès",
+      "logoUploaded": "Logo téléchargé avec succès",
+      "clientBlocked": "Client bloqué avec succès",
+      "clientUnblocked": "Client débloqué avec succès",
     }
   },
   "legal": {

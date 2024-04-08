@@ -64,7 +64,6 @@ class DocumentActivityLogsService {
       const output = await APIService.get<IDocumentActivityLogPaginatedOutput>(url, token?.value);
       return output;
     } catch (error) {
-      console.log('Error getting logs for client:', clientID, error);
       throw error;
     }
   }

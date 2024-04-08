@@ -54,6 +54,10 @@
       },
       "modules": "Modules",
       "clients": "Clients"
+    },
+    "searchTextPlaceholder": {
+      "admin": "Search for a client",
+      "client": "Search for a module"
     }
   },
   "modules": {
@@ -155,7 +159,9 @@
         "admin": "Add a document now",
         "client": "Please come back later"
       }
-    }
+    },
+    "downloadSuccess": "Document successfully downloaded",
+    "alreadyDownloaded": "Document already downloaded",
   },
   "pendingUserManagement": {
     "title": "Pending users list",
@@ -246,7 +252,8 @@
       "message": "The deletion is definitive.",
       "confirmButton": "No",
       "cancelButton": "Yes"
-    }
+    },
+    "searchTextPlaceholder": "Search for a message"
   },
   "components": {
     "searchTextInput": {
@@ -425,7 +432,8 @@
         "employee": "Employee not found",
         "pendingUser": "Pending user not found",
         "module": "Module not found",
-        "event": "Event not found"
+        "event": "Event not found",
+        "document": "Document not found"
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
@@ -476,6 +484,9 @@
   "api": {
     "success": {
       "passwordChanged": "Password successfully changed",
+      "logoUploaded": "Logo successfully uploaded",
+      "clientBlocked": "Client successfully blocked",
+      "clientUnblocked": "Client successfully unblocked"
     }
   },
   "legal": {

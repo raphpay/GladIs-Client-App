@@ -55,7 +55,6 @@ class DocumentService {
       const output = await APIService.post<IDocumentPaginatedOutput>(url, { value: path }, token?.value as string);
       return output;
     } catch (error) {
-      console.log('Error getting documents at path:', path, error);
       throw error;
     }
   }
@@ -127,7 +126,6 @@ class DocumentService {
       const response = await APIService.put(`${this.baseRoute}/${id}`, { status }, token?.value as string);
       return response as IDocument;
     } catch (error) {
-      console.log('Error updating status for document with id:', id, error);
       throw error;
     }
   }
