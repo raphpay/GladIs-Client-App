@@ -5,11 +5,25 @@ const styles = StyleSheet.create({
   topContainer: {
     flexDirection: 'row',
     position: 'absolute',
+    width: '100%',
+    zIndex: 1,
+  },
+  navigationMainContainer: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    paddingLeft: 30,
+    paddingBottom: 16,
+  },
+  rightContainer: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    paddingRight: 20,
   },
   appIcon: {
-    marginLeft: 60,
-    marginTop: 16,
+    paddingLeft: 60,
+    paddingTop: 16,
   },
   currentPageTitle: {
     paddingLeft: 8,
@@ -29,7 +43,7 @@ const styles = StyleSheet.create({
     paddingRight: 4
   },
   navigationButtonContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   chevron: {
     width: 10,

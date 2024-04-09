@@ -207,7 +207,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
         showSettings={true}
         navigateBack={navigateBack}
         navigationHistoryItems={navigationHistoryItems}
-        adminButton={(
+        extraTopAppBarButton={(
           isAdmin ? (
             <IconButton
               title={t('components.buttons.addTab')}

@@ -343,7 +343,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         }
-        adminButton={
+        extraTopAppBarButton={
           currentUser?.userType == UserType.Admin ? (
             <IconButton
               title={t('components.buttons.addDocument')}

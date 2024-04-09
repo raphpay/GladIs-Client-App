@@ -201,7 +201,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
         showSearchText={true}
         showSettings={true}
         searchTextPlaceholder={searchTextPlaceholder}
-        adminButton={(
+        extraTopAppBarButton={(
           isAdmin ? (
             <IconButton
               title={t('components.buttons.addClient')}
