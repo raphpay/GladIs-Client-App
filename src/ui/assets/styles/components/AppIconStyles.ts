@@ -38,6 +38,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.poppinsSemiBold,
     marginTop: 5,
+  },
+  androidLogo: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black',
   }
 });
 
