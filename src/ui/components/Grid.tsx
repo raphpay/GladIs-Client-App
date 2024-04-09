@@ -8,14 +8,23 @@ type GridProps<ItemT> = {
   data: Array<ItemT> | null | undefined;
   keyExtractor?: ((item: ItemT, index: number) => string) | undefined;
   renderItem: ListRenderItem<ItemT> | null | undefined;
+  scrollEnabled?: boolean;
 }
 
 function Grid<ItemT>(props: GridProps<ItemT>): React.JSX.Element {
 
-  const { data, keyExtractor, renderItem } = props;
+  const {
+    data,
+    keyExtractor,
+    renderItem,
+    scrollEnabled = true,
+  } = props;
 
   return (
-    <ScrollView contentContainerStyle={styles.grid}>
+    <ScrollView
+      contentContainerStyle={styles.grid}
+      scrollEnabled={scrollEnabled}
+    >
       {
         data && renderItem && data.map((item: ItemT, index: number) => {
           const key = keyExtractor ? keyExtractor(item, index) : String(index);

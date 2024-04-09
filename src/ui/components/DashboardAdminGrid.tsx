@@ -220,6 +220,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
         <View style={styles.separator}/>
         <Grid
           data={modules}
+          scrollEnabled={false}
           renderItem={(renderItem) => 
             <GridModuleItem 
               module={renderItem.item}
@@ -246,6 +247,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
             ) : (
             <Grid
               data={clientsFiltered}
+              scrollEnabled={false}
               renderItem={(renderItem) => 
                 <GridClientItem
                   client={renderItem.item} 
