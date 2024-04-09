@@ -364,7 +364,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         setShowDialog={setShowDialog}
         dialogIsShown={showDialog}
         dialog={dialogContent()}
-        extraTopAppBarButton={
+        adminButton={
           <IconButton
             title={t('components.buttons.addEmployee')}
             icon={plusIcon}

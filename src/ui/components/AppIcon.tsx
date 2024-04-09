@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Platform, StyleProp, View, ViewStyle } from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleProp,
+  Text,
+  View,
+  ViewStyle
+} from 'react-native';
 
 import IDocument from '../../business-logic/model/IDocument';
 import PlatformName from '../../business-logic/model/enums/PlatformName';
@@ -98,11 +105,11 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
           )
         }
       </View>
-      {/* {
+      {
         currentClient && (
           <Text style={styles.clientName}>{currentClient.username}</Text>
         )
-      } */}
+      }
     </View>
   );
 }

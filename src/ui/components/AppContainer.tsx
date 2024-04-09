@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { SafeAreaView, TouchableWithoutFeedback, View } from 'react-native';
 
 import IAction from '../../business-logic/model/IAction';
 import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
@@ -10,6 +10,7 @@ import { useAppSelector } from '../../business-logic/store/hooks';
 import { RootState } from '../../business-logic/store/store';
 
 import IconButton from './IconButton';
+import SearchTextInput from './SearchTextInput';
 import TopAppBar from './TopAppBar';
 
 import { Colors } from '../assets/colors/colors';
@@ -24,8 +25,7 @@ type AppContainerProps = {
   showDialog?: boolean;
   navigateBack?: () => void;
   children: JSX.Element;
-  extraTopAppBarButton?: JSX.Element;
-  extraBottomButton?: JSX.Element;
+  adminButton?: JSX.Element;
   dialog?: JSX.Element;
   additionalComponent?: JSX.Element;
   dialogIsShown?: boolean;
@@ -39,25 +39,24 @@ type AppContainerProps = {
 function AppContainer(props: AppContainerProps): React.JSX.Element {
   const backIcon = require('../assets/images/arrowshape.turn.up.left.png');
   const settingsIcon = require('../assets/images/gearshape.fill.png');
-  
   const {
     mainTitle,
     navigationHistoryItems,
-    showBackButton,
-    navigateBack,
-    children,
-    extraTopAppBarButton,
-    hideTooltip,
-    setShowDialog,
-    extraBottomButton,
-    showSettings,
-    showSearchText,
     searchText,
     setSearchText,
-    searchTextPlaceholder,
+    showBackButton,
     showDialog,
+    navigateBack,
+    children,
+    adminButton,
     dialog,
     dialogIsShown,
+    hideTooltip,
+    setShowDialog,
+    additionalComponent,
+    showSearchText,
+    showSettings,
+    searchTextPlaceholder,
   } = props;
 
   const { t } = useTranslation();
@@ -67,7 +66,6 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
 
   const [showClientSettingsScreen, setShowClientSettingsScreen] = useState<boolean>(false);
 
-  // Sync Methods
   function closeAll() {
     hideTooltip && hideTooltip();
     setShowDialog && setShowDialog(false)
@@ -81,7 +79,6 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     navigation.navigate(NavigationRoutes.ClientManagementStack);
   }
 
-  // Lifecycle Methods
   useEffect(() => {
     if (currentUser?.userType == UserType.Admin && currentClient !== undefined) {
       setShowClientSettingsScreen(true);
@@ -90,86 +87,76 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
     }
   }, [currentClient, currentUser]);
 
-  // Components
-  function SettingsButton() {
-    return (
-      <>
-        {
-          showSettings && (
-            <IconButton
-              title={t('settings.title')}
-              icon={settingsIcon}
-              onPress={navigateToSettings}
-              backgroundColor={Colors.white}
-              textColor={Colors.black}
-              style={styles.settingsButton}
-            />
-          )
-        }
-      </>
-    );
-  }
-
-  function ClientSettingsButton() {
-    return (
-      <>
-        {
-          showSettings && showClientSettingsScreen && (
-            <IconButton 
-              title={t('settings.clientSettings.title')}
-              icon={settingsIcon}
-              onPress={navigateToClientSettings}
-              backgroundColor={Colors.white}
-              textColor={Colors.black}
-              style={styles.settingsButton}
-            />
-          )
-        
-        }
-      </>
-    );
-  }
-
-  function BackButton() {
-    return (
-      <>
-        {
-          showBackButton && (
-            <IconButton
-              title={t('components.buttons.back')}
-              icon={backIcon}
-              onPress={navigateBack ? navigateBack : {}}
-              style={styles.backButton}
-            />
-          )
-        }
-      </>
-    );
-  }
-
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <TouchableWithoutFeedback onPress={closeAll}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.upperContainer}>
-          {SettingsButton()}
-          {ClientSettingsButton()}
+          {
+            showSettings && (
+                <IconButton 
+                title={t('settings.title')}
+                icon={settingsIcon}
+                onPress={navigateToSettings}
+                backgroundColor={Colors.white}
+                textColor={Colors.black}
+                style={styles.settingsButton}
+              />
+            )
+          }
+          {
+            showSettings &&  showClientSettingsScreen && (
+              <IconButton 
+                title={t('settings.clientSettings.title')}
+                icon={settingsIcon}
+                onPress={navigateToClientSettings}
+                backgroundColor={Colors.white}
+                textColor={Colors.black}
+                style={styles.settingsButton}
+              />
+            )
+          }
+        </View>
+        <View style={styles.innerContainer}>
+          <View style={styles.innerComponentsContainer}>
+            <View style={styles.searchInputContainer}>
+              {adminButton}
+              {
+                showSearchText && (
+                  <SearchTextInput 
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    editable={!dialogIsShown}
+                    placeholder={searchTextPlaceholder}
+                  />
+                )
+              }
+            </View>
+            {children}
+          </View>
+          <View style={styles.backButtonContainer}>
+            {
+              showBackButton && (
+                <IconButton
+                  title={t('components.buttons.back')}
+                  icon={backIcon}
+                  onPress={navigateBack}
+                />
+              )
+            }
+            {
+              additionalComponent && (additionalComponent)
+            }
+          </View>
         </View>
         <TopAppBar
           mainTitle={mainTitle}
           navigationHistoryItems={navigationHistoryItems}
-          extraButton={extraTopAppBarButton}
-          showSearchText={showSearchText}
-          searchText={searchText}
-          setSearchText={setSearchText}
-          searchTextPlaceholder={searchTextPlaceholder}
         />
-        <View style={styles.children}>
-          {children}
-        </View>
-        {BackButton()}
-        { extraBottomButton && extraBottomButton }
-      </ScrollView>
-    </SafeAreaView>
+        {
+          showDialog && (dialog)
+        }
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 

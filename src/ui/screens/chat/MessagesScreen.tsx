@@ -319,7 +319,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         showSettings={true}
         showBackButton={true}
         navigateBack={navigateBack}
-        extraTopAppBarButton={AddMessageButton()}
+        adminButton={AddMessageButton()}
         showSearchText={true}
         searchText={searchText}
         setSearchText={setSearchText}

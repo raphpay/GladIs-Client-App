@@ -228,7 +228,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
         setShowDialog={setShowDialog}
         showSearchText={true}
         showSettings={true}
-        extraTopAppBarButton={
+        adminButton={
           <IconButton
             title={t('components.buttons.addClient')}
             icon={plusIcon}
