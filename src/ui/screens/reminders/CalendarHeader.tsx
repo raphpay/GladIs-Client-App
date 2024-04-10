@@ -7,13 +7,13 @@ import {
   View
 } from 'react-native';
 
-import Utils from '../../../business-logic/utils/Utils';
 
-import Dropdown from '../../components/Dropdown';
 
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 import styles from '../../assets/styles/reminders/CalendarStyles';
+import Dropdown from '../../components/Dropdown';
 
 type CalendarHeaderProps = {
   currentDate: Date;
@@ -49,6 +49,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
     setMonthsOpen(false);
   }
 
+  // Sync Methods
   function goToNextMonth() {
     const nextMonth = new Date(year, month + 1, 1);
     setCurrentDate(nextMonth);
@@ -78,6 +79,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
     setYearsOpen(false);
   }
 
+  // Components
   function ArrowButton(side: 'left' | 'right') {
     return (
       <TouchableOpacity
@@ -100,7 +102,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           items={monthsItems.map(month => ({ label: Utils.formatMonth(month), value: month }))}
           onSelect={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
           onOpen={onMonthOpen}
-          containerWidth={150}
+          containerWidth={100}
         />
         <Dropdown
           open={yearsOpen}
@@ -110,7 +112,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
           onSelect={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
           onOpen={onYearOpen}
-          containerWidth={110}
+          containerWidth={100}
         />
         <TouchableOpacity onPress={goToToday} style={styles.todayButton}>
           <Text style={styles.todayText}>{t('calendar.today')}</Text>

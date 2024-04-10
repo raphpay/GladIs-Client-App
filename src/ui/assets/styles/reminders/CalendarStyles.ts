@@ -3,19 +3,9 @@ import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
-    marginBottom: 20,
-    zIndex: 1000
+    zIndex: 100,
   },
   monthYearText: {
     fontFamily: Fonts.poppinsSemiBold,
@@ -23,7 +13,6 @@ const styles = StyleSheet.create({
   headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
   },
   arrow: {
     fontSize: 24,
