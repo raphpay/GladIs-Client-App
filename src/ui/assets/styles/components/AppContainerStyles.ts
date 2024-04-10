@@ -33,7 +33,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse'
   },
   backButtonContainer: {
-    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
     flexDirection: 'row-reverse',
     padding: 16
   },

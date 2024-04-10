@@ -3,6 +3,9 @@ import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   header: {
     alignItems: 'center',
     zIndex: 100,
