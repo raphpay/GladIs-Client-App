@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
   },
   searchInputContainer: {
     width: '100%',
-    flexDirection: 'row-reverse'
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
   },
   backButtonContainer: {
     width: '100%',
@@ -38,6 +39,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
     flexDirection: 'row-reverse',
+    alignItems: 'center',
     padding: 16
   },
   settingsButton: {

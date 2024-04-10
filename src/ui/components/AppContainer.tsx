@@ -177,8 +177,8 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
             {children}
           </View>
           <View style={styles.backButtonContainer}>
-            {additionalComponent && (additionalComponent)}
             {BackButton()}
+            {additionalComponent && (additionalComponent)}
           </View>
         </View>
         <TopAppBar
