@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     alignItems: 'flex-end',
+    width: '100%',
   },
   appIcon: {
     marginLeft: 60,
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     paddingRight: 4
   },
   navigationButtonContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   chevron: {
     width: 10,
