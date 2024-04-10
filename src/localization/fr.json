@@ -161,7 +161,8 @@
       }
     },
     "downloadSuccess": "Document téléchargé avec succès",
-    "alreadyDownloaded": "Document déjà téléchargé"
+    "alreadyDownloaded": "Document déjà téléchargé",
+    "approvalSuccess": "Document approuvé avec succès"
   },
   "settings": {
     "title": "Réglages",

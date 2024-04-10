@@ -224,6 +224,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         documentID: document.id,
       }
       await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      displayToast(t('documentsScreen.approvalSuccess'));
       setShowDocumentActionDialog(false);
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
