@@ -17,7 +17,7 @@ function ExpandingTextInput(props: ExpandingTextInputProps): React.JSX.Element {
     setText(inputText);
     // Adjust the animation height based on the length of the text
     Animated.timing(animatedHeight, {
-      toValue: inputText.length > 80 ? 80 : 40,
+      toValue: inputText.length > 50 ? 80 : 40,
       duration: 150,
       useNativeDriver: false,
     }).start();

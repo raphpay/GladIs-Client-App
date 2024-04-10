@@ -5,7 +5,6 @@ import { Fonts } from '../../fonts/fonts';
 const styles = StyleSheet.create({
   inputContainer: {
     width: '100%',
-    marginTop: 16,
   },
   input: {
     textAlignVertical: 'center',
@@ -13,7 +12,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.black,
     borderRadius: 10,
-    padding: 15,
+    paddingHorizontal: 15,
     fontSize: Fonts.p
   },
 });
