@@ -116,7 +116,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   // Sync Methods
   function navigateToDashboard() {
-    console.log('navigateToDashboard', );
     navigation.navigate(NavigationRoutes.DashboardScreen)
   }
 

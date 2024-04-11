@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import IAction from '../../../business-logic/model/IAction';
 import { IMessage, IMessageInput, IUserID } from '../../../business-logic/model/IMessage';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -61,6 +62,13 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     message.receiverMail.toLowerCase().includes(searchText.toLowerCase()) ||
       message.senderMail.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const navigationHistoryItems: IAction[] = [
+    {
+      title: t('dashboard.title'),
+      onPress: () => navigateBack(),
+    },
+  ];
 
   // Synchronous Methods
   function navigateBack() {
@@ -324,6 +332,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
         searchText={searchText}
         setSearchText={setSearchText}
         searchTextPlaceholder={t('chat.searchTextPlaceholder')}
+        navigationHistoryItems={navigationHistoryItems}
       >
         <MessageTable messages={messagesFiltered} onMessageSelection={onMessageSelection}/>
       </AppContainer>
