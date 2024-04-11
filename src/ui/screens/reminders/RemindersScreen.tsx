@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 
+import IAction from '../../../business-logic/model/IAction';
 import { IEvent } from '../../../business-logic/model/IEvent';
 import UserType from '../../../business-logic/model/enums/UserType';
 import EventService from '../../../business-logic/services/EventService';
@@ -14,6 +15,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer';
 import Toast from '../../components/Toast';
+
 import Calendar from './Calendar';
 import CreateEventDialog from './CreateEventDialog';
 import EventDialog from './EventDialog';
@@ -45,6 +47,13 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
   const { navigation } = props;
 
   const { t } = useTranslation();
+
+  const navigationHistoryItems: IAction[] = [
+    {
+      title: t('dashboard.title'),
+      onPress: () => navigateBack(),
+    },
+  ];
 
   // Sync Methods
   function navigateBack() {
@@ -183,6 +192,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
         navigateBack={navigateBack}
         showDialog={showCreateDialog}
         setShowDialog={setShowCreateDialog}
+        navigationHistoryItems={navigationHistoryItems}
       >
         <Calendar
           events={events}

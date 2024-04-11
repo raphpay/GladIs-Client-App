@@ -86,7 +86,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      onPress: () => navigateToDashboard,
+      onPress: () => navigateToDashboard(),
     },
     {
       title: t(`modules.${module?.name}`),
