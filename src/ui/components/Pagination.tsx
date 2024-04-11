@@ -52,14 +52,6 @@ function Pagination({ currentPage, totalPages, onPageChange }: PaginationProps):
 
   const pageNumbers = generatePageNumbers();
 
-  const currentPageStyle = {
-    color: Colors.primary
-  };
-
-  const pageNumberStyle = {
-    color: Colors.secondary
-  };
-
   return (
     <View style={styles.container}>
       <TouchableOpacity

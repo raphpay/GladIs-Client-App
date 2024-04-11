@@ -115,14 +115,16 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
       };
       const createdTab = await TechnicalDocumentationTabService.getInstance().createTab(newTab, token);
       await UserService.getInstance().addTabToUser(currentClient?.id, createdTab, token);
+      await loadTabs();
       setShowDialog(false);
+      setNewTabName('');
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
-  async function getTabs() {
+  async function loadTabs() {
     try {
       const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
       const areaTabs = tabs.filter(tab => {
@@ -138,7 +140,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   useEffect(() => {
     getUser();
     async function init() {
-      await getTabs();
+      await loadTabs();
     }
     init();
   }, []);

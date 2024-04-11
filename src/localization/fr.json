@@ -117,7 +117,7 @@
     "actions": {
       "creation": "Créé le",
       "modification": "Modifié le",
-      "approbation": "Apprové le",
+      "approbation": "Approuvé le",
       "visualisation": "Visualisé le",
       "loaded": "Chargé le",
       "deletion": "Supprimé le",
@@ -161,7 +161,8 @@
       }
     },
     "downloadSuccess": "Document téléchargé avec succès",
-    "alreadyDownloaded": "Document déjà téléchargé"
+    "alreadyDownloaded": "Document déjà téléchargé",
+    "approvalSuccess": "Document approuvé avec succès"
   },
   "settings": {
     "title": "Réglages",

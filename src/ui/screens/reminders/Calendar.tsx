@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EventsByDate, IEvent } from '../../../business-logic/model/IEvent';
 import Utils from '../../../business-logic/utils/Utils';
@@ -174,7 +170,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   
   // TODO: Check scroll behavior
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <CalendarHeader
         currentDate={currentDate}
         setCurrentDate={setCurrentDate}
@@ -203,7 +199,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
           <Text key={`end-blank-${index}`} style={styles.day}></Text>
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

@@ -10,6 +10,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16
+  },
+  pdf: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   }
 });
 

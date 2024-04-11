@@ -31,6 +31,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
   const gladisLogo = require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent_Square.png')
+  const androidLogoStyles = Platform.OS === PlatformName.Android && styles.androidLogo;;
 
   async function getLogoDocument(): Promise<IDocument | undefined> {
     if (currentClient) {
@@ -94,12 +95,12 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
           logoURI ? (
             <Image
               source={{uri: logoURI}}
-              style={styles.logo}
+              style={[styles.logo, androidLogoStyles]}
             />
           ) : (
             <Image
               source={gladisLogo}
-              style={styles.image}
+              style={[styles.image, androidLogoStyles]}
             />
           )
         }

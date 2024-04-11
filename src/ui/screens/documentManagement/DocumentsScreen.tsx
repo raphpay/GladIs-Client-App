@@ -224,6 +224,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         documentID: document.id,
       }
       await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      displayToast(t('documentsScreen.approvalSuccess'));
       setShowDocumentActionDialog(false);
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
@@ -321,6 +322,62 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           )
         }
       </>
+    );
+  }
+
+  function AddDocumentButton() {
+    return (
+      <>
+        {
+          currentUser?.userType == UserType.Admin && (
+            <IconButton
+              title={t('components.buttons.addDocument')}
+              icon={plusIcon}
+              onPress={addDocument}
+            />
+          )
+        }
+      </>
+    );
+  }
+
+  function AddDocumentDialog() {
+    return (
+      <>
+        {
+          showDialog && (
+            <Dialog
+              title={t('components.dialog.addDocument.title')}
+              confirmTitle={t('components.dialog.addDocument.confirmButton')}
+              onConfirm={pickAFile}
+              isCancelAvailable={true}
+              onCancel={() => setShowDialog(false)}
+              isConfirmDisabled={documentName.length === 0}
+            >
+              <TextInput
+                value={documentName}
+                onChangeText={setDocumentName}
+                placeholder={t('components.dialog.addDocument.placeholder')}
+                style={styles.dialogInput}
+              />
+            </Dialog>
+          )
+        }
+      </>
+    );
+  }
+
+  function TooltipContent() {
+    return (
+      <TooltipAction
+        showDialog={showDocumentActionDialog}
+        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+        isConfirmAvailable={false}
+        isCancelAvailable={true}
+        onConfirm={() => {}}
+        onCancel={() => setShowDocumentActionDialog(false)}
+        popoverActions={popoverActions}
+      />
     )
   }
 
@@ -334,7 +391,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         showBackButton={true}
         showSearchText={true}
         navigateBack={navigateBack}
-        showDialog={showDialog}
         showSettings={true}
         additionalComponent={
           <Pagination
@@ -343,32 +399,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         }
-        adminButton={
-          currentUser?.userType == UserType.Admin ? (
-            <IconButton
-              title={t('components.buttons.addDocument')}
-              icon={plusIcon}
-              onPress={addDocument}
-            />
-          ) : undefined
-        }
-        dialog={
-          <Dialog
-            title={t('components.dialog.addDocument.title')}
-            confirmTitle={t('components.dialog.addDocument.confirmButton')}
-            onConfirm={pickAFile}
-            isCancelAvailable={true}
-            onCancel={() => setShowDialog(false)}
-            isConfirmDisabled={documentName.length === 0}
-          >
-            <TextInput
-              value={documentName}
-              onChangeText={setDocumentName}
-              placeholder={t('components.dialog.addDocument.placeholder')}
-              style={styles.dialogInput}
-            />
-          </Dialog>
-        }
+        adminButton={AddDocumentButton()}
       >
         <>
           {
@@ -380,15 +411,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           }
         </>
       </AppContainer>
-      <TooltipAction
-        showDialog={showDocumentActionDialog}
-        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
-        isConfirmAvailable={false}
-        isCancelAvailable={true}
-        onConfirm={() => {}}
-        onCancel={() => setShowDocumentActionDialog(false)}
-        popoverActions={popoverActions}
-      />
+      {AddDocumentDialog()}
+      {TooltipContent()}
       {ToastContent()}
     </>
   );

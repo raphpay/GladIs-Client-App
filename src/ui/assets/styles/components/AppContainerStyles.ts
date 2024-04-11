@@ -4,7 +4,6 @@ import { Colors } from '../../colors/colors';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.primary
   },
   upperContainer: {
     height: 104,
@@ -30,11 +29,16 @@ const styles = StyleSheet.create({
   },
   searchInputContainer: {
     width: '100%',
-    flexDirection: 'row-reverse'
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
   },
   backButtonContainer: {
-    alignItems: 'center',
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
     flexDirection: 'row-reverse',
+    alignItems: 'center',
     padding: 16
   },
   settingsButton: {

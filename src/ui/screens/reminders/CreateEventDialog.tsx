@@ -37,17 +37,14 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
   const monthsItems = Array.from({ length: 12 }, (_, i) => i);
   const yearsItems = Array.from({ length: 20 }, (_, i) => i + 2015);
 
-  const day = selectedDate.getDay();
-  const [daysValue, setDaysValue] = useState(day);
-  const month = selectedDate.getMonth();
-  const [monthValue, setMonthValue] = useState(month);
-  const year = selectedDate.getFullYear();
-  const [yearValue, setYearValue] = useState(year);
+  const [daysValue, setDaysValue] = useState(selectedDate.getDay());
+  const [monthValue, setMonthValue] = useState(selectedDate.getMonth());
+  const [yearValue, setYearValue] = useState(selectedDate.getFullYear());
 
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
   };
-  const [daysItems, setDaysItems] = useState(Array.from({ length: getDaysInMonth(month, year) }, (_, i) => i + 1));
+  const [daysItems, setDaysItems] = useState(Array.from({ length: getDaysInMonth(monthValue, yearValue) }, (_, i) => i + 1));
 
   const { t } = useTranslation();
 
@@ -95,8 +92,18 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
   }
 
   useEffect(() => {
-    setDaysItems(Array.from({ length: getDaysInMonth(month, year) }, (_, i) => i + 1));
-  }, [month, year]);
+    setDaysItems(Array.from({ length: getDaysInMonth(monthValue, yearValue) }, (_, i) => i + 1));
+  }, [monthValue, yearValue]);
+
+  useEffect(() => {
+    setSelectedDate(new Date(yearValue, monthValue, daysValue));
+  }, []);
+
+  useEffect(() => {
+    setDaysValue(selectedDate.getDate());
+    setMonthValue(selectedDate.getMonth());
+    setYearValue(selectedDate.getFullYear());
+  }, [selectedDate]);
 
   function SelectedDatePickers() {
     return (
@@ -107,7 +114,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
           value={daysValue}
           setValue={setDaysValue}
           items={daysItems.map(day => ({ label: day.toString(), value: day }))}
-          onSelect={(day) => setSelectedDate(new Date(year, month, day.value as number))}
+          onSelect={(day) => setSelectedDate(new Date(yearValue, monthValue, day.value as number))}
           onOpen={onDayOpen}
           containerWidth={100}
           containerHeight={60}
@@ -118,7 +125,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
           value={monthValue}
           setValue={setMonthValue}
           items={monthsItems.map(month => ({ label: Utils.formatMonth(month), value: month }))}
-          onSelect={(month) => setSelectedDate(new Date(year, month.value as number, 1))}
+          onSelect={(month) => setSelectedDate(new Date(yearValue, month.value as number, daysValue))}
           onOpen={onMonthOpen}
           containerWidth={150}
           containerHeight={60}
@@ -129,7 +136,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
           value={yearValue}
           setValue={setYearValue}
           items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
-          onSelect={(year) => setSelectedDate(new Date(year.value as number, month, 1))}
+          onSelect={(year) => setSelectedDate(new Date(year.value as number, monthValue, daysValue))}
           onOpen={onYearOpen}
           containerWidth={100}
           containerHeight={60}

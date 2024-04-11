@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Animated, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { TextInput, View } from 'react-native';
 import styles from '../assets/styles/components/ExpandingTextInputStyles';
 
 type ExpandingTextInputProps = {
@@ -10,30 +10,26 @@ type ExpandingTextInputProps = {
 
 function ExpandingTextInput(props: ExpandingTextInputProps): React.JSX.Element {
   const { text, setText, placeholder } = props;
+  const [inputHeight, setInputHeight] = useState(40); // Default to your desired initial height
 
-  const animatedHeight = useRef(new Animated.Value(40)).current;
-
-  const handleTextChange = (inputText: string) => {
-    setText(inputText);
-    // Adjust the animation height based on the length of the text
-    Animated.timing(animatedHeight, {
-      toValue: inputText.length > 80 ? 80 : 40,
-      duration: 150,
-      useNativeDriver: false,
-    }).start();
+  const handleContentSizeChange = (e: any) => {
+    const { contentSize } = e.nativeEvent;
+    // Set a minimum height and adjust as contentSize changes
+    setInputHeight(Math.max(40, contentSize.height));
   };
 
   return (
-    <Animated.View style={[styles.inputContainer, { height: animatedHeight }]}>
+    <View style={[styles.inputContainer, { height: inputHeight }]}>
       <TextInput
-        style={styles.input}
-        onChangeText={handleTextChange}
+        style={[styles.input, { height: inputHeight }]}
+        onChangeText={setText}
         value={text}
         multiline
         maxLength={300}
         placeholder={placeholder}
+        onContentSizeChange={handleContentSizeChange}
       />
-    </Animated.View>
+    </View>
   );
 }
 
