@@ -44,6 +44,11 @@ const styles = StyleSheet.create({
   settingsButton: {
     paddingHorizontal: 8,
   },
+  additionalComponent: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
 });
 
 export default styles;
