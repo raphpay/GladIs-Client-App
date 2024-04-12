@@ -3,45 +3,39 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  Image,
   Platform,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+  TextInput
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 
-import { IRootStackParams } from '../../../navigation/Routes';
+import { IRootStackParams } from '../../../../navigation/Routes';
 
-import IAction from '../../../business-logic/model/IAction';
-import IDocument, { DocumentStatus } from '../../../business-logic/model/IDocument';
-import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
-import IFile from '../../../business-logic/model/IFile';
-import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
-import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import PlatformName from '../../../business-logic/model/enums/PlatformName';
-import UserType from '../../../business-logic/model/enums/UserType';
-import FinderModule from '../../../business-logic/modules/FinderModule';
-import CacheService from '../../../business-logic/services/CacheService';
-import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
-import DocumentService from '../../../business-logic/services/DocumentService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
-import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
+import IAction from '../../../../business-logic/model/IAction';
+import IDocument, { DocumentStatus } from '../../../../business-logic/model/IDocument';
+import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
+import IFile from '../../../../business-logic/model/IFile';
+import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
+import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import PlatformName from '../../../../business-logic/model/enums/PlatformName';
+import UserType from '../../../../business-logic/model/enums/UserType';
+import FinderModule from '../../../../business-logic/modules/FinderModule';
+import CacheService from '../../../../business-logic/services/CacheService';
+import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
+import DocumentService from '../../../../business-logic/services/DocumentService';
+import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { RootState } from '../../../../business-logic/store/store';
+import Utils from '../../../../business-logic/utils/Utils';
 
-import AppContainer from '../../components/AppContainer/AppContainer';
-import IconButton from '../../components/Buttons/IconButton';
-import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Dialog from '../../components/Dialogs/Dialog';
-import Grid from '../../components/Grid/Grid';
-import Pagination from '../../components/Pagination';
-import Toast from '../../components/Toast';
-import Tooltip from '../../components/Tooltip';
-import TooltipAction from '../../components/TooltipAction';
+import AppContainer from '../../../components/AppContainer/AppContainer';
+import IconButton from '../../../components/Buttons/IconButton';
+import Dialog from '../../../components/Dialogs/Dialog';
+import Pagination from '../../../components/Pagination';
+import Toast from '../../../components/Toast';
+import TooltipAction from '../../../components/TooltipAction';
 
-import { Colors } from '../../assets/colors/colors';
-import styles from '../../assets/styles/documentManagement/DocumentsScreenStyles';
+import { Colors } from '../../../assets/colors/colors';
+import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
+import DocumentGrid from './DocumentGrid';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
@@ -59,8 +53,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const plusIcon = require('../../assets/images/plus.png');
-  const docIcon = require('../../assets/images/doc.fill.png');
+  const plusIcon = require('../../../assets/images/plus.png');
   
   const { t } = useTranslation();
   
@@ -266,48 +259,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }, [documentListCount]);
 
   // Components
-  function DocumentRow(item: IDocument) {
-    return (
-      <View style={styles.documentLineContainer}>
-        <View style={styles.documentLineRow}>
-          <TouchableOpacity onPress={() => navigateToDocument(item)}>
-            <View style={styles.documentButton}>
-              <Image source={require('../../assets/images/PDF_file_icon.png')}/>
-              <View style={styles.documentTextContainer}>
-                <Text style={styles.documentText}>
-                  {item.name}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-          <Tooltip action={() => showDocumentDialog(item)} />
-        </View>
-        <View style={styles.separator}/>
-      </View>
-    );
-  }
-
-  function DocumentGrid() {
-    return (
-      <>
-        {
-          documentsFiltered.length !== 0 ? (
-            <Grid
-              data={documentsFiltered}
-              renderItem={(renderItem) => DocumentRow(renderItem.item)}
-            />
-          ) : (
-            <ContentUnavailableView 
-              title={t('documentsScreen.noDocs.title')}
-              message={currentUser?.userType === UserType.Admin ? t('documentsScreen.noDocs.message.admin') : t('documentsScreen.noDocs.message.client')}
-              image={docIcon}
-            />
-          )
-        }
-      </>
-    )
-  }
-
   function ToastContent() {
     return (
       <>
@@ -367,20 +318,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
-  function TooltipContent() {
-    return (
-      <TooltipAction
-        showDialog={showDocumentActionDialog}
-        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
-        isConfirmAvailable={false}
-        isCancelAvailable={true}
-        onConfirm={() => {}}
-        onCancel={() => setShowDocumentActionDialog(false)}
-        popoverActions={popoverActions}
-      />
-    )
-  }
-
   return (
     <>
       <AppContainer
@@ -406,13 +343,21 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             isLoading ? (
               <ActivityIndicator size="large" color={Colors.primary} />
             ) : (
-              DocumentGrid()
+              <DocumentGrid documentsFiltered={documentsFiltered} showDocumentDialog={showDocumentDialog} />
             )
           }
         </>
       </AppContainer>
       {AddDocumentDialog()}
-      {TooltipContent()}
+      <TooltipAction
+        showDialog={showDocumentActionDialog}
+        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+        isConfirmAvailable={false}
+        isCancelAvailable={true}
+        onConfirm={() => {}}
+        onCancel={() => setShowDocumentActionDialog(false)}
+        popoverActions={popoverActions}
+      />
       {ToastContent()}
     </>
   );
