@@ -4,11 +4,13 @@ import IUser from '../../model/IUser';
 export interface UserState {
   currentUser: IUser | undefined,
   currentClient: IUser | undefined,
+  isAdmin: boolean,
 }
 
 const initialState: UserState = {
   currentUser: undefined,
   currentClient: undefined,
+  isAdmin: false,
 };
 
 export const userSlice = createSlice({
@@ -21,6 +23,9 @@ export const userSlice = createSlice({
     },
     removeCurrentUser: (state) => {
       state.currentUser = undefined
+    },
+    setIsAdmin: (state, action: PayloadAction<boolean>) => {
+      state.isAdmin = action.payload;
     },
     setCurrentClient: (state, action: PayloadAction<IUser>) => {
       state.currentClient = action.payload;
@@ -36,6 +41,10 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setCurrentUser, removeCurrentUser, setCurrentClient, removeCurrentClient, changeClientBlockedStatus } = userSlice.actions;
+export const {
+  setCurrentUser, removeCurrentUser, setIsAdmin,
+  setCurrentClient, removeCurrentClient,
+  changeClientBlockedStatus,
+} = userSlice.actions;
 
 export default userSlice.reducer;

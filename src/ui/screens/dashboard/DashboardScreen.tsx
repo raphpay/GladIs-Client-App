@@ -6,7 +6,6 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -28,7 +27,6 @@ function DashboardScreen(props: DashboardScreenProps): any {
   const [searchText, setSearchText] = useState<string>('');
   const [oldPassword, setOldPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [dialogDescription, setDialogDescription] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
@@ -41,11 +39,10 @@ function DashboardScreen(props: DashboardScreenProps): any {
   
   const { t } = useTranslation();
 
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, isAdmin } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
-  const userIsAdmin = currentUser?.userType == UserType.Admin;
-  const searchTextPlaceholder = userIsAdmin ? t('dashboard.searchTextPlaceholder.admin') : t('dashboard.searchTextPlaceholder.client');
+  const searchTextPlaceholder = isAdmin ? t('dashboard.searchTextPlaceholder.admin') : t('dashboard.searchTextPlaceholder.client');
 
   // Sync Methods
   function navigateToClientList() {
@@ -82,13 +79,11 @@ function DashboardScreen(props: DashboardScreenProps): any {
 
   async function loadView() {
     if (currentUser) {
-      setIsAdmin(userIsAdmin);
       setDialogDescription(t('components.dialog.firstConnection.description'))
       setShowDialog(currentUser.firstConnection ?? false);
     } else {
       const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
       const user = await UserService.getInstance().getUserByID(userID as string, token);
-      setIsAdmin(userIsAdmin);
       setDialogDescription(t('components.dialog.firstConnection.description'))
       setShowDialog(user.firstConnection ?? false);
     }

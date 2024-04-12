@@ -8,7 +8,6 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import IAction from '../../../business-logic/model/IAction';
 import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentationTab';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import UserType from '../../../business-logic/model/enums/UserType';
 import TechnicalDocumentationTabService from '../../../business-logic/services/TechnicalDocumentationTabService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
@@ -29,7 +28,6 @@ type TechnicalDocAreaScreenProps = NativeStackScreenProps<IRootStackParams, Navi
 function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const [technicalTabs, setTechnicalTabs] = useState<ITechnicalDocTab[]>([]);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [newTabName, setNewTabName] = useState<string>('');
   // Toast
@@ -45,7 +43,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
 
   const { t } = useTranslation();
 
-  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, isAdmin } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
@@ -79,7 +77,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
   }
 
   function navigateToDashboard() {
-    navigation.navigate(currentUser?.userType == UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+    navigation.navigate(isAdmin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
   }
 
   function navigateTo(item: ITechnicalDocTab) {
@@ -90,14 +88,6 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
       processNumber: undefined,
       documentsPath: `technicalDocumentation/${area.name}/${item.name}`
     });
-  }
-
-  function getUser() {
-    if (currentUser) {
-      setIsAdmin(currentUser.userType == UserType.Admin);
-    } else {
-      setIsAdmin(false);
-    }
   }
 
   function displayToast(message: string, isError: boolean = false) {

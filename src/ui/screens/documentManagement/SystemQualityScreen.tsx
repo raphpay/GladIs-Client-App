@@ -11,7 +11,6 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -38,7 +37,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   
   const { navigation } = props;
 
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { isAdmin } = useAppSelector((state: RootState) => state.users);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
@@ -104,7 +103,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   function navigateToDashboard() {
-    navigation.navigate(currentUser?.userType == UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+    navigation.navigate(isAdmin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
   }
 
   function navigateTo(item: ISystemQualityItem) {

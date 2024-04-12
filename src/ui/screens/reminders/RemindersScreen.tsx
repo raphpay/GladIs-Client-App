@@ -6,7 +6,6 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 
 import IAction from '../../../business-logic/model/IAction';
 import { IEvent } from '../../../business-logic/model/IEvent';
-import UserType from '../../../business-logic/model/enums/UserType';
 import EventService from '../../../business-logic/services/EventService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
@@ -42,7 +41,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser, isAdmin } = useAppSelector((state: RootState) => state.users);
 
   const { navigation } = props;
 
@@ -83,7 +82,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
         console.log("Error loading events", error);
       }
     } else {
-      if (currentUser?.userType === UserType.Admin) {
+      if (isAdmin) {
         try {
           events = await EventService.getInstance().getAll(token);
         } catch (error) {
@@ -103,7 +102,7 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
         console.log("Error loading events", error);
       }
     } else {
-      if (currentUser?.userType === UserType.Admin) {
+      if (isAdmin) {
         try {
           archivedEvents = await EventService.getInstance().getArchivedEvents(token);
         } catch (error) {

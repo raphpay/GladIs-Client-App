@@ -17,7 +17,7 @@ import PasswordResetService from '../../../business-logic/services/PasswordReset
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
-import { setCurrentClient, setCurrentUser } from '../../../business-logic/store/slices/userReducer';
+import { setCurrentClient, setCurrentUser, setIsAdmin } from '../../../business-logic/store/slices/userReducer';
 
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import AppIcon from '../../components/AppIcon';
@@ -156,6 +156,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         try {
           const user = await UserService.getInstance().getUserByID(token.user.id, token);
           dispatch(setCurrentUser(user));
+          dispatch(setIsAdmin(user.userType === UserType.Admin))
           if (user.userType !== UserType.Admin) {
             dispatch(setCurrentClient(user));
           }
