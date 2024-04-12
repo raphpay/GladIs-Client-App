@@ -3,23 +3,23 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
-import IModule from '../../business-logic/model/IModule';
-import IUser from '../../business-logic/model/IUser';
-import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
-import MessageService from '../../business-logic/services/MessageService';
-import PasswordResetService from '../../business-logic/services/PasswordResetService';
-import UserService from '../../business-logic/services/UserService';
-import { useAppDispatch, useAppSelector } from '../../business-logic/store/hooks';
-import { setCurrentClient } from '../../business-logic/store/slices/userReducer';
-import { RootState } from '../../business-logic/store/store';
+import IModule from '../../../business-logic/model/IModule';
+import IUser from '../../../business-logic/model/IUser';
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import MessageService from '../../../business-logic/services/MessageService';
+import PasswordResetService from '../../../business-logic/services/PasswordResetService';
+import UserService from '../../../business-logic/services/UserService';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setCurrentClient } from '../../../business-logic/store/slices/userReducer';
+import { RootState } from '../../../business-logic/store/store';
 
-import ContentUnavailableView from './ContentUnavailableView';
-import Grid from './Grid';
-import GridClientItem from './GridClientItem';
+import ContentUnavailableView from '../ContentUnavailableView';
+import Grid from '../Grid';
+import GridClientItem from '../GridClientItem';
 
-import { Colors } from '../assets/colors/colors';
-import styles from '../assets/styles/components/DashboardAdminGridStyles';
-import GridModuleItem from './GridModuleItem';
+import { Colors } from '../../assets/colors/colors';
+import styles from '../../assets/styles/components/DashboardAdminGridStyles';
+import GridModuleItem from '../GridModuleItem';
 
 type DashboardAdminGridProps = {
   searchText: string;
@@ -36,7 +36,7 @@ interface IActionItem {
 function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   const { searchText } = props;
 
-  const clipboardIcon = require('../assets/images/list.clipboard.png');
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
   const [clients, setClients] = useState<IUser[]>([]);
   const [passwordResetAction, setPasswordResetAction] = useState<IActionItem>();

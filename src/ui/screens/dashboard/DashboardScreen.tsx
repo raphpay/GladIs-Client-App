@@ -13,8 +13,8 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
-import DashboardAdminGrid from '../../components/DashboardAdminGrid';
-import DashboardClientGrid from '../../components/DashboardClientGrid';
+import DashboardAdminGrid from '../../components/Dashboard/DashboardAdminGrid';
+import DashboardClientGrid from '../../components/Dashboard/DashboardClientGrid';
 import Dialog from '../../components/Dialog';
 import ErrorDialog from '../../components/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
