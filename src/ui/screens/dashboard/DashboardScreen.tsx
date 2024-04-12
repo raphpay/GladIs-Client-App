@@ -16,7 +16,7 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import DashboardAdminGrid from '../../components/Dashboard/DashboardAdminGrid';
 import DashboardClientGrid from '../../components/Dashboard/DashboardClientGrid';
 import Dialog from '../../components/Dialogs/Dialog';
-import ErrorDialog from '../../components/ErrorDialog';
+import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import IconButton from '../../components/IconButton';
 import Toast from '../../components/Toast';

@@ -11,7 +11,7 @@ import { removeCurrentClient } from '../../../business-logic/store/slices/userRe
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import DashboardClientGrid from '../../components/Dashboard/DashboardClientGrid';
-import ErrorDialog from '../../components/ErrorDialog';
+import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 
 type ClientDashboardScreenFromAdminProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ClientDashboardScreenFromAdmin>;
 

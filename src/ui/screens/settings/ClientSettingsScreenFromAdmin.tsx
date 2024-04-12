@@ -24,7 +24,7 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import Dialog from '../../components/Dialogs/Dialog';
-import ErrorDialog from '../../components/ErrorDialog';
+import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import Grid from '../../components/Grid';
 import Toast from '../../components/Toast';
 
