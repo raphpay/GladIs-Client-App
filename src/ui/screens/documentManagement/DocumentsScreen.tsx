@@ -31,10 +31,10 @@ import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid/Grid';
-import IconButton from '../../components/IconButton';
 import Pagination from '../../components/Pagination';
 import Toast from '../../components/Toast';
 import Tooltip from '../../components/Tooltip';

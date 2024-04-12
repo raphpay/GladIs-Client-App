@@ -21,9 +21,9 @@ import { setCurrentClient, setCurrentUser } from '../../../business-logic/store/
 
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import AppIcon from '../../components/AppIcon';
+import SimpleTextButton from '../../components/Buttons/SimpleTextButton';
+import TextButton from '../../components/Buttons/TextButton';
 import Dialog from '../../components/Dialogs/Dialog';
-import SimpleTextButton from '../../components/SimpleTextButton';
-import TextButton from '../../components/TextButton';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 

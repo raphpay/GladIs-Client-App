@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/components/AppContainerStyles';
-import IconButton from '../IconButton';
+import IconButton from '../Buttons/IconButton';
 
 type SettingsBarProps = {
   showSettings: boolean;

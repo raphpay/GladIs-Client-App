@@ -13,11 +13,11 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
 import DashboardAdminGrid from '../../components/Dashboard/DashboardAdminGrid';
 import DashboardClientGrid from '../../components/Dashboard/DashboardClientGrid';
 import Dialog from '../../components/Dialogs/Dialog';
 import ErrorDialog from '../../components/Dialogs/ErrorDialog';
-import IconButton from '../../components/IconButton';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 

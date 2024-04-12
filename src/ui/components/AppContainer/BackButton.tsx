@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import IconButton from '../IconButton';
+import IconButton from '../Buttons/IconButton';
 
 type BackButtonProps = {
   showBackButton?: boolean;

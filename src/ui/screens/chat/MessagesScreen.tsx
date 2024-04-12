@@ -16,8 +16,8 @@ import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
 import Dialog from '../../components/Dialogs/Dialog';
-import IconButton from '../../components/IconButton';
 import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';

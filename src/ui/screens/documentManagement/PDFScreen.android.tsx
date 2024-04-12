@@ -16,8 +16,8 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
+import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import IconButton from '../../components/IconButton';
 import Toast from '../../components/Toast';
 
 import { Colors } from '../../assets/colors/colors';
