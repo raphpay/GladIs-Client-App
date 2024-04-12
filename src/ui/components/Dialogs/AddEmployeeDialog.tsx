@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
 import Utils from '../../../business-logic/utils/Utils';
 
-import GladisTextInput from '../GladisTextInput';
+import GladisTextInput from '../TextInputs/GladisTextInput';
 import Dialog from './Dialog';
 
 

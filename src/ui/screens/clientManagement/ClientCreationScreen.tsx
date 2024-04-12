@@ -28,9 +28,9 @@ import { IClientCreationStack } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import AddEmployeeDialog from '../../components/Dialogs/AddEmployeeDialog';
-import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';

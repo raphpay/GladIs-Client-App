@@ -22,9 +22,9 @@ import { setCurrentClient, setCurrentUser } from '../../../business-logic/store/
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import AppIcon from '../../components/AppIcon';
 import Dialog from '../../components/Dialogs/Dialog';
-import GladisTextInput from '../../components/GladisTextInput';
 import SimpleTextButton from '../../components/SimpleTextButton';
 import TextButton from '../../components/TextButton';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';

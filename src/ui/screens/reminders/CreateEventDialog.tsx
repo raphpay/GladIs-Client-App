@@ -10,7 +10,7 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import Dialog from '../../components/Dialogs/Dialog';
 import Dropdown from '../../components/Dropdown';
-import GladisTextInput from '../../components/GladisTextInput';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 type CreateEventDialogProps = {
   showDialog: boolean;
