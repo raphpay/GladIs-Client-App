@@ -17,8 +17,8 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import Dialog from '../../components/Dialogs/Dialog';
-import ExpandingTextInput from '../../components/ExpandingTextInput';
 import IconButton from '../../components/IconButton';
+import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 import MessageTable from './MessageTable';

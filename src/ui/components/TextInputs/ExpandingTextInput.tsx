@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextInput, View } from 'react-native';
-import styles from '../assets/styles/components/ExpandingTextInputStyles';
+import styles from '../../assets/styles/components/ExpandingTextInputStyles';
 
 type ExpandingTextInputProps = {
   text: string;

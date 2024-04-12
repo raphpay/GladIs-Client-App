@@ -6,7 +6,7 @@ import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import SearchTextInput from '../SearchTextInput';
+import SearchTextInput from '../TextInputs/SearchTextInput';
 import TopAppBar from '../TopAppBar';
 
 import styles from '../../assets/styles/components/AppContainerStyles';
