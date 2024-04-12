@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
   circleNumber: {
     fontFamily: Fonts.poppinsSemiBold
   },
+  itemName: {
+    fontFamily: Fonts.poppinsLight
+  }
 });
 
 export default styles;

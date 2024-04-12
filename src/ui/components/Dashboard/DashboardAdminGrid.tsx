@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
+import { IActionItem } from '../../../business-logic/model/IAction';
 import IModule from '../../../business-logic/model/IModule';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -17,21 +18,13 @@ import ContentUnavailableView from '../ContentUnavailableView';
 import Grid from '../Grid';
 import GridClientItem from '../GridClientItem';
 
-import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/components/DashboardAdminGridStyles';
 import GridModuleItem from '../GridModuleItem';
+import ActionSection from './Action/ActionSection';
 
 type DashboardAdminGridProps = {
   searchText: string;
 };
-
-interface IActionItem {
-  id: string;
-  number: number;
-  name: string;
-  color?: string;
-  screenDestination?: string;
-}
 
 function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   const { searchText } = props;
@@ -165,54 +158,6 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   }, [passwordResetTokenCount]);
 
   // Components
-  function ActionGridItem(item?: IActionItem) {
-    function navigateTo() {
-      if (item?.screenDestination) {
-        navigation.navigate(item.screenDestination);
-      }
-    }
-
-    return (
-      <>
-        {
-          item && (
-            <TouchableOpacity onPress={navigateTo}>
-              <View style={styles.actionRow}>
-                <View style={{...styles.circle, borderColor: item.color ? item.color : Colors.primary}}>
-                  <Text style={styles.circleNumber}>{item.number}</Text>
-                </View>
-                <Text>{item.name}</Text>
-              </View>
-            </TouchableOpacity>
-          )
-        }
-      </>
-    )
-  }
-
-  function ActionSection() {
-    return (
-      <>
-        {
-          (passwordResetAction || messagesAction) && (
-            <View style={styles.actionSectionContainer}>
-              <Text style={styles.sectionTitle}>{t('dashboard.sections.actions.title')}</Text>
-              <ScrollView
-                contentContainerStyle={styles.actionScrollView}
-                scrollEnabled={false}
-                horizontal={true}
-                showsVerticalScrollIndicator={false}
-              >
-                { passwordResetAction && ActionGridItem(passwordResetAction) }
-                { messagesAction && ActionGridItem(messagesAction) }
-              </ScrollView>
-            </View>
-          )
-        }
-      </>
-    )
-  }
-
   function ModulesSection() {
     return (
       <View style={styles.clientSectionContainer}>
@@ -263,7 +208,10 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   return (
     <ScrollView style={styles.container}>
-      {ActionSection()}
+      <ActionSection
+        passwordResetAction={passwordResetAction}
+        messagesAction={messagesAction}
+      />
       {ModulesSection()}
       {ClientSection()}
     </ScrollView>
