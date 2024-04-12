@@ -22,7 +22,7 @@ import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
 import DashboardScreen from '../ui/screens/dashboard/DashboardScreen';
 // Document Management
 import DocumentManagementScreen from '../ui/screens/documentManagement/DocumentManagementScreen';
-import DocumentsScreen from '../ui/screens/documentManagement/DocumentsScreen';
+import DocumentsScreen from '../ui/screens/documentManagement/DocumentScreen/DocumentsScreen';
 import PDFScreen from '../ui/screens/documentManagement/PDFScreen';
 import ProcessesScreen from '../ui/screens/documentManagement/ProcessesScreen';
 import SystemQualityScreen from '../ui/screens/documentManagement/SystemQualityScreen';

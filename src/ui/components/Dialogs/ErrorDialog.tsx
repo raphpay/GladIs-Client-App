@@ -6,8 +6,8 @@ import {
   View
 } from 'react-native';
 
-import { Colors } from '../assets/colors/colors';
-import styles from '../assets/styles/components/ErrorDialogStyles';
+import { Colors } from '../../assets/colors/colors';
+import styles from '../../assets/styles/components/ErrorDialogStyles';
 
 type DialogProps = {
   title: string;

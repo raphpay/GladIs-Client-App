@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import IPotentialEmployee from '../../business-logic/model/IPotentialEmployee';
-import Utils from '../../business-logic/utils/Utils';
+import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
+import Utils from '../../../business-logic/utils/Utils';
 
+import GladisTextInput from '../TextInputs/GladisTextInput';
 import Dialog from './Dialog';
-import GladisTextInput from './GladisTextInput';
 
 
 type AddEmployeeDialogProps = {
@@ -32,6 +32,7 @@ function AddEmployeeDialog(props: AddEmployeeDialogProps): React.JSX.Element {
   const [potentialEmployeeEmail, setPotentialEmployeeEmail] = useState<string>('');
   const [potentialEmployeePhoneNumber, setPotentialEmployeePhoneNumber] = useState<string>('');
 
+  // Sync Methods
   function isContactDetailsValid(): boolean {
     let isValid: boolean = true;
     const isPhoneValid = Utils.isPhoneValid(potentialEmployeePhoneNumber);
@@ -58,6 +59,7 @@ function AddEmployeeDialog(props: AddEmployeeDialogProps): React.JSX.Element {
     return isFilled;
   }
 
+  // Async Methods
   async function addEmployee() {
     if (isFormFilled() && isContactDetailsValid()) {
       const newArray: IPotentialEmployee[] = potentialEmployees;

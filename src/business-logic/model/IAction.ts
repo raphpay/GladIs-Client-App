@@ -4,3 +4,12 @@ export default interface IAction {
   isDisabled?: boolean;
   isDestructive?: boolean;
 }
+
+
+export interface IActionItem {
+  id: string;
+  number: number;
+  name: string;
+  color?: string;
+  screenDestination?: string;
+}

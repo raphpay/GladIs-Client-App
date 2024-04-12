@@ -22,10 +22,10 @@ import { changeClientBlockedStatus } from '../../../business-logic/store/slices/
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
-import AppContainer from '../../components/AppContainer';
-import Dialog from '../../components/Dialog';
-import ErrorDialog from '../../components/ErrorDialog';
-import Grid from '../../components/Grid';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import Dialog from '../../components/Dialogs/Dialog';
+import ErrorDialog from '../../components/Dialogs/ErrorDialog';
+import Grid from '../../components/Grid/Grid';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';

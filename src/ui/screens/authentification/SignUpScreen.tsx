@@ -26,11 +26,11 @@ import PendingUserService from '../../../business-logic/services/PendingUserServ
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import Utils from '../../../business-logic/utils/Utils';
 
-import AddEmployeeDialog from '../../components/AddEmployeeDialog';
-import AppContainer from '../../components/AppContainer';
-import GladisTextInput from '../../components/GladisTextInput';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import TextButton from '../../components/Buttons/TextButton';
+import AddEmployeeDialog from '../../components/Dialogs/AddEmployeeDialog';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
-import TextButton from '../../components/TextButton';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';

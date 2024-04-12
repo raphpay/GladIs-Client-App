@@ -7,7 +7,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
-import Dialog from '../../components/Dialog';
+import Dialog from '../../components/Dialogs/Dialog';
 
 type EventDialogProps = {
   selectedEvent: IEvent;

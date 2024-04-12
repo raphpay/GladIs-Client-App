@@ -15,11 +15,11 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
-import AppContainer from '../../components/AppContainer';
-import Dialog from '../../components/Dialog';
-import ExpandingTextInput from '../../components/ExpandingTextInput';
-import GladisTextInput from '../../components/GladisTextInput';
-import IconButton from '../../components/IconButton';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
+import Dialog from '../../components/Dialogs/Dialog';
+import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 import MessageTable from './MessageTable';
 

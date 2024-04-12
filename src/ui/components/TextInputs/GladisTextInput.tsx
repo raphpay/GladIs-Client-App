@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 
-import styles from '../assets/styles/components/GladisTextInputStyles';
+import styles from '../../assets/styles/components/GladisTextInputStyles';
 
 type GladisTextInputProps = {
   value: string;
@@ -31,19 +31,20 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
   const [isSecure, setIsSecure] = useState<boolean>(false);
 
   const {
-    value,
+    value, onValueChange,
     placeholder,
-    onValueChange,
     width,
     keyboardType,
     secureTextEntry,
     autoCapitalize,
     onSubmitEditing,
-    showVisibilityButton,
-    showTitle,
+    showVisibilityButton, showTitle,
     editable,
     autoCorrect
   } = props;
+
+  const eyeIcon = require('../../assets/images/eye.fill.png');
+  const eyeSlashIcon = require('../../assets/images/eye.slash.fill.png');
 
   function toggleVisibility() {
     setIsSecure(!isSecure);
@@ -81,9 +82,9 @@ function GladisTextInput(props: GladisTextInputProps): React.JSX.Element {
               >
                 {
                   isSecure ? (
-                    <Image style={styles.icon} source={require('../assets/images/eye.slash.fill.png')} />
+                    <Image style={styles.icon} source={eyeSlashIcon} />
                   ) : (
-                    <Image style={styles.icon} source={require('../assets/images/eye.fill.png')} />
+                    <Image style={styles.icon} source={eyeIcon} />
                   )
                 }
               </TouchableOpacity>

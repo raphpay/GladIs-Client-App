@@ -15,11 +15,11 @@ import { useAppDispatch, useAppSelector } from '../../../business-logic/store/ho
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Dialog from '../../components/Dialog';
-import Grid from '../../components/Grid';
-import IconButton from '../../components/IconButton';
+import Dialog from '../../components/Dialogs/Dialog';
+import Grid from '../../components/Grid/Grid';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';

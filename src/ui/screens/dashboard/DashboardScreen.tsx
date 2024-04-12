@@ -12,13 +12,13 @@ import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import AppContainer from '../../components/AppContainer';
-import DashboardAdminGrid from '../../components/DashboardAdminGrid';
-import DashboardClientGrid from '../../components/DashboardClientGrid';
-import Dialog from '../../components/Dialog';
-import ErrorDialog from '../../components/ErrorDialog';
-import GladisTextInput from '../../components/GladisTextInput';
-import IconButton from '../../components/IconButton';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
+import DashboardAdminGrid from '../../components/Dashboard/DashboardAdminGrid';
+import DashboardClientGrid from '../../components/Dashboard/DashboardClientGrid';
+import Dialog from '../../components/Dialogs/Dialog';
+import ErrorDialog from '../../components/Dialogs/ErrorDialog';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;

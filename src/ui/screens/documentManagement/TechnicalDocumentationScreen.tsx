@@ -13,8 +13,8 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 
-import AppContainer from '../../components/AppContainer';
-import Grid from '../../components/Grid';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import Grid from '../../components/Grid/Grid';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 

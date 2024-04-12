@@ -14,10 +14,10 @@ import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
 import { removeCurrentClient, removeCurrentUser } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 
-import AppContainer from '../../components/AppContainer';
-import Dialog from '../../components/Dialog';
-import GladisTextInput from '../../components/GladisTextInput';
-import Grid from '../../components/Grid';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import Dialog from '../../components/Dialogs/Dialog';
+import Grid from '../../components/Grid/Grid';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import IAction from '../../../business-logic/model/IAction';

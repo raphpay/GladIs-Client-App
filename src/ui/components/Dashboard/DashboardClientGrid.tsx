@@ -2,17 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import IModule from '../../business-logic/model/IModule';
-import NavigationRoutes from '../../business-logic/model/enums/NavigationRoutes';
-import ModuleService from '../../business-logic/services/ModuleService';
-import UserService from '../../business-logic/services/UserService';
-import { useAppDispatch, useAppSelector } from '../../business-logic/store/hooks';
-import { setModule } from '../../business-logic/store/slices/appStateReducer';
-import { RootState } from '../../business-logic/store/store';
+import IModule from '../../../business-logic/model/IModule';
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import ModuleService from '../../../business-logic/services/ModuleService';
+import UserService from '../../../business-logic/services/UserService';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setModule } from '../../../business-logic/store/slices/appStateReducer';
+import { RootState } from '../../../business-logic/store/store';
 
-import ContentUnavailableView from './ContentUnavailableView';
-import Grid from './Grid';
-import GridModuleItem from './GridModuleItem';
+import ContentUnavailableView from '../ContentUnavailableView';
+import Grid from '../Grid/Grid';
+import GridModuleItem from '../Grid/GridModuleItem';
 
 type DashboardClientGridProps = {
   searchText: string;
@@ -24,7 +24,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   const [modules, setModules] = useState<IModule[]>([]);
   const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
-  const clipboardIcon = require('../assets/images/list.clipboard.png');
+  const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
   const { t } = useTranslation();
   const navigation = useNavigation();

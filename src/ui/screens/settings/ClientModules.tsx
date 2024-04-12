@@ -12,9 +12,9 @@ import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
 
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import IconButton from '../../components/IconButton';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import Toast from '../../components/Toast';
 

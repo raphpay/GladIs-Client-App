@@ -20,10 +20,10 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import AppContainer from '../../components/AppContainer';
-import Dialog from '../../components/Dialog';
-import GladisTextInput from '../../components/GladisTextInput';
-import Grid from '../../components/Grid';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import Dialog from '../../components/Dialogs/Dialog';
+import Grid from '../../components/Grid/Grid';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 import Tooltip from '../../components/Tooltip';
 import TooltipAction from '../../components/TooltipAction';

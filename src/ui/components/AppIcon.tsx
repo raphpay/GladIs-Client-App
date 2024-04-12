@@ -33,6 +33,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   const gladisLogo = require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent_Square.png')
   const androidLogoStyles = Platform.OS === PlatformName.Android && styles.androidLogo;;
 
+  // Async Methods
   async function getLogoDocument(): Promise<IDocument | undefined> {
     if (currentClient) {
       const company = currentClient.companyName;
@@ -81,6 +82,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
     Platform.OS === PlatformName.Mac ? setLogoURI(`data:image/png;base64,${data}`) : setLogoURI(data);
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadLogo();
@@ -88,6 +90,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
     init();
   }, [currentClient]);
 
+  // Component
   return (
     <View style={[styles.container, style]}>
       <View style={styles.imageContainer}>

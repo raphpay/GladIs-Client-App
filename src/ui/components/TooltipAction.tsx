@@ -6,7 +6,7 @@ import {
 
 import IAction from '../../business-logic/model/IAction';
 
-import Dialog from './Dialog';
+import Dialog from './Dialogs/Dialog';
 
 import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/TooltipActionStyles';

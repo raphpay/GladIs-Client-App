@@ -15,9 +15,9 @@ import ISubCategory from '../../../business-logic/model/ISubCategory';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Grid from '../../components/Grid';
+import Grid from '../../components/Grid/Grid';
 
 import styles from '../../assets/styles/documentManagement/DocumentManagementScreenStyles';
 
