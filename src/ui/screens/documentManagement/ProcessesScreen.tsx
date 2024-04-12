@@ -13,7 +13,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Grid from '../../components/Grid';
+import Grid from '../../components/Grid/Grid';
 
 import styles from '../../assets/styles/documentManagement/ProcessesScreenStyles';
 

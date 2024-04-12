@@ -9,8 +9,8 @@ import {
 import IModule from '../../../../business-logic/model/IModule';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 
-import Grid from '../../Grid';
-import GridModuleItem from '../../GridModuleItem';
+import Grid from '../../Grid/Grid';
+import GridModuleItem from '../../Grid/GridModuleItem';
 
 import styles from '../../../assets/styles/components/DashboardAdminGridStyles';
 

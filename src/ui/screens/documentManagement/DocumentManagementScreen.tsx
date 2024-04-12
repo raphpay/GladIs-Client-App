@@ -2,9 +2,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    Text,
-    TouchableOpacity,
-    View
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -17,7 +17,7 @@ import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Grid from '../../components/Grid';
+import Grid from '../../components/Grid/Grid';
 
 import styles from '../../assets/styles/documentManagement/DocumentManagementScreenStyles';
 

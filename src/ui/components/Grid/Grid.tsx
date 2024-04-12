@@ -2,7 +2,7 @@ import type { ListRenderItem } from '@react-native/virtualized-lists';
 import React from 'react';
 import { ScrollView } from 'react-native';
 
-import styles from '../assets/styles/components/GridStyles';
+import styles from '../../assets/styles/components/GridStyles';
 
 type GridProps<ItemT> = {
   data: Array<ItemT> | null | undefined;

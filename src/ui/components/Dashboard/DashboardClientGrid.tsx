@@ -11,8 +11,8 @@ import { setModule } from '../../../business-logic/store/slices/appStateReducer'
 import { RootState } from '../../../business-logic/store/store';
 
 import ContentUnavailableView from '../ContentUnavailableView';
-import Grid from '../Grid';
-import GridModuleItem from '../GridModuleItem';
+import Grid from '../Grid/Grid';
+import GridModuleItem from '../Grid/GridModuleItem';
 
 type DashboardClientGridProps = {
   searchText: string;

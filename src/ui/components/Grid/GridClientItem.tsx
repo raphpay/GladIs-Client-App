@@ -7,14 +7,14 @@ import {
   View
 } from 'react-native';
 
-import IUser from '../../business-logic/model/IUser';
-import DocumentService from '../../business-logic/services/DocumentService';
-import { useAppSelector } from '../../business-logic/store/hooks';
-import { RootState } from '../../business-logic/store/store';
+import IUser from '../../../business-logic/model/IUser';
+import DocumentService from '../../../business-logic/services/DocumentService';
+import { useAppSelector } from '../../../business-logic/store/hooks';
+import { RootState } from '../../../business-logic/store/store';
 
-import PlatformName from '../../business-logic/model/enums/PlatformName';
-import { Colors } from '../assets/colors/colors';
-import styles from '../assets/styles/components/GridClientItemStyles';
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
+import { Colors } from '../../assets/colors/colors';
+import styles from '../../assets/styles/components/GridClientItemStyles';
 
 type GridClientItemProps = {
   client: IUser;

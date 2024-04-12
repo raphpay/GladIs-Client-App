@@ -18,7 +18,7 @@ import { RootState } from '../../../business-logic/store/store';
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
-import Grid from '../../components/Grid';
+import Grid from '../../components/Grid/Grid';
 import IconButton from '../../components/IconButton';
 import Toast from '../../components/Toast';
 

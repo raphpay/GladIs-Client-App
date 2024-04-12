@@ -11,8 +11,8 @@ import { useAppDispatch } from '../../../../business-logic/store/hooks';
 import { setCurrentClient } from '../../../../business-logic/store/slices/userReducer';
 import styles from '../../../assets/styles/components/DashboardAdminGridStyles';
 import ContentUnavailableView from '../../ContentUnavailableView';
-import Grid from '../../Grid';
-import GridClientItem from '../../GridClientItem';
+import Grid from '../../Grid/Grid';
+import GridClientItem from '../../Grid/GridClientItem';
 
 type ClientSectionProps = {
   clientsFiltered: IUser[];
