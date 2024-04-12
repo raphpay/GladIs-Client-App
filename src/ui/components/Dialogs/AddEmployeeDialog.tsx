@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import IPotentialEmployee from '../../business-logic/model/IPotentialEmployee';
-import Utils from '../../business-logic/utils/Utils';
+import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
+import Utils from '../../../business-logic/utils/Utils';
 
-import Dialog from './Dialogs/Dialog';
-import GladisTextInput from './GladisTextInput';
+import GladisTextInput from '../GladisTextInput';
+import Dialog from './Dialog';
 
 
 type AddEmployeeDialogProps = {

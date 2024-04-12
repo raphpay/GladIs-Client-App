@@ -2,11 +2,11 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    Image,
-    Platform,
-    ScrollView,
-    Text,
-    View
+  Image,
+  Platform,
+  ScrollView,
+  Text,
+  View
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 
@@ -26,8 +26,8 @@ import PendingUserService from '../../../business-logic/services/PendingUserServ
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import Utils from '../../../business-logic/utils/Utils';
 
-import AddEmployeeDialog from '../../components/AddEmployeeDialog';
 import AppContainer from '../../components/AppContainer/AppContainer';
+import AddEmployeeDialog from '../../components/Dialogs/AddEmployeeDialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
