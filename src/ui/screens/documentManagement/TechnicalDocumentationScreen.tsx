@@ -8,7 +8,6 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import IAction from '../../../business-logic/model/IAction';
 import IArea from '../../../business-logic/model/IArea';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import UserType from '../../../business-logic/model/enums/UserType';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -24,7 +23,7 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
   const [searchText, setSearchText] = useState<string>('');
   const { t } = useTranslation();
   const { navigation } = props;
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { isAdmin } = useAppSelector((state: RootState) => state.users);
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
   const navigationHistoryItems: IAction[] = [
@@ -69,7 +68,7 @@ function TechnicalDocumentationScreen(props: TechnicalDocumentationScreenProps):
   }
 
   function navigateToDashboard() {
-    navigation.navigate(currentUser?.userType == UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+    navigation.navigate(isAdmin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
   }
 
   function navigateTo(item: IArea) {
