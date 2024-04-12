@@ -13,7 +13,7 @@ import AuthenticationService from '../business-logic/services/AuthenticationServ
 import UserService from '../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
-import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser } from '../business-logic/store/slices/userReducer';
+import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser, setIsAdmin } from '../business-logic/store/slices/userReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
@@ -245,32 +245,37 @@ export let Routes = () => {
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
 
+  async function checkAuthentication() {
+    if (token == null) {
+      try {
+        const token = await AuthenticationService.getInstance().checkAuthentication();
+        setIsLoggedIn(!!token);
+        if (token != null) {
+          dispatch(setToken(token));
+          const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
+          dispatch(setCurrentUser(currentUser));
+          dispatch(setIsAdmin(currentUser.userType === UserType.Admin));
+          if (currentUser.userType !== UserType.Admin) {
+            dispatch(setCurrentClient(currentUser));
+          }
+        } else {
+          dispatch(removeToken());
+          dispatch(removeCurrentUser());
+          dispatch(removeCurrentClient());
+        }
+      } catch (error) {
+        console.log('User not authenticated', error);
+      }
+    }
+  }
+
   useEffect(() => {
     setIsLoggedIn(!!token);
   }, [token]);
 
   useEffect(() => {
     async function init() {
-      if (token == null) {
-        try {
-          const token = await AuthenticationService.getInstance().checkAuthentication();
-          setIsLoggedIn(!!token);
-          if (token != null) {
-            dispatch(setToken(token));
-            const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
-            dispatch(setCurrentUser(currentUser));
-            if (currentUser.userType !== UserType.Admin) {
-              dispatch(setCurrentClient(currentUser));
-            }
-          } else {
-            dispatch(removeToken());
-            dispatch(removeCurrentUser());
-            dispatch(removeCurrentClient());
-          }
-        } catch (error) {
-          console.log('User not authenticated', error);
-        }
-      }
+      await checkAuthentication(); 
     }
     init();
   }, []);
