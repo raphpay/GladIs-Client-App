@@ -12,7 +12,7 @@ import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
 import DashboardAdminGrid from '../../components/DashboardAdminGrid';
 import DashboardClientGrid from '../../components/DashboardClientGrid';
 import Dialog from '../../components/Dialog';

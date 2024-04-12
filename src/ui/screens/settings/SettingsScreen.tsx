@@ -14,7 +14,7 @@ import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
 import { removeCurrentClient, removeCurrentUser } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
 import Dialog from '../../components/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';

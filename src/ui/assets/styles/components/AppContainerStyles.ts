@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     alignItems: 'center',
     paddingHorizontal: 16,
-    backgroundColor: Colors.primary
+    backgroundColor: Colors.primary,
   },
   innerContainer: {
     flex: 1,

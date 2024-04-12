@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     alignItems: 'flex-end',
-    width: '100%',
+    zIndex: 1,
   },
   appIcon: {
     marginLeft: 60,

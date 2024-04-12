@@ -9,7 +9,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { removeCurrentClient } from '../../../business-logic/store/slices/userReducer';
 
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
 import DashboardClientGrid from '../../components/DashboardClientGrid';
 import ErrorDialog from '../../components/ErrorDialog';
 

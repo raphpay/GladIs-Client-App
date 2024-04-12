@@ -14,7 +14,7 @@ import { RootState } from '../../../business-logic/store/store';
 import { IClientCreationStack } from '../../../navigation/Routes';
 
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialog';
 import Grid from '../../components/Grid';

@@ -27,7 +27,7 @@ import Utils from '../../../business-logic/utils/Utils';
 import { IClientCreationStack } from '../../../navigation/Routes';
 
 import AddEmployeeDialog from '../../components/AddEmployeeDialog';
-import AppContainer from '../../components/AppContainer';
+import AppContainer from '../../components/AppContainer/AppContainer';
 import GladisTextInput from '../../components/GladisTextInput';
 import ModuleCheckBox from '../../components/ModuleCheckBox';
 import TextButton from '../../components/TextButton';
