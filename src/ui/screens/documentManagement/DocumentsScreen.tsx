@@ -2,13 +2,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    ActivityIndicator,
-    Image,
-    Platform,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator,
+  Image,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 
@@ -32,7 +32,7 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Dialog from '../../components/Dialog';
+import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 import Pagination from '../../components/Pagination';

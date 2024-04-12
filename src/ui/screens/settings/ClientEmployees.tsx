@@ -16,7 +16,7 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Dialog from '../../components/Dialog';
+import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';

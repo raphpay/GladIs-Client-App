@@ -3,10 +3,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-    Image,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import IAction from '../../../business-logic/model/IAction';
@@ -21,7 +21,7 @@ import Utils from '../../../business-logic/utils/Utils';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
-import Dialog from '../../components/Dialog';
+import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/GladisTextInput';
 import Grid from '../../components/Grid';
 import Toast from '../../components/Toast';

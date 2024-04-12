@@ -5,7 +5,7 @@ import { Image, Text, TouchableOpacity } from 'react-native';
 import { IEvent } from '../../../business-logic/model/IEvent';
 import Utils from '../../../business-logic/utils/Utils';
 
-import Dialog from '../../components/Dialog';
+import Dialog from '../../components/Dialogs/Dialog';
 
 import styles from '../../assets/styles/reminders/ListDialogStyles';
 

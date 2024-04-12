@@ -8,7 +8,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
-import Dialog from '../../components/Dialog';
+import Dialog from '../../components/Dialogs/Dialog';
 import Dropdown from '../../components/Dropdown';
 import GladisTextInput from '../../components/GladisTextInput';
 

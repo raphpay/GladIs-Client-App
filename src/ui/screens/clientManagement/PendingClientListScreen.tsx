@@ -16,7 +16,7 @@ import { IClientCreationStack } from '../../../navigation/Routes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Dialog from '../../components/Dialog';
+import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid';
 import IconButton from '../../components/IconButton';
 import Toast from '../../components/Toast';
