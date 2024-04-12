@@ -44,6 +44,12 @@ const styles = StyleSheet.create({
   icon: {
     height: 8,
     width: 30,
+  },
+  usersButtons: {
+    flexDirection: 'row',
+  },
+  userButton: {
+    marginHorizontal: 4,
   }
 });
 

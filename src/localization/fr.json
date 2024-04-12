@@ -256,6 +256,10 @@
     },
     "searchTextPlaceholder": "Rechercher un message"
   },
+  "createAdmin": {
+    "title": "Créer un administrateur",
+    "success": "Administrateur créé avec succès"
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"
@@ -264,6 +268,7 @@
       "back": "Retour",
       "addClient": "Ajouter un client",
       "addUser": "Ajouter un utilisateur",
+      "addAdmin": "Ajouter un administrateur",
       "addEmployee": "Ajouter un employé",
       "continue": "Continuer",
       "addDocument": "Ajouter un document",

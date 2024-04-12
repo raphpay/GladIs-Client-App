@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import IAction from '../../../business-logic/model/IAction';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
@@ -77,6 +77,10 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   // Sync Methods
   function navigateToCreateClient() {
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
+  }
+
+  function navigateToAdminCreation() {
+    navigation.navigate(NavigationRoutes.AdminCreationScreen);
   }
 
   function navigateBack() {
@@ -216,6 +220,25 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     )
   }
 
+  function createUsersButtons() {
+    return (
+      <View style={styles.usersButtons}>
+        <IconButton
+          title={t('components.buttons.addClient')}
+          icon={plusIcon}
+          onPress={navigateToCreateClient}
+          style={styles.userButton}
+        />
+        <IconButton
+          title={t('components.buttons.addAdmin')}
+          icon={plusIcon}
+          onPress={navigateToAdminCreation}
+          style={styles.userButton}
+        />
+      </View>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -228,13 +251,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
         setShowDialog={setShowDialog}
         showSearchText={true}
         showSettings={true}
-        adminButton={
-          <IconButton
-            title={t('components.buttons.addClient')}
-            icon={plusIcon}
-            onPress={navigateToCreateClient}
-          />
-        }
+        adminButton={createUsersButtons()}
       >
         {
           pendingUsersFiltered.length === 0 ? (
