@@ -263,6 +263,7 @@
     "buttons": {
       "back": "Back",
       "addClient": "Add a client",
+      "addUser": "Add a user",
       "addEmployee": "Add an employee",
       "continue": "Continue",
       "addDocument": "Add a document",

@@ -263,6 +263,7 @@
     "buttons": {
       "back": "Retour",
       "addClient": "Ajouter un client",
+      "addUser": "Ajouter un utilisateur",
       "addEmployee": "Ajouter un employé",
       "continue": "Continuer",
       "addDocument": "Ajouter un document",
