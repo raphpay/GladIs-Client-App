@@ -12,15 +12,27 @@ import Grid from '../../components/Grid/Grid';
 import Tooltip from '../../components/Tooltip';
 
 import styles from '../../assets/styles/settings/AdminUserManagementScreenStyles';
+import Toast from '../../components/Toast';
 
 function AdminUserManagementScreen(): React.JSX.Element {
 
   // TODO: Filter admins for search
   const [admins, setAdmins] = useState<IUser[]>([]);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
   const { t } = useTranslation();
+
+  // Sync Methods
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
 
   // Async Methods
   async function loadAdmins() {
@@ -28,7 +40,8 @@ function AdminUserManagementScreen(): React.JSX.Element {
       const apiAdmins = await UserService.getInstance().getAdmins(token);
       setAdmins(apiAdmins);
     } catch (error) {
-      // Display toast
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
     }
   }
 
@@ -40,6 +53,7 @@ function AdminUserManagementScreen(): React.JSX.Element {
     init();
   }, []);
 
+  // Components
   function AdminRow(item: IUser) {
     return (
       <View style={styles.lineContainer}>
@@ -58,18 +72,37 @@ function AdminUserManagementScreen(): React.JSX.Element {
     );
   }
 
-  // Components
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
-    <AppContainer
-      mainTitle={t('settings.adminUserManagement.title')}
-      showSearchText={true}
-      showSettings={false}
-    >
-      <Grid
-        data={admins}
-        renderItem={(renderItem) => AdminRow(renderItem.item)}
-      />
-    </AppContainer>
+    <>
+      <AppContainer
+        mainTitle={t('settings.adminUserManagement.title')}
+        showSearchText={true}
+        showSettings={false}
+      >
+        <Grid
+          data={admins}
+          renderItem={(renderItem) => AdminRow(renderItem.item)}
+        />
+      </AppContainer>
+      {ToastContent()}
+    </>
   );
 }
 
