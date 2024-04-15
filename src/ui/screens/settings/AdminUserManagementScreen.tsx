@@ -1,20 +1,28 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
+import { IRootStackParams } from '../../../navigation/Routes';
+
 import IUser from '../../../business-logic/model/IUser';
+import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import Grid from '../../components/Grid/Grid';
+import Toast from '../../components/Toast';
 import Tooltip from '../../components/Tooltip';
 
 import styles from '../../assets/styles/settings/AdminUserManagementScreenStyles';
-import Toast from '../../components/Toast';
 
-function AdminUserManagementScreen(): React.JSX.Element {
+type AdminUserManagementScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.AdminUserManagementScreen>;
+
+function AdminUserManagementScreen(props: AdminUserManagementScreenProps): React.JSX.Element {
+
+  const { navigation } = props;
 
   // TODO: Filter admins for search
   const [admins, setAdmins] = useState<IUser[]>([]);
@@ -28,6 +36,10 @@ function AdminUserManagementScreen(): React.JSX.Element {
   const { t } = useTranslation();
 
   // Sync Methods
+  function navigateBack() {
+    navigation.goBack();
+  }
+
   function displayToast(message: string, isError: boolean = false) {
     setShowToast(true);
     setToastIsShowingError(isError);
@@ -95,6 +107,8 @@ function AdminUserManagementScreen(): React.JSX.Element {
         mainTitle={t('settings.adminUserManagement.title')}
         showSearchText={true}
         showSettings={false}
+        showBackButton={true}
+        navigateBack={navigateBack}
       >
         <Grid
           data={admins}
