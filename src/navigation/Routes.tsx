@@ -238,7 +238,7 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.AdminUserManagementScreen}
         component={AdminUserManagementScreen}
-        options={{headerShown: true}}
+        options={{headerShown: false}}
       />
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationStack}

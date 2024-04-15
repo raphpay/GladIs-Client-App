@@ -116,6 +116,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
   useEffect(() => {
     if (isAdmin) {
+      // TODO: Make this unique
       const adminUserManagementAction: IAction = {
         title: t('settings.adminUserManagement.title'),
         onPress: () => navigation.navigate(NavigationRoutes.AdminUserManagementScreen),
@@ -128,7 +129,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       // Update the state variable
       setSettingsActions(newSettingsActions);
     }
-  }, [isAdmin]);
+  }, []);
 
   // Components
   function additionalMentions() {

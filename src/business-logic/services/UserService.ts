@@ -204,6 +204,21 @@ class UserService {
   }
 
   /**
+   * Retrieves the admins.
+   * @param token - The authentication token.
+   * @returns A promise that resolves to an array of admins.
+   * @throws If an error occurs while retrieving the admins.
+   */
+  async getAdmins(token: IToken | null): Promise<IUser[]> {
+    try {
+      const admins = await APIService.get<IUser[]>(`${this.baseRoute}/admins`, token?.value);
+      return admins;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Retrieves the modules of a user.
    * @param id - The ID of the user.
    * @param token - The authentication token.
