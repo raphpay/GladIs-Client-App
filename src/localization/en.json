@@ -197,6 +197,10 @@
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
     "logout": "Log out",
+    "adminUserManagement": {
+      "title": "Admin user management",
+      "remove": "Remove this user"
+    }
   },
   "calendar": {
     "today": "Today",

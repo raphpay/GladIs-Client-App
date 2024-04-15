@@ -22,6 +22,7 @@ enum NavigationRoutes {
   AdminCreationScreen = 'AdminCreationScreen',
   // Settings
   SettingsScreen = 'SettingsScreen',
+  AdminUserManagementScreen = 'AdminUserManagementScreen',
   // Client Management
   ClientManagementStack = 'ClientManagementStack',
   ClientSettingsScreenFromAdmin = 'ClientSettingsScreenFromAdmin',

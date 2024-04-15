@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 
@@ -29,7 +29,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, isAdmin } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
 
   const [oldPassword, setOldPassword] = useState<string>('');
@@ -41,7 +41,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
-  const settingsActions: IAction[] = [
+  const [settingsActions, setSettingsActions] = useState<IAction[]>([
     {
       title: `${t('settings.userInfos')} ${currentUser?.username}`,
       onPress: () => {},
@@ -57,7 +57,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       onPress: () => displayLogoutDialog(),
       isDisabled: false
     },
-  ];
+  ]);
 
   // Sync Methods
   function showModifyPasswordDialog() {
@@ -113,6 +113,22 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
+
+  useEffect(() => {
+    if (isAdmin) {
+      const adminUserManagementAction: IAction = {
+        title: t('settings.adminUserManagement.title'),
+        onPress: () => navigation.navigate(NavigationRoutes.AdminUserManagementScreen),
+        isDisabled: false
+      }
+
+      const newSettingsActions = [...settingsActions];
+      newSettingsActions.splice(newSettingsActions.length - 1, 0, adminUserManagementAction);
+
+      // Update the state variable
+      setSettingsActions(newSettingsActions);
+    }
+  }, [isAdmin]);
 
   // Components
   function additionalMentions() {
