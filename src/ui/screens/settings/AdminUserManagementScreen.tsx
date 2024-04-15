@@ -171,7 +171,17 @@ function AdminUserManagementScreen(props: AdminUserManagementScreenProps): React
   }
 
   async function deleteAdmin() {
-    //
+    if (selectedAdmin) {
+      try {
+        await UserService.getInstance().removeUser(selectedAdmin?.id as string, token);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+
+      await loadAdmins();
+      resetDialog();
+    }
   }
 
   // Lyfecycle Methods
