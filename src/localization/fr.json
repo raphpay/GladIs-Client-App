@@ -353,6 +353,16 @@
         "download": "Télécharger",
         "approve": "Approuver"
       },
+      "adminManagement": {
+        "title": "Actions sur",
+        "modify": "Modifier",
+        "delete": {
+          "button": "Supprimer",
+          "title": "Etes-vous sûr de vouloir supprimer cet administrateur ?",
+          "description": "La suppression est définitive."
+        },
+        "save": "Sauvegarder"
+      },
       "blockClient": "Êtes-vous sûr de vouloir bloquer ce client ?",
       "unblockClient": "Êtes-vous sûr de vouloir débloquer ce client ?",
       "confirm": "OK",

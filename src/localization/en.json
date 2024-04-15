@@ -351,7 +351,17 @@
           "eventName": "Event name",
           "confirm": "Save"
         },
-        "eventsOn": "Events on",
+        "eventsOn": "Events on"
+      },
+      "adminManagement": {
+        "title": "Actions on",
+        "modify": "Modify",
+        "delete": {
+          "button": "Delete",
+          "title": "Are you sure you want to delete this admin ?",
+          "description": "The deletion is definitive."
+        },
+        "save": "Save"
       },
       "blockClient": "Are you sure you want to block this client?",
       "unblockClient": "Are you sure you want to unblock this client?",
