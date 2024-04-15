@@ -20,6 +20,8 @@ import Toast from '../../components/Toast';
 import Tooltip from '../../components/Tooltip';
 import TooltipAction from '../../components/TooltipAction';
 
+import UserType from '../../../business-logic/model/enums/UserType';
+import Utils from '../../../business-logic/utils/Utils';
 import styles from '../../assets/styles/settings/AdminUserManagementScreenStyles';
 
 type AdminUserManagementScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.AdminUserManagementScreen>;
@@ -107,6 +109,32 @@ function AdminUserManagementScreen(props: AdminUserManagementScreenProps): React
     setDialogDescription('');
   }
 
+  function isFormFilled(): boolean {
+    let isFilled: boolean = false;
+    if (firstName.length !== 0 && lastName.length !== 0 &&
+      email.length !== 0 && phoneNumber.length !== 0) {
+        isFilled = true;
+    }
+    return isFilled;
+  }
+
+  function isContactDetailsValid(): boolean {
+    let isValid: boolean = true;
+    const isEmailValid = Utils.isEmailValid(email);
+    const isPhoneValid = Utils.isPhoneValid(phoneNumber);
+    if (!isPhoneValid && !isEmailValid) {
+      setDialogDescription(t('components.dialog.addEmployee.errors.invalidPhoneAndEmail'));
+      isValid = false;
+    } else if (!isPhoneValid) {
+      setDialogDescription(t('components.dialog.addEmployee.errors.invalidPhone'));
+      isValid = false;
+    } else if (!isEmailValid) {
+      setDialogDescription(t('components.dialog.addEmployee.errors.invalidEmail'));
+      isValid = false;
+    }
+    return isValid;
+  }
+
   // Async Methods
   async function loadAdmins() {
     try {
@@ -119,7 +147,27 @@ function AdminUserManagementScreen(props: AdminUserManagementScreenProps): React
   }
 
   async function modifyAdmin() {
-    //
+    if (isFormFilled() && isContactDetailsValid() && selectedAdmin) {
+      const modifiedAdmin: IUser = {
+        id: selectedAdmin.id,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
+        companyName: selectedAdmin?.companyName || '',
+        userType: UserType.Admin,
+      }
+
+      try {
+        await UserService.getInstance().updateUser(modifiedAdmin, token);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+
+      await loadAdmins();
+      resetDialog();
+    }
   }
 
   async function deleteAdmin() {
