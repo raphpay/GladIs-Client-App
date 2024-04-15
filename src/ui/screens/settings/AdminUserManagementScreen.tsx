@@ -8,7 +8,7 @@ function AdminUserManagementScreen(): React.JSX.Element {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Add your components here */}
+      {/* TODO: Add components here */}
     </SafeAreaView>
   );
 }
