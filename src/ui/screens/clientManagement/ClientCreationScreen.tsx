@@ -174,7 +174,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     } catch (error) {
       const errorKeys: string[] = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
-      displayToast(errorTitle, true)
+      displayToast(t(errorTitle), true)
     }
 
     if (createdUser) {
@@ -228,7 +228,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     } catch (error) {
       const errorKeys = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
-      displayToast(errorTitle, true);
+      displayToast(t(errorTitle), true);
     }
 
     const selectedModules = retrieveSelectedModules();

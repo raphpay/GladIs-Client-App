@@ -213,10 +213,10 @@ class Utils {
         if (keys.includes('badRequest.phoneNumber.invalid')) {
           errorTitle = 'errors.api.badRequest.phoneAndEmail';
         } else {
-          errorTitle = 'errors.api.badRequest.email';
+          errorTitle = 'errors.api.badRequest.email.invalid';
         }
       } else if (keys.includes('badRequest.phoneNumber.invalid')) {
-        errorTitle = 'errors.api.badRequest.phoneNumber';
+        errorTitle = 'errors.api.badRequest.phoneNumber.invalid';
       }
     }
     return errorTitle;
