@@ -129,6 +129,38 @@ class DocumentService {
       throw error;
     }
   }
+
+  /**
+   * Archives the document with the specified ID.
+   * @param id - The ID of the document to archive.
+   * @param token - The authentication token (optional).
+   * @returns A promise that resolves to the archived document.
+   * @throws If an error occurs while archiving the document.
+   */
+  async archiveDocument(id: string, token: IToken | null): Promise<IDocument> {
+    try {
+      const updatedDocument = await APIService.get<IDocument>(`${this.baseRoute}/zip/${id}`, token?.value as string);
+      return updatedDocument;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Unarchives the document with the specified ID.
+   * @param id - The ID of the document to unarchive.
+   * @param token - The authentication token (optional).
+   * @returns A promise that resolves to the unarchived document.
+   * @throws If an error occurs while unarchiving the document.
+   */
+  async unarchiveDocument(id: string, token: IToken | null): Promise<IDocument> {
+    try {
+      const updatedDocument = await APIService.get<IDocument>(`${this.baseRoute}/unzip/${id}`, token?.value as string);
+      return updatedDocument;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default DocumentService;

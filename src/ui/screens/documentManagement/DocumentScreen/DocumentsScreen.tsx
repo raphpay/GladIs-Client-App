@@ -40,18 +40,24 @@ import DocumentGrid from './DocumentGrid';
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
 function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
+  // Search
   const [searchText, setSearchText] = useState<string>('');
+  // Document
   const [documents, setDocuments] = useState<IDocument[]>([]);
+  const [documentName, setDocumentName] = useState<string>('');
+  const [selectedDocument, setSelectedDocument] = useState<IDocument>();
+  // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
+  // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [documentName, setDocumentName] = useState<string>('');
-  const [selectedDocument, setSelectedDocument] = useState<IDocument>();
+  // States
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasLoadedArchiveAction, setHasLoadedArchiveAction] = useState<boolean>(false);
 
   const plusIcon = require('../../../assets/images/plus.png');
   
@@ -91,7 +97,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
   ];
 
-  const popoverActions: IAction[] = [
+  const [popoverActions, setPopoverActions] = useState<IAction[]>([
     {
       title: t('components.dialog.documentActions.open'),
       onPress: () => navigateToDocument(selectedDocument as IDocument),
@@ -104,8 +110,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       title: t('components.dialog.documentActions.approve'),
       onPress: () => approveDocument(selectedDocument as IDocument),
       isDisabled: currentUser?.userType === UserType.Employee,
-    }
-  ];
+    },
+  ]);
 
   // Sync Methods
   function navigateToDashboard() {
@@ -124,6 +130,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   function showDocumentDialog(item: IDocument) {
     setSelectedDocument(item);
     setShowDocumentActionDialog(true);
+    loadArchivePopoverAction(item);
   }
 
   function addDocument() {
@@ -134,6 +141,24 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
+  }
+
+  function loadArchivePopoverAction(item: IDocument) {
+    if (!hasLoadedArchiveAction && currentUser?.userType === UserType.Admin) {
+      const isArchived = item.status === DocumentStatus.ARCHIVED;
+      const archiveTitle = isArchived ? t('components.dialog.documentActions.unarchive') : t('components.dialog.documentActions.archive');
+      const onPress = isArchived ? () => unarchiveDocument(item as IDocument) : () => archiveDocument(item as IDocument);
+
+      const archiveDocumentAction: IAction = {
+        title: archiveTitle,
+        onPress,
+        isDisabled: false,
+      }
+      const newPopoverActions = [...popoverActions];
+      newPopoverActions.push(archiveDocumentAction);
+      setPopoverActions(newPopoverActions);
+      setHasLoadedArchiveAction(true);
+    }
   }
 
   // Async Methods
@@ -221,6 +246,52 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       setShowDocumentActionDialog(false);
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
+    }
+  }
+
+  async function archiveDocument(document: IDocument) {
+    try {
+      // Archive document
+      const archivedDocument = await DocumentService.getInstance().archiveDocument(document.id, token);
+      setSelectedDocument(archivedDocument);
+      // Remove last popover action
+      const newPopoverActions = [...popoverActions];
+      newPopoverActions.splice(newPopoverActions.length - 1, 1);
+      setPopoverActions(newPopoverActions);
+      setHasLoadedArchiveAction(false);
+      // Update popover actions
+      loadArchivePopoverAction(archivedDocument);
+      // Close dialogs
+      setShowDialog(false);
+      setShowDocumentActionDialog(false);
+      // Display success toast
+    } catch (error) {
+      // TODO: Display error in toast
+      // TODO: translate error
+      console.log('error  to be displayed in toast', error);
+    }
+  }
+  
+  async function unarchiveDocument(document: IDocument) {
+    try {
+      // Unarchive document
+      const unarchivedDocument = await DocumentService.getInstance().unarchiveDocument(document.id, token);
+      setSelectedDocument(unarchivedDocument);
+      // Remove last popover action
+      const newPopoverActions = [...popoverActions];
+      newPopoverActions.splice(newPopoverActions.length - 1, 1);
+      setPopoverActions(newPopoverActions);
+      setHasLoadedArchiveAction(false);
+      // Update popover actions
+      loadArchivePopoverAction(unarchivedDocument);
+      // Close dialogs
+      setShowDialog(false);
+      setShowDocumentActionDialog(false);
+      // Display success toast
+    } catch (error) {
+      // TODO: Display error in toast
+      // TODO: translate error
+      console.log('error  to be displayed in toast', error);
     }
   }
 
