@@ -162,7 +162,9 @@
     },
     "downloadSuccess": "Document téléchargé avec succès",
     "alreadyDownloaded": "Document déjà téléchargé",
-    "approvalSuccess": "Document approuvé avec succès"
+    "approvalSuccess": "Document approuvé avec succès",
+    "archived": "Document archivé",
+    "unarchived": "Document désarchivé"
   },
   "settings": {
     "title": "Réglages",

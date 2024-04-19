@@ -265,10 +265,10 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       setShowDialog(false);
       setShowDocumentActionDialog(false);
       // Display success toast
+      displayToast(t('documentsScreen.archived'))
     } catch (error) {
-      // TODO: Display error in toast
-      // TODO: translate error
-      console.log('error  to be displayed in toast', error);
+      const errorMessage = (error as Error).message;
+      displayToast(t(errorMessage), true);
     }
   }
   
@@ -288,10 +288,10 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       setShowDialog(false);
       setShowDocumentActionDialog(false);
       // Display success toast
+      displayToast(t('documentsScreen.unarchived'));
     } catch (error) {
-      // TODO: Display error in toast
-      // TODO: translate error
-      console.log('error  to be displayed in toast', error);
+      const errorMessage = (error as Error).message;
+      displayToast(t(errorMessage), true);
     }
   }
 

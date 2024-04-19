@@ -162,7 +162,9 @@
     },
     "downloadSuccess": "Document successfully downloaded",
     "alreadyDownloaded": "Document already downloaded",
-    "approvalSuccess": "Document successfully approved"
+    "approvalSuccess": "Document successfully approved",
+    "archived": "Document successfully archived",
+    "unarchived": "Document successfully unarchived"
   },
   "pendingUserManagement": {
     "title": "Pending users list",
