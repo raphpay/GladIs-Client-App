@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: 'row-reverse',
     alignItems: 'center',
-    padding: 16
+    padding: 16,
   },
   settingsButton: {
     paddingHorizontal: 8,
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    alignItems: 'flex-end',
   },
 });
 
