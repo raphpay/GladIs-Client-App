@@ -85,6 +85,9 @@
     "noItems": {
       "title": "No sub items for now",
       "message": "Please try again later"
+    },
+    "createSMQDoc": {
+      "button": "Generate the SMQ documentation"
     }
   },
   "technicalDocumentation": {

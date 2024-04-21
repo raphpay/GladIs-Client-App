@@ -48,6 +48,9 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.poppinsLight,
     fontWeight: Fonts.regular,
   },
+  smqButton: {
+    marginHorizontal: 8,
+  }
 });
 
 export default styles;

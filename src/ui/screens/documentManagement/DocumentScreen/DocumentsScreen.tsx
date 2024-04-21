@@ -292,6 +292,32 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
+  function CreateSMQDocButton() {
+    return (
+      <>
+        {
+          currentUser?.userType !== UserType.Employee && (
+            <IconButton 
+              title={t('systemQuality.createSMQDoc.button')}
+              onPress={() => { console.log('Create SMQ Doc') }}
+              icon={plusIcon}
+              style={styles.smqButton}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function AdminButtons() {
+    return (
+      <>
+        {CreateSMQDocButton()}
+        {AddDocumentButton()}
+      </>
+    )
+  }
+
   function AddDocumentDialog() {
     return (
       <>
@@ -336,7 +362,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         }
-        adminButton={AddDocumentButton()}
+        adminButton={AdminButtons()}
       >
         <>
           {

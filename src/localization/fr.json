@@ -85,6 +85,9 @@
     "noItems": {
       "title": "Pas de sous-catégorie pour le moment",
       "message": "Veuillez réessayer plus tard"
+    },
+    "createSMQDoc": {
+      "button": "Générer la documentation SMQ"
     }
   },
   "technicalDocumentation": {

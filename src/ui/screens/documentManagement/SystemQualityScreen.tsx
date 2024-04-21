@@ -19,7 +19,9 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid/Grid';
 
+import UserType from '../../../business-logic/model/enums/UserType';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
+import IconButton from '../../components/Buttons/IconButton';
 
 interface ISystemQualityItem {
   id: string,
@@ -32,12 +34,13 @@ type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, Navigat
 function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
+  const plusIcon = require('../../assets/images/plus.png');
   
   const { t } = useTranslation();
   
   const { navigation } = props;
 
-  const { isAdmin } = useAppSelector((state: RootState) => state.users);
+  const { isAdmin, currentUser } = useAppSelector((state: RootState) => state.users);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
@@ -131,6 +134,22 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     )
   }
 
+  function CreateSMQDocButton() {
+    return (
+      <>
+        {
+          currentUser?.userType !== UserType.Employee && (
+            <IconButton 
+              title={t('systemQuality.createSMQDoc.button')}
+              onPress={() => { console.log('Create SMQ Doc') }}
+              icon={plusIcon}
+            />
+          )
+        }
+      </>
+    );
+  }
+
   return (
     <AppContainer
       mainTitle={t('systemQuality.title')}
@@ -141,6 +160,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       showSearchText={true}
       showSettings={true}
       navigateBack={navigateBack}
+      adminButton={CreateSMQDocButton()}
     >
       {
         systemQualityItemsFiltered && systemQualityItemsFiltered.length === 0 ? (
