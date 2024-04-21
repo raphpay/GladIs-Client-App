@@ -46,6 +46,8 @@ import RemindersScreen from '../ui/screens/reminders/RemindersScreen';
 import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
 // Chat
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
+// SMQ Survey
+import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneralScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -93,9 +95,14 @@ export type IClientManagementParams = {
   ClientModules: undefined,
 }
 
+export type ISMQSurveyParams = {
+  SMQGeneralScreen: undefined,
+}
+
 let RootStack = createStackNavigator<IRootStackParams>();
 let ClientCreationStack = createStackNavigator<IClientCreationStack>();
 let ClientManagementStack = createStackNavigator<IClientManagementParams>();
+let SMQSurveyStack = createStackNavigator<ISMQSurveyParams>();
 
 function LoginStack() {
   return (
@@ -151,6 +158,19 @@ function ClientManagement() {
       />
     </ClientManagementStack.Navigator>
   );
+}
+
+function SMQSurvey() {
+  return (
+    <SMQSurveyStack.Navigator>
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQGeneralScreen}
+        component={SMQGeneralScreen}
+        options={{headerShown: false}}
+      />
+    </SMQSurveyStack.Navigator>
+  );
+
 }
 
 function DashboardStack() {
@@ -234,6 +254,11 @@ function DashboardStack() {
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientManagementStack}
         component={ClientManagement}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQSurveyStack}
+        component={SMQSurvey}
         options={{headerShown: false}}
       />
     </>

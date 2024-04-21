@@ -123,6 +123,10 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
+  function navigateToSMQGeneral() {
+    navigation.navigate(NavigationRoutes.SMQSurveyStack);
+  }
+
   // Components
   function SystemQualityGridItem(item: ISystemQualityItem) {
     return (
@@ -141,7 +145,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
           currentUser?.userType !== UserType.Employee && (
             <IconButton 
               title={t('systemQuality.createSMQDoc.button')}
-              onPress={() => { console.log('Create SMQ Doc') }}
+              onPress={navigateToSMQGeneral}
               icon={plusIcon}
             />
           )

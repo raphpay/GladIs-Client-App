@@ -136,6 +136,10 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setToastMessage(message);
   }
 
+  function navigateToSMQSurvey() {
+    navigation.navigate(NavigationRoutes.SMQSurveyStack);
+  }
+
   // Async Methods
   async function navigateToDocument(doc: IDocument) {
     try {
@@ -299,7 +303,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           currentUser?.userType !== UserType.Employee && (
             <IconButton 
               title={t('systemQuality.createSMQDoc.button')}
-              onPress={() => { console.log('Create SMQ Doc') }}
+              onPress={navigateToSMQSurvey}
               icon={plusIcon}
               style={styles.smqButton}
             />

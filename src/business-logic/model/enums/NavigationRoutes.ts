@@ -32,6 +32,9 @@ enum NavigationRoutes {
   PasswordResetScreen = 'PasswordResetScreen',
   // Chat
   MessagesScreen = 'MessagesScreen',
+  // SMQ Survey
+  SMQSurveyStack = 'SMQSurveyStack',
+  SMQGeneralScreen = 'SMQGeneralScreen',
 }
 
 export default NavigationRoutes;
