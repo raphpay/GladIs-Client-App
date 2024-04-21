@@ -128,7 +128,6 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
 
   // Lifecycle Methods
   useEffect(() => {
-    getUser();
     async function init() {
       await loadTabs();
     }
