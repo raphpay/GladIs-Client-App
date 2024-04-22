@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
@@ -59,36 +59,32 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     }
   }
 
-  function loadInfos() {
-    if (currentClient) {
-      setCompanyName(currentClient.companyName);
-    }
-  }
-
   function isFormFilled() {
     let isFilled = false;
     switch (stepNumber) {
       case 1:
-        isFilled = companyName.length > 0 &&
-        companyHistory.length > 0 &&
-        managerName.length > 0 &&
-        medicalDevices.length > 0 &&
-        clients.length > 0 &&
-        area.length > 0;
+        if (companyName && companyHistory && managerName && medicalDevices && clients && area) {
+          isFilled = companyName.length > 0 &&
+          companyHistory.length > 0 &&
+          managerName.length > 0 &&
+          medicalDevices.length > 0 &&
+          clients.length > 0 &&
+          area.length > 0;
+        }
         break;
       case 2:
-        isFilled = activity.length > 0 &&
-        qualityGoals.length > 0 &&
-        headquartersAddress.length > 0 &&
-        phoneNumber.length > 0 &&
-        email.length > 0;
+        if (activity && qualityGoals && headquartersAddress && phoneNumber && email) {
+          isFilled = activity.length > 0 &&
+          qualityGoals.length > 0 &&
+          headquartersAddress.length > 0 &&
+          phoneNumber.length > 0 &&
+          email.length > 0;
+        }
         break;
       case 3:
         isFilled = true;
         break;
     }
-
-    
     return isFilled;
   }
 
@@ -151,17 +147,13 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
 
   async function saveClientSurvey(clientSurvey: any) {
     try {
+      await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
       setStepNumber(stepNumber + 1);
     } catch (error) {
       console.log('Error caching client survey', error);
     }
   }
-
-  // Lifecycle Methods
-  useEffect(() => {
-    loadInfos();
-  }, []);
 
   // Components
   function ContinueButton() {
@@ -202,7 +194,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
             <SMQGeneralStepTwo
               activity={activity} setActivity={setActivity}
               qualityGoals={qualityGoals} setQualityGoals={setQualityGoals}
-              hasOrganizationalChart={hasOrganizationalChart} setHasOrganizationalChart={setHasOrganizationalChart}
+              setHasOrganizationalChart={setHasOrganizationalChart}
               headquartersAddress={headquartersAddress} setHeadquartersAddress={setHeadquartersAddress}
               phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
               email={email} setEmail={setEmail}

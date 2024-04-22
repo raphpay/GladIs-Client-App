@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
+import CacheService from '../../../business-logic/services/CacheService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -33,19 +35,36 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     clients, setClients,
     area, setArea,
   } = props;
+
   const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
 
-  // Sync Methods
-  function loadInfos() {
+  // Async Methods
+  async function loadInfos() {
     if (currentClient) {
       setCompanyName(currentClient.companyName);
+    }
+    try {
+      const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      if (cachedClientSurvey) {
+        const generalSection = cachedClientSurvey.survey.generalSection;
+        setCompanyHistory(generalSection.companyHistory);
+        setManagerName(generalSection.managerName);
+        setMedicalDevices(generalSection.medicalDevices);
+        setClients(generalSection.clients);
+        setArea(generalSection.area);
+      }
+    } catch (error) {
+      console.log('Error retrieving cached client survey value', error);
     }
   }
 
   // Lifecycle Methods
   useEffect(() => {
-    loadInfos();
+    async function init() {
+      await loadInfos();
+    }
+    init();
   }, []);
 
   // Components

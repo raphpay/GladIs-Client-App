@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, Text } from 'react-native';
 
 import { ICheckBoxOption } from '../../../business-logic/model/IModule';
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
+import CacheService from '../../../business-logic/services/CacheService';
 
 import CheckBox from '../../components/CheckBox/CheckBox';
 import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
@@ -15,7 +17,6 @@ type SMQGeneralStepTwoProps = {
   setActivity: React.Dispatch<React.SetStateAction<string>>;
   qualityGoals: string;
   setQualityGoals: React.Dispatch<React.SetStateAction<string>>;
-  hasOrganizationalChart: boolean;
   setHasOrganizationalChart: React.Dispatch<React.SetStateAction<boolean>>;
   headquartersAddress: string;
   setHeadquartersAddress: React.Dispatch<React.SetStateAction<string>>;
@@ -30,7 +31,7 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
   const {
     activity, setActivity,
     qualityGoals, setQualityGoals,
-    hasOrganizationalChart, setHasOrganizationalChart,
+    setHasOrganizationalChart,
     headquartersAddress, setHeadquartersAddress,
     phoneNumber, setPhoneNumber,
     email, setEmail,
@@ -54,14 +55,9 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
   ];
 
   // Sync Methods
-  function loadInfos() {
-    // if (currentClient) {
-    //   setCompanyName(currentClient.companyName);
-    // }
-  }
-
   function toggleCheckbox(option: ICheckBoxOption) {
     setSelectedOptionID(option.id as string);
+    setHasOrganizationalChart(option.value);
   }
 
   function isOptionSelected(option: ICheckBoxOption): boolean {
@@ -69,9 +65,31 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     return selectedOptionID === id;
   }
 
+  // Async Methods
+  async function loadInfos() {
+    try {
+      const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      if (cachedClientSurvey) {
+        const generalSection = cachedClientSurvey.survey.generalSection;
+        setActivity(generalSection.activity);
+        setQualityGoals(generalSection.qualityGoals);
+        setHasOrganizationalChart(generalSection.hasOrganizationalChart);
+        setHeadquartersAddress(generalSection.headquartersAddress);
+        setPhoneNumber(generalSection.phoneNumber);
+        setEmail(generalSection.email);
+        setSelectedOptionID(generalSection.hasOrganizationalChart ? '1' : '2');
+      }
+    } catch (error) {
+      console.log('Error retrieving cached client survey value', error);
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
-    loadInfos();
+    async function init() {
+      await loadInfos();
+    }
+    init();
   }, []);
 
   // TODO: Implement logo upload if yes
@@ -81,7 +99,7 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
       <GladisTextInput
         value={activity}
         onValueChange={setActivity}
-        placeholder={t('smqSurvey.generalInfo.stepTwo.qualityGoals')}
+        placeholder={t('smqSurvey.generalInfo.stepTwo.activity')}
         showTitle={true}
       />
       <ExpandingTextInput
