@@ -17,6 +17,7 @@ import TextButton from '../../components/Buttons/TextButton';
 import SMQGeneralStepOne from './SMQGeneralStepOne';
 
 import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
+import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
 type SMQGeneralScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQGeneralScreen>;
 
@@ -28,12 +29,21 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   // States
   const [stepNumber, setStepNumber] = useState<number>(1);
   // Questions
+  // Step One
   const [companyName, setCompanyName] = useState<string>('');
   const [companyHistory, setCompanyHistory] = useState<string>('');
   const [managerName, setManagerName] = useState<string>('');
   const [medicalDevices, setMedicalDevices] = useState<string>('');
   const [clients, setClients] = useState<string>('');
   const [area, setArea] = useState<string>('');
+  // Step Two
+  const [activity, setActivity] = useState<string>('');
+  const [qualityGoals, setQualityGoals] = useState<string>('');
+  const [hasOrganizationalChart, setHasOrganizationalChart] = useState<boolean>(false);
+  const [headquartersAddress, setHeadquartersAddress] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [website, setWebsite] = useState<string>('');
 
   // Sync Methods
   function navigateBack() {
@@ -153,12 +163,15 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         )}
         {
           stepNumber === 2 && (
-            <View>
-              <TextButton
-                title={t('smqSurvey.continue')}
-                onPress={tappedContinue}
-              />
-            </View>
+            <SMQGeneralStepTwo
+              activity={activity} setActivity={setActivity}
+              qualityGoals={qualityGoals} setQualityGoals={setQualityGoals}
+              hasOrganizationalChart={hasOrganizationalChart} setHasOrganizationalChart={setHasOrganizationalChart}
+              headquartersAddress={headquartersAddress} setHeadquartersAddress={setHeadquartersAddress}
+              phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+              email={email} setEmail={setEmail}
+              website={website} setWebsite={setWebsite}
+            />
           )
         }
       </>

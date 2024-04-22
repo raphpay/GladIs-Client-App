@@ -60,30 +60,30 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
       <ExpandingTextInput
         text={companyHistory}
         setText={setCompanyHistory}
-        placeholder={t('smqSurvey.companyHistory')}
+        placeholder={t('smqSurvey.generalInfo.stepOne.companyHistory')}
       />
       <GladisTextInput
         value={managerName}
         onValueChange={setManagerName}
-        placeholder={t('smqSurvey.managerName')}
+        placeholder={t('smqSurvey.generalInfo.stepOne.managerName')}
         showTitle={true}
       />
       <GladisTextInput
         value={medicalDevices}
         onValueChange={setMedicalDevices}
-        placeholder={t('smqSurvey.medicalDevices')}
+        placeholder={t('smqSurvey.generalInfo.stepOne.medicalDevices')}
         showTitle={true}
       />
       <GladisTextInput
         value={clients}
         onValueChange={setClients}
-        placeholder={t('smqSurvey.clients')}
+        placeholder={t('smqSurvey.generalInfo.stepOne.clients')}
         showTitle={true}
       />
       <GladisTextInput
         value={area}
         onValueChange={setArea}
-        placeholder={t('smqSurvey.area')}
+        placeholder={t('smqSurvey.generalInfo.stepOne.area')}
         showTitle={true}
       />
     </ScrollView>
