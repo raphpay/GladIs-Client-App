@@ -259,6 +259,18 @@
     },
     "searchTextPlaceholder": "Rechercher un message"
   },
+  "smqSurvey": {
+    "generalInfo": {
+      "title": "Informations générales",
+      "stepOne": {
+        "companyHistory": "Quel est l'historique de votre entreprise ? ( activité, date de création, etc...)",
+        "managerName": "Prénom et nom du dirigeant actuel",
+        "medicalDevices": "Quels types de dispositifs médicaux produisez-vous ?",
+        "clients": "Qui sont vos clients principaux ?",
+        "area": "Dans quelle région souhaitez-vous commercialiser vos dispositifs ?"
+      }
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Recherche"

@@ -259,6 +259,18 @@
     },
     "searchTextPlaceholder": "Search for a message"
   },
+  "smqSurvey": {
+    "generalInfo": {
+      "title": "General Information",
+      "stepOne": {
+        "companyHistory": "What is the history of your company? ( activity, creation date, etc...)",
+        "managerName": "Manager first name and last name",
+        "medicalDevices": "What are the medical devices you are manufacturing?",
+        "clients": "Who are your principal clients?",
+        "area": "In which area are you would you want to sell your products?"
+      }
+    }
+  },
   "components": {
     "searchTextInput": {
       "placeholder": "Search"
