@@ -35,6 +35,8 @@ enum NavigationRoutes {
   // SMQ Survey
   SMQSurveyStack = 'SMQSurveyStack',
   SMQGeneralScreen = 'SMQGeneralScreen',
+  SMQManagementScreen = 'SMQManagementScreen',
+  SMQMeasurementAndImprovement = 'SMQMeasurementAndImprovement',
 }
 
 export default NavigationRoutes;

@@ -48,6 +48,8 @@ import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 // SMQ Survey
 import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
+import SMQManagementScreen from '../ui/screens/smqSurvey/SMQManagement/SMQManagementScreen';
+import SMQMeasurementAndImprovement from '../ui/screens/smqSurvey/SMQMeasurement/SMQMeasurementAndImprovement';
 
 export type IRootStackParams = {
   // Login Stack
@@ -97,6 +99,8 @@ export type IClientManagementParams = {
 
 export type ISMQSurveyParams = {
   SMQGeneralScreen: undefined,
+  SMQManagementScreen: undefined,
+  SMQMeasurementAndImprovement: undefined,
 }
 
 let RootStack = createStackNavigator<IRootStackParams>();
@@ -166,6 +170,16 @@ function SMQSurvey() {
       <SMQSurveyStack.Screen
         name={NavigationRoutes.SMQGeneralScreen}
         component={SMQGeneralScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQManagementScreen}
+        component={SMQManagementScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQMeasurementAndImprovement}
+        component={SMQMeasurementAndImprovement}
         options={{headerShown: false}}
       />
     </SMQSurveyStack.Navigator>
