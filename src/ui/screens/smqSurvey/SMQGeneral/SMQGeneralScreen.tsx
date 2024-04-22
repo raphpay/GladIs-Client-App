@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
+import IAction from '../../../../business-logic/model/IAction';
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../../business-logic/services/CacheService';
@@ -18,7 +19,6 @@ import SMQGeneralStepOne from './SMQGeneralStepOne';
 import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
-import IAction from '../../../../business-logic/model/IAction';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQGeneralScreen>;

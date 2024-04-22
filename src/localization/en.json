@@ -289,6 +289,9 @@
       "management": {
         "title": "PRS_M01_Management",
         "processusPilotName": "First name and last name of the process's pilot",
+      },
+      "measurement": {
+        "title": "PRS_M02_Measurement_and_Improvements"
       }
     }
   },

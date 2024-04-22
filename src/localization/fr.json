@@ -288,7 +288,10 @@
     "prs": {
       "management": {
         "title": "PRS_M01_Management",
-        "processusPilotName": "Nom et prénom du pilote du processus",
+        "processusPilotName": "Nom et prénom du pilote du processus"
+      },
+      "measurement": {
+        "title": "PRS_M01_Mesure_et_amélioration"
       }
     }
   },
