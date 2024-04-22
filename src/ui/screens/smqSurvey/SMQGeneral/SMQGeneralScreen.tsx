@@ -18,6 +18,7 @@ import SMQGeneralStepOne from './SMQGeneralStepOne';
 import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
+import IAction from '../../../../business-logic/model/IAction';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQGeneralScreen>;
@@ -27,6 +28,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const { navigation } = props;
   const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { smqScreenSource } = useAppSelector((state: RootState) => state.appState);
   // States
   const [stepNumber, setStepNumber] = useState<number>(1);
   // Questions
@@ -50,6 +52,13 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const [auditorsFunction, setAuditorsFunction] = useState<string>('');
   const [approversName, setApproversName] = useState<string>('');
   const [approversFunction, setApproversFunction] = useState<string>('');
+
+  const navigationHistoryItems: IAction[] = [
+    {
+      title: smqScreenSource,
+      onPress: () => navigateBack()
+    }
+  ];
 
   // Sync Methods
   function navigateBack() {
@@ -238,6 +247,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       showBackButton={true}
       navigateBack={navigateBack}
       additionalComponent={ContinueButton()}
+      navigationHistoryItems={navigationHistoryItems}
     >
       <>
         {stepNumber === 1 && (

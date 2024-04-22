@@ -22,7 +22,8 @@ import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
+import { setSMQScreenSource } from '../../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -68,6 +69,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { module, documentListCount } = useAppSelector((state: RootState) => state.appState);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const dispatch = useAppDispatch();
 
   const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
   const docsPerPage = 8;
@@ -137,6 +139,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   function navigateToSMQSurvey() {
+    dispatch(setSMQScreenSource(t(currentScreen)));
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 

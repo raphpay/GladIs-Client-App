@@ -12,7 +12,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setDocumentListCount, setSMQScreenSource } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
@@ -124,6 +124,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   function navigateToSMQGeneral() {
+    dispatch(setSMQScreenSource(t('systemQuality.title')));
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 
