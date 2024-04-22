@@ -1,24 +1,36 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet
-} from 'react-native';
+import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import { ISMQSurveyParams } from '../../../../navigation/Routes';
+import AppContainer from '../../../components/AppContainer/AppContainer';
 
-function SMQFabricationDevelopmentScreen(): React.JSX.Element {
+type SMQFabricationDevelopmentScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQFabricationDevelopmentScreen>;
+
+function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenProps): React.JSX.Element {
+
+  const { navigation } = props;
+
+  // Sync Methods
+  function navigateBack() {
+    navigation.goBack();
+  }
+
+  async function tappedContinue() {
+    console.log('tappedContinue');
+  }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {/* Add your components here */}
-    </SafeAreaView>
+    <AppContainer
+      mainTitle='Fabrication Development'
+      showSearchText={false}
+      showSettings={false}
+      showBackButton={true}
+      navigateBack={navigateBack}
+    >
+      <>
+      </>
+    </AppContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default SMQFabricationDevelopmentScreen;
