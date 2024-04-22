@@ -15,6 +15,7 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import TextButton from '../../components/Buttons/TextButton';
 
 import SMQGeneralStepOne from './SMQGeneralStepOne';
+import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
 import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
@@ -43,6 +44,12 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const [headquartersAddress, setHeadquartersAddress] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
+  // Step Three
+  const [website, setWebsite] = useState<string>('');
+  const [auditorsName, setAuditorsName] = useState<string>('');
+  const [auditorsFunction, setAuditorsFunction] = useState<string>('');
+  const [approversName, setApproversName] = useState<string>('');
+  const [approversFunction, setApproversFunction] = useState<string>('');
 
   // Sync Methods
   function navigateBack() {
@@ -117,8 +124,26 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         }
       }
     };
-    
-    await saveClientSurvey(clientSurvey);
+  
+    // Retrieve existing client survey data
+    let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+      // Update only the fields that are different from stepOneData
+      const updatedGeneralSection = { ...existingClientSurvey.survey.generalSection };
+  
+      for (const key in clientSurvey.survey.generalSection) {
+        if (clientSurvey.survey.generalSection.hasOwnProperty(key) && clientSurvey.survey.generalSection[key] !== updatedGeneralSection[key]) {
+          updatedGeneralSection[key] = clientSurvey.survey.generalSection[key];
+        }
+      }
+  
+      // Update existing client survey data
+      existingClientSurvey.survey.generalSection = updatedGeneralSection;
+      await saveClientSurvey(existingClientSurvey);
+    } else {
+      // No existing client survey data, save the new client survey data
+      await saveClientSurvey(clientSurvey);
+    }
   }
 
   async function continueGeneralProcessStepTwo() {
@@ -131,15 +156,20 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       phoneNumber,
       email,
     };
-
-    // Complete the current survey with the data from the second step
+  
+    // Update only the fields that are different from stepTwoData
     if (clientSurvey && typeof clientSurvey === 'object') {
-      clientSurvey.survey.generalSection = {
-        ...clientSurvey.survey.generalSection,
-        ...stepTwoData
-      };
+      const updatedGeneralSection = { ...clientSurvey.survey.generalSection };
+  
+      for (const key in stepTwoData) {
+        if (stepTwoData.hasOwnProperty(key) && stepTwoData[key] !== updatedGeneralSection[key]) {
+          updatedGeneralSection[key] = stepTwoData[key];
+        }
+      }
+  
+      clientSurvey.survey.generalSection = updatedGeneralSection;
     }
-
+  
     await saveClientSurvey(clientSurvey);
   }
 
@@ -198,6 +228,17 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
               headquartersAddress={headquartersAddress} setHeadquartersAddress={setHeadquartersAddress}
               phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
               email={email} setEmail={setEmail}
+            />
+          )
+        }
+        {
+          stepNumber === 3 && (
+            <SMQGeneralStepThree
+              website={website} setWebsite={setWebsite}
+              auditorsName={auditorsName} setAuditorsName={setAuditorsName}
+              auditorsFunction={auditorsFunction} setAuditorsFunction={setAuditorsFunction}
+              approversName={approversName} setApproversName={setApproversName}
+              approversFunction={approversFunction} setApproversFunction={setApproversFunction}
             />
           )
         }
