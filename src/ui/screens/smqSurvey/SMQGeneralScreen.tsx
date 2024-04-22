@@ -15,9 +15,9 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import TextButton from '../../components/Buttons/TextButton';
 
 import SMQGeneralStepOne from './SMQGeneralStepOne';
+import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
 import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
-import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
 type SMQGeneralScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQGeneralScreen>;
 

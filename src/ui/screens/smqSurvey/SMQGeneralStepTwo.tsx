@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
 
+import { ICheckBoxOption } from '../../../business-logic/model/IModule';
+import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
+import CheckBox from '../../components/CheckBox/CheckBox';
 import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
@@ -35,6 +38,22 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
   } = props;
   const { t } = useTranslation();
 
+  // States
+  const [selectedOptionID, setSelectedOptionID] = useState<string>('');
+
+  const organizationOptions: ICheckBoxOption[] = [
+    {
+      id: '1',
+      name: 'Yes',
+      value: true,
+    },
+    {
+      id: '2',
+      name: 'No',
+      value: false,
+    }
+  ];
+
   // Sync Methods
   function loadInfos() {
     // if (currentClient) {
@@ -42,12 +61,21 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     // }
   }
 
+  function toggleCheckbox(option: ICheckBoxOption) {
+    setSelectedOptionID(option.id as string);
+  }
+
+  function isOptionSelected(option: ICheckBoxOption): boolean {
+    const id = option.id as string;
+    return selectedOptionID === id;
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     loadInfos();
   }, []);
 
-  // TODO: Implement check boxes for hasOrganizationalChart
+  // TODO: Implement logo upload if yes
   // Components
   return (
     <ScrollView>
@@ -62,12 +90,19 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
         setText={setQualityGoals}
         placeholder={t('smqSurvey.generalInfo.stepTwo.qualityGoals')}
       />
-      {/* <GladisTextInput
-        value={hasOrganizationalChart}
-        onValueChange={setHasOrganizationalChart}
-        placeholder={t('smqSurvey.generalInfo.stepTwo.hasOrganizationalChart')}
-        showTitle={true}
-      /> */}
+      <Text style={styles.subtitle}>{t('smqSurvey.generalInfo.stepTwo.selectOrgOption')}</Text>
+      {
+        organizationOptions.map((option) => {
+          return (
+            <CheckBox
+              key={option.id}
+              option={option}
+              isSelected={isOptionSelected(option)}
+              onSelectOption={() => toggleCheckbox(option)}
+            />
+          );
+        })
+      }
       <GladisTextInput
         value={headquartersAddress}
         onValueChange={setHeadquartersAddress}

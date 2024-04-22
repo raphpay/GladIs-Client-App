@@ -28,8 +28,8 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import TextButton from '../../components/Buttons/TextButton';
+import ModuleCheckBox from '../../components/CheckBox/ModuleCheckBox';
 import AddEmployeeDialog from '../../components/Dialogs/AddEmployeeDialog';
-import ModuleCheckBox from '../../components/ModuleCheckBox';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
