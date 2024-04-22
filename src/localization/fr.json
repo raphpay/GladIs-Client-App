@@ -276,6 +276,13 @@
           "yes": "Oui",
           "no": "Non"
         }
+      },
+      "stepThree": {
+        "website": "Lien(s) des sites associés à votre entreprise",
+        "auditorsName": "Prénom NOM du vérificateur des documents qualité",
+        "auditorsFunction": "Fonction du vérificateur des documents qualité",
+        "approversName": "Prénom NOM de l'approbateur des documents qualité",
+        "approversFunction": "Fonction de l'approbateur des documents qualité"
       }
     }
   },

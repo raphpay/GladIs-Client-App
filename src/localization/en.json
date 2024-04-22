@@ -276,6 +276,13 @@
           "yes": "Yes",
           "no": "No"
         }
+      },
+      "stepThree": {
+        "website": "Do you have a website?",
+        "auditorsName": "First name and last name of the quality document's auditor in you company",
+        "auditorsFunction": "Function of the quality document's auditor in your company",
+        "approversName": "First name and last name of the quality document's approver in your company",
+        "approversFunction": "Function of the quality document's approver in your company"
       }
     }
   },
