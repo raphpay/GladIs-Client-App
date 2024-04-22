@@ -260,6 +260,7 @@
     "searchTextPlaceholder": "Rechercher un message"
   },
   "smqSurvey": {
+    "continue": "Continuer",
     "generalInfo": {
       "title": "Informations générales",
       "stepOne": {
