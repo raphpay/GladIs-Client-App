@@ -180,7 +180,7 @@ function SMQSurvey() {
       <SMQSurveyStack.Screen
         name={NavigationRoutes.SMQMeasurementAndImprovement}
         component={SMQMeasurementAndImprovement}
-        options={{headerShown: false}}
+        options={{headerShown: true}}
       />
     </SMQSurveyStack.Navigator>
   );

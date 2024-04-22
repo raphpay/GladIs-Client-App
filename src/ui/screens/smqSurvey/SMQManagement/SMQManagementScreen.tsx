@@ -5,6 +5,7 @@ import {
   ScrollView,
   View
 } from 'react-native';
+import IAction from '../../../../business-logic/model/IAction';
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../../business-logic/services/CacheService';
@@ -26,6 +27,13 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
 
   // States
   const [processusPilotName, setProcessusPilotName] = useState<string>('');
+
+  const navigationHistoryItems: IAction[] = [
+    {
+      title: t('smqSurvey.generalInfo.title'),
+      onPress: () => navigateBack(),
+    },
+  ];
 
   // Sync Methods
   function navigateBack() {
@@ -91,12 +99,13 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
 
   return (
     <AppContainer
-      mainTitle={t('smqSurvey.generalInfo.title')}
+      mainTitle={t('smqSurvey.prs.management.title')}
       showSearchText={false}
       showSettings={false}
       showBackButton={true}
       navigateBack={navigateBack}
       additionalComponent={ContinueButton()}
+      navigationHistoryItems={navigationHistoryItems}
     >
       <ScrollView>
         <GladisTextInput

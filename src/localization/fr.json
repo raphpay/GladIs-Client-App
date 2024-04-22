@@ -284,6 +284,12 @@
         "approversName": "Prénom NOM de l'approbateur des documents qualité",
         "approversFunction": "Fonction de l'approbateur des documents qualité"
       }
+    },
+    "prs": {
+      "management": {
+        "title": "PRS_M01_Management",
+        "processusPilotName": "Nom et prénom du pilote du processus",
+      }
     }
   },
   "components": {

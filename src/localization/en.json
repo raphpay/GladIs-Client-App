@@ -284,6 +284,12 @@
         "approversName": "First name and last name of the quality document's approver in your company",
         "approversFunction": "Function of the quality document's approver in your company"
       }
+    },
+    "prs": {
+      "management": {
+        "title": "PRS_M01_Management",
+        "processusPilotName": "First name and last name of the process's pilot",
+      }
     }
   },
   "components": {
