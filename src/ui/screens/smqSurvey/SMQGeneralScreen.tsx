@@ -43,7 +43,6 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const [headquartersAddress, setHeadquartersAddress] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [website, setWebsite] = useState<string>('');
 
   // Sync Methods
   function navigateBack() {
@@ -68,12 +67,28 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
 
   function isFormFilled() {
     let isFilled = false;
-    isFilled = companyName.length > 0 &&
-    companyHistory.length > 0 &&
-    managerName.length > 0 &&
-    medicalDevices.length > 0 &&
-    clients.length > 0 &&
-    area.length > 0;
+    switch (stepNumber) {
+      case 1:
+        isFilled = companyName.length > 0 &&
+        companyHistory.length > 0 &&
+        managerName.length > 0 &&
+        medicalDevices.length > 0 &&
+        clients.length > 0 &&
+        area.length > 0;
+        break;
+      case 2:
+        isFilled = activity.length > 0 &&
+        qualityGoals.length > 0 &&
+        headquartersAddress.length > 0 &&
+        phoneNumber.length > 0 &&
+        email.length > 0;
+        break;
+      case 3:
+        isFilled = true;
+        break;
+    }
+
+    
     return isFilled;
   }
 
@@ -107,6 +122,34 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       }
     };
     
+    await saveClientSurvey(clientSurvey);
+  }
+
+  async function continueGeneralProcessStepTwo() {
+    let clientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    const stepTwoData = {
+      activity,
+      qualityGoals,
+      hasOrganizationalChart,
+      headquartersAddress,
+      phoneNumber,
+      email,
+    };
+
+    // Complete the current survey with the data from the second step
+    if (clientSurvey && typeof clientSurvey === 'object') {
+      clientSurvey.survey.generalSection = {
+        ...clientSurvey.survey.generalSection,
+        ...stepTwoData
+      };
+    }
+
+    await saveClientSurvey(clientSurvey);
+  }
+
+  async function continueGeneralProcessStepThree() {}
+
+  async function saveClientSurvey(clientSurvey: any) {
     try {
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
       setStepNumber(stepNumber + 1);
@@ -114,13 +157,6 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       console.log('Error caching client survey', error);
     }
   }
-
-  async function continueGeneralProcessStepTwo() {
-    const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    console.log('cachedSurvey', cachedSurvey);
-  }
-
-  async function continueGeneralProcessStepThree() {}
 
   // Lifecycle Methods
   useEffect(() => {
@@ -170,7 +206,6 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
               headquartersAddress={headquartersAddress} setHeadquartersAddress={setHeadquartersAddress}
               phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
               email={email} setEmail={setEmail}
-              website={website} setWebsite={setWebsite}
             />
           )
         }

@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, Text } from 'react-native';
 
 import { ICheckBoxOption } from '../../../business-logic/model/IModule';
-import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
+
 import CheckBox from '../../components/CheckBox/CheckBox';
 import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
+
+import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralStepTwoProps = {
   activity: string;
@@ -21,8 +23,6 @@ type SMQGeneralStepTwoProps = {
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
-  website: string;
-  setWebsite: React.Dispatch<React.SetStateAction<string>>;
 };
 
 function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
@@ -34,7 +34,6 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     headquartersAddress, setHeadquartersAddress,
     phoneNumber, setPhoneNumber,
     email, setEmail,
-    website, setWebsite,
   } = props;
   const { t } = useTranslation();
 
@@ -119,12 +118,6 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
         value={email}
         onValueChange={setEmail}
         placeholder={t('smqSurvey.generalInfo.stepTwo.email')}
-        showTitle={true}
-      />
-      <GladisTextInput
-        value={website}
-        onValueChange={setWebsite}
-        placeholder={t('smqSurvey.generalInfo.stepTwo.website')}
         showTitle={true}
       />
     </ScrollView>
