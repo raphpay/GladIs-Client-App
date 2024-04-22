@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
+
+import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
+import CacheService from '../../../../business-logic/services/CacheService';
+
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
 type SMQGeneralStepThreeProps = {
@@ -26,6 +30,29 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     approversFunction, setApproversFunction,
   } = props;
   const { t } = useTranslation();
+
+  async function loadInfos() {
+    try {
+      const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      if (cachedClientSurvey) {
+        const generalSection = cachedClientSurvey.survey.generalSection;
+        setWebsite(generalSection.website);
+        setAuditorsName(generalSection.auditorsName);
+        setAuditorsFunction(generalSection.auditorsFunction);
+        setApproversName(generalSection.approversName);
+        setApproversFunction(generalSection.approversFunction);
+      }
+    } catch (error) {
+      console.log('Error retrieving cached client survey value', error);
+    }
+  }
+
+  useEffect(() => {
+    async function init() {
+      await loadInfos();
+    }
+    init();
+  }, []);
 
   return (
     <ScrollView>

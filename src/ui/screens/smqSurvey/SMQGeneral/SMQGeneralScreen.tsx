@@ -63,6 +63,9 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       case 3:
         setStepNumber(stepNumber - 1);
         break;
+      default:
+        navigation.goBack();
+        break;
     }
   }
 
@@ -203,9 +206,10 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
-      setStepNumber(stepNumber + 1);
-      if (stepNumber > 3) {
-        navigation.navigate(NavigationRoutes.SMQManagementSectionScreen);
+      if (stepNumber === 3) {
+        navigation.navigate(NavigationRoutes.SMQManagementScreen);
+      } else {
+        setStepNumber(stepNumber + 1);
       }
     } catch (error) {
       console.log('Error caching client survey', error);
