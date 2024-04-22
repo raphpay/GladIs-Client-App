@@ -131,7 +131,7 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
         <GladisTextInput
           value={processusPilotName}
           onValueChange={setProcessusPilotName}
-          placeholder={t('smqSurvey.prs.m01.processusPilotName')}
+          placeholder={t('smqSurvey.prs.management.processusPilotName')}
           showTitle={true}
         />
       </ScrollView>
