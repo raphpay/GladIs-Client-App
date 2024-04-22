@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
 
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
-import CacheService from '../../../business-logic/services/CacheService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
-import { RootState } from '../../../business-logic/store/store';
+import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
+import CacheService from '../../../../business-logic/services/CacheService';
+import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { RootState } from '../../../../business-logic/store/store';
 
-import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
-import GladisTextInput from '../../components/TextInputs/GladisTextInput';
+import ExpandingTextInput from '../../../components/TextInputs/ExpandingTextInput';
+import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
 type SMQGeneralStepOneProps = {
   companyName: string;

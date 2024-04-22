@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text } from 'react-native';
 
-import { ICheckBoxOption } from '../../../business-logic/model/IModule';
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
-import CacheService from '../../../business-logic/services/CacheService';
+import { ICheckBoxOption } from '../../../../business-logic/model/IModule';
+import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
+import CacheService from '../../../../business-logic/services/CacheService';
 
-import CheckBox from '../../components/CheckBox/CheckBox';
-import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
-import GladisTextInput from '../../components/TextInputs/GladisTextInput';
+import CheckBox from '../../../components/CheckBox/CheckBox';
+import ExpandingTextInput from '../../../components/TextInputs/ExpandingTextInput';
+import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
-import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
+import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralStepTwoProps = {
   activity: string;

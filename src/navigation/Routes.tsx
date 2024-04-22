@@ -47,7 +47,7 @@ import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
 // Chat
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 // SMQ Survey
-import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneralScreen';
+import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
 
 export type IRootStackParams = {
   // Login Stack

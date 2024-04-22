@@ -3,22 +3,22 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
-import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import CacheService from '../../../business-logic/services/CacheService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
-import { RootState } from '../../../business-logic/store/store';
+import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
+import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import CacheService from '../../../../business-logic/services/CacheService';
+import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { RootState } from '../../../../business-logic/store/store';
 
-import { ISMQSurveyParams } from '../../../navigation/Routes';
+import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
-import AppContainer from '../../components/AppContainer/AppContainer';
-import TextButton from '../../components/Buttons/TextButton';
+import AppContainer from '../../../components/AppContainer/AppContainer';
+import TextButton from '../../../components/Buttons/TextButton';
 
 import SMQGeneralStepOne from './SMQGeneralStepOne';
 import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
-import styles from '../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
+import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQGeneralScreen>;
 
@@ -173,13 +173,40 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     await saveClientSurvey(clientSurvey);
   }
 
-  async function continueGeneralProcessStepThree() {}
+  async function continueGeneralProcessStepThree() {
+    let clientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    const stepThreeData = {
+      website,
+      auditorsName,
+      auditorsFunction,
+      approversName,
+      approversFunction,
+    };
+
+    // Update only the fields that are different from stepThreeData
+    if (clientSurvey && typeof clientSurvey === 'object') {
+      const updatedGeneralSection = { ...clientSurvey.survey.generalSection };
+
+      for (const key in stepThreeData) {
+        if (stepThreeData.hasOwnProperty(key) && stepThreeData[key] !== updatedGeneralSection[key]) {
+          updatedGeneralSection[key] = stepThreeData[key];
+        }
+      }
+
+      clientSurvey.survey.generalSection = updatedGeneralSection;
+    }
+
+    await saveClientSurvey(clientSurvey);
+  }
 
   async function saveClientSurvey(clientSurvey: any) {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
       setStepNumber(stepNumber + 1);
+      if (stepNumber > 3) {
+        navigation.navigate(NavigationRoutes.SMQManagementSectionScreen);
+      }
     } catch (error) {
       console.log('Error caching client survey', error);
     }
