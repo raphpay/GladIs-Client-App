@@ -292,6 +292,12 @@
       },
       "measurement": {
         "title": "PRS_M02_Measurement_and_Improvements"
+      },
+      "fabricationDevelopment": {
+        "productionFlux": "What are the production flows for your products?",
+        "productIdentifications": "How do you identify your products?",
+        "productPreservation": "How do you preserve your products during the manufacturing?",
+        "productTracking": "How do you track your products?"
       }
     }
   },
