@@ -44,9 +44,11 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
 
   function isFormFilled() {
     let isFilled = false;
-    isFilled = processusPilotName.length > 0 &&
+    if (processusPilotName && orderDeliveryNote && productsSold) {
+      isFilled = processusPilotName.length > 0 &&
       orderDeliveryNote.length > 0 &&
       productsSold.length > 0;
+    }
     return isFilled;
   }
 
@@ -90,6 +92,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      console.log('cac', cachedSurvey);
       if (cachedSurvey.survey.prs.clientRelation) {
         setProcessusPilotName(cachedSurvey.survey.prs.clientRelation.processusPilotName);
         setOrderDeliveryNote(cachedSurvey.survey.prs.clientRelation.orderDeliveryNote);

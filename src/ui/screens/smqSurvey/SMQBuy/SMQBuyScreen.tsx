@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
@@ -80,6 +80,25 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
       console.log('Error caching client survey', error);
     }
   }
+
+  async function loadInfos() {
+    try {
+      const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      if (cachedSurvey.survey.prs.clientRelation) {
+        setProcessusPilotName(cachedSurvey.survey.prs.buy.processusPilotName);
+      }
+    } catch (error) {
+      console.log('Error retrieving cached value', error);
+    }
+  }
+
+  // Lifecycle Methods
+  useEffect(() => {
+    async function init() {
+      await loadInfos();
+    }
+    init()
+  }, []);
 
   // Components
   function ContinueButton() {
