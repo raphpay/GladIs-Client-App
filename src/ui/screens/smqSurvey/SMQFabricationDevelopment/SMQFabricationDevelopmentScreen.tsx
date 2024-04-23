@@ -1,12 +1,22 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { ScrollView, View } from 'react-native';
+
 import IAction from '../../../../business-logic/model/IAction';
+import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import CacheService from '../../../../business-logic/services/CacheService';
+import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { RootState } from '../../../../business-logic/store/store';
+
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
+
 import AppContainer from '../../../components/AppContainer/AppContainer';
+import TextButton from '../../../components/Buttons/TextButton';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
+
+import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQFabricationDevelopmentScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQFabricationDevelopmentScreen>;
 
@@ -14,6 +24,7 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
 
   const { navigation } = props;
   const { t } = useTranslation();
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [productionFlux, setProductionFlux] = React.useState<string>('');
@@ -33,7 +44,88 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
     navigation.goBack();
   }
 
+  function isFormFilled() {
+    let isFilled = false;
+    isFilled = processusPilotName.length > 0 &&
+      productionFlux.length > 0 &&
+      productIdentifications.length > 0 &&
+      productPreservation.length > 0 &&
+      productTracking.length > 0;
+    return isFilled;
+  }
+
+  // Async Methods
+  async function tappedContinue() {
+    const clientSurvey = {
+      "currentClientID": currentClient?.id,
+      "survey": {
+        "prs": {
+          "fabricationDevelopment": {
+            processusPilotName,
+            productionFlux,
+            productIdentifications,
+            productPreservation,
+            productTracking
+          }
+        }
+      }
+    };
+  
+    // Retrieve existing client survey data
+    let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+      // Update management sub-section with new data
+      existingClientSurvey.survey.prs.fabricationDevelopment = clientSurvey.survey.prs.fabricationDevelopment;
+      await saveClientSurvey(existingClientSurvey);
+    } else {
+      // No existing client survey data, save the new client survey data
+      await saveClientSurvey(clientSurvey);
+    }
+  }
+
+  async function saveClientSurvey(clientSurvey: any) {
+    try {
+      await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
+      await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
+      navigation.navigate(NavigationRoutes.SMQClientRelationScreen);
+    } catch (error) {
+      console.log('Error caching client survey', error);
+    }
+  }
+
+  async function loadInfos() {
+    try {
+      const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      if (cachedSurvey.survey.prs.fabricationDevelopment) {
+        setProcessusPilotName(cachedSurvey.survey.prs.fabricationDevelopment.processusPilotName);
+      }
+    } catch (error) {
+      console.log('Error retrieving cached value', error);
+    }
+  }
+
+  // Lifecycle Methods
+  useEffect(() => {
+    async function init() {
+      await loadInfos();
+    }
+    init()
+  }, []);
+
   // Components
+  function ContinueButton() {
+    return (
+      <View style={styles.sendButtonContainer}>
+        <TextButton
+          width={'100%'}
+          title={t('smqSurvey.continue')}
+          onPress={tappedContinue}
+          disabled={!isFormFilled()}
+        />
+      </View>
+    )
+  }
+
   return (
     <AppContainer
       mainTitle={t('smqSurvey.prs.fabricationDevelopment.title')}
@@ -42,6 +134,7 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
       showBackButton={true}
       navigateBack={navigateBack}
       navigationHistoryItems={navigationHistoryItems}
+      additionalComponent={ContinueButton()}
     >
       <ScrollView>
         <GladisTextInput
