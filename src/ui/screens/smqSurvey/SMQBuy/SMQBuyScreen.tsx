@@ -84,7 +84,7 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.clientRelation) {
+      if (cachedSurvey.survey.prs.buy) {
         setProcessusPilotName(cachedSurvey.survey.prs.buy.processusPilotName);
       }
     } catch (error) {
