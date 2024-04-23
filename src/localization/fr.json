@@ -309,6 +309,10 @@
       "buy": {
         "title": "PRS_R03_Achats",
         "processusPilotName": "Nom et prénom du pilote du processus"
+      },
+      "resourcesManagement": {
+        "title": "PRS_S01_Gestion_des_ressources",
+        "processusPilotName": "Nom et prénom du pilote du processus"
       }
     }
   },

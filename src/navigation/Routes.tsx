@@ -53,6 +53,7 @@ import SMQFabricationDevelopmentScreen from '../ui/screens/smqSurvey/SMQFabricat
 import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
 import SMQManagementScreen from '../ui/screens/smqSurvey/SMQManagement/SMQManagementScreen';
 import SMQMeasurementAndImprovement from '../ui/screens/smqSurvey/SMQMeasurement/SMQMeasurementAndImprovement';
+import SMQRegulatoryAffairsScreen from '../ui/screens/smqSurvey/SMQRegulatoryAffairs/SMQRegulatoryAffairsScreen';
 import SMQResourcesManagementScreen from '../ui/screens/smqSurvey/SMQResourcesManagement/SMQResourcesManagementScreen';
 
 export type IRootStackParams = {
@@ -109,6 +110,7 @@ export type ISMQSurveyParams = {
   SMQClientRelationScreen: undefined,
   SMQBuyScreen: undefined,
   SMQResourcesManagementScreen: undefined,
+  SMQRegulatoryAffairsScreen: undefined,
 }
 
 let RootStack = createStackNavigator<IRootStackParams>();
@@ -208,6 +210,11 @@ function SMQSurvey() {
       <SMQSurveyStack.Screen
         name={NavigationRoutes.SMQResourcesManagementScreen}
         component={SMQResourcesManagementScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQRegulatoryAffairsScreen}
+        component={SMQRegulatoryAffairsScreen}
         options={{headerShown: false}}
       />
     </SMQSurveyStack.Navigator>
