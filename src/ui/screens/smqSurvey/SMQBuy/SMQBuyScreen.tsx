@@ -19,6 +19,7 @@ import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQBuyScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQBuyScreen>;
+
 function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
 
   const { t } = useTranslation();
@@ -62,7 +63,7 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
     if (existingClientSurvey && typeof existingClientSurvey === 'object') {
       // Update management sub-section with new data
-      existingClientSurvey.survey.prs.clientRelation = clientSurvey.survey.prs.buy;
+      existingClientSurvey.survey.prs.buy = clientSurvey.survey.prs.buy;
       await saveClientSurvey(existingClientSurvey);
     } else {
       // No existing client survey data, save the new client survey data
