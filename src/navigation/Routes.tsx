@@ -47,6 +47,7 @@ import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
 // Chat
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 // SMQ Survey
+import SMQBuyScreen from '../ui/screens/smqSurvey/SMQBuy/SMQBuyScreen';
 import SMQClientRelationScreen from '../ui/screens/smqSurvey/SMQClientRelation/SMQClientRelationScreen';
 import SMQFabricationDevelopmentScreen from '../ui/screens/smqSurvey/SMQFabricationDevelopment/SMQFabricationDevelopmentScreen';
 import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
@@ -105,6 +106,7 @@ export type ISMQSurveyParams = {
   SMQMeasurementAndImprovement: undefined,
   SMQFabricationDevelopmentScreen: undefined
   SMQClientRelationScreen: undefined,
+  SMQBuyScreen: undefined,
 }
 
 let RootStack = createStackNavigator<IRootStackParams>();
@@ -194,6 +196,11 @@ function SMQSurvey() {
       <SMQSurveyStack.Screen
         name={NavigationRoutes.SMQClientRelationScreen}
         component={SMQClientRelationScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQBuyScreen}
+        component={SMQBuyScreen}
         options={{headerShown: false}}
       />
     </SMQSurveyStack.Navigator>

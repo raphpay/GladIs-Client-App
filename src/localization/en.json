@@ -299,6 +299,12 @@
         "productIdentifications": "How do you identify your products?",
         "productPreservation": "How do you preserve your products during the manufacturing?",
         "productTracking": "How do you track your products?"
+      },
+      "clientRelation": {
+        "title": "PRS_R02_Client_Relation",
+        "processusPilotName": "First name and last name of the process's pilot",
+        "orderDeliveryNote": "Please provide us with your order or delivery note",
+        "productsSold": "Merci de nous faire parvenir une liste de vos produits vendus",
       }
     }
   },
