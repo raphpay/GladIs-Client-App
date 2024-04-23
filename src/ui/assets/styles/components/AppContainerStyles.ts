@@ -15,11 +15,6 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
-    backgroundColor: Colors.light,
-    shadowColor: Colors.black,
-    shadowOffset: {width: -2, height: -4},
-    shadowOpacity: 0.6,
-    shadowRadius: 3,
   },
   innerComponentsContainer: {
     flex: 1,
@@ -34,12 +29,13 @@ const styles = StyleSheet.create({
   },
   backButtonContainer: {
     width: '100%',
-    position: 'absolute',
     bottom: 0,
     right: 0,
     flexDirection: 'row-reverse',
     alignItems: 'center',
-    padding: 16,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
+    paddingTop: 10,
   },
   settingsButton: {
     paddingHorizontal: 8,
