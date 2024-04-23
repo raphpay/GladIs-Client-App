@@ -305,6 +305,10 @@
         "processusPilotName": "First name and last name of the process's pilot",
         "orderDeliveryNote": "Please provide us with your order or delivery note",
         "productsSold": "Merci de nous faire parvenir une liste de vos produits vendus",
+      },
+      "buy": {
+        "title": "PRS_R03_Buy",
+        "processusPilotName": "First name and last name of the process's pilot",
       }
     }
   },

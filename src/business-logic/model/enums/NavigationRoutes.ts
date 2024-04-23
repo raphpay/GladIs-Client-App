@@ -40,6 +40,7 @@ enum NavigationRoutes {
   SMQFabricationDevelopmentScreen = 'SMQFabricationDevelopmentScreen',
   SMQClientRelationScreen = 'SMQClientRelationScreen',
   SMQBuyScreen = 'SMQBuyScreen',
+  SMQResourcesManagementScreen = 'SMQResourcesManagementScreen',
 }
 
 export default NavigationRoutes;

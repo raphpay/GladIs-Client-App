@@ -305,6 +305,10 @@
         "processusPilotName": "Nom et prénom du pilote du processus",
         "orderDeliveryNote": "Merci de nous fournir votre bon de commande ou de livraison",
         "productsSold": "Merci de nous fournir une liste de vos produits vendus"
+      },
+      "buy": {
+        "title": "PRS_R03_Achats",
+        "processusPilotName": "Nom et prénom du pilote du processus"
       }
     }
   },
