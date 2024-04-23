@@ -280,6 +280,7 @@
         "uploadOrgChart": "Selectionnez un fichier",
         "selectPngFile": "Selectionnez un fichier PNG",
         "selectPdfFile": "Selectionnez un fichier PDF",
+        "uploadSuccess": "Fichier téléchargé avec succès",
       },
       "stepThree": {
         "website": "Lien(s) des sites associés à votre entreprise",

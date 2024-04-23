@@ -280,6 +280,7 @@
         "uploadOrgChart": "Select a file",
         "selectPngFile": "Select a PNG file",
         "selectPdfFile": "Select a PDF file",
+        "uploadSuccess": "File successfully uploaded",
       },
       "stepThree": {
         "website": "Do you have a website?",

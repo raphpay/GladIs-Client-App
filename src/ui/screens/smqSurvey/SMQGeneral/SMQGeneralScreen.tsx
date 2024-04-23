@@ -284,6 +284,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         setHasUploadedFile(true);
         setShowDialog(false);
         setFileID(uploadedLogo.id);
+        displayToast(t('smqSurvey.generalInfo.stepTwo.uploadSuccess'));
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(errorMessage, true);
@@ -316,6 +317,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       setShowDialog(false);
       setHasUploadedFile(true);
       setFileID(createdDocument.id);
+      displayToast(t('smqSurvey.generalInfo.stepTwo.uploadSuccess'));
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
