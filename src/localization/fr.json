@@ -261,6 +261,7 @@
   },
   "smqSurvey": {
     "continue": "Continuer",
+    "finish": "Terminer",
     "generalInfo": {
       "title": "Informations générales",
       "stepOne": {
@@ -313,6 +314,11 @@
       "resourcesManagement": {
         "title": "PRS_S01_Gestion_des_ressources",
         "processusPilotName": "Nom et prénom du pilote du processus"
+      },
+      "regulatoryAffairs": {
+        "title": "PRS_S02_Affaires_Réglementaires",
+        "processusPilotName": "Nom et prénom du pilote du processus",
+        "safeguardMeasures": "Quelles sont les mesures de sauvegarde que vous avez mises en place ?"
       }
     }
   },

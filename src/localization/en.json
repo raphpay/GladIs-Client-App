@@ -261,6 +261,7 @@
   },
   "smqSurvey": {
     "continue": "Continue",
+    "finish": "Finish",
     "generalInfo": {
       "title": "General Information",
       "stepOne": {
@@ -313,6 +314,11 @@
       "resourcesManagement": {
         "title": "PRS_S01_Resources_Management",
         "processusPilotName": "First name and last name of the process's pilot"
+      },
+      "regulatoryAffairs": {
+        "title": "PRS_S02_Regulatory_Affairs",
+        "processusPilotName": "First name and last name of the process's pilot",
+        "safeguardMeasures": "What are the safeguard measures you have in place?"
       }
     }
   },
