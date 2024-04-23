@@ -57,6 +57,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
         "prs": {
           "regulatoryAffairs": {
             processusPilotName,
+            safeguardMeasures
           }
         }
       }
@@ -89,6 +90,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedSurvey.survey.prs.regulatoryAffairs) {
         setProcessusPilotName(cachedSurvey.survey.prs.regulatoryAffairs.processusPilotName);
+        setSafeguardMeasures(cachedSurvey.survey.prs.regulatoryAffairs.safeguardMeasures);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);
