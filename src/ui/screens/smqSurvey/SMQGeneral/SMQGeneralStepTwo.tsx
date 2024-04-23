@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { ICheckBoxOption } from '../../../../business-logic/model/IModule';
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import CacheService from '../../../../business-logic/services/CacheService';
 
+import TextButton from '../../../components/Buttons/TextButton';
 import CheckBox from '../../../components/CheckBox/CheckBox';
 import ExpandingTextInput from '../../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
@@ -17,6 +18,7 @@ type SMQGeneralStepTwoProps = {
   setActivity: React.Dispatch<React.SetStateAction<string>>;
   qualityGoals: string;
   setQualityGoals: React.Dispatch<React.SetStateAction<string>>;
+  hasOrganizationalChart: boolean;
   setHasOrganizationalChart: React.Dispatch<React.SetStateAction<boolean>>;
   headquartersAddress: string;
   setHeadquartersAddress: React.Dispatch<React.SetStateAction<string>>;
@@ -24,6 +26,9 @@ type SMQGeneralStepTwoProps = {
   setPhoneNumber: React.Dispatch<React.SetStateAction<string>>;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
+  setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  hasUploadedFile: boolean;
+  selectedFilename: string;
 };
 
 function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
@@ -31,10 +36,12 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
   const {
     activity, setActivity,
     qualityGoals, setQualityGoals,
-    setHasOrganizationalChart,
+    hasOrganizationalChart, setHasOrganizationalChart,
     headquartersAddress, setHeadquartersAddress,
     phoneNumber, setPhoneNumber,
     email, setEmail,
+    setShowDialog,
+    hasUploadedFile, selectedFilename
   } = props;
   const { t } = useTranslation();
 
@@ -92,7 +99,7 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     init();
   }, []);
 
-  // TODO: Implement logo upload if yes
+  // TODO: Add trash button to remove selected file
   // Components
   return (
     <ScrollView>
@@ -119,6 +126,21 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
             />
           );
         })
+      }
+      {
+        hasOrganizationalChart && (
+          <View style={styles.selectFileRow}>
+            <TextButton width={'30%'} title={t('smqSurvey.generalInfo.stepTwo.uploadOrgChart')} onPress={() => setShowDialog(true)} />
+            {
+              hasUploadedFile && selectedFilename && (
+                <>
+                  <Text style={styles.selectedFileText}>Selected File:</Text>
+                  <Text style={styles.selectedFileText}>{selectedFilename}</Text>
+                </>
+              )
+            }
+          </View>
+        )
       }
       <GladisTextInput
         value={headquartersAddress}

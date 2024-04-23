@@ -11,6 +11,16 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.semiBold,
     paddingTop: 20,
   },
+  selectFileRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  selectedFileText: {
+    fontSize: 16,
+    fontFamily: Fonts.poppinsLight,
+    marginLeft: 10,
+  }
 });
 
 export default styles;

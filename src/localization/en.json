@@ -276,7 +276,10 @@
         "option": {
           "yes": "Yes",
           "no": "No"
-        }
+        },
+        "uploadOrgChart": "Select a file",
+        "selectPngFile": "Select a PNG file",
+        "selectPdfFile": "Select a PDF file",
       },
       "stepThree": {
         "website": "Do you have a website?",
