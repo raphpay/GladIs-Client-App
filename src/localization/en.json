@@ -309,6 +309,7 @@
         "title": "PRS_R02_Client_Relation",
         "processusPilotName": "First name and last name of the process's pilot",
         "orderDeliveryNote": "Please provide us with your order or delivery note",
+        "orderDeliveryNoteButton": "Select a file",
         "productsSold": "Merci de nous faire parvenir une liste de vos produits vendus",
       },
       "buy": {

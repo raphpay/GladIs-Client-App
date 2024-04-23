@@ -16,6 +16,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 20,
   },
+  title: {
+    fontSize: 18,
+    fontFamily: Fonts.poppinsLight,
+  },
   selectedFileText: {
     fontSize: 16,
     fontFamily: Fonts.poppinsLight,

@@ -280,7 +280,7 @@
         "uploadOrgChart": "Selectionnez un fichier",
         "selectPngFile": "Selectionnez un fichier PNG",
         "selectPdfFile": "Selectionnez un fichier PDF",
-        "uploadSuccess": "Fichier téléchargé avec succès",
+        "uploadSuccess": "Fichier téléchargé avec succès"
       },
       "stepThree": {
         "website": "Lien(s) des sites associés à votre entreprise",
@@ -309,6 +309,7 @@
         "title": "PRS_R02_Relation_Client",
         "processusPilotName": "Nom et prénom du pilote du processus",
         "orderDeliveryNote": "Merci de nous fournir votre bon de commande ou de livraison",
+        "orderDeliveryNoteButton": "Selectionner un fichier",
         "productsSold": "Merci de nous fournir une liste de vos produits vendus"
       },
       "buy": {
