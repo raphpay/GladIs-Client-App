@@ -44,12 +44,12 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
   const organizationOptions: ICheckBoxOption[] = [
     {
       id: '1',
-      name: 'Yes',
+      name: t('smqSurvey.generalInfo.stepTwo.option.yes'),
       value: true,
     },
     {
       id: '2',
-      name: 'No',
+      name: t('smqSurvey.generalInfo.stepTwo.option.no'),
       value: false,
     }
   ];
