@@ -98,6 +98,10 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedSurvey.survey.prs.fabricationDevelopment) {
         setProcessusPilotName(cachedSurvey.survey.prs.fabricationDevelopment.processusPilotName);
+        setProductionFlux(cachedSurvey.survey.prs.fabricationDevelopment.productionFlux);
+        setProductIdentifications(cachedSurvey.survey.prs.fabricationDevelopment.productIdentifications);
+        setProductPreservation(cachedSurvey.survey.prs.fabricationDevelopment.productPreservation);
+        setProductTracking(cachedSurvey.survey.prs.fabricationDevelopment.productTracking);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);
