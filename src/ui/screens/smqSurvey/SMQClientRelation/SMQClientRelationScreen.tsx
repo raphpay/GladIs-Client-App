@@ -1,22 +1,22 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ScrollView,
-  View
-} from 'react-native';
+import { ScrollView, View } from 'react-native';
+
 import IAction from '../../../../business-logic/model/IAction';
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../../business-logic/services/CacheService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
+
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
-import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
+
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
+import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQClientRelationScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQClientRelationScreen>;
 
@@ -87,25 +87,13 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     }
   }
 
-  // Components
-  function ContinueButton() {
-    return (
-      <View style={styles.sendButtonContainer}>
-        <TextButton
-          width={'100%'}
-          title={t('smqSurvey.continue')}
-          onPress={tappedContinue}
-          disabled={!isFormFilled()}
-        />
-      </View>
-    )
-  }
-
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedSurvey.survey.prs.clientRelation) {
         setProcessusPilotName(cachedSurvey.survey.prs.clientRelation.processusPilotName);
+        setOrderDeliveryNote(cachedSurvey.survey.prs.clientRelation.orderDeliveryNote);
+        setProductsSold(cachedSurvey.survey.prs.clientRelation.productsSold);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);
@@ -120,9 +108,23 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     init()
   }, []);
 
+  // Components
+  function ContinueButton() {
+    return (
+      <View style={styles.sendButtonContainer}>
+        <TextButton
+          width={'100%'}
+          title={t('smqSurvey.continue')}
+          onPress={tappedContinue}
+          disabled={!isFormFilled()}
+        />
+      </View>
+    )
+  }
+
   return (
     <AppContainer
-      mainTitle={t('smqSurvey.prs.fabricationDevelopment.title')}
+      mainTitle={t('smqSurvey.prs.clientRelation.title')}
       showSearchText={false}
       showSettings={false}
       showBackButton={true}
