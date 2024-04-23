@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView } from 'react-native';
+import IAction from '../../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 import AppContainer from '../../../components/AppContainer/AppContainer';
@@ -20,6 +21,13 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
   const [productPreservation, setProductPreservation] = React.useState<string>('');
   const [productTracking, setProductTracking] = React.useState<string>('');
 
+  const navigationHistoryItems: IAction[] = [
+    {
+      title: t('smqSurvey.prs.measurement.title'),
+      onPress: () => navigateBack(),
+    }
+  ];
+
   // Sync Methods
   function navigateBack() {
     navigation.goBack();
@@ -28,11 +36,12 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
   // Components
   return (
     <AppContainer
-      mainTitle='Fabrication Development'
+      mainTitle={t('smqSurvey.prs.fabricationDevelopment.title')}
       showSearchText={false}
       showSettings={false}
       showBackButton={true}
       navigateBack={navigateBack}
+      navigationHistoryItems={navigationHistoryItems}
     >
       <ScrollView>
         <GladisTextInput

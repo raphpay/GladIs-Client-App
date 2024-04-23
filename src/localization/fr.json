@@ -294,6 +294,7 @@
         "title": "PRS_M01_Mesure_et_amélioration"
       },
       "fabricationDevelopment": {
+        "title": "PRS_R01_Développement_Fabrication",
         "productionFlux": "Quels sont les flux de production de vos produits ?",
         "productIdentifications": "Comment sont identifiés vos produits ?",
         "productPreservation": "Comment sont préservés vos produits lors de leur fabrication ?",
