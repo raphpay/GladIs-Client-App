@@ -50,7 +50,8 @@
         "title": "Actions",
         "passwordsToReset": "Mots de passe à réinitialiser",
         "messages": "Messages",
-        "events": "Evénements"
+        "events": "Evénements",
+        "surveys": "Formulaires SMQ"
       },
       "modules": "Modules",
       "clients": "Clients"

@@ -44,6 +44,8 @@ import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 import RemindersScreen from '../ui/screens/reminders/RemindersScreen';
 // Password Reset
 import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
+// Survey
+import SurveysScreen from '../ui/screens/dashboard/SurveysScreen';
 // Chat
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 // SMQ Survey
@@ -86,6 +88,8 @@ export type IRootStackParams = {
   PasswordResetScreen: undefined,
   // Chat
   MessagesScreen: undefined,
+  // SMQ Surveys
+  SurveysScreen: undefined,
 }
 
 export type IClientCreationStack = {
@@ -293,6 +297,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.MessagesScreen}
         component={MessagesScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.SurveysScreen}
+        component={SurveysScreen}
         options={{headerShown: false}}
       />
       <ClientCreationStack.Screen

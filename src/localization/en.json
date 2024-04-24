@@ -50,7 +50,8 @@
         "title": "Actions",
         "passwordsToReset": "Passwords to reset",
         "messages": "Messages",
-        "events": "Events"
+        "events": "Events",
+        "surveys": "SMQ Surveys",
       },
       "modules": "Modules",
       "clients": "Clients"
