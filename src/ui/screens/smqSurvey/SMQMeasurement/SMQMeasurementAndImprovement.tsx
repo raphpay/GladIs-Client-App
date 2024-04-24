@@ -63,9 +63,10 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
   
     // Retrieve existing client survey data
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+    const measurementAndImprovements = clientSurvey.survey.prs.measurementAndImprovements;
+    if (measurementAndImprovements) {
       // Update management sub-section with new data
-      existingClientSurvey.survey.prs.measurementAndImprovements = clientSurvey.survey.prs.measurementAndImprovements;
+      existingClientSurvey.survey.prs.measurementAndImprovements = measurementAndImprovements;
       await saveClientSurvey(existingClientSurvey);
     } else {
       // No existing client survey data, save the new client survey data
@@ -86,8 +87,9 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.measurementAndImprovements) {
-        setProcessusPilotName(cachedSurvey.survey.prs.measurementAndImprovements.processusPilotName);
+      const processusPilotName = cachedSurvey?.survey?.prs?.measurementAndImprovements.processusPilotName;
+      if (processusPilotName) {
+        setProcessusPilotName(processusPilotName);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);

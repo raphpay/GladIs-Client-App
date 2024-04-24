@@ -35,12 +35,14 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     try {
       const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedClientSurvey) {
-        const generalSection = cachedClientSurvey.survey.generalSection;
-        setWebsite(generalSection.website);
-        setAuditorsName(generalSection.auditorsName);
-        setAuditorsFunction(generalSection.auditorsFunction);
-        setApproversName(generalSection.approversName);
-        setApproversFunction(generalSection.approversFunction);
+        const generalSection = cachedClientSurvey?.survey?.generalSection;
+        if (generalSection) {
+          setWebsite(generalSection.website);
+          setAuditorsName(generalSection.auditorsName);
+          setAuditorsFunction(generalSection.auditorsFunction);
+          setApproversName(generalSection.approversName);
+          setApproversFunction(generalSection.approversFunction);
+        }
       }
     } catch (error) {
       console.log('Error retrieving cached client survey value', error);

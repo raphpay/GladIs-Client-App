@@ -63,10 +63,16 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
     };
   
     // Retrieve existing client survey data
-    let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
-      // Update management sub-section with new data
-      existingClientSurvey.survey.prs.management = clientSurvey.survey.prs.management;
+    let existingClientSurvey: any;
+    try {
+      existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    } catch (error) {
+      console.log('Error retrieving client survey', error);
+    }
+
+    const managementObject = existingClientSurvey?.survey?.prs?.management;
+    if (managementObject) {
+      existingClientSurvey.survey.prs.management = managementObject;
       await saveClientSurvey(existingClientSurvey);
     } else {
       // No existing client survey data, save the new client survey data
@@ -85,13 +91,16 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
   }
 
   async function loadInfos() {
+    let cachedSurvey: any;
     try {
-      const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.management) {
-        setProcessusPilotName(cachedSurvey.survey.prs.management.processusPilotName);
-      }
+      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
     } catch (error) {
       console.log('Error retrieving cached value', error);
+    }
+
+    const processusPilotName = cachedSurvey?.survey?.prs?.management?.processusPilotName;
+    if (processusPilotName) {
+      setProcessusPilotName(processusPilotName);
     }
   }
 

@@ -133,7 +133,13 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         }
         break;
       case 3:
-        isFilled = true;
+        if (website && auditorsName && auditorsFunction && approversName && approversFunction) {
+          isFilled = website.length > 0 &&
+          auditorsName.length > 0 &&
+          auditorsFunction.length > 0 &&
+          approversName.length > 0 &&
+          approversFunction.length > 0;
+        }
         break;
     }
     return isFilled;

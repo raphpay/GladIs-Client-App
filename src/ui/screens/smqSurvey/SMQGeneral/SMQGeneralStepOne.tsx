@@ -47,12 +47,14 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     try {
       const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedClientSurvey) {
-        const generalSection = cachedClientSurvey.survey.generalSection;
-        setCompanyHistory(generalSection.companyHistory);
-        setManagerName(generalSection.managerName);
-        setMedicalDevices(generalSection.medicalDevices);
-        setClients(generalSection.clients);
-        setArea(generalSection.area);
+        const generalSection = cachedClientSurvey?.survey?.generalSection;
+        if (generalSection) {
+          setCompanyHistory(generalSection.companyHistory);
+          setManagerName(generalSection.managerName);
+          setMedicalDevices(generalSection.medicalDevices);
+          setClients(generalSection.clients);
+          setArea(generalSection.area);
+        }
       }
     } catch (error) {
       console.log('Error retrieving cached client survey value', error);

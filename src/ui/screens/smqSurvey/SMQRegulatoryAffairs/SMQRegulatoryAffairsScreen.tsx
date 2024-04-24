@@ -67,9 +67,10 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   
     // Retrieve existing client survey data
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    const regulatoryAffairs = clientSurvey.survey.prs.regulatoryAffairs;
     if (existingClientSurvey && typeof existingClientSurvey === 'object') {
       // Update management sub-section with new data
-      existingClientSurvey.survey.prs.regulatoryAffairs = clientSurvey.survey.prs.regulatoryAffairs;
+      existingClientSurvey.survey.prs.regulatoryAffairs = regulatoryAffairs;
       try {
         const clientID = currentClient?.id as string;
         const apiSurvey: ISurveyInput = {
@@ -96,9 +97,10 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.regulatoryAffairs) {
-        setProcessusPilotName(cachedSurvey.survey.prs.regulatoryAffairs.processusPilotName);
-        setSafeguardMeasures(cachedSurvey.survey.prs.regulatoryAffairs.safeguardMeasures);
+      const regulatoryAffairs = cachedSurvey?.survey?.prs?.regulatoryAffairs;
+      if (regulatoryAffairs) {
+        setProcessusPilotName(regulatoryAffairs.processusPilotName);
+        setSafeguardMeasures(regulatoryAffairs.safeguardMeasures);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);

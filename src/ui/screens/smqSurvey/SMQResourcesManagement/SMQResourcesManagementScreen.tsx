@@ -62,9 +62,10 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
   
     // Retrieve existing client survey data
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+    const resourcesManagement = clientSurvey.survey.prs.resourcesManagement;
+    if (resourcesManagement) {
       // Update management sub-section with new data
-      existingClientSurvey.survey.prs.resourcesManagement = clientSurvey.survey.prs.resourcesManagement;
+      existingClientSurvey.survey.prs.resourcesManagement = resourcesManagement;
       await saveClientSurvey(existingClientSurvey);
     } else {
       // No existing client survey data, save the new client survey data
@@ -85,8 +86,9 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.resourcesManagement) {
-        setProcessusPilotName(cachedSurvey.survey.prs.resourcesManagement.processusPilotName);
+      const processusPilotName = cachedSurvey?.survey?.prs?.resourcesManagement?.processusPilotName;
+      if (processusPilotName) {
+        setProcessusPilotName(processusPilotName);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);

@@ -72,10 +72,8 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
 
   function isFormFilled() {
     let isFilled = false;
-    if (processusPilotName && orderDeliveryNote && productsSold) {
-      isFilled = processusPilotName.length > 0 &&
-      orderDeliveryNote.length > 0 &&
-      productsSold.length > 0;
+    if (processusPilotName) {
+      isFilled = processusPilotName.length > 0;
     }
     return isFilled;
   }
@@ -105,9 +103,10 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
   
     // Retrieve existing client survey data
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+    const clientRelation = clientSurvey.survey.prs.clientRelation;
+    if (clientRelation) {
       // Update management sub-section with new data
-      existingClientSurvey.survey.prs.clientRelation = clientSurvey.survey.prs.clientRelation;
+      existingClientSurvey.survey.prs.clientRelation = clientRelation;
       await saveClientSurvey(existingClientSurvey);
     } else {
       // No existing client survey data, save the new client survey data
@@ -128,10 +127,11 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.clientRelation) {
-        setProcessusPilotName(cachedSurvey.survey.prs.clientRelation.processusPilotName);
-        setOrderDeliveryNote(cachedSurvey.survey.prs.clientRelation.orderDeliveryNote);
-        setProductsSold(cachedSurvey.survey.prs.clientRelation.productsSold);
+      const clientRelation = cachedSurvey?.survey?.prs?.clientRelation;
+      if (clientRelation) {
+        setProcessusPilotName(clientRelation.processusPilotName);
+        setOrderDeliveryNote(clientRelation.orderDeliveryNote);
+        setProductsSold(clientRelation.productsSold);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);

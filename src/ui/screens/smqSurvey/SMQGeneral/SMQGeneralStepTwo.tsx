@@ -77,14 +77,16 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     try {
       const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedClientSurvey) {
-        const generalSection = cachedClientSurvey.survey.generalSection;
-        setActivity(generalSection.activity);
-        setQualityGoals(generalSection.qualityGoals);
-        setHasOrganizationalChart(generalSection.hasOrganizationalChart);
-        setHeadquartersAddress(generalSection.headquartersAddress);
-        setPhoneNumber(generalSection.phoneNumber);
-        setEmail(generalSection.email);
-        setSelectedOptionID(generalSection.hasOrganizationalChart ? '1' : '2');
+        const generalSection = cachedClientSurvey?.survey?.generalSection;
+        if (generalSection) {
+          setActivity(generalSection.activity);
+          setQualityGoals(generalSection.qualityGoals);
+          setHasOrganizationalChart(generalSection.hasOrganizationalChart);
+          setHeadquartersAddress(generalSection.headquartersAddress);
+          setPhoneNumber(generalSection.phoneNumber);
+          setEmail(generalSection.email);
+          setSelectedOptionID(generalSection.hasOrganizationalChart ? '1' : '2');
+        }
       }
     } catch (error) {
       console.log('Error retrieving cached client survey value', error);

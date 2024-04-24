@@ -61,9 +61,10 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
   
     // Retrieve existing client survey data
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+    const buy = clientSurvey.survey.prs.buy;
+    if (buy) {
       // Update management sub-section with new data
-      existingClientSurvey.survey.prs.buy = clientSurvey.survey.prs.buy;
+      existingClientSurvey.survey.prs.buy = buy;
       await saveClientSurvey(existingClientSurvey);
     } else {
       // No existing client survey data, save the new client survey data
@@ -84,8 +85,9 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.buy) {
-        setProcessusPilotName(cachedSurvey.survey.prs.buy.processusPilotName);
+      const processusPilotName = cachedSurvey?.survey?.prs?.buy?.processusPilotName;
+      if (processusPilotName) {
+        setProcessusPilotName(processusPilotName);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);

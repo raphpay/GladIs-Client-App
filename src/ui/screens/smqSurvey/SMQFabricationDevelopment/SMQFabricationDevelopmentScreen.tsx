@@ -73,9 +73,10 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
   
     // Retrieve existing client survey data
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+    const fabricationDevelopment = clientSurvey.survey.prs.fabricationDevelopment;
+    if (fabricationDevelopment) {
       // Update management sub-section with new data
-      existingClientSurvey.survey.prs.fabricationDevelopment = clientSurvey.survey.prs.fabricationDevelopment;
+      existingClientSurvey.survey.prs.fabricationDevelopment = fabricationDevelopment;
       await saveClientSurvey(existingClientSurvey);
     } else {
       // No existing client survey data, save the new client survey data
@@ -96,12 +97,13 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
   async function loadInfos() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedSurvey.survey.prs.fabricationDevelopment) {
-        setProcessusPilotName(cachedSurvey.survey.prs.fabricationDevelopment.processusPilotName);
-        setProductionFlux(cachedSurvey.survey.prs.fabricationDevelopment.productionFlux);
-        setProductIdentifications(cachedSurvey.survey.prs.fabricationDevelopment.productIdentifications);
-        setProductPreservation(cachedSurvey.survey.prs.fabricationDevelopment.productPreservation);
-        setProductTracking(cachedSurvey.survey.prs.fabricationDevelopment.productTracking);
+      const fabricationDevelopment = cachedSurvey?.survey?.prs?.fabricationDevelopment;
+      if (fabricationDevelopment) {
+        setProcessusPilotName(fabricationDevelopment.processusPilotName);
+        setProductionFlux(fabricationDevelopment.productionFlux);
+        setProductIdentifications(fabricationDevelopment.productIdentifications);
+        setProductPreservation(fabricationDevelopment.productPreservation);
+        setProductTracking(fabricationDevelopment.productTracking);
       }
     } catch (error) {
       console.log('Error retrieving cached value', error);
