@@ -24,6 +24,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Fonts.poppinsLight,
     marginLeft: 10,
+  },
+  additionalComponent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   }
 });
 

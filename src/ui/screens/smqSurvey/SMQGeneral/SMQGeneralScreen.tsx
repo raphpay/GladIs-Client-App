@@ -26,6 +26,7 @@ import TextButton from '../../../components/Buttons/TextButton';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 
+import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import SMQGeneralStepOne from './SMQGeneralStepOne';
 import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
@@ -368,6 +369,15 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     );
   }
 
+  function AdditionnalComponent() {
+    return (
+      <View style={styles.additionalComponent}>
+        <SurveyPageCounter page={stepNumber}/>
+        {ContinueButton()}
+      </View>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -376,7 +386,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         showSettings={false}
         showBackButton={true}
         navigateBack={navigateBack}
-        additionalComponent={ContinueButton()}
+        additionalComponent={AdditionnalComponent()}
         navigationHistoryItems={navigationHistoryItems}
       >
         <>
