@@ -204,7 +204,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       headquartersAddress,
       phoneNumber,
       email,
-      OrganizationalChartID: fileID
+      organizationalChartID: fileID
     };
   
     // Update only the fields that are different from stepTwoData

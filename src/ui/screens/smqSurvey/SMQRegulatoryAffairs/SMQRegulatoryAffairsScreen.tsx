@@ -16,6 +16,8 @@ import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
+import { ISurveyInput } from '../../../../business-logic/model/ISurvey';
+import SurveyService from '../../../../business-logic/services/SurveyService';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 
@@ -68,17 +70,23 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
     if (existingClientSurvey && typeof existingClientSurvey === 'object') {
       // Update management sub-section with new data
       existingClientSurvey.survey.prs.regulatoryAffairs = clientSurvey.survey.prs.regulatoryAffairs;
-      await saveClientSurvey(existingClientSurvey);
-    } else {
-      // No existing client survey data, save the new client survey data
-      await saveClientSurvey(clientSurvey);
+      try {
+        const clientID = currentClient?.id as string;
+        const apiSurvey: ISurveyInput = {
+          value: JSON.stringify(existingClientSurvey),
+          clientID
+        }
+        await SurveyService.getInstance().createSurvey(apiSurvey, null);
+        await removeCachedSurvey();
+      } catch (error) {
+        console.log('Error saving survey', error);
+      }
     }
   }
 
-  async function saveClientSurvey(clientSurvey: any) {
+  async function removeCachedSurvey() {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
       navigation.navigate(NavigationRoutes.SystemQualityScreen);
     } catch (error) {
       console.log('Error caching client survey', error);
