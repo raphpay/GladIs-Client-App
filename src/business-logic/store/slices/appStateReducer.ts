@@ -8,6 +8,7 @@ export interface AppState {
   documentListCount: number,
   passwordResetTokenCount: number,
   smqScreenSource: string,
+  smqSurveysListCount: number,
 }
 
 const initialState: AppState = {
@@ -17,6 +18,7 @@ const initialState: AppState = {
   documentListCount: 0,
   passwordResetTokenCount: 0,
   smqScreenSource: '',
+  smqSurveysListCount: 0,
 };
 
 export const appStateSlice = createSlice({
@@ -44,6 +46,9 @@ export const appStateSlice = createSlice({
     },
     setSMQScreenSource: (state, action: PayloadAction<string>) => {
       state.smqScreenSource = action.payload;
+    },
+    setSMQSurveysListCount: (state, action: PayloadAction<number>) => {
+      state.smqSurveysListCount = action.payload;
     }
   },
 });
@@ -55,7 +60,8 @@ export const {
   setClientListCount,
   setDocumentListCount,
   setPasswordResetTokenCount,
-  setSMQScreenSource
+  setSMQScreenSource,
+  setSMQSurveysListCount
 } = appStateSlice.actions;
 
 export default appStateSlice.reducer;

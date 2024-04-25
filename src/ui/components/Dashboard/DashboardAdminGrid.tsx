@@ -7,12 +7,12 @@ import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import MessageService from '../../../business-logic/services/MessageService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
+import SurveyService from '../../../business-logic/services/SurveyService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
-
-import SurveyService from '../../../business-logic/services/SurveyService';
 import styles from '../../assets/styles/components/DashboardAdminGridStyles';
 import ActionSection from './Action/ActionSection';
 import ClientSection from './Client/ClientSection';
@@ -36,7 +36,12 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
-  const { clientListCount, passwordResetTokenCount } = useAppSelector((state: RootState) => state.appState);
+  const {
+    clientListCount,
+    passwordResetTokenCount,
+    smqSurveysListCount,
+  } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
 
   const { t } = useTranslation();
 
@@ -109,6 +114,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
           screenDestination: NavigationRoutes.SurveysScreen,
         }
         setSurveysAction(surveyAction);
+        dispatch(setSMQSurveysListCount(surveys.length));
       }
     } catch (error) {
       console.log('Error loading surveys', error );
@@ -137,6 +143,13 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     }
     init();
   }, [passwordResetTokenCount]);
+
+  useEffect(() => {
+    async function init() {
+      await loadSurveys();
+    }
+    init();
+  }, [smqSurveysListCount]);
 
   // Components
   return (

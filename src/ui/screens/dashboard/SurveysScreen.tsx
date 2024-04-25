@@ -6,7 +6,8 @@ import IAction from '../../../business-logic/model/IAction';
 import ISurvey from '../../../business-logic/model/ISurvey';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import SurveyService from '../../../business-logic/services/SurveyService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -25,6 +26,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   const { navigation } = props;
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const dispatch = useAppDispatch();
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   // States
   const [surveys, setSurveys] = useState<ISurvey[]>([]);
@@ -52,6 +54,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   ];
   // Synchronous Methods
   function navigateBack() {
+    dispatch(setSMQSurveysListCount(surveys.length));
     navigation.goBack();
   }
 
