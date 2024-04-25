@@ -64,6 +64,12 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
     setShowActionDialog(true);
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+
   // Async Methods
   async function loadSurveys() {
     try {
@@ -79,7 +85,15 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   }
 
   async function remove(survey: ISurvey) {
-    // remove survey
+    try {
+      await SurveyService.getInstance().delete(survey?.id as string, token);
+      displayToast(t('smqSurvey.toast.deleted'));
+      await loadSurveys();
+      setShowActionDialog(false);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+    }
   } 
 
   // Lifecycle Methods

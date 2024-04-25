@@ -278,6 +278,7 @@
         "phoneNumber": " Numéro(s) de téléphone de contact",
         "email": "Adresse(s) mail de contact",
         "selectOrgOption": "Avez vous un organigramme ?",
+        "qualityGoals": "Quels sont vos objectifs en terme de qualité de vos produits ?",
         "option": {
           "yes": "Oui",
           "no": "Non"
@@ -335,6 +336,9 @@
       "open": "Ouvrir",
       "export": "Exporter vers CSV",
       "delete": "Supprimer"
+    },
+    "toast": {
+      "deleted": "Supprimé avec succès"
     }
   },
   "components": {
@@ -515,7 +519,8 @@
         "pendingUser": "Utilisateur en attente non trouvé",
         "module": "Module non trouvé",
         "event": "Evénement non trouvé",
-        "document": "Document non trouvé"
+        "document": "Document non trouvé",
+        "survey": "Formulaire SMQ non trouvé",
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",

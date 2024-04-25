@@ -278,6 +278,7 @@
         "phoneNumber": " Contact telephone number(s)",
         "email": "Contact email address(es)",
         "selectOrgOption": "Do you have an organizational chart?",
+        "qualityGoals": "What are your objectives in terms of product quality?",
         "option": {
           "yes": "Yes",
           "no": "No"
@@ -335,6 +336,9 @@
       "open": "Open",
       "export": "Export to CSV",
       "delete": "Delete"
+    },
+    "toast": {
+      "deleted": "Survey successfully deleted"
     }
   },
   "components": {
@@ -515,7 +519,8 @@
         "pendingUser": "Pending user not found",
         "module": "Module not found",
         "event": "Event not found",
-        "document": "Document not found"
+        "document": "Document not found",
+        "survey": "SMQ survey not found",
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",
