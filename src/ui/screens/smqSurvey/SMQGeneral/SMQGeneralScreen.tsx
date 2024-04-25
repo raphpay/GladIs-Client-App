@@ -381,7 +381,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         <SurveyPageCounter page={stepNumber}/>
         {ContinueButton()}
       </View>
-    )
+    );
   }
 
   return (

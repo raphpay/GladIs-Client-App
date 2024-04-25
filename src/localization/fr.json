@@ -273,6 +273,10 @@
         "area": "Dans quelle région souhaitez-vous commercialiser vos dispositifs ?"
       },
       "stepTwo": {
+        "activity": "Quelles sont les activités de votre entreprise ? (fabricant, distributeur, sous-traitant)",
+        "headquartersAddress": "Quel est l'adresse de votre siège social ?",
+        "phoneNumber": " Numéro(s) de téléphone de contact",
+        "email": "Adresse(s) mail de contact",
         "selectOrgOption": "Avez vous un organigramme ?",
         "option": {
           "yes": "Oui",

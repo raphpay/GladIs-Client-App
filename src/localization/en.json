@@ -273,6 +273,10 @@
         "area": "In which area are you would you want to sell your products?"
       },
       "stepTwo": {
+        "activity": "What's your company activity ? (manufacturer, distributor, subcontractor, ...)",
+        "headquartersAddress": "What is the address of your head office?",
+        "phoneNumber": " Contact telephone number(s)",
+        "email": "Contact email address(es)",
         "selectOrgOption": "Do you have an organizational chart?",
         "option": {
           "yes": "Yes",
