@@ -133,7 +133,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   function AdditionnalComponent() {
     return (
       <View style={styles.additionalComponent}>
-        <SurveyPageCounter page={9}/>
+        <SurveyPageCounter page={10}/>
         {FinishButton()}
       </View>
     );
