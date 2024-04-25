@@ -14,6 +14,7 @@ import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
+import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
@@ -123,7 +124,16 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
           disabled={!isFormFilled()}
         />
       </View>
-    )
+    );
+  }
+
+  function AdditionnalComponent() {
+    return (
+      <View style={styles.additionalComponent}>
+        <SurveyPageCounter page={4}/>
+        {ContinueButton()}
+      </View>
+    );
   }
 
   return (
@@ -133,7 +143,7 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
       showSettings={false}
       showBackButton={true}
       navigateBack={navigateBack}
-      additionalComponent={ContinueButton()}
+      additionalComponent={AdditionnalComponent()}
       navigationHistoryItems={navigationHistoryItems}
     >
       <ScrollView>

@@ -19,6 +19,7 @@ import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import { ISurveyInput } from '../../../../business-logic/model/ISurvey';
 import SurveyService from '../../../../business-logic/services/SurveyService';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
+import SurveyPageCounter from '../../../components/SurveyPageCounter';
 
 
 type SMQRegulatoryAffairsProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQRegulatoryAffairs>;
@@ -126,7 +127,16 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
           disabled={!isFormFilled()}
         />
       </View>
-    )
+    );
+  }
+
+  function AdditionnalComponent() {
+    return (
+      <View style={styles.additionalComponent}>
+        <SurveyPageCounter page={9}/>
+        {FinishButton()}
+      </View>
+    );
   }
 
   return (
@@ -137,7 +147,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
       showBackButton={true}
       navigateBack={navigateBack}
       navigationHistoryItems={navigationHistoryItems}
-      additionalComponent={FinishButton()}
+      additionalComponent={AdditionnalComponent()}
     >
       <ScrollView>
         <GladisTextInput

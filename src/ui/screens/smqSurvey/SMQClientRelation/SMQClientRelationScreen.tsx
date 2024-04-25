@@ -23,6 +23,7 @@ import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
+import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import Toast from '../../../components/Toast';
 
@@ -218,6 +219,15 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     );
   }
 
+  function AdditionnalComponent() {
+    return (
+      <View style={styles.additionalComponent}>
+        <SurveyPageCounter page={7}/>
+        {ContinueButton()}
+      </View>
+    );
+  }
+
   return (
     <>
       <AppContainer
@@ -227,7 +237,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
         showBackButton={true}
         navigateBack={navigateBack}
         navigationHistoryItems={navigationHistoryItems}
-        additionalComponent={ContinueButton()}
+        additionalComponent={AdditionnalComponent()}
       >
         <ScrollView>
           <GladisTextInput

@@ -14,10 +14,10 @@ import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
+import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
-
 
 type SMQResourcesManagementProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQResourcesManagementScreen>;
 
@@ -114,7 +114,16 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
           disabled={!isFormFilled()}
         />
       </View>
-    )
+    );
+  }
+
+  function AdditionnalComponent() {
+    return (
+      <View style={styles.additionalComponent}>
+        <SurveyPageCounter page={9}/>
+        {ContinueButton()}
+      </View>
+    );
   }
 
   return (
@@ -125,7 +134,7 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
       showBackButton={true}
       navigateBack={navigateBack}
       navigationHistoryItems={navigationHistoryItems}
-      additionalComponent={ContinueButton()}
+      additionalComponent={AdditionnalComponent()}
     >
       <ScrollView>
         <GladisTextInput

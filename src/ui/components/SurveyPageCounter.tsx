@@ -11,7 +11,7 @@ function SurveyPageCounter(props: SurveyPageCounterProps): React.JSX.Element {
 
   const { page } = props;
   return (
-    <Text style={styles.pageText}>{page}/10</Text>
+    <Text style={styles.pageText}>{page}/9</Text>
   );
 }
 
