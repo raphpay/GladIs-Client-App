@@ -7,7 +7,7 @@ import APIService from './APIService';
  */
 class SurveyService {
   private static instance: SurveyService | null = null;
-  private baseRoute = 'survey';
+  private baseRoute = 'surveys';
 
   private constructor() {}
 
@@ -50,6 +50,15 @@ class SurveyService {
       return surveys;
     } catch (error) {
       console.log('Error getting surveys:', error);
+      throw error;
+    }
+  }
+
+  async delete(surveyID: string, token: IToken | null): Promise<void> {
+    try {
+      const url = `${this.baseRoute}/${surveyID}`;
+      await APIService.delete(url, token?.value as string);
+    } catch (error) {
       throw error;
     }
   }
