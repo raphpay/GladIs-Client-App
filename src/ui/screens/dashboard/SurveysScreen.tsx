@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import IAction from '../../../business-logic/model/IAction';
 import ISurvey from '../../../business-logic/model/ISurvey';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import SurveyService from '../../../business-logic/services/SurveyService';
@@ -14,6 +15,7 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid/Grid';
 import Toast from '../../components/Toast';
+import TooltipAction from '../../components/TooltipAction';
 import SurveyRow from './SurveyRow';
 
 type SurveysScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SurveysScreen>;
@@ -26,14 +28,40 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   // States
   const [surveys, setSurveys] = useState<ISurvey[]>([]);
+  const [selectedSurvey, setSelectedSurvey] = useState<ISurvey>();
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  // Tooltip Action
+  const [showActionDialog, setShowActionDialog] = useState<boolean>(false);
 
+  const popoverActions: IAction[] = [
+    {
+      title: t('smqSurvey.tooltip.open'),
+      onPress: () => navigateToSurvey(selectedSurvey as ISurvey),
+    },
+    {
+      title: t('smqSurvey.tooltip.export'),
+      onPress: () => exportToCSV(selectedSurvey as ISurvey),
+    },
+    {
+      title: t('smqSurvey.tooltip.delete'),
+      onPress: () => remove(selectedSurvey as ISurvey),
+    }
+  ];
   // Synchronous Methods
   function navigateBack() {
     navigation.goBack();
+  }
+
+  function navigateToSurvey(survey: ISurvey) {
+    // navigation.navigate(NavigationRoutes.SurveyScreen, { survey });
+  }
+
+  function openActionDialog(survey: ISurvey) {
+    setSelectedSurvey(survey);
+    setShowActionDialog(true);
   }
 
   // Async Methods
@@ -42,9 +70,17 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
       const surveys = await SurveyService.getInstance().getAll(token);
       setSurveys(surveys);
     } catch (error) {
-      
+      console.log('Error loading surveys', error);
     }
   }
+
+  async function exportToCSV(survey: ISurvey) {
+    // export to csv
+  }
+
+  async function remove(survey: ISurvey) {
+    // remove survey
+  } 
 
   // Lifecycle Methods
   useEffect(() => {
@@ -69,7 +105,19 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
           )
         }
       </>
-    )
+    );
+  }
+
+  function TooltipActionContent() {
+    return (
+      <TooltipAction
+        showDialog={showActionDialog}
+        title={t('dashboard.sections.actions.surveys')}
+        onConfirm={() => setShowActionDialog(false)}
+        onCancel={() => setShowActionDialog(false)}
+        popoverActions={popoverActions}
+      />
+    );
   }
   
   return (
@@ -91,12 +139,13 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
           ) : (
             <Grid
               data={surveys}
-              renderItem={({ item }) => <SurveyRow survey={item} />}
+              renderItem={({ item }) => <SurveyRow survey={item} openActionDialog={openActionDialog} />}
             />
           )
         }
       </AppContainer>
       {ToastContent()}
+      {TooltipActionContent()}
     </>
   );
 }

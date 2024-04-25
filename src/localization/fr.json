@@ -326,6 +326,11 @@
         "processusPilotName": "Nom et prénom du pilote du processus",
         "safeguardMeasures": "Quelles sont les mesures de sauvegarde que vous avez mises en place ?"
       }
+    },
+    "tooltip": {
+      "open": "Ouvrir",
+      "export": "Exporter vers CSV",
+      "delete": "Supprimer"
     }
   },
   "components": {

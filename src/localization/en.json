@@ -326,6 +326,11 @@
         "processusPilotName": "First name and last name of the process's pilot",
         "safeguardMeasures": "What are the safeguard measures you have in place?"
       }
+    },
+    "tooltip": {
+      "open": "Open",
+      "export": "Export to CSV",
+      "delete": "Delete"
     }
   },
   "components": {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import ISurvey from '../../../business-logic/model/ISurvey';
 import UserService from '../../../business-logic/services/UserService';
@@ -12,11 +12,12 @@ import styles from '../../assets/styles/dashboard/SurveysScreenStyles';
 
 type SurveyRowProps = {
   survey: ISurvey;
+  openActionDialog: (survey: ISurvey) => void;
 };
 
 function SurveyRow(props: SurveyRowProps): React.JSX.Element {
 
-  const { survey } = props;
+  const { survey, openActionDialog } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   // States
   const [clientName, setClientName] = useState<string>('');
@@ -41,16 +42,16 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
   }, []);
 
   return (
-    <View style={styles.lineContainer}>
+    <TouchableOpacity style={styles.lineContainer} onPress={() => openActionDialog(survey)}>
       <View style={styles.lineRow}>
         <View style={styles.clientInfos}>
           <Text style={styles.dateText}>{clientName}</Text>
           <Text style={styles.companyText}>{clientCompany}</Text>
         </View>
-        <Tooltip action={() => {}}/>
+        <Tooltip action={() => openActionDialog(survey)}/>
       </View>
       <View style={styles.separator} />
-    </View>
+    </TouchableOpacity>
   );
 }
 
