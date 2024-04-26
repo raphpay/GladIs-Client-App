@@ -47,7 +47,7 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     if (currentSurvey) {
       loadFromCurrentSurvey();
     } else {
-      await loadFromAPI();
+      await loadFromCache();
     }
   }
 
@@ -59,29 +59,19 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     } catch (error) {
       console.log('Error loading client by ID', error);
     }
-
+    
     const surveyValue = JSON.parse(currentSurvey.value);
-    console.log('generalSection', currentSurvey?.client.id);
+    const generalSection = surveyValue?.survey.generalSection;
     if (generalSection) {
-      if (generalSection.companyHistory) {
-        setCompanyHistory(generalSection.companyHistory);
-      }
-      if (generalSection.managerName) {
-        setManagerName(generalSection.managerName);
-      }
-      if (generalSection.medicalDevices) {
-        setMedicalDevices(generalSection.medicalDevices);
-      }
-      if (generalSection.clients) {
-        setClients(generalSection.clients);
-      }
-      if (generalSection.area) {
-        setArea(generalSection.area);
-      }
+      setCompanyHistory(generalSection.companyHistory);
+      setManagerName(generalSection.managerName);
+      setMedicalDevices(generalSection.medicalDevices);
+      setClients(generalSection.clients);
+      setArea(generalSection.area);
     }
   }
 
-  async function loadFromAPI() {
+  async function loadFromCache() {
     if (currentClient) {
       setCompanyName(currentClient.companyName);
     }

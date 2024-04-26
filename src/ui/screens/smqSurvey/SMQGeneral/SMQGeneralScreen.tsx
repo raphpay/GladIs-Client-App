@@ -15,7 +15,8 @@ import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
+import { resetCurrentSurvey } from '../../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -42,6 +43,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser} = useAppSelector((state: RootState) => state.users);
   const { smqScreenSource } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
   // States
   const [stepNumber, setStepNumber] = useState<number>(1);
   // Questions
@@ -96,6 +98,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   function navigateBack() {
     switch (stepNumber) {
       case 1:
+        dispatch(resetCurrentSurvey());
         navigation.goBack();
         break;
       case 2:
@@ -105,6 +108,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         setStepNumber(stepNumber - 1);
         break;
       default:
+        dispatch(resetCurrentSurvey());
         navigation.goBack();
         break;
     }

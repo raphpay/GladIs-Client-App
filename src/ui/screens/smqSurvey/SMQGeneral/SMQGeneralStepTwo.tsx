@@ -5,6 +5,8 @@ import { ScrollView, Text, View } from 'react-native';
 import { ICheckBoxOption } from '../../../../business-logic/model/IModule';
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import CacheService from '../../../../business-logic/services/CacheService';
+import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { RootState } from '../../../../business-logic/store/store';
 
 import TextButton from '../../../components/Buttons/TextButton';
 import CheckBox from '../../../components/CheckBox/CheckBox';
@@ -44,6 +46,7 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     hasUploadedFile, selectedFilename
   } = props;
   const { t } = useTranslation();
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
 
   // States
   const [selectedOptionID, setSelectedOptionID] = useState<string>('');
@@ -72,8 +75,30 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     return selectedOptionID === id;
   }
 
+  function loadFromCurrentSurvey() {
+    const surveyValue = JSON.parse(currentSurvey.value);
+    const generalSection = surveyValue?.survey.generalSection;
+    if (generalSection) {
+      setActivity(generalSection.activity);
+      setQualityGoals(generalSection.qualityGoals);
+      setHasOrganizationalChart(generalSection.hasOrganizationalChart);
+      setHeadquartersAddress(generalSection.headquartersAddress);
+      setPhoneNumber(generalSection.phoneNumber);
+      setEmail(generalSection.email);
+      setSelectedOptionID(generalSection.hasOrganizationalChart ? '1' : '2');
+    }
+  }
+
   // Async Methods
   async function loadInfos() {
+    if (currentSurvey) {
+      await loadFromCurrentSurvey();
+    } else {
+      await loadFromCache();
+    }
+  }
+
+  async function loadFromCache() {
     try {
       const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedClientSurvey) {

@@ -26,6 +26,7 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
   const { navigation } = props;
   const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
   // States
   const [processusPilotName, setProcessusPilotName] = useState<string>('');
 
@@ -86,6 +87,22 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
   }
 
   async function loadInfos() {
+    if (currentSurvey) {
+      loadFromCurrentSurvey();
+    } else {
+      await loadFromCache();
+    }
+  }
+
+  async function loadFromCurrentSurvey() {
+    const surveyValue = JSON.parse(currentSurvey.value);
+    const processusPilotName = surveyValue?.survey?.prs?.measurementAndImprovements?.processusPilotName;
+    if (processusPilotName) {
+      setProcessusPilotName(processusPilotName);
+    }
+  }
+
+  async function loadFromCache() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       const processusPilotName = cachedSurvey?.survey?.prs?.measurementAndImprovements.processusPilotName;

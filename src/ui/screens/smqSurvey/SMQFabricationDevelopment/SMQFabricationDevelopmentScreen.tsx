@@ -26,6 +26,7 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
   const { navigation } = props;
   const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [productionFlux, setProductionFlux] = React.useState<string>('');
@@ -96,6 +97,26 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
   }
 
   async function loadInfos() {
+    if (currentSurvey) {
+      loadFromCurrentSurvey();
+    } else {
+      await loadFromCache();
+    }
+  }
+
+  async function loadFromCurrentSurvey() {
+    const surveyValue = JSON.parse(currentSurvey.value);
+    const fabricationDevelopment = surveyValue?.survey?.prs?.fabricationDevelopment;
+    if (fabricationDevelopment) {
+      setProcessusPilotName(fabricationDevelopment.processusPilotName);
+      setProductionFlux(fabricationDevelopment.productionFlux);
+      setProductIdentifications(fabricationDevelopment.productIdentifications);
+      setProductPreservation(fabricationDevelopment.productPreservation);
+      setProductTracking(fabricationDevelopment.productTracking);
+    }
+  }
+
+  async function loadFromCache() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       const fabricationDevelopment = cachedSurvey?.survey?.prs?.fabricationDevelopment;

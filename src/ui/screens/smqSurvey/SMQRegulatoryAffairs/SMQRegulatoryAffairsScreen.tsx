@@ -9,7 +9,8 @@ import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../../business-logic/services/CacheService';
 import SurveyService from '../../../../business-logic/services/SurveyService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
+import { resetCurrentSurvey } from '../../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../../business-logic/store/store';
 
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
@@ -22,14 +23,15 @@ import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 
-type SMQRegulatoryAffairsProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQRegulatoryAffairs>;
+type SMQRegulatoryAffairsProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQRegulatoryAffairsScreen>;
 
 function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Element {
 
   const { t } = useTranslation();
   const { navigation } = props;
   const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { smqScreenSource } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [safeguardMeasures, setSafeguardMeasures] = React.useState<string>('');
@@ -54,8 +56,14 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
 
   // Async Methods
   async function tappedContinue() {
+    let currentClientID: string;
+    if (currentSurvey) {
+      currentClientID = currentSurvey.client.id as string;
+    } else {
+      currentClientID = currentClient?.id as string;
+    }
     const clientSurvey = {
-      "currentClientID": currentClient?.id,
+      "currentClientID": currentClientID,
       "survey": {
         "prs": {
           "regulatoryAffairs": {
@@ -73,30 +81,47 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
       // Update management sub-section with new data
       existingClientSurvey.survey.prs.regulatoryAffairs = regulatoryAffairs;
       try {
-        const clientID = currentClient?.id as string;
+        const clientID = currentClientID as string;
         const apiSurvey: ISurveyInput = {
           value: JSON.stringify(existingClientSurvey),
           clientID
         };
         await SurveyService.getInstance().createSurvey(apiSurvey, null);
-        // await removeCachedSurvey();
-        navigation.navigate(NavigationRoutes.SystemQualityScreen);
       } catch (error) {
         console.log('Error saving survey', error);
       }
+      await removeCachedSurvey();
+      dispatch(resetCurrentSurvey());
+      navigation.navigate(NavigationRoutes.SystemQualityScreen);
     }
   }
 
   async function removeCachedSurvey() {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
-      navigation.navigate(NavigationRoutes.SystemQualityScreen);
     } catch (error) {
       console.log('Error caching client survey', error);
     }
   }
 
   async function loadInfos() {
+    if (currentSurvey) {
+      loadFromCurrentSurvey();
+    } else {
+      await loadFromCache();
+    }
+  }
+
+  async function loadFromCurrentSurvey() {
+    const surveyValue = JSON.parse(currentSurvey.value);
+    const regulatoryAffairs = surveyValue?.survey?.prs?.regulatoryAffairs;
+    if (regulatoryAffairs) {
+      setProcessusPilotName(regulatoryAffairs.processusPilotName);
+      setSafeguardMeasures(regulatoryAffairs.safeguardMeasures);
+    }
+  }
+
+  async function loadFromCache() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       const regulatoryAffairs = cachedSurvey?.survey?.prs?.regulatoryAffairs;
@@ -108,6 +133,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
       console.log('Error retrieving cached value', error);
     }
   }
+
 
   // Lifecycle Methods
   useEffect(() => {

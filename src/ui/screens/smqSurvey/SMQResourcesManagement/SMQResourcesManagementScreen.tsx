@@ -26,6 +26,7 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
   const { t } = useTranslation();
   const { navigation } = props;
   const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
 
@@ -84,6 +85,22 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
   }
 
   async function loadInfos() {
+    if (currentSurvey) {
+      loadFromCurrentSurvey();
+    } else {
+      await loadFromCache();
+    }
+  }
+
+  async function loadFromCurrentSurvey() {
+    const surveyValue = JSON.parse(currentSurvey.value);
+    const processusPilotName = surveyValue?.survey?.prs?.resourcesManagement.processusPilotName;
+    if (processusPilotName) {
+      setProcessusPilotName(processusPilotName);
+    }
+  }
+
+  async function loadFromCache() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       const processusPilotName = cachedSurvey?.survey?.prs?.resourcesManagement?.processusPilotName;

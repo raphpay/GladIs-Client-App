@@ -4,6 +4,8 @@ import { ScrollView } from 'react-native';
 
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import CacheService from '../../../../business-logic/services/CacheService';
+import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { RootState } from '../../../../business-logic/store/store';
 
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
@@ -30,8 +32,31 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     approversFunction, setApproversFunction,
   } = props;
   const { t } = useTranslation();
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
 
+  // Sync Methods
+  function loadFromCurrentSurvey() {
+    const surveyValue = JSON.parse(currentSurvey.value);
+    const generalSection = surveyValue?.survey.generalSection;
+    if (generalSection) {
+      setWebsite(generalSection.website);
+      setAuditorsName(generalSection.auditorsName);
+      setAuditorsFunction(generalSection.auditorsFunction);
+      setApproversName(generalSection.approversName);
+      setApproversFunction(generalSection.approversFunction);
+    }
+  }
+
+  // Async Methods
   async function loadInfos() {
+    if (currentSurvey) {
+      loadFromCurrentSurvey();
+    } else {
+      await loadFromCache();
+    }
+  }
+
+  async function loadFromCache() {
     try {
       const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       if (cachedClientSurvey) {
@@ -49,6 +74,7 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     }
   }
 
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadInfos();
@@ -56,6 +82,7 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     init();
   }, []);
 
+  // Components
   return (
     <ScrollView>
       <GladisTextInput

@@ -41,6 +41,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [orderDeliveryNote, setOrderDeliveryNote] = React.useState<string>('');
@@ -126,6 +127,24 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
   }
 
   async function loadInfos() {
+    if (currentSurvey) {
+      loadFromCurrentSurvey();
+    } else {
+      await loadFromCache();
+    }
+  }
+
+  async function loadFromCurrentSurvey() {
+    const surveyValue = JSON.parse(currentSurvey.value);
+    const clientRelation = surveyValue?.survey?.prs?.clientRelation;
+    if (clientRelation) {
+      setProcessusPilotName(clientRelation.processusPilotName);
+      setOrderDeliveryNote(clientRelation.orderDeliveryNote);
+      setProductsSold(clientRelation.productsSold);
+    }
+  }
+
+  async function loadFromCache() {
     try {
       const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
       const clientRelation = cachedSurvey?.survey?.prs?.clientRelation;
