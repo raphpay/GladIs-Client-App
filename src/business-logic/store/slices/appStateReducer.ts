@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import IModule from '../../model/IModule';
+import ISurvey from '../../model/ISurvey';
 
 export interface AppState {
   module: IModule | undefined,
@@ -9,6 +10,7 @@ export interface AppState {
   passwordResetTokenCount: number,
   smqScreenSource: string,
   smqSurveysListCount: number,
+  currentSurvey: ISurvey | undefined,
 }
 
 const initialState: AppState = {
@@ -19,6 +21,7 @@ const initialState: AppState = {
   passwordResetTokenCount: 0,
   smqScreenSource: '',
   smqSurveysListCount: 0,
+  currentSurvey: undefined,
 };
 
 export const appStateSlice = createSlice({
@@ -49,6 +52,12 @@ export const appStateSlice = createSlice({
     },
     setSMQSurveysListCount: (state, action: PayloadAction<number>) => {
       state.smqSurveysListCount = action.payload;
+    },
+    setCurrentSurvey: (state, action: PayloadAction<ISurvey>) => {
+      state.currentSurvey = action.payload;
+    },
+    resetCurrentSurvey: (state) => {
+      state.currentSurvey = undefined;
     }
   },
 });
@@ -61,7 +70,8 @@ export const {
   setDocumentListCount,
   setPasswordResetTokenCount,
   setSMQScreenSource,
-  setSMQSurveysListCount
+  setSMQSurveysListCount,
+  setCurrentSurvey, resetCurrentSurvey
 } = appStateSlice.actions;
 
 export default appStateSlice.reducer;

@@ -7,6 +7,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 
+import UserService from '../../../../business-logic/services/UserService';
 import ExpandingTextInput from '../../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
@@ -37,10 +38,50 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
   } = props;
 
   const { t } = useTranslation();
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
 
   // Async Methods
   async function loadInfos() {
+    if (currentSurvey) {
+      loadFromCurrentSurvey();
+    } else {
+      await loadFromAPI();
+    }
+  }
+
+  async function loadFromCurrentSurvey() {
+    try {
+      const clientID = currentSurvey?.client.id;
+      const client = await UserService.getInstance().getUserByID(clientID, token);
+      setCompanyName(client.companyName);
+    } catch (error) {
+      console.log('Error loading client by ID', error);
+    }
+
+    const surveyValue = JSON.parse(currentSurvey.value);
+    console.log('generalSection', currentSurvey?.client.id);
+    if (generalSection) {
+      if (generalSection.companyHistory) {
+        setCompanyHistory(generalSection.companyHistory);
+      }
+      if (generalSection.managerName) {
+        setManagerName(generalSection.managerName);
+      }
+      if (generalSection.medicalDevices) {
+        setMedicalDevices(generalSection.medicalDevices);
+      }
+      if (generalSection.clients) {
+        setClients(generalSection.clients);
+      }
+      if (generalSection.area) {
+        setArea(generalSection.area);
+      }
+    }
+  }
+
+  async function loadFromAPI() {
     if (currentClient) {
       setCompanyName(currentClient.companyName);
     }

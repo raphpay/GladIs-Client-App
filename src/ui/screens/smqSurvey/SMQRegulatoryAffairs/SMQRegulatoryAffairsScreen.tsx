@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
 import IAction from '../../../../business-logic/model/IAction';
+import { ISurveyInput } from '../../../../business-logic/model/ISurvey';
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../../business-logic/services/CacheService';
+import SurveyService from '../../../../business-logic/services/SurveyService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 
@@ -14,12 +16,10 @@ import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
+import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
-import { ISurveyInput } from '../../../../business-logic/model/ISurvey';
-import SurveyService from '../../../../business-logic/services/SurveyService';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
-import SurveyPageCounter from '../../../components/SurveyPageCounter';
 
 
 type SMQRegulatoryAffairsProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQRegulatoryAffairs>;
@@ -69,7 +69,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
     // Retrieve existing client survey data
     let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
     const regulatoryAffairs = clientSurvey.survey.prs.regulatoryAffairs;
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
+    if (regulatoryAffairs) {
       // Update management sub-section with new data
       existingClientSurvey.survey.prs.regulatoryAffairs = regulatoryAffairs;
       try {
@@ -77,9 +77,10 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
         const apiSurvey: ISurveyInput = {
           value: JSON.stringify(existingClientSurvey),
           clientID
-        }
+        };
         await SurveyService.getInstance().createSurvey(apiSurvey, null);
-        await removeCachedSurvey();
+        // await removeCachedSurvey();
+        navigation.navigate(NavigationRoutes.SystemQualityScreen);
       } catch (error) {
         console.log('Error saving survey', error);
       }
