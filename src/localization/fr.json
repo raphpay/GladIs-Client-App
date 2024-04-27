@@ -339,6 +339,14 @@
     },
     "toast": {
       "deleted": "Supprimé avec succès"
+    },
+    "dialog": {
+      "warning": {
+        "title": "Attention",
+        "description": "Le formulaire n'est pas complètement rempli. Êtes-vous sûr de vouloir continuer ?",
+        "confirm": "Oui",
+        "cancel": "Non"
+      }
     }
   },
   "components": {

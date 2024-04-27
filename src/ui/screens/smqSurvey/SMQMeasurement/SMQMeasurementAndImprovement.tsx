@@ -80,6 +80,7 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
+      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
       navigation.navigate(NavigationRoutes.SMQFabricationDevelopmentScreen);
     } catch (error) {
       console.log('Error caching client survey', error);
@@ -130,7 +131,6 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
           width={'100%'}
           title={t('smqSurvey.continue')}
           onPress={tappedContinue}
-          disabled={!isFormFilled()}
         />
       </View>
     );

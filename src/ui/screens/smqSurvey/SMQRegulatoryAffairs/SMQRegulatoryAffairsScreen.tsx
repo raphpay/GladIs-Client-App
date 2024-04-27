@@ -12,11 +12,11 @@ import SurveyService from '../../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { resetCurrentSurvey } from '../../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../../business-logic/store/store';
-
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
+import Dialog from '../../../components/Dialogs/Dialog';
 import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
@@ -35,6 +35,8 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [safeguardMeasures, setSafeguardMeasures] = React.useState<string>('');
+  // Dialog
+  const [showWarningDialog, setShowWarningDialog] = React.useState<boolean>(false);
 
   const navigationHistoryItems: IAction[] = [
     {
@@ -56,6 +58,16 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
 
   // Async Methods
   async function tappedContinue() {
+    const clientSurvey = await buildClientSurvey();
+    const isFormFilledCached = await CacheService.getInstance().retrieveValue(CacheKeys.isSMQFormFilled);
+    if (isFormFilled() && isFormFilledCached) {
+      await sendClientSurvey(clientSurvey, currentClient?.id as string);
+    } else {
+      setShowWarningDialog(true);
+    }
+  }
+
+  async function buildClientSurvey(): Promise<any> {
     let currentClientID: string;
     if (currentSurvey) {
       currentClientID = currentSurvey.client.id as string;
@@ -80,20 +92,29 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
     if (regulatoryAffairs) {
       // Update management sub-section with new data
       existingClientSurvey.survey.prs.regulatoryAffairs = regulatoryAffairs;
-      try {
-        const clientID = currentClientID as string;
-        const apiSurvey: ISurveyInput = {
-          value: JSON.stringify(existingClientSurvey),
-          clientID
-        };
-        await SurveyService.getInstance().createSurvey(apiSurvey, null);
-      } catch (error) {
-        console.log('Error saving survey', error);
-      }
-      await removeCachedSurvey();
-      dispatch(resetCurrentSurvey());
-      navigation.navigate(NavigationRoutes.SystemQualityScreen);
     }
+    return existingClientSurvey;
+  }
+
+  async function sendClientSurvey(clientSurvey: any, clientID: string) {
+    try {
+      const apiSurvey: ISurveyInput = {
+        value: JSON.stringify(clientSurvey),
+        clientID
+      };
+      await SurveyService.getInstance().createSurvey(apiSurvey, null);
+    } catch (error) {
+      console.log('Error saving survey', error);
+    }
+    await removeCachedSurvey();
+    dispatch(resetCurrentSurvey());
+    setShowWarningDialog(false);
+    navigation.navigate(NavigationRoutes.SystemQualityScreen);
+  }
+
+  async function sendWithoutFilledForm() {
+    const clientSurvey = await buildClientSurvey();
+    await sendClientSurvey(clientSurvey, currentClient?.id as string);
   }
 
   async function removeCachedSurvey() {
@@ -151,7 +172,6 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
           width={'100%'}
           title={t('smqSurvey.finish')}
           onPress={tappedContinue}
-          disabled={!isFormFilled()}
         />
       </View>
     );
@@ -166,31 +186,49 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
     );
   }
 
+  function WarningDialogContent() {
+    return (
+      <Dialog
+        title={t('smqSurvey.dialog.warning.title')}
+        description={t('smqSurvey.dialog.warning.description')}
+        confirmTitle={t('smqSurvey.dialog.warning.confirm')}
+        cancelTitle={t('smqSurvey.dialog.warning.cancel')}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
+        onConfirm={() => sendWithoutFilledForm()}
+        onCancel={() => setShowWarningDialog(false)}
+      />
+    );
+  }
+
   return (
-    <AppContainer
-      mainTitle={t('smqSurvey.prs.regulatoryAffairs.title')}
-      showSearchText={false}
-      showSettings={false}
-      showBackButton={true}
-      navigateBack={navigateBack}
-      navigationHistoryItems={navigationHistoryItems}
-      additionalComponent={AdditionnalComponent()}
-    >
-      <ScrollView>
-        <GladisTextInput
-          value={processusPilotName}
-          onValueChange={setProcessusPilotName}
-          placeholder={t('smqSurvey.prs.management.processusPilotName')}
-          showTitle={true}
-        />
-        <GladisTextInput
-          value={safeguardMeasures}
-          onValueChange={setSafeguardMeasures}
-          placeholder={t('smqSurvey.prs.regulatoryAffairs.safeguardMeasures')}
-          showTitle={true}
-        />
-      </ScrollView>
-    </AppContainer>
+    <>
+      <AppContainer
+        mainTitle={t('smqSurvey.prs.regulatoryAffairs.title')}
+        showSearchText={false}
+        showSettings={false}
+        showBackButton={true}
+        navigateBack={navigateBack}
+        navigationHistoryItems={navigationHistoryItems}
+        additionalComponent={AdditionnalComponent()}
+      >
+        <ScrollView>
+          <GladisTextInput
+            value={processusPilotName}
+            onValueChange={setProcessusPilotName}
+            placeholder={t('smqSurvey.prs.management.processusPilotName')}
+            showTitle={true}
+          />
+          <GladisTextInput
+            value={safeguardMeasures}
+            onValueChange={setSafeguardMeasures}
+            placeholder={t('smqSurvey.prs.regulatoryAffairs.safeguardMeasures')}
+            showTitle={true}
+          />
+        </ScrollView>
+      </AppContainer>
+      {showWarningDialog && WarningDialogContent()}
+    </>
   );
 }
 

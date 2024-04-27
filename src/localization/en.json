@@ -339,6 +339,14 @@
     },
     "toast": {
       "deleted": "Survey successfully deleted"
+    },
+    "dialog": {
+      "warning": {
+        "title": "Warning",
+        "description": "The form is not completely filled. Are you sure you want to continue?",
+        "confirm": "Yes",
+        "cancel": "No"
+      }
     }
   },
   "components": {

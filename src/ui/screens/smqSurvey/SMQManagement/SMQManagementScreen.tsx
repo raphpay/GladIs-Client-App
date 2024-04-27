@@ -86,6 +86,7 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
+      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
       navigation.navigate(NavigationRoutes.SMQMeasurementAndImprovement);
     } catch (error) {
       console.log('Error caching client survey', error);
@@ -138,7 +139,6 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
           width={'100%'}
           title={t('smqSurvey.continue')}
           onPress={tappedContinue}
-          disabled={!isFormFilled()}
         />
       </View>
     );

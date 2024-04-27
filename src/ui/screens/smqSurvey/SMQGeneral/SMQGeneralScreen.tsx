@@ -264,6 +264,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
+      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
       if (stepNumber === 3) {
         navigation.navigate(NavigationRoutes.SMQManagementScreen);
       } else {
@@ -342,7 +343,6 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
           width={'100%'}
           title={t('smqSurvey.continue')}
           onPress={tappedContinue}
-          disabled={!isFormFilled()}
         />
       </View>
     )

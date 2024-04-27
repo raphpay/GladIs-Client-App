@@ -90,6 +90,7 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
+      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
       navigation.navigate(NavigationRoutes.SMQClientRelationScreen);
     } catch (error) {
       console.log('Error caching client survey', error);
@@ -148,7 +149,6 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
           width={'100%'}
           title={t('smqSurvey.continue')}
           onPress={tappedContinue}
-          disabled={!isFormFilled()}
         />
       </View>
     );

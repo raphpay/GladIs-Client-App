@@ -78,6 +78,7 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
+      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
       navigation.navigate(NavigationRoutes.SMQResourcesManagementScreen);
     } catch (error) {
       console.log('Error caching client survey', error);
@@ -128,7 +129,6 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
           width={'100%'}
           title={t('smqSurvey.continue')}
           onPress={tappedContinue}
-          disabled={!isFormFilled()}
         />
       </View>
     );
