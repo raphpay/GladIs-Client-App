@@ -102,7 +102,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
       cachedSurvey = clientSurvey;
     }
 
-    return existingClientSurvey;
+    return cachedSurvey;
   }
 
   async function sendClientSurvey(clientSurvey: any, clientID: string) {
