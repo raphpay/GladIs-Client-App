@@ -102,7 +102,7 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
 
   async function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const processusPilotName = surveyValue?.survey?.prs?.management?.processusPilotName;
+    const processusPilotName = surveyValue?.survey[19];
     if (processusPilotName) {
       setProcessusPilotName(processusPilotName);
     }

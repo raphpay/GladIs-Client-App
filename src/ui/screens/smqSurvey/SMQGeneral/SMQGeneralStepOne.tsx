@@ -61,13 +61,14 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     }
     
     const surveyValue = JSON.parse(currentSurvey.value);
-    const generalSection = surveyValue?.survey.generalSection;
-    if (generalSection) {
-      setCompanyHistory(generalSection.companyHistory);
-      setManagerName(generalSection.managerName);
-      setMedicalDevices(generalSection.medicalDevices);
-      setClients(generalSection.clients);
-      setArea(generalSection.area);
+    const survey = surveyValue?.survey;
+    console.log('s',survey[10] );
+    if (survey) {
+      setCompanyHistory(survey[2]);
+      setManagerName(survey[3]);
+      setMedicalDevices(survey[4]);
+      setClients(survey[5]);
+      setArea(survey[6]);
     }
   }
 

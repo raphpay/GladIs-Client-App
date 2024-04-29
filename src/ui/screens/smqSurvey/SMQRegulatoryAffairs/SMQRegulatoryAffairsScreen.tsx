@@ -30,7 +30,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   const { t } = useTranslation();
   const { navigation } = props;
   const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey, smqSurveysListCount } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey, smqScreenSource, smqSurveysListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
@@ -58,12 +58,16 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
 
   // Async Methods
   async function tappedContinue() {
-    const clientSurvey = await buildClientSurvey();
-    const isFormFilledCached = await CacheService.getInstance().retrieveValue(CacheKeys.isSMQFormFilled);
-    if (isFormFilled() && isFormFilledCached) {
-      await sendClientSurvey(clientSurvey, currentClient?.id as string);
+    if (smqScreenSource === NavigationRoutes.SurveysScreen) {
+      navigation.navigate(NavigationRoutes.SurveysScreen);
     } else {
-      setShowWarningDialog(true);
+      const clientSurvey = await buildClientSurvey();
+      const isFormFilledCached = await CacheService.getInstance().retrieveValue(CacheKeys.isSMQFormFilled);
+      if (isFormFilled() && isFormFilledCached) {
+        await sendClientSurvey(clientSurvey, currentClient?.id as string);
+      } else {
+        setShowWarningDialog(true);
+      }
     }
   }
 
@@ -145,10 +149,10 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
 
   async function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const regulatoryAffairs = surveyValue?.survey?.prs?.regulatoryAffairs;
+    const regulatoryAffairs = surveyValue?.survey;
     if (regulatoryAffairs) {
-      setProcessusPilotName(regulatoryAffairs.processusPilotName);
-      setSafeguardMeasures(regulatoryAffairs.safeguardMeasures);
+      setProcessusPilotName(regulatoryAffairs[31]);
+      setSafeguardMeasures(regulatoryAffairs[32]);
     }
   }
 

@@ -100,7 +100,7 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
 
   async function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const processusPilotName = surveyValue?.survey?.prs?.measurementAndImprovements?.processusPilotName;
+    const processusPilotName = surveyValue?.survey[20];
     if (processusPilotName) {
       setProcessusPilotName(processusPilotName);
     }

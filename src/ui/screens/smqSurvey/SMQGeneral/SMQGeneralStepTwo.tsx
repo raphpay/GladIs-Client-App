@@ -77,22 +77,22 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
 
   function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const generalSection = surveyValue?.survey.generalSection;
-    if (generalSection) {
-      setActivity(generalSection.activity);
-      setQualityGoals(generalSection.qualityGoals);
-      setHasOrganizationalChart(generalSection.hasOrganizationalChart);
-      setHeadquartersAddress(generalSection.headquartersAddress);
-      setPhoneNumber(generalSection.phoneNumber);
-      setEmail(generalSection.email);
-      setSelectedOptionID(generalSection.hasOrganizationalChart ? '1' : '2');
+    const survey = surveyValue?.survey;
+    if (survey) {
+      setActivity(survey[8]);
+      setQualityGoals(survey[9]);
+      setHasOrganizationalChart(survey[10]);
+      setHeadquartersAddress(survey[11]);
+      setPhoneNumber(survey[12]);
+      setEmail(survey[13]);
+      setSelectedOptionID(survey.hasOrganizationalChart ? '1' : '2');
     }
   }
 
   // Async Methods
   async function loadInfos() {
     if (currentSurvey) {
-      await loadFromCurrentSurvey();
+      loadFromCurrentSurvey();
     } else {
       await loadFromCache();
     }

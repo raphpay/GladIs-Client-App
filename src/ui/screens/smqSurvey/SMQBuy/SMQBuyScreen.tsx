@@ -98,7 +98,7 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
 
   async function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const processusPilotName = surveyValue?.survey?.prs?.buy.processusPilotName;
+    const processusPilotName = surveyValue?.survey[29];
     if (processusPilotName) {
       setProcessusPilotName(processusPilotName);
     }

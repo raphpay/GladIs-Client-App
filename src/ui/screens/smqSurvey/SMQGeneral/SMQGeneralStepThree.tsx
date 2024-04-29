@@ -37,13 +37,13 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
   // Sync Methods
   function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const generalSection = surveyValue?.survey.generalSection;
-    if (generalSection) {
-      setWebsite(generalSection.website);
-      setAuditorsName(generalSection.auditorsName);
-      setAuditorsFunction(generalSection.auditorsFunction);
-      setApproversName(generalSection.approversName);
-      setApproversFunction(generalSection.approversFunction);
+    const survey = surveyValue?.survey;
+    if (survey) {
+      setWebsite(survey[14]);
+      setAuditorsName(survey[15]);
+      setAuditorsFunction(survey[16]);
+      setApproversName(survey[17]);
+      setApproversFunction(survey[18]);
     }
   }
 

@@ -140,11 +140,12 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
 
   async function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const clientRelation = surveyValue?.survey?.prs?.clientRelation;
+    const clientRelation = surveyValue?.survey;
     if (clientRelation) {
-      setProcessusPilotName(clientRelation.processusPilotName);
-      setOrderDeliveryNote(clientRelation.orderDeliveryNote);
-      setProductsSold(clientRelation.productsSold);
+      // TODO: Handle files
+      setProcessusPilotName(clientRelation[26]);
+      setOrderDeliveryNote(clientRelation[27]);
+      setProductsSold(clientRelation[28]);
     }
   }
 

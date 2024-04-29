@@ -110,13 +110,13 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
 
   async function loadFromCurrentSurvey() {
     const surveyValue = JSON.parse(currentSurvey.value);
-    const fabricationDevelopment = surveyValue?.survey?.prs?.fabricationDevelopment;
+    const fabricationDevelopment = surveyValue?.survey;
     if (fabricationDevelopment) {
-      setProcessusPilotName(fabricationDevelopment.processusPilotName);
-      setProductionFlux(fabricationDevelopment.productionFlux);
-      setProductIdentifications(fabricationDevelopment.productIdentifications);
-      setProductPreservation(fabricationDevelopment.productPreservation);
-      setProductTracking(fabricationDevelopment.productTracking);
+      setProcessusPilotName(fabricationDevelopment[21]);
+      setProductionFlux(fabricationDevelopment[22]);
+      setProductIdentifications(fabricationDevelopment[23]);
+      setProductPreservation(fabricationDevelopment[24]);
+      setProductTracking(fabricationDevelopment[25]);
     }
   }
 
