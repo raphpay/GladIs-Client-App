@@ -50,7 +50,8 @@
         "title": "Actions",
         "passwordsToReset": "Passwords to reset",
         "messages": "Messages",
-        "events": "Events"
+        "events": "Events",
+        "surveys": "SMQ Surveys",
       },
       "modules": "Modules",
       "clients": "Clients"
@@ -85,6 +86,9 @@
     "noItems": {
       "title": "No sub items for now",
       "message": "Please try again later"
+    },
+    "createSMQDoc": {
+      "button": "Generate the SMQ documentation"
     }
   },
   "technicalDocumentation": {
@@ -255,6 +259,96 @@
       "cancelButton": "Yes"
     },
     "searchTextPlaceholder": "Search for a message"
+  },
+  "smqSurvey": {
+    "continue": "Continue",
+    "finish": "Finish",
+    "generalInfo": {
+      "title": "General Information",
+      "stepOne": {
+        "companyHistory": "What is the history of your company? ( activity, creation date, etc...)",
+        "managerName": "Manager first name and last name",
+        "medicalDevices": "What are the medical devices you are manufacturing?",
+        "clients": "Who are your principal clients?",
+        "area": "In which area are you would you want to sell your products?"
+      },
+      "stepTwo": {
+        "activity": "What's your company activity ? (manufacturer, distributor, subcontractor, ...)",
+        "headquartersAddress": "What is the address of your head office?",
+        "phoneNumber": " Contact telephone number(s)",
+        "email": "Contact email address(es)",
+        "selectOrgOption": "Do you have an organizational chart?",
+        "qualityGoals": "What are your objectives in terms of product quality?",
+        "option": {
+          "yes": "Yes",
+          "no": "No"
+        },
+        "uploadOrgChart": "Select a file",
+        "selectPngFile": "Select a PNG file",
+        "selectPdfFile": "Select a PDF file",
+        "uploadSuccess": "File successfully uploaded",
+      },
+      "stepThree": {
+        "website": "Do you have a website?",
+        "auditorsName": "First name and last name of the quality document's auditor in you company",
+        "auditorsFunction": "Function of the quality document's auditor in your company",
+        "approversName": "First name and last name of the quality document's approver in your company",
+        "approversFunction": "Function of the quality document's approver in your company"
+      }
+    },
+    "prs": {
+      "management": {
+        "title": "PRS_M01_Management",
+        "processusPilotName": "First name and last name of the process's pilot",
+      },
+      "measurement": {
+        "title": "PRS_M02_Measurement_and_Improvements"
+      },
+      "fabricationDevelopment": {
+        "title": "PRS_R01_Fabrication_Development",
+        "productionFlux": "What are the production flows for your products?",
+        "productIdentifications": "How do you identify your products?",
+        "productPreservation": "How do you preserve your products during the manufacturing?",
+        "productTracking": "How do you track your products?"
+      },
+      "clientRelation": {
+        "title": "PRS_R02_Client_Relation",
+        "processusPilotName": "First name and last name of the process's pilot",
+        "orderDeliveryNote": "Please provide us with your order or delivery note",
+        "orderDeliveryNoteButton": "Select a file",
+        "productsSold": "Merci de nous faire parvenir une liste de vos produits vendus",
+      },
+      "buy": {
+        "title": "PRS_R03_Buy",
+        "processusPilotName": "First name and last name of the process's pilot",
+      },
+      "resourcesManagement": {
+        "title": "PRS_S01_Resources_Management",
+        "processusPilotName": "First name and last name of the process's pilot"
+      },
+      "regulatoryAffairs": {
+        "title": "PRS_S02_Regulatory_Affairs",
+        "processusPilotName": "First name and last name of the process's pilot",
+        "safeguardMeasures": "What are the safeguard measures you have in place?"
+      }
+    },
+    "tooltip": {
+      "open": "Open",
+      "export": "Export to CSV",
+      "delete": "Delete"
+    },
+    "toast": {
+      "deleted": "Survey successfully deleted",
+      "csvCopied": "CSV copied to clipboard"
+    },
+    "dialog": {
+      "warning": {
+        "title": "Warning",
+        "description": "The form is not completely filled. Are you sure you want to continue?",
+        "confirm": "Yes",
+        "cancel": "No"
+      }
+    }
   },
   "components": {
     "searchTextInput": {
@@ -434,7 +528,8 @@
         "pendingUser": "Pending user not found",
         "module": "Module not found",
         "event": "Event not found",
-        "document": "Document not found"
+        "document": "Document not found",
+        "survey": "SMQ survey not found",
       },
       "forbidden": {
         "userShouldBeAdmin": "User should be an admin to access this route",

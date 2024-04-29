@@ -3,3 +3,9 @@ export default interface IModule {
   name: string;
   index: number;
 }
+
+export interface ICheckBoxOption {
+  id: string;
+  name: string;
+  value: boolean;
+}

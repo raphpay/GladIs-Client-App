@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import IModule from '../../model/IModule';
+import ISurvey from '../../model/ISurvey';
 
 export interface AppState {
   module: IModule | undefined,
@@ -7,6 +8,9 @@ export interface AppState {
   clientListCount: number,
   documentListCount: number,
   passwordResetTokenCount: number,
+  smqScreenSource: string,
+  smqSurveysListCount: number,
+  currentSurvey: ISurvey | undefined,
 }
 
 const initialState: AppState = {
@@ -15,6 +19,9 @@ const initialState: AppState = {
   clientListCount: 0,
   documentListCount: 0,
   passwordResetTokenCount: 0,
+  smqScreenSource: '',
+  smqSurveysListCount: 0,
+  currentSurvey: undefined,
 };
 
 export const appStateSlice = createSlice({
@@ -40,6 +47,18 @@ export const appStateSlice = createSlice({
     setPasswordResetTokenCount: (state, action: PayloadAction<number>) => {
       state.passwordResetTokenCount = action.payload;
     },
+    setSMQScreenSource: (state, action: PayloadAction<string>) => {
+      state.smqScreenSource = action.payload;
+    },
+    setSMQSurveysListCount: (state, action: PayloadAction<number>) => {
+      state.smqSurveysListCount = action.payload;
+    },
+    setCurrentSurvey: (state, action: PayloadAction<ISurvey>) => {
+      state.currentSurvey = action.payload;
+    },
+    resetCurrentSurvey: (state) => {
+      state.currentSurvey = undefined;
+    }
   },
 });
 
@@ -49,7 +68,10 @@ export const {
   setPendingUserListCount,
   setClientListCount,
   setDocumentListCount,
-  setPasswordResetTokenCount
+  setPasswordResetTokenCount,
+  setSMQScreenSource,
+  setSMQSurveysListCount,
+  setCurrentSurvey, resetCurrentSurvey
 } = appStateSlice.actions;
 
 export default appStateSlice.reducer;

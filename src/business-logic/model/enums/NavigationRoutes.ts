@@ -32,6 +32,18 @@ enum NavigationRoutes {
   PasswordResetScreen = 'PasswordResetScreen',
   // Chat
   MessagesScreen = 'MessagesScreen',
+  // SMQ Survey
+  SMQSurveyStack = 'SMQSurveyStack',
+  SMQGeneralScreen = 'SMQGeneralScreen',
+  SMQManagementScreen = 'SMQManagementScreen',
+  SMQMeasurementAndImprovement = 'SMQMeasurementAndImprovement',
+  SMQFabricationDevelopmentScreen = 'SMQFabricationDevelopmentScreen',
+  SMQClientRelationScreen = 'SMQClientRelationScreen',
+  SMQBuyScreen = 'SMQBuyScreen',
+  SMQResourcesManagementScreen = 'SMQResourcesManagementScreen',
+  SMQRegulatoryAffairsScreen = 'SMQRegulatoryAffairsScreen',
+  // Surveys
+  SurveysScreen = 'SurveysScreen',
 }
 
 export default NavigationRoutes;

@@ -101,17 +101,6 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
           </View>
           {children}
         </View>
-        <View style={styles.backButtonContainer}>
-          <BackButton 
-            showBackButton={showBackButton}
-            navigateBack={navigateBack}
-          />
-          {additionalComponent && (
-            <View style={styles.additionalComponent}>
-              {additionalComponent}
-            </View>
-          )}
-        </View>
       </View>
     )
   }
@@ -129,6 +118,17 @@ function AppContainer(props: AppContainerProps): React.JSX.Element {
         />
         {ChildrenContent()}
         {showDialog && (dialog)}
+        <View style={styles.backButtonContainer}>
+          <BackButton 
+            showBackButton={showBackButton}
+            navigateBack={navigateBack}
+          />
+          {additionalComponent && (
+            <View style={styles.additionalComponent}>
+              {additionalComponent}
+            </View>
+          )}
+        </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

@@ -44,8 +44,19 @@ import SettingsScreen from '../ui/screens/settings/SettingsScreen';
 import RemindersScreen from '../ui/screens/reminders/RemindersScreen';
 // Password Reset
 import PasswordResetScreen from '../ui/screens/dashboard/PasswordResetScreen';
+// Survey
+import SurveysScreen from '../ui/screens/dashboard/SurveysScreen';
 // Chat
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
+// SMQ Survey
+import SMQBuyScreen from '../ui/screens/smqSurvey/SMQBuy/SMQBuyScreen';
+import SMQClientRelationScreen from '../ui/screens/smqSurvey/SMQClientRelation/SMQClientRelationScreen';
+import SMQFabricationDevelopmentScreen from '../ui/screens/smqSurvey/SMQFabricationDevelopment/SMQFabricationDevelopmentScreen';
+import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
+import SMQManagementScreen from '../ui/screens/smqSurvey/SMQManagement/SMQManagementScreen';
+import SMQMeasurementAndImprovement from '../ui/screens/smqSurvey/SMQMeasurement/SMQMeasurementAndImprovement';
+import SMQRegulatoryAffairsScreen from '../ui/screens/smqSurvey/SMQRegulatoryAffairs/SMQRegulatoryAffairsScreen';
+import SMQResourcesManagementScreen from '../ui/screens/smqSurvey/SMQResourcesManagement/SMQResourcesManagementScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -77,6 +88,8 @@ export type IRootStackParams = {
   PasswordResetScreen: undefined,
   // Chat
   MessagesScreen: undefined,
+  // SMQ Surveys
+  SurveysScreen: undefined,
 }
 
 export type IClientCreationStack = {
@@ -93,9 +106,21 @@ export type IClientManagementParams = {
   ClientModules: undefined,
 }
 
+export type ISMQSurveyParams = {
+  SMQGeneralScreen: undefined,
+  SMQManagementScreen: undefined,
+  SMQMeasurementAndImprovement: undefined,
+  SMQFabricationDevelopmentScreen: undefined
+  SMQClientRelationScreen: undefined,
+  SMQBuyScreen: undefined,
+  SMQResourcesManagementScreen: undefined,
+  SMQRegulatoryAffairsScreen: undefined,
+}
+
 let RootStack = createStackNavigator<IRootStackParams>();
 let ClientCreationStack = createStackNavigator<IClientCreationStack>();
 let ClientManagementStack = createStackNavigator<IClientManagementParams>();
+let SMQSurveyStack = createStackNavigator<ISMQSurveyParams>();
 
 function LoginStack() {
   return (
@@ -151,6 +176,54 @@ function ClientManagement() {
       />
     </ClientManagementStack.Navigator>
   );
+}
+
+function SMQSurvey() {
+  return (
+    <SMQSurveyStack.Navigator>
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQGeneralScreen}
+        component={SMQGeneralScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQManagementScreen}
+        component={SMQManagementScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQMeasurementAndImprovement}
+        component={SMQMeasurementAndImprovement}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQFabricationDevelopmentScreen}
+        component={SMQFabricationDevelopmentScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQClientRelationScreen}
+        component={SMQClientRelationScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQBuyScreen}
+        component={SMQBuyScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQResourcesManagementScreen}
+        component={SMQResourcesManagementScreen}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQRegulatoryAffairsScreen}
+        component={SMQRegulatoryAffairsScreen}
+        options={{headerShown: false}}
+      />
+    </SMQSurveyStack.Navigator>
+  );
+
 }
 
 function DashboardStack() {
@@ -226,6 +299,11 @@ function DashboardStack() {
         component={MessagesScreen}
         options={{headerShown: false}}
       />
+      <RootStack.Screen
+        name={NavigationRoutes.SurveysScreen}
+        component={SurveysScreen}
+        options={{headerShown: false}}
+      />
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationStack}
         component={ClientCreation}
@@ -234,6 +312,11 @@ function DashboardStack() {
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientManagementStack}
         component={ClientManagement}
+        options={{headerShown: false}}
+      />
+      <SMQSurveyStack.Screen
+        name={NavigationRoutes.SMQSurveyStack}
+        component={SMQSurvey}
         options={{headerShown: false}}
       />
     </>

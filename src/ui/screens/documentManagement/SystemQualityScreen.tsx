@@ -12,14 +12,18 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setDocumentListCount, setSMQScreenSource } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid/Grid';
 
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
+import UserType from '../../../business-logic/model/enums/UserType';
+import CacheService from '../../../business-logic/services/CacheService';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
+import IconButton from '../../components/Buttons/IconButton';
 
 interface ISystemQualityItem {
   id: string,
@@ -32,12 +36,13 @@ type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, Navigat
 function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
+  const plusIcon = require('../../assets/images/plus.png');
   
   const { t } = useTranslation();
   
   const { navigation } = props;
 
-  const { isAdmin } = useAppSelector((state: RootState) => state.users);
+  const { isAdmin, currentUser } = useAppSelector((state: RootState) => state.users);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
@@ -120,6 +125,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
+  async function navigateToSMQGeneral() {
+    dispatch(setSMQScreenSource(t('systemQuality.title')));
+    await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
+    navigation.navigate(NavigationRoutes.SMQSurveyStack);
+  }
+
   // Components
   function SystemQualityGridItem(item: ISystemQualityItem) {
     return (
@@ -129,6 +140,22 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         </View>
       </TouchableOpacity>
     )
+  }
+
+  function CreateSMQDocButton() {
+    return (
+      <>
+        {
+          currentUser?.userType !== UserType.Employee && (
+            <IconButton 
+              title={t('systemQuality.createSMQDoc.button')}
+              onPress={navigateToSMQGeneral}
+              icon={plusIcon}
+            />
+          )
+        }
+      </>
+    );
   }
 
   return (
@@ -141,6 +168,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       showSearchText={true}
       showSettings={true}
       navigateBack={navigateBack}
+      adminButton={CreateSMQDocButton()}
     >
       {
         systemQualityItemsFiltered && systemQualityItemsFiltered.length === 0 ? (

@@ -14,8 +14,8 @@ import { IClientManagementParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import IconButton from '../../components/Buttons/IconButton';
+import ModuleCheckBox from '../../components/CheckBox/ModuleCheckBox';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import ModuleCheckBox from '../../components/ModuleCheckBox';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/settings/ClientModulesStyles';

@@ -7,10 +7,11 @@ import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import MessageService from '../../../business-logic/services/MessageService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
+import SurveyService from '../../../business-logic/services/SurveyService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
-
 
 import styles from '../../assets/styles/components/DashboardAdminGridStyles';
 import ActionSection from './Action/ActionSection';
@@ -27,6 +28,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   const [clients, setClients] = useState<IUser[]>([]);
   const [passwordResetAction, setPasswordResetAction] = useState<IActionItem>();
   const [messagesAction, setMessagesAction] = useState<IActionItem>();
+  const [surveysAction, setSurveysAction] = useState<IActionItem>();
 
   const clientsFiltered = clients.filter(client =>
     client.username?.toLowerCase().includes(searchText?.toLowerCase()),
@@ -34,7 +36,12 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
-  const { clientListCount, passwordResetTokenCount } = useAppSelector((state: RootState) => state.appState);
+  const {
+    clientListCount,
+    passwordResetTokenCount,
+    smqSurveysListCount,
+  } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
 
   const { t } = useTranslation();
 
@@ -51,6 +58,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   async function loadActions() {
     await loadPasswordReset();
     await loadChatMessages();
+    await loadSurveys();
   }
 
   async function loadPasswordReset() {
@@ -93,6 +101,26 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     }
   }
 
+  async function loadSurveys() {
+    try {
+      const surveys = await SurveyService.getInstance().getAll(token);
+      if (surveys.length === 0) {
+        setSurveysAction(undefined);
+      } else {
+        const surveyAction: IActionItem = {
+          id: '3',
+          number: surveys.length,
+          name: t('dashboard.sections.actions.surveys'),
+          screenDestination: NavigationRoutes.SurveysScreen,
+        }
+        setSurveysAction(surveyAction);
+        dispatch(setSMQSurveysListCount(surveys.length));
+      }
+    } catch (error) {
+      console.log('Error loading surveys', error );
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
@@ -116,12 +144,20 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
     init();
   }, [passwordResetTokenCount]);
 
+  useEffect(() => {
+    async function init() {
+      await loadSurveys();
+    }
+    init();
+  }, [smqSurveysListCount]);
+
   // Components
   return (
     <ScrollView style={styles.container}>
       <ActionSection
         passwordResetAction={passwordResetAction}
         messagesAction={messagesAction}
+        surveysAction={surveysAction}
       />
       <ModuleSection />
       <ClientSection clientsFiltered={clientsFiltered}/>
