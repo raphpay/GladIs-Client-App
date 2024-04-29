@@ -19,7 +19,9 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid/Grid';
 
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import UserType from '../../../business-logic/model/enums/UserType';
+import CacheService from '../../../business-logic/services/CacheService';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 import IconButton from '../../components/Buttons/IconButton';
 
@@ -123,8 +125,9 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
-  function navigateToSMQGeneral() {
+  async function navigateToSMQGeneral() {
     dispatch(setSMQScreenSource(t('systemQuality.title')));
+    await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 

@@ -91,27 +91,30 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     const clientSurvey = {
       "currentClientID": currentClient?.id,
       "survey": {
-        "prs": {
-          "clientRelation": {
-            processusPilotName,
-            orderDeliveryNote,
-            productsSold,
-            orderDeliveryNoteID: selectedOrderID,
-            productsSoldID: selectedProductsID,
-          }
-        }
+        "26": processusPilotName,
+        "27": orderDeliveryNote,
+        "28": productsSold,
+        orderDeliveryNoteID: selectedOrderID,
+        productsSoldID: selectedProductsID,
       }
     };
-  
+
     // Retrieve existing client survey data
-    let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    const clientRelation = clientSurvey.survey.prs.clientRelation;
-    if (clientRelation) {
-      // Update management sub-section with new data
-      existingClientSurvey.survey.prs.clientRelation = clientRelation;
-      await saveClientSurvey(existingClientSurvey);
+    let cachedSurvey: any;
+    try {
+      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    } catch (error) {
+      console.log('Error retrieving cached survey', error);
+    }
+
+    if (cachedSurvey.survey) {
+      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
+      const survey = {
+        "currentClientID": currentClient?.id,
+        "survey": concatenetedJSON,
+      };
+      await saveClientSurvey(survey);
     } else {
-      // No existing client survey data, save the new client survey data
       await saveClientSurvey(clientSurvey);
     }
   }

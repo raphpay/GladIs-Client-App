@@ -61,27 +61,30 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
     const clientSurvey = {
       "currentClientID": currentClient?.id,
       "survey": {
-        "prs": {
-          "fabricationDevelopment": {
-            processusPilotName,
-            productionFlux,
-            productIdentifications,
-            productPreservation,
-            productTracking
-          }
-        }
+        "21": processusPilotName,
+        "22": productionFlux,
+        "23": productIdentifications,
+        "24": productPreservation,
+        "25": productTracking
       }
     };
-  
+
     // Retrieve existing client survey data
-    let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    const fabricationDevelopment = clientSurvey.survey.prs.fabricationDevelopment;
-    if (fabricationDevelopment) {
-      // Update management sub-section with new data
-      existingClientSurvey.survey.prs.fabricationDevelopment = fabricationDevelopment;
-      await saveClientSurvey(existingClientSurvey);
+    let cachedSurvey: any;
+    try {
+      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    } catch (error) {
+      console.log('Error retrieving cached survey', error);
+    }
+
+    if (cachedSurvey.survey) {
+      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
+      const survey = {
+        "currentClientID": currentClient?.id,
+        "survey": concatenetedJSON,
+      };
+      await saveClientSurvey(survey);
     } else {
-      // No existing client survey data, save the new client survey data
       await saveClientSurvey(clientSurvey);
     }
   }

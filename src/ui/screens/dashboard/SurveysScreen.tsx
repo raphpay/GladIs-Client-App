@@ -7,7 +7,7 @@ import ISurvey from '../../../business-logic/model/ISurvey';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import SurveyService from '../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setCurrentSurvey, setSMQScreenSource, setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import { IRootStackParams } from '../../../navigation/Routes';
@@ -59,10 +59,12 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   }
 
   function navigateToSurvey(survey: ISurvey) {
-    dispatch(setCurrentSurvey(survey));
-    dispatch(setSMQScreenSource(t('dashboard.sections.actions.surveys')));
-    setShowActionDialog(false);
-    navigation.navigate(NavigationRoutes.SMQSurveyStack);
+    const value = JSON.parse(survey.value);
+    console.log('json', value );
+    // dispatch(setCurrentSurvey(survey));
+    // dispatch(setSMQScreenSource(t('dashboard.sections.actions.surveys')));
+    // setShowActionDialog(false);
+    // navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 
   function openActionDialog(survey: ISurvey) {

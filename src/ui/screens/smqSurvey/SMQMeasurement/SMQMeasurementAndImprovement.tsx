@@ -55,23 +55,26 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
     const clientSurvey = {
       "currentClientID": currentClient?.id,
       "survey": {
-        "prs": {
-          "measurementAndImprovements": {
-            processusPilotName
-          }
-        }
+        "20": processusPilotName
       }
     };
   
     // Retrieve existing client survey data
-    let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    const measurementAndImprovements = clientSurvey.survey.prs.measurementAndImprovements;
-    if (measurementAndImprovements) {
-      // Update management sub-section with new data
-      existingClientSurvey.survey.prs.measurementAndImprovements = measurementAndImprovements;
-      await saveClientSurvey(existingClientSurvey);
+    let cachedSurvey: any;
+    try {
+      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    } catch (error) {
+      console.log('Error retrieving cached survey', error);
+    }
+    
+    if (cachedSurvey.survey) {
+      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
+      const survey = {
+        "currentClientID": currentClient?.id,
+        "survey": concatenetedJSON,
+      };
+      await saveClientSurvey(survey);
     } else {
-      // No existing client survey data, save the new client survey data
       await saveClientSurvey(clientSurvey);
     }
   }

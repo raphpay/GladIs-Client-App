@@ -56,28 +56,27 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
     const clientSurvey = {
       "currentClientID": currentClient?.id,
       "survey": {
-        "prs": {
-          "management": {
-            processusPilotName
-          }
-        }
+        "19": processusPilotName
       }
     };
-  
-    // Retrieve existing client survey data
-    let existingClientSurvey: any;
+
+    let cachedSurvey: any;
+
     try {
-      existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
     } catch (error) {
-      console.log('Error retrieving client survey', error);
+      console.log('Error retrieving cached survey', error);
     }
 
-    const managementObject = existingClientSurvey?.survey?.prs?.management;
-    if (managementObject) {
-      existingClientSurvey.survey.prs.management = managementObject;
-      await saveClientSurvey(existingClientSurvey);
+
+    if (cachedSurvey.survey) {
+      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
+      const survey = {
+        "currentClientID": currentClient?.id,
+        "survey": concatenetedJSON,
+      };
+      await saveClientSurvey(survey);
     } else {
-      // No existing client survey data, save the new client survey data
       await saveClientSurvey(clientSurvey);
     }
   }

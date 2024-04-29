@@ -174,90 +174,64 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     const clientSurvey = {
       "currentClientID": currentClient?.id,
       "survey": {
-        "generalSection": {
-          companyName,
-          companyHistory,
-          managerName,
-          medicalDevices,
-          clients,
-          area
-        }
+        "2": companyName,
+        "3": companyHistory,
+        "4": managerName,
+        "5": medicalDevices,
+        "6": clients,
+        "7": area
       }
     };
-  
-    // Retrieve existing client survey data
-    let existingClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    if (existingClientSurvey && typeof existingClientSurvey === 'object') {
-      // Update only the fields that are different from stepOneData
-      const updatedGeneralSection = { ...existingClientSurvey.survey.generalSection };
-  
-      for (const key in clientSurvey.survey.generalSection) {
-        if (clientSurvey.survey.generalSection.hasOwnProperty(key) && clientSurvey.survey.generalSection[key] !== updatedGeneralSection[key]) {
-          updatedGeneralSection[key] = clientSurvey.survey.generalSection[key];
-        }
-      }
-  
-      // Update existing client survey data
-      existingClientSurvey.survey.generalSection = updatedGeneralSection;
-      await saveClientSurvey(existingClientSurvey);
-    } else {
-      // No existing client survey data, save the new client survey data
-      await saveClientSurvey(clientSurvey);
-    }
+
+    console.log('step 1', clientSurvey );
+
+    await saveClientSurvey(clientSurvey);
   }
 
   async function continueGeneralProcessStepTwo() {
     let clientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
     const stepTwoData = {
-      activity,
-      qualityGoals,
-      hasOrganizationalChart,
-      headquartersAddress,
-      phoneNumber,
-      email,
+      "8": activity,
+      "9": qualityGoals,
+      "10": hasOrganizationalChart,
+      "11": headquartersAddress,
+      "12": phoneNumber,
+      "13": email,
       organizationalChartID: fileID
     };
   
     // Update only the fields that are different from stepTwoData
-    if (clientSurvey && typeof clientSurvey === 'object') {
-      const updatedGeneralSection = { ...clientSurvey.survey.generalSection };
+    const concatenetedJSON = Object.assign(clientSurvey.survey, stepTwoData);
+    const survey = {
+      "currentClientID": currentClient?.id,
+      "survey": concatenetedJSON,
+    };
   
-      for (const key in stepTwoData) {
-        if (stepTwoData.hasOwnProperty(key) && stepTwoData[key] !== updatedGeneralSection[key]) {
-          updatedGeneralSection[key] = stepTwoData[key];
-        }
-      }
-  
-      clientSurvey.survey.generalSection = updatedGeneralSection;
-    }
-  
-    await saveClientSurvey(clientSurvey);
+    console.log('step2', clientSurvey );
+
+    await saveClientSurvey(survey);
   }
 
   async function continueGeneralProcessStepThree() {
     let clientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
     const stepThreeData = {
-      website,
-      auditorsName,
-      auditorsFunction,
-      approversName,
-      approversFunction,
+      "14": website,
+      "15": auditorsName,
+      "16": auditorsFunction,
+      "17": approversName,
+      "18": approversFunction,
     };
 
     // Update only the fields that are different from stepThreeData
-    if (clientSurvey && typeof clientSurvey === 'object') {
-      const updatedGeneralSection = { ...clientSurvey.survey.generalSection };
+    const concatenetedJSON = Object.assign(clientSurvey.survey, stepThreeData);
+    const survey = {
+      "currentClientID": currentClient?.id,
+      "survey": concatenetedJSON,
+    };
 
-      for (const key in stepThreeData) {
-        if (stepThreeData.hasOwnProperty(key) && stepThreeData[key] !== updatedGeneralSection[key]) {
-          updatedGeneralSection[key] = stepThreeData[key];
-        }
-      }
+    console.log('step 3', clientSurvey );
 
-      clientSurvey.survey.generalSection = updatedGeneralSection;
-    }
-
-    await saveClientSurvey(clientSurvey);
+    await saveClientSurvey(survey);
   }
 
   async function saveClientSurvey(clientSurvey: any) {
