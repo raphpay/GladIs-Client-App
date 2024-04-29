@@ -338,7 +338,8 @@
       "delete": "Delete"
     },
     "toast": {
-      "deleted": "Survey successfully deleted"
+      "deleted": "Survey successfully deleted",
+      "csvCopied": "CSV copied to clipboard"
     },
     "dialog": {
       "warning": {

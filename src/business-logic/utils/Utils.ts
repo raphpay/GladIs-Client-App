@@ -229,7 +229,33 @@ class Utils {
    */
   isANumber(value: string): boolean {
     return !isNaN(Number(value));
-  } 
+  }
+
+  /**
+   * Converts a JSON object to a CSV string.
+   * @param items - The JSON object to convert to CSV.
+   * @returns The CSV string representation of the JSON object.
+   */
+  static convertJSONToCSV(items: any | any[]) {
+    // Convert single object to array
+    if (!Array.isArray(items)) {
+      items = [items];
+    }
+  
+    // Rest of the method remains the same
+    const header = Object.keys(items[0]);
+    const headerString = header.join(',');
+    // handle null or undefined values here
+    const replacer = (key: string, value: string) => value ?? '';
+    const rowItems = items.map((row: any) =>
+      header
+        .map((fieldName) => JSON.stringify(row[fieldName], replacer))
+        .join(',')
+    );
+    // join header and body, and break into separate lines
+    const csv = [headerString, ...rowItems].join('\r\n');
+    return csv;
+  }  
 }
 
 export default Utils;

@@ -338,7 +338,8 @@
       "delete": "Supprimer"
     },
     "toast": {
-      "deleted": "Supprimé avec succès"
+      "deleted": "Supprimé avec succès",
+      "csvCopied": "CSV copié dans le presse-papier"
     },
     "dialog": {
       "warning": {

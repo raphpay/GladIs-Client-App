@@ -1,3 +1,4 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +10,7 @@ import SurveyService from '../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setCurrentSurvey, setSMQScreenSource, setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -88,6 +90,14 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
 
   async function exportToCSV(survey: ISurvey) {
     // export to csv
+    const surveyValue = JSON.parse(survey.value);
+    const surveyValueKeys = surveyValue.survey
+    const csv = Utils.convertJSONToCSV(surveyValueKeys);
+    Clipboard.setString(csv);
+    // Display toast
+    displayToast(t('smqSurvey.toast.csvCopied'));
+    // Hide alert
+    setShowActionDialog(false);
   }
 
   async function remove(survey: ISurvey) {
