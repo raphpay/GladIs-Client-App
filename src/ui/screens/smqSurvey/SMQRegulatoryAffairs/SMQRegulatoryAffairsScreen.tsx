@@ -29,6 +29,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
 
   const { t } = useTranslation();
   const { navigation } = props;
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { currentSurvey, smqScreenSource, smqSurveysListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
@@ -115,7 +116,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
         value: JSON.stringify(clientSurvey),
         clientID
       };
-      await SurveyService.getInstance().createSurvey(apiSurvey, null);
+      await SurveyService.getInstance().createSurvey(apiSurvey, token);
     } catch (error) {
       console.log('Error saving survey', error);
     }
