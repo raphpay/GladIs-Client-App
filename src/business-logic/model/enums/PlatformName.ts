@@ -5,4 +5,9 @@ enum PlatformName {
   Windows = 'windows',
 }
 
+export enum Orientation {
+  Portrait = 'portrait',
+  Landscape = 'landscape',
+}
+
 export default PlatformName;

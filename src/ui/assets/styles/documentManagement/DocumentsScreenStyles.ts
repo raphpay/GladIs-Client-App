@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
   },
   smqButton: {
     marginHorizontal: 8,
+    marginVertical: 4,
   }
 });
 
