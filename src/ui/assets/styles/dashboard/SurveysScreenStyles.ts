@@ -4,7 +4,6 @@ import { Fonts } from '../../fonts/fonts';
 // TODO: Clean up styles
 const styles = StyleSheet.create({
   lineContainer: {
-    height: 55,
     width: '100%',
     justifyContent: 'center',
   },

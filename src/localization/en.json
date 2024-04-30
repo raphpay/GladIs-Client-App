@@ -348,6 +348,11 @@
         "confirm": "Yes",
         "cancel": "No"
       }
+    },
+    "dates": {
+      "createdOn": "Created on",
+      "at": "at",
+      "updatedOn": "Updated on"
     }
   },
   "components": {

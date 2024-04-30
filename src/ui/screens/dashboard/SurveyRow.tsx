@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import ISurvey from '../../../business-logic/model/ISurvey';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import Tooltip from '../../components/Tooltip';
 
@@ -19,11 +21,43 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
 
   const { survey, openActionDialog } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { t } = useTranslation();
   // States
   const [clientName, setClientName] = useState<string>('');
   const [clientCompany, setClientCompany] = useState<string>('');
+  const [createdAtText, setCreatedAtText] = useState<string>('');
+  const [updatedAtText, setUpdatedAtText] = useState<string>('');
 
-  async function loadClientName() {
+  // Sync Methods
+  function loadDateInfos() {
+    if (survey.createdAt) {
+      const jsCreationDate = new Date(survey.createdAt);
+      setCreationDateText(jsCreationDate);
+      if (survey.updatedAt) {
+        const jsUpdateDate = new Date(survey.updatedAt);
+        const updateDateForComparison = Utils.getJSFormatDate(jsUpdateDate);
+        const createDateForComparison = Utils.getJSFormatDate(jsCreationDate);
+        if (updateDateForComparison > createDateForComparison) {
+          setUpdateDateText(jsUpdateDate);
+        }
+      }
+    }
+  }
+
+  function setCreationDateText(date: Date) {
+    const formattedDate = Utils.formatStringDate(date);
+    const formattedTime = Utils.formatTime(date);
+    setCreatedAtText(`${t('smqSurvey.dates.createdOn')} ${formattedDate} ${t('smqSurvey.dates.at')} ${formattedTime}`);
+  }
+
+  function setUpdateDateText(date: Date) {
+    const updateFormattedDate = Utils.formatStringDate(date);
+    const updateFormattedTime = Utils.formatTime(date);
+    setUpdatedAtText(`${t('smqSurvey.dates.updatedOn')} ${updateFormattedDate} ${t('smqSurvey.dates.at')} ${updateFormattedTime}`);
+  }
+
+  // Async Methods
+  async function loadClientInfos() {
     try {
       const clientID = survey.client.id;
       const user = await UserService.getInstance().getUserByID(clientID, token);
@@ -34,19 +68,36 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
     }
   }
 
+  async function loadSurveyInfos() {
+    await loadClientInfos();
+    loadDateInfos();
+  }
+
+  // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      await loadClientName();
+      await loadSurveyInfos();
     }
     init();
   }, []);
 
+  // Component
   return (
     <TouchableOpacity style={styles.lineContainer} onPress={() => openActionDialog(survey)}>
       <View style={styles.lineRow}>
         <View style={styles.clientInfos}>
           <Text style={styles.dateText}>{clientName}</Text>
           <Text style={styles.companyText}>{clientCompany}</Text>
+          {
+            createdAtText && (
+              <Text style={styles.dateText}>{createdAtText}</Text>
+            )
+          }
+          {
+            updatedAtText && (
+              <Text style={styles.dateText}>{updatedAtText}</Text>
+            )
+          }
         </View>
         <Tooltip action={() => openActionDialog(survey)}/>
       </View>
