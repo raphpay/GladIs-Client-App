@@ -1,11 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ActivityIndicator,
-  Platform,
-  TextInput
-} from 'react-native';
+import { ActivityIndicator, Dimensions, Platform, TextInput, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
@@ -16,7 +12,7 @@ import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDoc
 import IFile from '../../../../business-logic/model/IFile';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import PlatformName from '../../../../business-logic/model/enums/PlatformName';
+import PlatformName, { Orientation } from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
@@ -53,6 +49,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
 
   const plusIcon = require('../../../assets/images/plus.png');
   
@@ -141,6 +138,17 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   function navigateToSMQSurvey() {
     dispatch(setSMQScreenSource(t(currentScreen)));
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
+  }
+
+  function determineAndSetOrientation() {
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
+
+    if (width < height) {
+      setOrientation(Orientation.Portrait);
+    } else {
+      setOrientation(Orientation.Landscape);
+    }
   }
 
   // Async Methods
@@ -264,6 +272,12 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
     init();
   }, [documentListCount]);
+  
+  useEffect(() => {
+    determineAndSetOrientation();
+    Dimensions.addEventListener('change', determineAndSetOrientation);
+    return () => {}
+  }, []);
 
   // Components
   function ToastContent() {
@@ -292,6 +306,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               title={t('components.buttons.addDocument')}
               icon={plusIcon}
               onPress={addDocument}
+              style={styles.smqButton}
             />
           )
         }
@@ -317,11 +332,16 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   function AdminButtons() {
+    const shouldHaveColumn = (
+        Platform.OS === PlatformName.Android ||
+        Platform.OS === PlatformName.IOS
+      ) && orientation === Orientation.Portrait;
+    
     return (
-      <>
+      <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
         {CreateSMQDocButton()}
         {AddDocumentButton()}
-      </>
+      </View>
     )
   }
 
