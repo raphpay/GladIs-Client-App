@@ -12,7 +12,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setDocumentListCount, setSMQScreenSource } from '../../../business-logic/store/slices/appStateReducer';
+import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
@@ -22,6 +22,7 @@ import Grid from '../../components/Grid/Grid';
 import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
+import { setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 import IconButton from '../../components/Buttons/IconButton';
 

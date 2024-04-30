@@ -41,7 +41,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [orderDeliveryNote, setOrderDeliveryNote] = React.useState<string>('');

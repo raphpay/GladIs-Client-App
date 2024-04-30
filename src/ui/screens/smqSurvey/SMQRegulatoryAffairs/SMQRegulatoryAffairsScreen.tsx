@@ -10,7 +10,7 @@ import NavigationRoutes from '../../../../business-logic/model/enums/NavigationR
 import CacheService from '../../../../business-logic/services/CacheService';
 import SurveyService from '../../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
-import { resetCurrentSurvey, setSMQSurveysListCount } from '../../../../business-logic/store/slices/appStateReducer';
+import { resetCurrentSurvey, setSMQSurveysListCount } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
@@ -31,7 +31,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey, smqScreenSource, smqSurveysListCount } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey, smqScreenSource, smqSurveysListCount } = useAppSelector((state: RootState) => state.smq);
   const dispatch = useAppDispatch();
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');

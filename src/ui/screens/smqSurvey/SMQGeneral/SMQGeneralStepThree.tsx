@@ -32,7 +32,7 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     approversFunction, setApproversFunction,
   } = props;
   const { t } = useTranslation();
-  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
 
   // Sync Methods
   function loadFromCurrentSurvey() {

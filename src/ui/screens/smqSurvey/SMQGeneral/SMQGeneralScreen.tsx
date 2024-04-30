@@ -16,7 +16,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
-import { resetCurrentSurvey } from '../../../../business-logic/store/slices/appStateReducer';
+import { resetCurrentSurvey } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -42,7 +42,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser} = useAppSelector((state: RootState) => state.users);
-  const { smqScreenSource } = useAppSelector((state: RootState) => state.appState);
+  const { smqScreenSource } = useAppSelector((state: RootState) => state.smq);
   const dispatch = useAppDispatch();
   // States
   const [stepNumber, setStepNumber] = useState<number>(1);

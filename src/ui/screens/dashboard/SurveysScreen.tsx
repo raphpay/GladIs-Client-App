@@ -8,12 +8,13 @@ import ISurvey from '../../../business-logic/model/ISurvey';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import SurveyService from '../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setCurrentSurvey, setSMQScreenSource, setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setCurrentSurvey, setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid/Grid';
@@ -63,6 +64,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   function navigateToSurvey(survey: ISurvey) {
     dispatch(setCurrentSurvey(survey));
     dispatch(setSMQScreenSource(NavigationRoutes.SurveysScreen));
+    dispatch(setIsUpdatingSurvey(true));
     setShowActionDialog(false);
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }

@@ -46,7 +46,7 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     hasUploadedFile, selectedFilename
   } = props;
   const { t } = useTranslation();
-  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
 
   // States
   const [selectedOptionID, setSelectedOptionID] = useState<string>('');

@@ -26,7 +26,7 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
   const { t } = useTranslation();
   const { navigation } = props;
   const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
 

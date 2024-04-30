@@ -26,7 +26,7 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
   const { navigation } = props;
   const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
   // States
   const [processusPilotName, setProcessusPilotName] = useState<string>('');
 

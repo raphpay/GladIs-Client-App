@@ -40,7 +40,7 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
+  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
 
   // Async Methods
   async function loadInfos() {
