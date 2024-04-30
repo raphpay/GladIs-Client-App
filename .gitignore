@@ -70,3 +70,6 @@ yarn-error.log
 
 # Protected constants
 protected-contants.ts
+
+# Android release
+/android/app/release
