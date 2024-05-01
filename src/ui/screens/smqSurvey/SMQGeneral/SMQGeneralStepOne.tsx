@@ -62,7 +62,6 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     
     const surveyValue = JSON.parse(currentSurvey.value);
     const survey = surveyValue?.survey;
-    console.log('s',survey[10] );
     if (survey) {
       setCompanyHistory(survey[2]);
       setManagerName(survey[3]);

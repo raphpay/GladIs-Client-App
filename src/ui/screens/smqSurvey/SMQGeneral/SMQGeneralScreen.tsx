@@ -16,7 +16,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
-import { resetCurrentSurvey } from '../../../../business-logic/store/slices/smqReducer';
+import { resetCurrentSurvey, setCurrentSurvey } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -32,6 +32,7 @@ import SMQGeneralStepOne from './SMQGeneralStepOne';
 import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
+import SurveyService from '../../../../business-logic/services/SurveyService';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQGeneralScreen>;
@@ -42,7 +43,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser} = useAppSelector((state: RootState) => state.users);
-  const { smqScreenSource } = useAppSelector((state: RootState) => state.smq);
+  const { smqScreenSource, currentSurvey } = useAppSelector((state: RootState) => state.smq);
   const dispatch = useAppDispatch();
   // States
   const [stepNumber, setStepNumber] = useState<number>(1);
@@ -114,8 +115,9 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     }
   }
 
-  function isFormFilled() {
+  async function isFormFilled() {
     let isFilled = false;
+    const cachedFormFilled = await CacheService.getInstance().retrieveValue(CacheKeys.isSMQFormFilled) as boolean;
     switch (stepNumber) {
       case 1:
         if (companyName && companyHistory && managerName && medicalDevices && clients && area) {
@@ -135,6 +137,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
           phoneNumber.length > 0 &&
           email.length > 0;
         }
+        isFilled = isFilled && cachedFormFilled;
         break;
       case 3:
         if (website && auditorsName && auditorsFunction && approversName && approversFunction) {
@@ -144,6 +147,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
           approversName.length > 0 &&
           approversFunction.length > 0;
         }
+        isFilled = isFilled && cachedFormFilled;
         break;
     }
     return isFilled;
@@ -153,6 +157,14 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
+  }
+
+  function navigateToNextScreen() {
+    if (stepNumber === 3) {
+      navigation.navigate(NavigationRoutes.SMQManagementScreen);
+    } else {
+      setStepNumber(stepNumber + 1);
+    }
   }
 
   // Async Methods
@@ -183,8 +195,6 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       }
     };
 
-    console.log('step 1', clientSurvey );
-
     await saveClientSurvey(clientSurvey);
   }
 
@@ -206,8 +216,6 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       "currentClientID": currentClient?.id,
       "survey": concatenetedJSON,
     };
-  
-    console.log('step2', clientSurvey );
 
     await saveClientSurvey(survey);
   }
@@ -229,21 +237,39 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       "survey": concatenetedJSON,
     };
 
-    console.log('step 3', clientSurvey );
-
     await saveClientSurvey(survey);
   }
 
   async function saveClientSurvey(clientSurvey: any) {
+    if (currentSurvey && currentSurvey.id && clientSurvey.survey) {
+      // Update the current survey );
+      await updateClientSurvey(clientSurvey.survey, currentSurvey.id);
+    } else {
+      // Update the cache
+      await updateCachedSurvey(clientSurvey);
+    }
+  }
+
+  async function updateClientSurvey(clientSurveyValue: any, targetID: string) {
+    try {
+      const updatedSurveyValueString = JSON.stringify(clientSurveyValue);
+      const updatedSurvey = await SurveyService.getInstance().update(targetID, updatedSurveyValueString, token);
+      dispatch(setCurrentSurvey(updatedSurvey));
+      navigateToNextScreen();
+    } catch (error) {
+      // TODO: Handle error
+      console.log('erro', );
+    }
+    
+  }
+
+  async function updateCachedSurvey(clientSurvey: any) {
     try {
       await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
       await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
-      if (stepNumber === 3) {
-        navigation.navigate(NavigationRoutes.SMQManagementScreen);
-      } else {
-        setStepNumber(stepNumber + 1);
-      }
+      const isFormCorrectlyFilled = await isFormFilled();
+      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormCorrectlyFilled);
+      navigateToNextScreen();
     } catch (error) {
       console.log('Error caching client survey', error);
     }
