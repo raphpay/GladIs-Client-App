@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   lineContainer: {
     width: '100%',
     justifyContent: 'center',
+    height: 100,
   },
   lineRow: {
     width: '95%',
