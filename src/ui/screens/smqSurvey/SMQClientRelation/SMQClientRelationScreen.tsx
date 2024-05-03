@@ -26,6 +26,7 @@ type SMQClientRelationScreenProps = {
   setClientProcessusPilotName: React.Dispatch<React.SetStateAction<string>>;
   setSelectedOrderID: React.Dispatch<React.SetStateAction<string>>;
   setSelectedProductsID: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 type FileSource = {
@@ -39,6 +40,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     clientProcessusPilotName, setClientProcessusPilotName,
     setSelectedOrderID,
     setSelectedProductsID,
+    editable
   } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
@@ -156,6 +158,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
         onValueChange={setClientProcessusPilotName}
         placeholder={t('smqSurvey.prs.management.processusPilotName')}
         showTitle={true}
+        editable
       />
       <Text style={styles.title}>
         {t('smqSurvey.prs.clientRelation.orderDeliveryNote')}

@@ -360,6 +360,12 @@
         "description": "The deletion is definitive.",
         "confirm": "Yes",
         "cancel": "No"
+      },
+      "send": {
+        "title": "Are you sure you want to send this survey?",
+        "description": "The survey will be sent to the provider in its current state.",
+        "confirm": "Yes",
+        "cancel": "No"
       }
     },
     "dates": {

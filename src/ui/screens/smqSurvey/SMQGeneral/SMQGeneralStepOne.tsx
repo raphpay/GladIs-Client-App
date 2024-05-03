@@ -22,7 +22,7 @@ type SMQGeneralStepOneProps = {
   setClients: React.Dispatch<React.SetStateAction<string>>;
   area: string;
   setArea: React.Dispatch<React.SetStateAction<string>>;
-  showNavigationDialog: boolean;
+  editable: boolean;
 };
 
 function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
@@ -34,7 +34,7 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     medicalDevices, setMedicalDevices,
     clients, setClients,
     area, setArea,
-    showNavigationDialog,
+    editable
   } = props;
 
   const { t } = useTranslation();
@@ -72,7 +72,7 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
         onValueChange={setCompanyName}
         placeholder={t('quotation.companyName')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <ExpandingTextInput
         text={companyHistory}
@@ -84,28 +84,28 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
         onValueChange={setManagerName}
         placeholder={t('smqSurvey.generalInfo.stepOne.managerName')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={medicalDevices}
         onValueChange={setMedicalDevices}
         placeholder={t('smqSurvey.generalInfo.stepOne.medicalDevices')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={clients}
         onValueChange={setClients}
         placeholder={t('smqSurvey.generalInfo.stepOne.clients')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={area}
         onValueChange={setArea}
         placeholder={t('smqSurvey.generalInfo.stepOne.area')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
     </>
   );

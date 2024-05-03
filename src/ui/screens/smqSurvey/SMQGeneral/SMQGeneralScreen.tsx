@@ -8,7 +8,7 @@ import NavigationRoutes from '../../../../business-logic/model/enums/NavigationR
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
 import SMQManager from '../../../../business-logic/manager/SMQManager';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
@@ -23,6 +23,7 @@ import SMQManagementScreen from '../SMQManagement/SMQManagementScreen';
 import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
+import { setSMQSurveysListCount } from '../../../../business-logic/store/slices/smqReducer';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 import SMQBuyScreen from '../SMQBuy/SMQBuyScreen';
 import SMQClientRelationScreen from '../SMQClientRelation/SMQClientRelationScreen';
@@ -38,8 +39,11 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const { navigation } = props;
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { smqSurveysListCount } = useAppSelector((state: RootState) => state.smq);
+  const dispatch = useAppDispatch();
   // States
   const [showNavigationDialog, setShowNavigationDialog] = useState<boolean>(false);
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -149,6 +153,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       const errorMessage = (error as Error).message;
       displayToast(errorMessage, true); 
     }
+    dispatch(setSMQSurveysListCount(smqSurveysListCount + 1));
     navigation.goBack();
   }
 
@@ -159,7 +164,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
         <TextButton
           width={'100%'}
           title={t('smqSurvey.buttons.send')}
-          onPress={tappedSendToAPI}
+          onPress={() => setShowConfirmationDialog(true)}
         />
       </View>
     )
@@ -192,6 +197,21 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     );
   }
 
+  function ConfirmationDialog() {
+    return (
+      <Dialog
+        title={t('smqSurvey.dialog.send.title')}
+        description={t('smqSurvey.dialog.send.description')}
+        confirmTitle={t('smqSurvey.dialog.send.confirm')}
+        isConfirmAvailable={true}
+        onConfirm={() => tappedSendToAPI()}
+        cancelTitle={t('smqSurvey.dialog.send.cancel')}
+        isCancelAvailable={true}
+        onCancel={() => setShowConfirmationDialog(false)}
+      />
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -210,7 +230,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
             medicalDevices={medicalDevices} setMedicalDevices={setMedicalDevices}
             clients={clients} setClients={setClients}
             area={area} setArea={setArea}
-            showNavigationDialog={showNavigationDialog}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQGeneralStepTwo
             activity={activity} setActivity={setActivity}
@@ -222,7 +242,7 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
             setShowDialog={setShowDialog}
             hasUploadedFile={hasUploadedFile}
             selectedFilename={selectedFilename} setFileID={setFileID}
-            showNavigationDialog={showNavigationDialog}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQGeneralStepThree
             website={website} setWebsite={setWebsite}
@@ -230,15 +250,17 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
             auditorsFunction={auditorsFunction} setAuditorsFunction={setAuditorsFunction}
             approversName={approversName} setApproversName={setApproversName}
             approversFunction={approversFunction} setApproversFunction={setApproversFunction}
-            showNavigationDialog={showNavigationDialog}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQManagementScreen
             managementProcessusPilotName={managementProcessusPilotName}
             setManagementProcessusPilotName={setManagementProcessusPilotName}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQMeasurementAndImprovement
             measurementProcessusPilotName={measurementProcessusPilotName}
             setMeasurementProcessusPilotName={setMeasurementProcessusPilotName}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQFabricationDevelopmentScreen
             fabProcessusPilotName={fabProcessusPilotName} setFabProcessusPilotName={setFabProcessusPilotName}
@@ -246,26 +268,32 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
             fabProductIdentifications={fabProductIdentifications} setFabProductIdentifications={setFabProductIdentifications}
             fabProductPreservation={fabProductPreservation} setFabProductPreservation={setFabProductPreservation}
             fabProductTracking={fabProductTracking} setFabProductTracking={setFabProductTracking}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQClientRelationScreen
             clientProcessusPilotName={clientProcessusPilotName} setClientProcessusPilotName={setClientProcessusPilotName}
             setSelectedOrderID={setSelectedOrderID}
             setSelectedProductsID={setSelectedProductsID}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQBuyScreen
             buyProcessusPilotName={buyProcessusPilotName} setBuyProcessusPilotName={setBuyProcessusPilotName}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQResourcesManagementScreen
             resProcessusPilotName={resProcessusPilotName} setResProcessusPilotName={setResProcessusPilotName}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
           <SMQRegulatoryAffairs
             regProcessusPilotName={regProcessusPilotName} setRegProcessusPilotName={setRegProcessusPilotName}
             regSafeguardMeasures={regSafeguardMeasures} setRegSafeguardMeasures={setRegSafeguardMeasures}
+            editable={!showNavigationDialog && !showConfirmationDialog}
           />
         </ScrollView>
       </AppContainer>
-      { showNavigationDialog && (<NavigationDialog/>) }
+      { showNavigationDialog && NavigationDialog() }
       { showToast && ToastContent() }
+      { showConfirmationDialog && ConfirmationDialog() }
     </>
   );
 }

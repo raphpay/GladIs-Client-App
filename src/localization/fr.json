@@ -361,6 +361,12 @@
         "confirm": "Oui",
         "cancel": "Non"
       },
+      "send": {
+        "title": "Etes-vous sûr de vouloir envoyer ce formulaire ?",
+        "description": "Le formulaire sera envoyé au fournisseur dans son état actuel.",
+        "confirm": "Oui",
+        "cancel": "Non"
+      }
     },
     "dates": {
       "createdOn": "Créé le",

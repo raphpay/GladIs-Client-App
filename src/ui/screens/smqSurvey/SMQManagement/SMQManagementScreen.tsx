@@ -12,13 +12,15 @@ import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 type SMQManagementScreenProps = {
   managementProcessusPilotName: string;
   setManagementProcessusPilotName: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element {
 
   const {
     managementProcessusPilotName,
-    setManagementProcessusPilotName
+    setManagementProcessusPilotName,
+    editable
   } = props;
   const { t } = useTranslation();
 
@@ -49,6 +51,7 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
         onValueChange={setManagementProcessusPilotName}
         placeholder={t('smqSurvey.prs.management.processusPilotName')}
         showTitle={true}
+        editable={editable}
       />
     </>
   );

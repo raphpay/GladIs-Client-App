@@ -4,8 +4,6 @@ import { Text, View } from 'react-native';
 
 import SMQManager from '../../../../business-logic/manager/SMQManager';
 import { ICheckBoxOption } from '../../../../business-logic/model/IModule';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
-import { RootState } from '../../../../business-logic/store/store';
 
 import TextButton from '../../../components/Buttons/TextButton';
 import CheckBox from '../../../components/CheckBox/CheckBox';
@@ -31,7 +29,7 @@ type SMQGeneralStepTwoProps = {
   hasUploadedFile: boolean;
   selectedFilename: string;
   setFileID: React.Dispatch<React.SetStateAction<string>>;
-  showNavigationDialog: boolean;
+  editable: boolean;
 };
 
 function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
@@ -45,10 +43,9 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     email, setEmail,
     setShowDialog,
     hasUploadedFile, selectedFilename, setFileID,
-    showNavigationDialog
+    editable
   } = props;
   const { t } = useTranslation();
-  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
 
   // States
   const [selectedOptionID, setSelectedOptionID] = useState<string>('');
@@ -75,20 +72,6 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
   function isOptionSelected(option: ICheckBoxOption): boolean {
     const id = option.id as string;
     return selectedOptionID === id;
-  }
-
-  function loadFromCurrentSurvey() {
-    const surveyValue = JSON.parse(currentSurvey.value);
-    const survey = surveyValue?.survey;
-    if (survey) {
-      setActivity(survey[8]);
-      setQualityGoals(survey[9]);
-      setHasOrganizationalChart(survey[10]);
-      setHeadquartersAddress(survey[11]);
-      setPhoneNumber(survey[12]);
-      setEmail(survey[13]);
-      setSelectedOptionID(survey.hasOrganizationalChart ? '1' : '2');
-    }
   }
 
   // Async Methods
@@ -125,12 +108,13 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
         onValueChange={setActivity}
         placeholder={t('smqSurvey.generalInfo.stepTwo.activity')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <ExpandingTextInput
         text={qualityGoals}
         setText={setQualityGoals}
         placeholder={t('smqSurvey.generalInfo.stepTwo.qualityGoals')}
+        editable={editable}
       />
       <Text style={styles.subtitle}>{t('smqSurvey.generalInfo.stepTwo.selectOrgOption')}</Text>
       {
@@ -165,21 +149,21 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
         onValueChange={setHeadquartersAddress}
         placeholder={t('smqSurvey.generalInfo.stepTwo.headquartersAddress')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={phoneNumber}
         onValueChange={setPhoneNumber}
         placeholder={t('smqSurvey.generalInfo.stepTwo.phoneNumber')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={email}
         onValueChange={setEmail}
         placeholder={t('smqSurvey.generalInfo.stepTwo.email')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
     </>
   );

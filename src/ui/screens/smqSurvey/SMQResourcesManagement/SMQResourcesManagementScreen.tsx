@@ -11,12 +11,17 @@ import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 type SMQResourcesManagementProps = {
   resProcessusPilotName: string;
   setResProcessusPilotName: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React.JSX.Element {
 
   const { t } = useTranslation();
-  const { resProcessusPilotName, setResProcessusPilotName } = props;
+  const {
+    resProcessusPilotName,
+    setResProcessusPilotName,
+    editable
+  } = props;
 
   // Async Methods
   async function loadInfos() {
@@ -46,6 +51,7 @@ function SMQResourcesManagementScreen(props: SMQResourcesManagementProps): React
         onValueChange={setResProcessusPilotName}
         placeholder={t('smqSurvey.prs.management.processusPilotName')}
         showTitle={true}
+        editable={editable}
       />
     </>
   );

@@ -11,12 +11,17 @@ import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 type SMQBuyScreenProps = {
   buyProcessusPilotName: string;
   setBuyProcessusPilotName: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
 
   const { t } = useTranslation();
-  const { buyProcessusPilotName, setBuyProcessusPilotName } = props;
+  const {
+    buyProcessusPilotName,
+    setBuyProcessusPilotName,
+    editable
+  } = props;
 
   // Async Methods
   async function loadInfos() {
@@ -46,6 +51,7 @@ function SMQBuyScreen(props: SMQBuyScreenProps): React.JSX.Element {
         onValueChange={setBuyProcessusPilotName}
         placeholder={t('smqSurvey.prs.management.processusPilotName')}
         showTitle={true}
+        editable={editable}
       />
     </>
   );

@@ -10,13 +10,15 @@ import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 type SMQMeasurementAndImprovementProps = {
   measurementProcessusPilotName: string;
   setMeasurementProcessusPilotName: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps): React.JSX.Element {
 
   const {
     measurementProcessusPilotName,
-    setMeasurementProcessusPilotName
+    setMeasurementProcessusPilotName,
+    editable
   } = props;
   const { t } = useTranslation();
 
@@ -45,6 +47,7 @@ function SMQMeasurementAndImprovement(props: SMQMeasurementAndImprovementProps):
         onValueChange={setMeasurementProcessusPilotName}
         placeholder={t('smqSurvey.prs.management.processusPilotName')}
         showTitle={true}
+        editable={editable}
       />
     </>
   );

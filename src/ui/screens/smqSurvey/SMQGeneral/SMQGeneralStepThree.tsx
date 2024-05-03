@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
-import CacheService from '../../../../business-logic/services/CacheService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
-import { RootState } from '../../../../business-logic/store/store';
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
@@ -19,7 +16,7 @@ type SMQGeneralStepThreeProps = {
   setApproversName: React.Dispatch<React.SetStateAction<string>>;
   approversFunction: string;
   setApproversFunction: React.Dispatch<React.SetStateAction<string>>;
-  showNavigationDialog: boolean;
+  editable: boolean;
 };
 
 function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element {
@@ -30,48 +27,22 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     auditorsFunction, setAuditorsFunction,
     approversName, setApproversName,
     approversFunction, setApproversFunction,
-    showNavigationDialog,
+    editable,
   } = props;
   const { t } = useTranslation();
-  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
-
-  // Sync Methods
-  function loadFromCurrentSurvey() {
-    const surveyValue = JSON.parse(currentSurvey.value);
-    const survey = surveyValue?.survey;
-    if (survey) {
-      setWebsite(survey[14]);
-      setAuditorsName(survey[15]);
-      setAuditorsFunction(survey[16]);
-      setApproversName(survey[17]);
-      setApproversFunction(survey[18]);
-    }
-  }
 
   // Async Methods
   async function loadInfos() {
-    if (currentSurvey) {
-      loadFromCurrentSurvey();
-    } else {
-      await loadFromCache();
-    }
-  }
-
-  async function loadFromCache() {
-    try {
-      const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedClientSurvey) {
-        const generalSection = cachedClientSurvey?.survey?.generalSection;
-        if (generalSection) {
-          setWebsite(generalSection.website);
-          setAuditorsName(generalSection.auditorsName);
-          setAuditorsFunction(generalSection.auditorsFunction);
-          setApproversName(generalSection.approversName);
-          setApproversFunction(generalSection.approversFunction);
-        }
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
+    if (currentSurvey && currentSurvey.value) {
+      const surveyData = JSON.parse(currentSurvey.value);
+      if (surveyData) {
+        setWebsite(surveyData['14']);
+        setAuditorsName(surveyData['15']);
+        setAuditorsFunction(surveyData['16']);
+        setApproversName(surveyData['17']);
+        setApproversFunction(surveyData['18']);
       }
-    } catch (error) {
-      console.log('Error retrieving cached client survey value', error);
     }
   }
 
@@ -91,35 +62,35 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
         onValueChange={setWebsite}
         placeholder={t('smqSurvey.generalInfo.stepThree.website')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={auditorsName}
         onValueChange={setAuditorsName}
         placeholder={t('smqSurvey.generalInfo.stepThree.auditorsName')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={auditorsFunction}
         onValueChange={setAuditorsFunction}
         placeholder={t('smqSurvey.generalInfo.stepThree.auditorsFunction')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={approversName}
         onValueChange={setApproversName}
         placeholder={t('smqSurvey.generalInfo.stepThree.approversName')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
       <GladisTextInput
         value={approversFunction}
         onValueChange={setApproversFunction}
         placeholder={t('smqSurvey.generalInfo.stepThree.approversFunction')}
         showTitle={true}
-        editable={!showNavigationDialog}
+        editable={editable}
       />
     </>
   );

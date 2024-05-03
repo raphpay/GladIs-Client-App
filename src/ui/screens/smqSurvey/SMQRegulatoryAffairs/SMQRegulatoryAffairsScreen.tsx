@@ -13,6 +13,7 @@ type SMQRegulatoryAffairsProps = {
   setRegProcessusPilotName: React.Dispatch<React.SetStateAction<string>>;
   regSafeguardMeasures: string;
   setRegSafeguardMeasures: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Element {
@@ -21,6 +22,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   const { 
     regProcessusPilotName, setRegProcessusPilotName,
     regSafeguardMeasures, setRegSafeguardMeasures,
+    editable
    } = props;
 
   // Async Methods
@@ -52,12 +54,14 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
         onValueChange={setRegProcessusPilotName}
         placeholder={t('smqSurvey.prs.management.processusPilotName')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={regSafeguardMeasures}
         onValueChange={setRegSafeguardMeasures}
         placeholder={t('smqSurvey.prs.regulatoryAffairs.safeguardMeasures')}
         showTitle={true}
+        editable={editable}
       />
     </>
   );

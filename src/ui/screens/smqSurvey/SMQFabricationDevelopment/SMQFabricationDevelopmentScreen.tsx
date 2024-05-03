@@ -20,6 +20,7 @@ type SMQFabricationDevelopmentScreenProps = {
   setFabProductPreservation: React.Dispatch<React.SetStateAction<string>>;
   fabProductTracking: string,
   setFabProductTracking: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenProps): React.JSX.Element {
@@ -29,7 +30,8 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
     fabProductionFlux, setFabProductionFlux,
     fabProductIdentifications, setFabProductIdentifications,
     fabProductPreservation, setFabProductPreservation,
-    fabProductTracking, setFabProductTracking
+    fabProductTracking, setFabProductTracking,
+    editable
   } = props;
   const { t } = useTranslation();
 
@@ -64,30 +66,35 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
         onValueChange={setFabProcessusPilotName}
         placeholder={t('smqSurvey.prs.management.processusPilotName')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={fabProductionFlux}
         onValueChange={setFabProductionFlux}
         placeholder={t('smqSurvey.prs.fabricationDevelopment.productionFlux')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={fabProductIdentifications}
         onValueChange={setFabProductIdentifications}
         placeholder={t('smqSurvey.prs.fabricationDevelopment.productIdentifications')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={fabProductPreservation}
         onValueChange={setFabProductPreservation}
         placeholder={t('smqSurvey.prs.fabricationDevelopment.productPreservation')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={fabProductTracking}
         onValueChange={setFabProductTracking}
         placeholder={t('smqSurvey.prs.fabricationDevelopment.productTracking')}
         showTitle={true}
+        editable={editable}
       />
     </>
   );
