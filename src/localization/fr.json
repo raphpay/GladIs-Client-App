@@ -354,7 +354,13 @@
         "description": "Voulez-vous sauvegarder le formulaire en l'état ?",
         "confirm": "Oui, sauvegarder",
         "cancel": "Non, continuer"
-      }
+      },
+      "delete": {
+        "title": "Etes-vous sûr de vouloir supprimer ce formulaire ?",
+        "description": "La suppression est définitive.",
+        "confirm": "Oui",
+        "cancel": "Non"
+      },
     },
     "dates": {
       "createdOn": "Créé le",

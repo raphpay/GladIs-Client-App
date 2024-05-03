@@ -354,6 +354,12 @@
         "description": "Do you want to save the survey in its current state?",
         "confirm": "Yes, save",
         "cancel": "No, go back"
+      },
+      "delete": {
+        "title": "Are you sure you want to delete this survey?",
+        "description": "The deletion is definitive.",
+        "confirm": "Yes",
+        "cancel": "No"
       }
     },
     "dates": {

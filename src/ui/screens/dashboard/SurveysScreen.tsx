@@ -18,6 +18,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid/Grid';
 import Toast from '../../components/Toast';
 import TooltipAction from '../../components/TooltipAction';
@@ -41,6 +42,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
   // Tooltip Action
   const [showActionDialog, setShowActionDialog] = useState<boolean>(false);
+  const [showRemoveDialog, setShowRemoveDialog] = useState<boolean>(false);
 
   const popoverActions: IAction[] = [
     {
@@ -53,7 +55,8 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
     },
     {
       title: t('smqSurvey.tooltip.delete'),
-      onPress: () => remove(selectedSurvey as ISurvey),
+      onPress: () => displayRemoveDialog(),
+      isDestructive: true,
     }
   ];
   // Synchronous Methods
@@ -104,6 +107,11 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
     setShowActionDialog(false);
   }
 
+  function displayRemoveDialog() {
+    setShowActionDialog(false);
+    setShowRemoveDialog(true);
+  }
+
   async function remove(survey: ISurvey) {
     try {
       await SurveyService.getInstance().delete(survey?.id as string, token);
@@ -114,6 +122,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
       const errorMessage = (error as Error).message;
       displayToast(errorMessage, true);
     }
+    setShowRemoveDialog(false);
   } 
 
   // Lifecycle Methods
@@ -153,7 +162,22 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
       />
     );
   }
-  
+
+  function RemoveDialog() {
+    return (
+      <Dialog
+        title={t('smqSurvey.dialog.delete.title')}
+        description={t('smqSurvey.dialog.delete.description')}
+        confirmTitle={t('smqSurvey.dialog.delete.confirm')}
+        isConfirmAvailable={true}
+        onConfirm={() => remove(selectedSurvey as ISurvey)}
+        cancelTitle={t('smqSurvey.dialog.delete.cancel')}
+        isCancelAvailable={true}
+        onCancel={() => setShowRemoveDialog(false)}
+      />
+    )
+  }
+   
   return (
     <>
       <AppContainer
@@ -180,6 +204,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
       </AppContainer>
       {ToastContent()}
       {TooltipActionContent()}
+      { showRemoveDialog && RemoveDialog() }
     </>
   );
 }
