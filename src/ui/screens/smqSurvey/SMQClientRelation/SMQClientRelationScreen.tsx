@@ -7,12 +7,10 @@ import DocumentPicker from 'react-native-document-picker';
 import IAction from '../../../../business-logic/model/IAction';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../../business-logic/model/IFile';
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName from '../../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
-import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
@@ -27,6 +25,7 @@ import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import Toast from '../../../components/Toast';
 
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQClientRelationScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQClientRelationScreen>;
@@ -41,7 +40,6 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [orderDeliveryNote, setOrderDeliveryNote] = React.useState<string>('');
@@ -72,14 +70,6 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     navigation.goBack();
   }
 
-  function isFormFilled() {
-    let isFilled = false;
-    if (processusPilotName) {
-      isFilled = processusPilotName.length > 0;
-    }
-    return isFilled;
-  }
-
   function displayToast(message: string, isError: boolean = false) {
     setShowToast(true);
     setToastIsShowingError(isError);
@@ -88,78 +78,23 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
 
   // Async Methods
   async function tappedContinue() {
-    const clientSurvey = {
-      "currentClientID": currentClient?.id,
-      "survey": {
-        "26": processusPilotName,
-        "27": orderDeliveryNote,
-        "28": productsSold,
-        orderDeliveryNoteID: selectedOrderID,
-        productsSoldID: selectedProductsID,
-      }
-    };
-
-    // Retrieve existing client survey data
-    let cachedSurvey: any;
-    try {
-      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    } catch (error) {
-      console.log('Error retrieving cached survey', error);
-    }
-
-    if (cachedSurvey.survey) {
-      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
-      const survey = {
-        "currentClientID": currentClient?.id,
-        "survey": concatenetedJSON,
-      };
-      await saveClientSurvey(survey);
-    } else {
-      await saveClientSurvey(clientSurvey);
-    }
-  }
-
-  async function saveClientSurvey(clientSurvey: any) {
-    try {
-      await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
-      navigation.navigate(NavigationRoutes.SMQBuyScreen);
-    } catch (error) {
-      console.log('Error caching client survey', error);
-    }
+    await SMQManager.getInstance().continueAfterClientRelationScreen(
+      processusPilotName, orderDeliveryNote,
+      productsSold,
+      selectedOrderID, selectedProductsID
+    );
+    navigation.navigate(NavigationRoutes.SMQBuyScreen);
   }
 
   async function loadInfos() {
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
     if (currentSurvey) {
-      loadFromCurrentSurvey();
-    } else {
-      await loadFromCache();
-    }
-  }
-
-  async function loadFromCurrentSurvey() {
-    const surveyValue = JSON.parse(currentSurvey.value);
-    const clientRelation = surveyValue?.survey;
-    if (clientRelation) {
-      // TODO: Handle files
-      setProcessusPilotName(clientRelation[26]);
-      setOrderDeliveryNote(clientRelation[27]);
-      setProductsSold(clientRelation[28]);
-    }
-  }
-
-  async function loadFromCache() {
-    try {
-      const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      const clientRelation = cachedSurvey?.survey?.prs?.clientRelation;
-      if (clientRelation) {
-        setProcessusPilotName(clientRelation.processusPilotName);
-        setOrderDeliveryNote(clientRelation.orderDeliveryNote);
-        setProductsSold(clientRelation.productsSold);
+      const surveyData = JSON.parse(currentSurvey?.value);
+      if (surveyData) {
+        setProcessusPilotName(surveyData['26']);
+        setOrderDeliveryNote(surveyData['27']);
+        setProductsSold(surveyData['28']);
       }
-    } catch (error) {
-      console.log('Error retrieving cached value', error);
     }
   }
 
@@ -209,7 +144,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     async function init() {
       await loadInfos();
     }
-    init()
+    init();
   }, []);
 
   // Components

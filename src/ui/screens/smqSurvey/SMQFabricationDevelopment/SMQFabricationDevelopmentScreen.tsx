@@ -4,11 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
 import IAction from '../../../../business-logic/model/IAction';
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import CacheService from '../../../../business-logic/services/CacheService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
-import { RootState } from '../../../../business-logic/store/store';
 
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
@@ -17,6 +13,7 @@ import TextButton from '../../../components/Buttons/TextButton';
 import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQFabricationDevelopmentScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQFabricationDevelopmentScreen>;
@@ -25,8 +22,6 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
 
   const { navigation } = props;
   const { t } = useTranslation();
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
   const [productionFlux, setProductionFlux] = React.useState<string>('');
@@ -46,93 +41,25 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
     navigation.goBack();
   }
 
-  function isFormFilled() {
-    let isFilled = false;
-    isFilled = processusPilotName.length > 0 &&
-      productionFlux.length > 0 &&
-      productIdentifications.length > 0 &&
-      productPreservation.length > 0 &&
-      productTracking.length > 0;
-    return isFilled;
-  }
-
   // Async Methods
   async function tappedContinue() {
-    const clientSurvey = {
-      "currentClientID": currentClient?.id,
-      "survey": {
-        "21": processusPilotName,
-        "22": productionFlux,
-        "23": productIdentifications,
-        "24": productPreservation,
-        "25": productTracking
-      }
-    };
-
-    // Retrieve existing client survey data
-    let cachedSurvey: any;
-    try {
-      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    } catch (error) {
-      console.log('Error retrieving cached survey', error);
-    }
-
-    if (cachedSurvey.survey) {
-      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
-      const survey = {
-        "currentClientID": currentClient?.id,
-        "survey": concatenetedJSON,
-      };
-      await saveClientSurvey(survey);
-    } else {
-      await saveClientSurvey(clientSurvey);
-    }
-  }
-
-  async function saveClientSurvey(clientSurvey: any) {
-    try {
-      await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
-      navigation.navigate(NavigationRoutes.SMQClientRelationScreen);
-    } catch (error) {
-      console.log('Error caching client survey', error);
-    }
+    await SMQManager.getInstance().continueAfterFabricationDevelopmentScreen(
+      processusPilotName, productionFlux,
+      productIdentifications, productPreservation,
+      productTracking);
+    navigation.navigate(NavigationRoutes.SMQClientRelationScreen);
   }
 
   async function loadInfos() {
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
     if (currentSurvey) {
-      loadFromCurrentSurvey();
-    } else {
-      await loadFromCache();
-    }
-  }
-
-  async function loadFromCurrentSurvey() {
-    const surveyValue = JSON.parse(currentSurvey.value);
-    const fabricationDevelopment = surveyValue?.survey;
-    if (fabricationDevelopment) {
-      setProcessusPilotName(fabricationDevelopment[21]);
-      setProductionFlux(fabricationDevelopment[22]);
-      setProductIdentifications(fabricationDevelopment[23]);
-      setProductPreservation(fabricationDevelopment[24]);
-      setProductTracking(fabricationDevelopment[25]);
-    }
-  }
-
-  async function loadFromCache() {
-    try {
-      const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      const fabricationDevelopment = cachedSurvey?.survey?.prs?.fabricationDevelopment;
-      if (fabricationDevelopment) {
-        setProcessusPilotName(fabricationDevelopment.processusPilotName);
-        setProductionFlux(fabricationDevelopment.productionFlux);
-        setProductIdentifications(fabricationDevelopment.productIdentifications);
-        setProductPreservation(fabricationDevelopment.productPreservation);
-        setProductTracking(fabricationDevelopment.productTracking);
+      const surveyData = JSON.parse(currentSurvey?.value);
+      if (surveyData) {
+        setProcessusPilotName(surveyData['21']);
+        setProductionFlux(surveyData['22']);
+        setProductIdentifications(surveyData['23']);
+        setProductPreservation(surveyData['24']);
       }
-    } catch (error) {
-      console.log('Error retrieving cached value', error);
     }
   }
 
@@ -141,7 +68,7 @@ function SMQFabricationDevelopmentScreen(props: SMQFabricationDevelopmentScreenP
     async function init() {
       await loadInfos();
     }
-    init()
+    init();
   }, []);
 
   // Components

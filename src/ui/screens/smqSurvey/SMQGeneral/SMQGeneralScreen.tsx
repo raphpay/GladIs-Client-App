@@ -1,38 +1,22 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, View } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
+import { Text, TouchableOpacity, View } from 'react-native';
 
-import IAction from '../../../../business-logic/model/IAction';
-import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
-import IFile from '../../../../business-logic/model/IFile';
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
-import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import PlatformName from '../../../../business-logic/model/enums/PlatformName';
-import FinderModule from '../../../../business-logic/modules/FinderModule';
-import CacheService from '../../../../business-logic/services/CacheService';
-import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
-import DocumentService from '../../../../business-logic/services/DocumentService';
-import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
-import { resetCurrentSurvey, setCurrentSurvey } from '../../../../business-logic/store/slices/smqReducer';
-import { RootState } from '../../../../business-logic/store/store';
-import Utils from '../../../../business-logic/utils/Utils';
 
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
+import SMQManager from '../../../../business-logic/manager/SMQManager';
+
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
-import Toast from '../../../components/Toast';
-import TooltipAction from '../../../components/TooltipAction';
-
 import SurveyPageCounter from '../../../components/SurveyPageCounter';
+
 import SMQGeneralStepOne from './SMQGeneralStepOne';
 import SMQGeneralStepThree from './SMQGeneralStepThree';
 import SMQGeneralStepTwo from './SMQGeneralStepTwo';
 
-import SurveyService from '../../../../business-logic/services/SurveyService';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralScreenProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQGeneralScreen>;
@@ -41,13 +25,13 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
 
   const { navigation } = props;
   const { t } = useTranslation();
-  const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient, currentUser} = useAppSelector((state: RootState) => state.users);
-  const { smqScreenSource, currentSurvey } = useAppSelector((state: RootState) => state.smq);
-  const dispatch = useAppDispatch();
   // States
+  const [mainTitle, setMainTitle] = useState<string>('');
   const [stepNumber, setStepNumber] = useState<number>(1);
-  // Questions
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
   // Step One
   const [companyName, setCompanyName] = useState<string>('');
   const [companyHistory, setCompanyHistory] = useState<string>('');
@@ -72,268 +56,85 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
   const [auditorsFunction, setAuditorsFunction] = useState<string>('');
   const [approversName, setApproversName] = useState<string>('');
   const [approversFunction, setApproversFunction] = useState<string>('');
-  // Toast
-  const [showToast, setShowToast] = useState<boolean>(false);
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
-  const [toastMessage, setToastMessage] = useState<string>('');
 
-  const navigationHistoryItems: IAction[] = [
-    {
-      title: smqScreenSource,
-      onPress: () => navigateBack()
-    }
-  ];
-
-  const popoverActions: IAction[] = [
-    {
-      title: t('smqSurvey.generalInfo.stepTwo.selectPngFile'),
-      onPress: () => selectPNGFile(),
-    },
-    {
-      title: t('smqSurvey.generalInfo.stepTwo.selectPdfFile'),
-      onPress: () => selectPDFFile(),
-    },
-  ];
-
-  // Sync Methods
+  // Actions
   function navigateBack() {
-    switch (stepNumber) {
-      case 1:
-        dispatch(resetCurrentSurvey());
-        navigation.goBack();
-        break;
-      case 2:
-        setStepNumber(stepNumber - 1);
-        break;
-      case 3:
-        setStepNumber(stepNumber - 1);
-        break;
-      default:
-        dispatch(resetCurrentSurvey());
-        navigation.goBack();
-        break;
+    setStepNumber(stepNumber - 1);
+    if (stepNumber === 1) {
+      SMQManager.getInstance().resetSurvey();
+      navigation.goBack();
     }
   }
 
-  async function isFormFilled() {
-    let isFilled = false;
-    const cachedFormFilled = await CacheService.getInstance().retrieveValue(CacheKeys.isSMQFormFilled) as boolean;
-    switch (stepNumber) {
-      case 1:
-        if (companyName && companyHistory && managerName && medicalDevices && clients && area) {
-          isFilled = companyName.length > 0 &&
-          companyHistory.length > 0 &&
-          managerName.length > 0 &&
-          medicalDevices.length > 0 &&
-          clients.length > 0 &&
-          area.length > 0;
-        }
-        break;
-      case 2:
-        if (activity && qualityGoals && headquartersAddress && phoneNumber && email) {
-          isFilled = activity.length > 0 &&
-          qualityGoals.length > 0 &&
-          headquartersAddress.length > 0 &&
-          phoneNumber.length > 0 &&
-          email.length > 0;
-        }
-        isFilled = isFilled && cachedFormFilled;
-        break;
-      case 3:
-        if (website && auditorsName && auditorsFunction && approversName && approversFunction) {
-          isFilled = website.length > 0 &&
-          auditorsName.length > 0 &&
-          auditorsFunction.length > 0 &&
-          approversName.length > 0 &&
-          approversFunction.length > 0;
-        }
-        isFilled = isFilled && cachedFormFilled;
-        break;
-    }
-    return isFilled;
-  }
-
-  function displayToast(message: string, isError: boolean = false) {
-    setShowToast(true);
-    setToastIsShowingError(isError);
-    setToastMessage(message);
-  }
-
-  function navigateToNextScreen() {
-    if (stepNumber === 3) {
-      navigation.navigate(NavigationRoutes.SMQManagementScreen);
-    } else {
-      setStepNumber(stepNumber + 1);
+  // TODO: Continue implementation
+  function updateMainTitle() {
+    if (stepNumber === 1 || stepNumber === 2 || stepNumber === 3) {
+      setMainTitle(t('smqSurvey.generalInfo.title'));
     }
   }
 
-  // Async Methods
   async function tappedContinue() {
     switch (stepNumber) {
       case 1:
-        await continueGeneralProcessStepOne();
+        await SMQManager.getInstance().continueAfterStepOne(
+          companyName, companyHistory, managerName,
+          medicalDevices, clients, area
+        );
+        setStepNumber(2);
         break;
       case 2:
-        await continueGeneralProcessStepTwo();
+        await SMQManager.getInstance().continueAfterStepTwo(
+          activity, qualityGoals, hasOrganizationalChart,
+          headquartersAddress, phoneNumber, email, fileID
+        );
+        setStepNumber(3);
         break;
       case 3:
-        await continueGeneralProcessStepThree();
+        await SMQManager.getInstance().continueAfterStepThree(
+          website, auditorsName, auditorsFunction,
+          approversName, approversFunction
+        );
+        navigation.navigate(NavigationRoutes.SMQManagementScreen);
+        break;
+      default:
         break;
     }
   }
 
-  async function continueGeneralProcessStepOne() {
-    const clientSurvey = {
-      "currentClientID": currentClient?.id,
-      "survey": {
-        "2": companyName,
-        "3": companyHistory,
-        "4": managerName,
-        "5": medicalDevices,
-        "6": clients,
-        "7": area
-      }
-    };
-
-    await saveClientSurvey(clientSurvey);
-  }
-
-  async function continueGeneralProcessStepTwo() {
-    let clientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    const stepTwoData = {
-      "8": activity,
-      "9": qualityGoals,
-      "10": hasOrganizationalChart,
-      "11": headquartersAddress,
-      "12": phoneNumber,
-      "13": email,
-      organizationalChartID: fileID
-    };
-  
-    // Update only the fields that are different from stepTwoData
-    const concatenetedJSON = Object.assign(clientSurvey.survey, stepTwoData);
-    const survey = {
-      "currentClientID": currentClient?.id,
-      "survey": concatenetedJSON,
-    };
-
-    await saveClientSurvey(survey);
-  }
-
-  async function continueGeneralProcessStepThree() {
-    let clientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    const stepThreeData = {
-      "14": website,
-      "15": auditorsName,
-      "16": auditorsFunction,
-      "17": approversName,
-      "18": approversFunction,
-    };
-
-    // Update only the fields that are different from stepThreeData
-    const concatenetedJSON = Object.assign(clientSurvey.survey, stepThreeData);
-    const survey = {
-      "currentClientID": currentClient?.id,
-      "survey": concatenetedJSON,
-    };
-
-    await saveClientSurvey(survey);
-  }
-
-  async function saveClientSurvey(clientSurvey: any) {
-    if (currentSurvey && currentSurvey.id && clientSurvey.survey) {
-      // Update the current survey );
-      await updateClientSurvey(clientSurvey.survey, currentSurvey.id);
-    } else {
-      // Update the cache
-      await updateCachedSurvey(clientSurvey);
-    }
-  }
-
-  async function updateClientSurvey(clientSurveyValue: any, targetID: string) {
-    try {
-      const updatedSurveyValueString = JSON.stringify(clientSurveyValue);
-      const updatedSurvey = await SurveyService.getInstance().update(targetID, updatedSurveyValueString, token);
-      dispatch(setCurrentSurvey(updatedSurvey));
-      navigateToNextScreen();
-    } catch (error) {
-      // TODO: Handle error
-      console.log('erro', );
-    }
-    
-  }
-
-  async function updateCachedSurvey(clientSurvey: any) {
-    try {
-      await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
-      const isFormCorrectlyFilled = await isFormFilled();
-      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormCorrectlyFilled);
-      navigateToNextScreen();
-    } catch (error) {
-      console.log('Error caching client survey', error);
-    }
-  }
-
-  async function selectPNGFile() {
-    let data: string = '';
-    if (Platform.OS === PlatformName.Mac) {
-      data = await FinderModule.getInstance().pickImage();
-    } else {
-      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
-      data = await Utils.getFileBase64FromURI(doc.uri) as string;
-    }
-    if (data) {
-      const fileName = 'organizationalChart.png';
-      setSelectedFilename(fileName);
-      const file: IFile = {
-        data,
-        filename: fileName
-      }
-      try {
-        const path = `${currentClient?.companyName ?? "noCompany"}/smqSurvey/`;
-        const uploadedLogo = await DocumentService.getInstance().uploadLogo(file, fileName, path);
-        setHasUploadedFile(true);
-        setShowDialog(false);
-        setFileID(uploadedLogo.id);
-        displayToast(t('smqSurvey.generalInfo.stepTwo.uploadSuccess'));
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(errorMessage, true);
+  // Load
+  async function loadInfos() {
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
+    if (currentSurvey && currentSurvey.value) {
+      const surveyData = JSON.parse(currentSurvey.value);
+      if (surveyData) {
+        setCompanyName(surveyData['2']);
+        setCompanyHistory(surveyData['3']);
+        setManagerName(surveyData['4']);
+        setMedicalDevices(surveyData['5']);
+        setClients(surveyData['6']);
+        setArea(surveyData['7']);
+        setActivity(surveyData['8']);
+        setQualityGoals(surveyData['9']);
+        setHasOrganizationalChart(surveyData['10']);
+        setHeadquartersAddress(surveyData['11']);
+        setPhoneNumber(surveyData['12']);
+        setEmail(surveyData['13']);
+        setFileID(surveyData['organizationalChartID']);
       }
     }
   }
 
-  async function selectPDFFile() {
-    const filename = 'organizationalChart.pdf';
-    setSelectedFilename(filename);
-    const path = `${currentClient?.companyName ?? "noCompany"}/smqSurvey/`;
-    let data: string = '';
-    if (Platform.OS !== PlatformName.Mac) {
-      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
-      data = await Utils.getFileBase64FromURI(doc.uri) as string;
-    } else {
-      data = await FinderModule.getInstance().pickPDF();
+  // Lifecycle Methods
+  useEffect(() => {
+    async function init() {
+      await loadInfos();
     }
-    try {
-      const file: IFile = { data, filename: filename}
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Creation,
-        actorIsAdmin: true,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: createdDocument.id,
-      }
-      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
-      setShowDialog(false);
-      setHasUploadedFile(true);
-      setFileID(createdDocument.id);
-      displayToast(t('smqSurvey.generalInfo.stepTwo.uploadSuccess'));
-    } catch (error) {
-      displayToast(t(`errors.api.${error}`), true);
-    }
-  }
+    init();
+  }, []);
+
+  useEffect(() => {
+    updateMainTitle();
+  }, [stepNumber]);
 
   // Components
   function ContinueButton() {
@@ -348,35 +149,9 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
     )
   }
 
-  function SelectOrgChartDialog() {
-    return (
-      <TooltipAction
-        showDialog={showDialog}
-        title={t('smqSurvey.generalInfo.stepTwo.uploadOrgChart')}
-        isConfirmAvailable={false}
-        isCancelAvailable={true}
-        onConfirm={() => {}}
-        onCancel={() => setShowDialog(false)}
-        popoverActions={popoverActions}
-      />
-    )
-  }
-
-  function ToastContent() {
-    return (
-      <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
-      </>
-    );
+  function print() {
+    const test = SMQManager.getInstance().getClientID();
+    console.log('tr', test );
   }
 
   function AdditionnalComponent() {
@@ -384,23 +159,25 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
       <View style={styles.additionalComponent}>
         <SurveyPageCounter page={stepNumber}/>
         {ContinueButton()}
+        <TouchableOpacity onPress={print}>
+          <Text>Print</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <>
-      <AppContainer
-        mainTitle={t('smqSurvey.generalInfo.title')}
-        showSearchText={false}
-        showSettings={false}
-        showBackButton={true}
-        navigateBack={navigateBack}
-        additionalComponent={AdditionnalComponent()}
-        navigationHistoryItems={navigationHistoryItems}
-      >
-        <>
-          {stepNumber === 1 && (
+    <AppContainer
+      mainTitle={mainTitle}
+      showSearchText={false}
+      showSettings={false}
+      showBackButton={true}
+      navigateBack={navigateBack}
+      additionalComponent={AdditionnalComponent()}
+    >
+      <>
+        {
+          stepNumber === 1 && (
             <SMQGeneralStepOne
               companyName={companyName} setCompanyName={setCompanyName}
               companyHistory={companyHistory} setCompanyHistory={setCompanyHistory}
@@ -409,37 +186,36 @@ function SMQGeneralScreen(props: SMQGeneralScreenProps): React.JSX.Element {
               clients={clients} setClients={setClients}
               area={area} setArea={setArea}
             />
-          )}
-          {
-            stepNumber === 2 && (
-              <SMQGeneralStepTwo
-                activity={activity} setActivity={setActivity}
-                qualityGoals={qualityGoals} setQualityGoals={setQualityGoals}
-                hasOrganizationalChart={hasOrganizationalChart} setHasOrganizationalChart={setHasOrganizationalChart}
-                headquartersAddress={headquartersAddress} setHeadquartersAddress={setHeadquartersAddress}
-                phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
-                email={email} setEmail={setEmail}
-                setShowDialog={setShowDialog}
-                hasUploadedFile={hasUploadedFile} selectedFilename={selectedFilename}
-              />
-            )
-          }
-          {
-            stepNumber === 3 && (
-              <SMQGeneralStepThree
-                website={website} setWebsite={setWebsite}
-                auditorsName={auditorsName} setAuditorsName={setAuditorsName}
-                auditorsFunction={auditorsFunction} setAuditorsFunction={setAuditorsFunction}
-                approversName={approversName} setApproversName={setApproversName}
-                approversFunction={approversFunction} setApproversFunction={setApproversFunction}
-              />
-            )
-          }
-        </>
-      </AppContainer>
-      {SelectOrgChartDialog()}
-      {ToastContent()}
-    </>
+          )
+        }
+        {
+          stepNumber === 2 && (
+            <SMQGeneralStepTwo
+              activity={activity} setActivity={setActivity}
+              qualityGoals={qualityGoals} setQualityGoals={setQualityGoals}
+              hasOrganizationalChart={hasOrganizationalChart} setHasOrganizationalChart={setHasOrganizationalChart}
+              headquartersAddress={headquartersAddress} setHeadquartersAddress={setHeadquartersAddress}
+              phoneNumber={phoneNumber} setPhoneNumber={setPhoneNumber}
+              email={email} setEmail={setEmail}
+              setShowDialog={setShowDialog}
+              hasUploadedFile={hasUploadedFile}
+              selectedFilename={selectedFilename}
+            />
+          )
+        }
+        {
+          stepNumber === 3 && (
+            <SMQGeneralStepThree
+              website={website} setWebsite={setWebsite}
+              auditorsName={auditorsName} setAuditorsName={setAuditorsName}
+              auditorsFunction={auditorsFunction} setAuditorsFunction={setAuditorsFunction}
+              approversName={approversName} setApproversName={setApproversName}
+              approversFunction={approversFunction} setApproversFunction={setApproversFunction}
+            />
+          )
+        }
+      </>
+    </AppContainer>
   );
 }
 

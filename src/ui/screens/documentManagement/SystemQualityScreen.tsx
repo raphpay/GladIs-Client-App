@@ -19,9 +19,8 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid/Grid';
 
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
+import SMQManager from '../../../business-logic/manager/SMQManager';
 import UserType from '../../../business-logic/model/enums/UserType';
-import CacheService from '../../../business-logic/services/CacheService';
 import { setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 import IconButton from '../../components/Buttons/IconButton';
@@ -43,7 +42,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   
   const { navigation } = props;
 
-  const { isAdmin, currentUser } = useAppSelector((state: RootState) => state.users);
+  const { isAdmin, currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
@@ -127,8 +126,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   async function navigateToSMQGeneral() {
-    dispatch(setSMQScreenSource(t('systemQuality.title')));
-    await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
+    dispatch(setSMQScreenSource(NavigationRoutes.SystemQualityScreen));
+    SMQManager.getInstance().setClientID(currentClient?.id as string);
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 

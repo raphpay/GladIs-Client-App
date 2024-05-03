@@ -3,12 +3,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
 import ISurvey from '../../../business-logic/model/ISurvey';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import SurveyService from '../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setCurrentSurvey, setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
+import { setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
@@ -62,7 +63,8 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   }
 
   function navigateToSurvey(survey: ISurvey) {
-    dispatch(setCurrentSurvey(survey));
+    SMQManager.getInstance().set(survey);
+    SMQManager.getInstance().setClientID(survey.client.id);
     dispatch(setSMQScreenSource(NavigationRoutes.SurveysScreen));
     dispatch(setIsUpdatingSurvey(true));
     setShowActionDialog(false);

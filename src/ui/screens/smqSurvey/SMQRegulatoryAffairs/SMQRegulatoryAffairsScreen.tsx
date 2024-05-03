@@ -1,17 +1,15 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 import IAction from '../../../../business-logic/model/IAction';
-import { ISurveyInput } from '../../../../business-logic/model/ISurvey';
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import CacheService from '../../../../business-logic/services/CacheService';
-import SurveyService from '../../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { resetCurrentSurvey, setSMQSurveysListCount } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
+
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
@@ -20,8 +18,9 @@ import Dialog from '../../../components/Dialogs/Dialog';
 import SurveyPageCounter from '../../../components/SurveyPageCounter';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
+import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
+import CacheService from '../../../../business-logic/services/CacheService';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
-
 
 type SMQRegulatoryAffairsProps = NativeStackScreenProps<ISMQSurveyParams, NavigationRoutes.SMQRegulatoryAffairsScreen>;
 
@@ -30,8 +29,7 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
   const { t } = useTranslation();
   const { navigation } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey, smqScreenSource, smqSurveysListCount } = useAppSelector((state: RootState) => state.smq);
+  const { smqScreenSource, smqSurveysListCount } = useAppSelector((state: RootState) => state.smq);
   const dispatch = useAppDispatch();
   // States
   const [processusPilotName, setProcessusPilotName] = React.useState<string>('');
@@ -48,13 +46,23 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
 
   // Sync Methods
   function navigateBack() {
-    navigation.goBack();
+    if (smqScreenSource === NavigationRoutes.SurveysScreen) {
+      console.log('sour', smqScreenSource );
+    } else {
+      // navigation.goBack();
+      console.log('sour', smqScreenSource );
+    }
   }
 
-  function isFormFilled() {
-    let isFilled = false;
-    isFilled = processusPilotName.length > 0;
-    return isFilled;
+  async function loadInfos() {
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
+    if (currentSurvey) {
+      const surveyData = JSON.parse(currentSurvey?.value);
+      if (surveyData) {
+        setProcessusPilotName(surveyData['31']);
+        setSafeguardMeasures(surveyData['32']);
+      }
+    }
   }
 
   // Async Methods
@@ -62,121 +70,38 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
     if (smqScreenSource === NavigationRoutes.SurveysScreen) {
       navigation.navigate(NavigationRoutes.SurveysScreen);
     } else {
-      const clientSurvey = await buildClientSurvey();
-      const isFormFilledCached = await CacheService.getInstance().retrieveValue(CacheKeys.isSMQFormFilled);
-      if (isFormFilled() && isFormFilledCached) {
-        await sendClientSurvey(clientSurvey, currentClient?.id as string);
+      const isFormFilled = SMQManager.getInstance().getHasFilledForm();
+      if (isFormFilled) {
+        await sendSurveyToAPI();
       } else {
         setShowWarningDialog(true);
       }
     }
   }
 
-  // TODO: Save this correctly like the other screens
-  async function buildClientSurvey(): Promise<any> {
-    let currentClientID: string;
-    if (currentSurvey) {
-      currentClientID = currentSurvey.client.id as string;
-    } else {
-      currentClientID = currentClient?.id as string;
-    }
-    const clientSurvey = {
-      "currentClientID": currentClientID,
-      "survey": {
-        "31": processusPilotName,
-        "32": safeguardMeasures
-      }
-    };
-
-    // Retrieve existing client survey data
-    let cachedSurvey: any;
+  async function sendSurveyToAPI() {
+    await SMQManager.getInstance().continueAfterRegulatoryAffairsScreen(processusPilotName, safeguardMeasures);
     try {
-      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+      await SMQManager.getInstance().sendToAPI(token);
     } catch (error) {
-      console.log('Error retrieving cached survey', error);
+      console.log('Show error', error);
     }
-
-    if (cachedSurvey.survey) {
-      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
-      const survey = {
-        "currentClientID": currentClient?.id,
-        "survey": concatenetedJSON,
-      };
-      cachedSurvey = survey;
-    } else {
-      cachedSurvey = clientSurvey;
-    }
-
-    return cachedSurvey;
-  }
-
-  async function sendClientSurvey(clientSurvey: any, clientID: string) {
-    try {
-      const apiSurvey: ISurveyInput = {
-        value: JSON.stringify(clientSurvey),
-        clientID
-      };
-      await SurveyService.getInstance().createSurvey(apiSurvey, token);
-    } catch (error) {
-      console.log('Error saving survey', error);
-    }
-    await removeCachedSurvey();
     dispatch(resetCurrentSurvey());
     dispatch(setSMQSurveysListCount(smqSurveysListCount + 1));
-    setShowWarningDialog(false);
     navigation.navigate(NavigationRoutes.SystemQualityScreen);
   }
 
   async function sendWithoutFilledForm() {
-    const clientSurvey = await buildClientSurvey();
-    await sendClientSurvey(clientSurvey, currentClient?.id as string);
+    setShowWarningDialog(false);
+    await sendSurveyToAPI();
   }
-
-  async function removeCachedSurvey() {
-    try {
-      await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
-    } catch (error) {
-      console.log('Error caching client survey', error);
-    }
-  }
-
-  async function loadInfos() {
-    if (currentSurvey) {
-      loadFromCurrentSurvey();
-    } else {
-      await loadFromCache();
-    }
-  }
-
-  async function loadFromCurrentSurvey() {
-    const surveyValue = JSON.parse(currentSurvey.value);
-    const regulatoryAffairs = surveyValue?.survey;
-    if (regulatoryAffairs) {
-      setProcessusPilotName(regulatoryAffairs[31]);
-      setSafeguardMeasures(regulatoryAffairs[32]);
-    }
-  }
-
-  async function loadFromCache() {
-    try {
-      const cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      const regulatoryAffairs = cachedSurvey?.survey?.prs?.regulatoryAffairs;
-      if (regulatoryAffairs) {
-        setProcessusPilotName(regulatoryAffairs.processusPilotName);
-        setSafeguardMeasures(regulatoryAffairs.safeguardMeasures);
-      }
-    } catch (error) {
-      console.log('Error retrieving cached value', error);
-    }
-  }
-
 
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadInfos();
     }
-    init()
+    init();
   }, []);
 
   // Components
@@ -192,11 +117,19 @@ function SMQRegulatoryAffairs(props: SMQRegulatoryAffairsProps): React.JSX.Eleme
     );
   }
 
+  async function print() {
+    const cache = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
+    const survey = await SMQManager.getInstance().getSurvey();
+  }
+
   function AdditionnalComponent() {
     return (
       <View style={styles.additionalComponent}>
         <SurveyPageCounter page={10}/>
         {FinishButton()}
+        <TouchableOpacity onPress={print}>
+          <Text>Hello</Text>
+        </TouchableOpacity>
       </View>
     );
   }

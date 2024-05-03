@@ -3,12 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 import IAction from '../../../../business-logic/model/IAction';
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import CacheService from '../../../../business-logic/services/CacheService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
-import { RootState } from '../../../../business-logic/store/store';
 
 import { ISMQSurveyParams } from '../../../../navigation/Routes';
 
@@ -25,8 +22,6 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
 
   const { navigation } = props;
   const { t } = useTranslation();
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
 
   // States
   const [processusPilotName, setProcessusPilotName] = useState<string>('');
@@ -43,82 +38,19 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
     navigation.goBack();
   }
 
-  function isFormFilled() {
-    let isFilled = false;
-    if (processusPilotName.length > 0) {
-      isFilled = true;
-    }
-    return isFilled;
-  }
-
   // Async Methods
   async function tappedContinue() {
-    const clientSurvey = {
-      "currentClientID": currentClient?.id,
-      "survey": {
-        "19": processusPilotName
-      }
-    };
-
-    let cachedSurvey: any;
-
-    try {
-      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    } catch (error) {
-      console.log('Error retrieving cached survey', error);
-    }
-
-
-    if (cachedSurvey.survey) {
-      const concatenetedJSON = Object.assign(cachedSurvey.survey, clientSurvey.survey);
-      const survey = {
-        "currentClientID": currentClient?.id,
-        "survey": concatenetedJSON,
-      };
-      await saveClientSurvey(survey);
-    } else {
-      await saveClientSurvey(clientSurvey);
-    }
-  }
-
-  async function saveClientSurvey(clientSurvey: any) {
-    try {
-      await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.clientSurvey, clientSurvey);
-      await CacheService.getInstance().storeValue(CacheKeys.isSMQFormFilled, isFormFilled());
-      navigation.navigate(NavigationRoutes.SMQMeasurementAndImprovement);
-    } catch (error) {
-      console.log('Error caching client survey', error);
-    }
+    await SMQManager.getInstance().continueAfterManagementScreen(processusPilotName);
+    navigation.navigate(NavigationRoutes.SMQMeasurementAndImprovement);
   }
 
   async function loadInfos() {
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
     if (currentSurvey) {
-      loadFromCurrentSurvey();
-    } else {
-      await loadFromCache();
-    }
-  }
-
-  async function loadFromCurrentSurvey() {
-    const surveyValue = JSON.parse(currentSurvey.value);
-    const processusPilotName = surveyValue?.survey[19];
-    if (processusPilotName) {
-      setProcessusPilotName(processusPilotName);
-    }
-  }
-
-  async function loadFromCache() {
-    let cachedSurvey: any;
-    try {
-      cachedSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-    } catch (error) {
-      console.log('Error retrieving cached value', error);
-    }
-
-    const processusPilotName = cachedSurvey?.survey?.prs?.management?.processusPilotName;
-    if (processusPilotName) {
-      setProcessusPilotName(processusPilotName);
+      const surveyData = JSON.parse(currentSurvey?.value);
+      if (surveyData) {
+        setProcessusPilotName(surveyData['19']);
+      }
     }
   }
 
@@ -127,7 +59,7 @@ function SMQManagementScreen(props: SMQManagementScreenProps): React.JSX.Element
     async function init() {
       await loadInfos();
     }
-    init()
+    init();
   }, []);
 
   // Components
