@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: Fonts.poppinsLight,
   },
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: Fonts.poppinsSemiBold
+  },
   selectedFileText: {
     fontSize: 16,
     fontFamily: Fonts.poppinsLight,

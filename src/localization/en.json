@@ -263,6 +263,7 @@
   "smqSurvey": {
     "continue": "Continue",
     "finish": "Finish",
+    "title": "SMQ Documentation Survey",
     "generalInfo": {
       "title": "General Information",
       "stepOne": {
@@ -347,12 +348,21 @@
         "description": "The form is not completely filled. Are you sure you want to continue?",
         "confirm": "Yes",
         "cancel": "No"
+      },
+      "back": {
+        "title": "Warning",
+        "description": "Do you want to save the survey in its current state?",
+        "confirm": "Yes, save",
+        "cancel": "No, go back"
       }
     },
     "dates": {
       "createdOn": "Created on",
       "at": "at",
       "updatedOn": "Updated on"
+    },
+    "buttons": {
+      "send": "Send",
     }
   },
   "components": {

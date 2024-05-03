@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 import { ICheckBoxOption } from '../../../../business-logic/model/IModule';
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
-import CacheService from '../../../../business-logic/services/CacheService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 
@@ -31,6 +30,8 @@ type SMQGeneralStepTwoProps = {
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
   hasUploadedFile: boolean;
   selectedFilename: string;
+  setFileID: React.Dispatch<React.SetStateAction<string>>;
+  showNavigationDialog: boolean;
 };
 
 function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
@@ -43,7 +44,8 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
     phoneNumber, setPhoneNumber,
     email, setEmail,
     setShowDialog,
-    hasUploadedFile, selectedFilename
+    hasUploadedFile, selectedFilename, setFileID,
+    showNavigationDialog
   } = props;
   const { t } = useTranslation();
   const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
@@ -91,30 +93,18 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
 
   // Async Methods
   async function loadInfos() {
-    if (currentSurvey) {
-      loadFromCurrentSurvey();
-    } else {
-      await loadFromCache();
-    }
-  }
-
-  async function loadFromCache() {
-    try {
-      const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedClientSurvey) {
-        const generalSection = cachedClientSurvey?.survey?.generalSection;
-        if (generalSection) {
-          setActivity(generalSection.activity);
-          setQualityGoals(generalSection.qualityGoals);
-          setHasOrganizationalChart(generalSection.hasOrganizationalChart);
-          setHeadquartersAddress(generalSection.headquartersAddress);
-          setPhoneNumber(generalSection.phoneNumber);
-          setEmail(generalSection.email);
-          setSelectedOptionID(generalSection.hasOrganizationalChart ? '1' : '2');
-        }
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
+    if (currentSurvey && currentSurvey.value) {
+      const surveyData = JSON.parse(currentSurvey.value);
+      if (surveyData) {
+        setActivity(surveyData['8']);
+        setQualityGoals(surveyData['9']);
+        setHasOrganizationalChart(surveyData['10']);
+        setHeadquartersAddress(surveyData['11']);
+        setPhoneNumber(surveyData['12']);
+        setEmail(surveyData['13']);
+        setFileID(surveyData['organizationalChartID']);
       }
-    } catch (error) {
-      console.log('Error retrieving cached client survey value', error);
     }
   }
 
@@ -129,12 +119,13 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
   // TODO: Add trash button to remove selected file
   // Components
   return (
-    <ScrollView>
+    <>
       <GladisTextInput
         value={activity}
         onValueChange={setActivity}
         placeholder={t('smqSurvey.generalInfo.stepTwo.activity')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
       <ExpandingTextInput
         text={qualityGoals}
@@ -174,20 +165,23 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
         onValueChange={setHeadquartersAddress}
         placeholder={t('smqSurvey.generalInfo.stepTwo.headquartersAddress')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
       <GladisTextInput
         value={phoneNumber}
         onValueChange={setPhoneNumber}
         placeholder={t('smqSurvey.generalInfo.stepTwo.phoneNumber')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
       <GladisTextInput
         value={email}
         onValueChange={setEmail}
         placeholder={t('smqSurvey.generalInfo.stepTwo.email')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
-    </ScrollView>
+    </>
   );
 }
 

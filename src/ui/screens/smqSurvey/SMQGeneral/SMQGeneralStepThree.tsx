@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
 
 import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
 import CacheService from '../../../../business-logic/services/CacheService';
@@ -20,6 +19,7 @@ type SMQGeneralStepThreeProps = {
   setApproversName: React.Dispatch<React.SetStateAction<string>>;
   approversFunction: string;
   setApproversFunction: React.Dispatch<React.SetStateAction<string>>;
+  showNavigationDialog: boolean;
 };
 
 function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element {
@@ -30,6 +30,7 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
     auditorsFunction, setAuditorsFunction,
     approversName, setApproversName,
     approversFunction, setApproversFunction,
+    showNavigationDialog,
   } = props;
   const { t } = useTranslation();
   const { currentSurvey } = useAppSelector((state: RootState) => state.smq);
@@ -84,38 +85,43 @@ function SMQGeneralStepThree(props: SMQGeneralStepThreeProps): React.JSX.Element
 
   // Components
   return (
-    <ScrollView>
+    <>
       <GladisTextInput
         value={website}
         onValueChange={setWebsite}
         placeholder={t('smqSurvey.generalInfo.stepThree.website')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
       <GladisTextInput
         value={auditorsName}
         onValueChange={setAuditorsName}
         placeholder={t('smqSurvey.generalInfo.stepThree.auditorsName')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
       <GladisTextInput
         value={auditorsFunction}
         onValueChange={setAuditorsFunction}
         placeholder={t('smqSurvey.generalInfo.stepThree.auditorsFunction')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
       <GladisTextInput
         value={approversName}
         onValueChange={setApproversName}
         placeholder={t('smqSurvey.generalInfo.stepThree.approversName')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
       <GladisTextInput
         value={approversFunction}
         onValueChange={setApproversFunction}
         placeholder={t('smqSurvey.generalInfo.stepThree.approversFunction')}
         showTitle={true}
+        editable={!showNavigationDialog}
       />
-    </ScrollView>
+    </>
   );
 }
 

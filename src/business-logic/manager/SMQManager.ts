@@ -76,11 +76,6 @@ class SMQManager {
       this.surveyData = survey;
     } else {
       // Merge new data with existing survey data
-      // const value = JSON.parse(this.surveyData.value);
-      // const concatenetedJSON = Object.assign(newData, value);
-      // this.surveyData.value = JSON.stringify(concatenetedJSON);
-
-      // Merge new data with existing survey data
       const value = JSON.parse(this.surveyData.value);
 
       // Only add properties from newData to value if they don't already exist in value
@@ -106,6 +101,7 @@ class SMQManager {
             value,
             clientID: id
           }
+          console.log('input', input );
           await SurveyService.getInstance().createSurvey(input, token);
           this.surveyData = null;
           await CacheService.getInstance().removeValueAt(CacheKeys.clientSurvey);
@@ -234,22 +230,17 @@ class SMQManager {
 
   // Client Relation Screen
   async continueAfterClientRelationScreen(
-    processusPilotName: string, orderDeliveryNote: string,
-    productsSold: string, orderDeliveryNoteID: string | undefined,
+    processusPilotName: string, orderDeliveryNoteID: string | undefined,
     productsSoldID: string | undefined
   ) {
     const clientRelationData = {
       "26": processusPilotName,
-      "27": orderDeliveryNote,
-      "28": productsSold,
-      orderDeliveryNoteID: orderDeliveryNoteID,
-      productsSoldID: productsSoldID,
+      "27": orderDeliveryNoteID,
+      "28": productsSoldID,
     };
     await this.addFields(clientRelationData);
     let isFilled = false;
     isFilled = processusPilotName !== '' &&
-      orderDeliveryNote !== '' &&
-      productsSold !== '' &&
       orderDeliveryNoteID !== undefined &&
       productsSoldID !== undefined;
     this.setHasFilledForm(isFilled);
