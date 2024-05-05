@@ -87,7 +87,7 @@ export type IRootStackParams = {
   // SMQ Surveys
   SurveysScreen: undefined,
   // Forms
-  FormsDocumentScreen: undefined,
+  FormsDocumentScreen: { documentPath: string },
   FormEditionScreen: undefined,
 }
 
