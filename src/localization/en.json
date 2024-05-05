@@ -640,7 +640,9 @@
         "title": "Are you sure you want to remove this form ?",
         "description": "The deletion is definitive.",
         "confirm": "Yes",
-        "cancel": "No"
+        "cancel": "No",
+        "success": "Form successfully removed",
+        "forbiddenAction": "You don't have the right to remove this form"
       },
       "tooltip": {
         "title": "Actions on the form",

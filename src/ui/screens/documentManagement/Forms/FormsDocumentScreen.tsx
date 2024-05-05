@@ -18,6 +18,7 @@ import IconButton from '../../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../../components/ContentUnavailableView';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Grid from '../../../components/Grid/Grid';
+import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
 
@@ -38,6 +39,10 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   // Dialogs
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showRemoveConfirmationDialog, setShowRemoveConfirmationDialog] = useState<boolean>(false);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const formsFiltered = forms.filter(form =>
     form.title.toLowerCase().includes(searchText.toLowerCase()),
@@ -80,9 +85,20 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
 
   function displayRemoveConfirmationDialog() {
     if (selectedForm) {
-      setShowDialog(false);
-      setShowRemoveConfirmationDialog(true);
+      if (currentUser?.userType === UserType.Admin) {
+        setShowDialog(false);
+        setShowRemoveConfirmationDialog(true);
+      } else {
+        setShowDialog(false);
+        displayToast(t('forms.actions.remove.forbiddenAction'), true);
+      }
     }
+  }
+
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
   }
 
   // Async Methods
@@ -97,7 +113,18 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   async function deleteForm() {
-    console.log('delete', selectedForm);
+    try {
+      const selectedFormID = selectedForm.id as string;
+      await FormService.getInstance().delete(selectedFormID, token);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+    }
+    
+    await loadForms();
+
+    setShowRemoveConfirmationDialog(false);
+    displayToast(t('forms.actions.remove.success'));
   }
 
   // Lifecycle Methods
@@ -158,6 +185,23 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     )
   }
 
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -189,6 +233,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
       </AppContainer>
       { TooltipActionContent() }
       { showRemoveConfirmationDialog && RemoveDialogContent() }
+      { ToastContent() }
     </>
   );
 }

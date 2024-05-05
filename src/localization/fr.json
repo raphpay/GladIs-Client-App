@@ -640,10 +640,12 @@
       "addRow": "Ajouter une ligne",
       "exportToCSV": "Exporter en CSV",
       "remove": {
-        "title": "Etes-vous sûr de vouloir supprimer cette ligne ?",
+        "title": "Etes-vous sûr de vouloir supprimer ce formulaire ?",
         "description": "La suppression est définitive.",
         "confirm": "Oui",
-        "cancel": "Non"
+        "cancel": "Non",
+        "success": "Formulaire supprimée avec succès",
+        "forbiddenAction": "Vous n'avez pas le droit de supprimer ce formulaire"
       },
       "tooltip": {
         "title": "Actions sur le formulaire",
