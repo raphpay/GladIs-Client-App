@@ -87,12 +87,17 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
 
   function navigateTo(item: IProcessItem) {
     dispatch(setDocumentListCount(documentListCount + 1));
-    navigation.navigate(NavigationRoutes.DocumentsScreen, {
-      previousScreen: 'process',
-      processNumber: processNumber,
-      currentScreen: item.title,
-      documentsPath: `process${processNumber}/${item.title}`
-    });
+    console.log('itel', item );
+    if (item.id === 'formsID') {
+      navigation.navigate(NavigationRoutes.FormsDocumentScreen);
+    } else {
+      navigation.navigate(NavigationRoutes.DocumentsScreen, {
+        previousScreen: 'process',
+        processNumber: processNumber,
+        currentScreen: item.title,
+        documentsPath: `process${processNumber}/${item.title}`
+      });
+    }
   }
 
   // Components

@@ -622,5 +622,11 @@
   "legal": {
     "appName": "GladIs",
     "developer": "Developpé par TwinPaw"
+  },
+  "forms": {
+    "title": "Formulaires",
+    "buttons": {
+      "add": "Ajouter un formulaire",
+    }
   }
 }

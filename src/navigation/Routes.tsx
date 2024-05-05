@@ -52,6 +52,7 @@ import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
 // Forms
 import FormEditionScreen from '../ui/screens/documentManagement/Forms/FormEditionScreen';
+import FormsDocumentScreen from '../ui/screens/documentManagement/Forms/FormsDocumentScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -85,7 +86,8 @@ export type IRootStackParams = {
   MessagesScreen: undefined,
   // SMQ Surveys
   SurveysScreen: undefined,
-  // Form Creation
+  // Forms
+  FormsDocumentScreen: undefined,
   FormEditionScreen: undefined,
 }
 
@@ -258,6 +260,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SurveysScreen}
         component={SurveysScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.FormsDocumentScreen}
+        component={FormsDocumentScreen}
         options={{headerShown: false}}
       />
       <RootStack.Screen
