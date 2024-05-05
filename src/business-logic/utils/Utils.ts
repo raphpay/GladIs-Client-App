@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import { IFormCell } from "../model/IForm";
 import PlatformName from "../model/enums/PlatformName";
 
 /**
@@ -270,6 +271,15 @@ class Utils {
       var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
+  }
+
+  static csvToGrid(value: string): IFormCell[][] {
+    const rows = value.split('\n');
+    const grid = rows.map(row => {
+      const cells = row.split(',');
+      return cells.map(cellValue => ({ id: Utils.generateUUID(), value: cellValue, isTitle: false }));
+    });
+    return grid;
   }
 }
 

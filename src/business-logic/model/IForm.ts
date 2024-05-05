@@ -14,3 +14,9 @@ export interface IFormInput {
   clientID: string;
   value: string;
 }
+
+export interface IFormCell {
+  id: string;
+  value: string;
+  isTitle: boolean;
+}

@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 
 import IArea from '../business-logic/model/IArea';
 import IDocument from '../business-logic/model/IDocument';
+import IForm from '../business-logic/model/IForm';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
@@ -88,7 +89,7 @@ export type IRootStackParams = {
   SurveysScreen: undefined,
   // Forms
   FormsDocumentScreen: { documentPath: string },
-  FormEditionScreen: undefined,
+  FormEditionScreen: { form? : IForm },
 }
 
 export type IClientCreationStack = {

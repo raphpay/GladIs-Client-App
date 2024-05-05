@@ -1,11 +1,12 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
 import IAction from '../../../../business-logic/model/IAction';
+import { IFormCell } from '../../../../business-logic/model/IForm';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -16,21 +17,16 @@ import FormTextInput from '../DocumentScreen/FormTextInput';
 
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
-interface ICell {
-  id: string;
-  value: string;
-  isTitle: boolean;
-}
-
 type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
 
 function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   const { navigation } = props;
+  const { form } = props.route.params;
   const { t } = useTranslation();
   // States
   const [showActionDialog, setShowActionDialog] = useState(false);
-  const [grid, setGrid] = useState<ICell[][]>([[]]);
+  const [grid, setGrid] = useState<IFormCell[][]>([[]]);
   // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
@@ -61,7 +57,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   function addColumn() {
-    let updatedGrid: ICell[][];
+    let updatedGrid: IFormCell[][];
 
     updatedGrid = grid.map((row, index) => {
       const newCell = { id: Utils.generateUUID(), value: '', isTitle: index === 0 };
@@ -117,6 +113,20 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     // It should be disabled if no grid is present, no title is set
     console.log('Save form');
   }
+
+  function loadFormInfo() {
+    // TODO: Load more infos
+    if (form) {
+      setFormTitle(form.title);
+      const gridFromCSV = Utils.csvToGrid(form.value);
+      setGrid(gridFromCSV);
+    }
+  }
+
+  // Lifecycle Methods
+  useEffect(() => {
+    loadFormInfo();
+  }, []);
 
   // Components
   function ActionButton() {
