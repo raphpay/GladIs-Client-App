@@ -639,6 +639,12 @@
       "addColumn": "Ajouter une colonne",
       "addRow": "Ajouter une ligne",
       "exportToCSV": "Exporter en CSV",
+      "remove": {
+        "title": "Etes-vous sûr de vouloir supprimer cette ligne ?",
+        "description": "La suppression est définitive.",
+        "confirm": "Oui",
+        "cancel": "Non"
+      },
       "tooltip": {
         "title": "Actions sur le formulaire",
         "open": "Ouvrir",

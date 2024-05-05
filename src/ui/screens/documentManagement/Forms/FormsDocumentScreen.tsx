@@ -16,6 +16,7 @@ import { RootState } from '../../../../business-logic/store/store';
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../../components/ContentUnavailableView';
+import Dialog from '../../../components/Dialogs/Dialog';
 import Grid from '../../../components/Grid/Grid';
 import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
@@ -30,10 +31,13 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
   // States
+  const [searchText, setSearchText] = useState<string>('');
+  // Form
   const [forms, setForms] = useState<IForm[]>([]);
   const [selectedForm, setSelectedForm] = useState<IForm>({} as IForm);
-  const [searchText, setSearchText] = useState<string>('');
+  // Dialogs
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showRemoveConfirmationDialog, setShowRemoveConfirmationDialog] = useState<boolean>(false);
 
   const formsFiltered = forms.filter(form =>
     form.title.toLowerCase().includes(searchText.toLowerCase()),
@@ -49,7 +53,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     },
     {
       title: t('forms.actions.tooltip.remove'),
-      onPress: () => deleteForm(),
+      onPress: () => displayRemoveConfirmationDialog(),
       isDestructive: true,
     }
   ];
@@ -74,6 +78,13 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     }
   }
 
+  function displayRemoveConfirmationDialog() {
+    if (selectedForm) {
+      setShowDialog(false);
+      setShowRemoveConfirmationDialog(true);
+    }
+  }
+
   // Async Methods
   async function loadForms() {
     try {
@@ -86,9 +97,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   async function deleteForm() {
-    if (selectedForm) {
-      console.log('dele', selectedForm );
-    }
+    console.log('delete', selectedForm);
   }
 
   // Lifecycle Methods
@@ -114,6 +123,24 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         }
       </>
     );
+  }
+
+  function RemoveDialogContent() {
+    return (
+      <Dialog
+        title={t('forms.actions.remove.title')}
+        description={t('forms.actions.remove.description')}
+        confirmTitle={t('forms.actions.remove.confirm')}
+        cancelTitle={t('forms.actions.remove.cancel')}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
+        onConfirm={() => deleteForm()}
+        onCancel={() => {
+          setShowDialog(true);
+          setShowRemoveConfirmationDialog(false);
+        }}
+      />
+    )
   }
 
   function TooltipActionContent() {
@@ -161,6 +188,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         }
       </AppContainer>
       { TooltipActionContent() }
+      { showRemoveConfirmationDialog && RemoveDialogContent() }
     </>
   );
 }

@@ -636,6 +636,12 @@
       "addColumn": "Add a column",
       "addRow": "Add a row",
       "exportToCSV": "Export to CSV",
+      "remove": {
+        "title": "Are you sure you want to remove this form ?",
+        "description": "The deletion is definitive.",
+        "confirm": "Yes",
+        "cancel": "No"
+      },
       "tooltip": {
         "title": "Actions on the form",
         "open": "Open",
