@@ -49,14 +49,8 @@ import SurveysScreen from '../ui/screens/dashboard/SurveysScreen';
 // Chat
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 // SMQ Survey
-import SMQBuyScreen from '../ui/screens/smqSurvey/SMQBuy/SMQBuyScreen';
-import SMQClientRelationScreen from '../ui/screens/smqSurvey/SMQClientRelation/SMQClientRelationScreen';
-import SMQFabricationDevelopmentScreen from '../ui/screens/smqSurvey/SMQFabricationDevelopment/SMQFabricationDevelopmentScreen';
 import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
-import SMQManagementScreen from '../ui/screens/smqSurvey/SMQManagement/SMQManagementScreen';
-import SMQMeasurementAndImprovement from '../ui/screens/smqSurvey/SMQMeasurement/SMQMeasurementAndImprovement';
 import SMQRegulatoryAffairsScreen from '../ui/screens/smqSurvey/SMQRegulatoryAffairs/SMQRegulatoryAffairsScreen';
-import SMQResourcesManagementScreen from '../ui/screens/smqSurvey/SMQResourcesManagement/SMQResourcesManagementScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -108,12 +102,6 @@ export type IClientManagementParams = {
 
 export type ISMQSurveyParams = {
   SMQGeneralScreen: undefined,
-  SMQManagementScreen: undefined,
-  SMQMeasurementAndImprovement: undefined,
-  SMQFabricationDevelopmentScreen: undefined
-  SMQClientRelationScreen: undefined,
-  SMQBuyScreen: undefined,
-  SMQResourcesManagementScreen: undefined,
   SMQRegulatoryAffairsScreen: undefined,
 }
 
@@ -184,36 +172,6 @@ function SMQSurvey() {
       <SMQSurveyStack.Screen
         name={NavigationRoutes.SMQGeneralScreen}
         component={SMQGeneralScreen}
-        options={{headerShown: false}}
-      />
-      <SMQSurveyStack.Screen
-        name={NavigationRoutes.SMQManagementScreen}
-        component={SMQManagementScreen}
-        options={{headerShown: false}}
-      />
-      <SMQSurveyStack.Screen
-        name={NavigationRoutes.SMQMeasurementAndImprovement}
-        component={SMQMeasurementAndImprovement}
-        options={{headerShown: false}}
-      />
-      <SMQSurveyStack.Screen
-        name={NavigationRoutes.SMQFabricationDevelopmentScreen}
-        component={SMQFabricationDevelopmentScreen}
-        options={{headerShown: false}}
-      />
-      <SMQSurveyStack.Screen
-        name={NavigationRoutes.SMQClientRelationScreen}
-        component={SMQClientRelationScreen}
-        options={{headerShown: false}}
-      />
-      <SMQSurveyStack.Screen
-        name={NavigationRoutes.SMQBuyScreen}
-        component={SMQBuyScreen}
-        options={{headerShown: false}}
-      />
-      <SMQSurveyStack.Screen
-        name={NavigationRoutes.SMQResourcesManagementScreen}
-        component={SMQResourcesManagementScreen}
         options={{headerShown: false}}
       />
       <SMQSurveyStack.Screen

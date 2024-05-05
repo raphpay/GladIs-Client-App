@@ -10,7 +10,7 @@ import PasswordResetService from '../../../business-logic/services/PasswordReset
 import SurveyService from '../../../business-logic/services/SurveyService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { setSMQSurveysListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import styles from '../../assets/styles/components/DashboardAdminGridStyles';
@@ -36,11 +36,8 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
-  const {
-    clientListCount,
-    passwordResetTokenCount,
-    smqSurveysListCount,
-  } = useAppSelector((state: RootState) => state.appState);
+  const { clientListCount, passwordResetTokenCount } = useAppSelector((state: RootState) => state.appState);
+  const { smqSurveysListCount } = useAppSelector((state: RootState) => state.smq);
   const dispatch = useAppDispatch();
 
   const { t } = useTranslation();

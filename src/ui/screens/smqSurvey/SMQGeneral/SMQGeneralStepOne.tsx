@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView } from 'react-native';
+import { Text } from 'react-native';
 
-import CacheKeys from '../../../../business-logic/model/enums/CacheKeys';
-import CacheService from '../../../../business-logic/services/CacheService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
-import { RootState } from '../../../../business-logic/store/store';
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 
-import UserService from '../../../../business-logic/services/UserService';
 import ExpandingTextInput from '../../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
+
+import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQGeneralStepOneProps = {
   companyName: string;
@@ -24,6 +22,7 @@ type SMQGeneralStepOneProps = {
   setClients: React.Dispatch<React.SetStateAction<string>>;
   area: string;
   setArea: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 };
 
 function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
@@ -35,61 +34,24 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
     medicalDevices, setMedicalDevices,
     clients, setClients,
     area, setArea,
+    editable
   } = props;
 
   const { t } = useTranslation();
-  const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { currentSurvey } = useAppSelector((state: RootState) => state.appState);
 
   // Async Methods
   async function loadInfos() {
-    if (currentSurvey) {
-      loadFromCurrentSurvey();
-    } else {
-      await loadFromCache();
-    }
-  }
-
-  async function loadFromCurrentSurvey() {
-    try {
-      const clientID = currentSurvey?.client.id;
-      const client = await UserService.getInstance().getUserByID(clientID, token);
-      setCompanyName(client.companyName);
-    } catch (error) {
-      console.log('Error loading client by ID', error);
-    }
-    
-    const surveyValue = JSON.parse(currentSurvey.value);
-    const survey = surveyValue?.survey;
-    console.log('s',survey[10] );
-    if (survey) {
-      setCompanyHistory(survey[2]);
-      setManagerName(survey[3]);
-      setMedicalDevices(survey[4]);
-      setClients(survey[5]);
-      setArea(survey[6]);
-    }
-  }
-
-  async function loadFromCache() {
-    if (currentClient) {
-      setCompanyName(currentClient.companyName);
-    }
-    try {
-      const cachedClientSurvey = await CacheService.getInstance().retrieveValue(CacheKeys.clientSurvey);
-      if (cachedClientSurvey) {
-        const generalSection = cachedClientSurvey?.survey?.generalSection;
-        if (generalSection) {
-          setCompanyHistory(generalSection.companyHistory);
-          setManagerName(generalSection.managerName);
-          setMedicalDevices(generalSection.medicalDevices);
-          setClients(generalSection.clients);
-          setArea(generalSection.area);
-        }
+    const currentSurvey = await SMQManager.getInstance().getSurvey();
+    if (currentSurvey && currentSurvey.value) {
+      const surveyData = JSON.parse(currentSurvey.value);
+      if (surveyData) {
+        setCompanyName(surveyData['2']);
+        setCompanyHistory(surveyData['3']);
+        setManagerName(surveyData['4']);
+        setMedicalDevices(surveyData['5']);
+        setClients(surveyData['6']);
+        setArea(surveyData['7']);
       }
-    } catch (error) {
-      console.log('Error retrieving cached client survey value', error);
     }
   }
 
@@ -103,12 +65,14 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
 
   // Components
   return (
-    <ScrollView>
+    <>
+      <Text style={styles.sectionTitle}>{t('smqSurvey.generalInfo.title')}</Text>
       <GladisTextInput
         value={companyName}
         onValueChange={setCompanyName}
         placeholder={t('quotation.companyName')}
         showTitle={true}
+        editable={editable}
       />
       <ExpandingTextInput
         text={companyHistory}
@@ -120,26 +84,30 @@ function SMQGeneralStepOne(props: SMQGeneralStepOneProps): React.JSX.Element {
         onValueChange={setManagerName}
         placeholder={t('smqSurvey.generalInfo.stepOne.managerName')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={medicalDevices}
         onValueChange={setMedicalDevices}
         placeholder={t('smqSurvey.generalInfo.stepOne.medicalDevices')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={clients}
         onValueChange={setClients}
         placeholder={t('smqSurvey.generalInfo.stepOne.clients')}
         showTitle={true}
+        editable={editable}
       />
       <GladisTextInput
         value={area}
         onValueChange={setArea}
         placeholder={t('smqSurvey.generalInfo.stepOne.area')}
         showTitle={true}
+        editable={editable}
       />
-    </ScrollView>
+    </>
   );
 }
 

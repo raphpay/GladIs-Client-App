@@ -263,6 +263,7 @@
   "smqSurvey": {
     "continue": "Continuer",
     "finish": "Terminer",
+    "title": "Formulaire de documentation SMQ",
     "generalInfo": {
       "title": "Informations générales",
       "stepOne": {
@@ -347,7 +348,33 @@
         "description": "Le formulaire n'est pas complètement rempli. Êtes-vous sûr de vouloir continuer ?",
         "confirm": "Oui",
         "cancel": "Non"
+      },
+      "back": {
+        "title": "Attention",
+        "description": "Voulez-vous sauvegarder le formulaire en l'état ?",
+        "confirm": "Oui, sauvegarder",
+        "cancel": "Non, continuer"
+      },
+      "delete": {
+        "title": "Etes-vous sûr de vouloir supprimer ce formulaire ?",
+        "description": "La suppression est définitive.",
+        "confirm": "Oui",
+        "cancel": "Non"
+      },
+      "send": {
+        "title": "Etes-vous sûr de vouloir envoyer ce formulaire ?",
+        "description": "Le formulaire sera envoyé au fournisseur dans son état actuel.",
+        "confirm": "Oui",
+        "cancel": "Non"
       }
+    },
+    "dates": {
+      "createdOn": "Créé le",
+      "at": "à",
+      "updatedOn": "Modifié le"
+    },
+    "buttons": {
+      "send": "Envoyer",
     }
   },
   "components": {

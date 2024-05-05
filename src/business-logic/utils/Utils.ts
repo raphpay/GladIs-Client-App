@@ -177,6 +177,10 @@ class Utils {
     return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', }).format(date);
   }
 
+  static formatDateForComparison(date: Date): Date {
+    return new Date(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+  }
+
   /**
    * Formats a day number to its corresponding name.
    * @param day - The day number to format.
@@ -255,7 +259,11 @@ class Utils {
     // join header and body, and break into separate lines
     const csv = [headerString, ...rowItems].join('\r\n');
     return csv;
-  }  
+  }
+
+  static getJSFormatDate(date: Date): string {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  }
 }
 
 export default Utils;

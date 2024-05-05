@@ -1,7 +1,9 @@
 export default interface ISurvey {
   id?: string,
   value: string,
-  client: IClientID
+  client: IClientID,
+  createdAt?: Date,
+  updatedAt?: Date
 }
 
 interface IClientID {

@@ -19,7 +19,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
-import { setSMQScreenSource } from '../../../../business-logic/store/slices/appStateReducer';
+import { setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -30,6 +30,7 @@ import Pagination from '../../../components/Pagination';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 
+import { setIsUpdatingSurvey } from '../../../../business-logic/store/slices/smqReducer';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
 import DocumentGrid from './DocumentGrid';
@@ -137,6 +138,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   function navigateToSMQSurvey() {
     dispatch(setSMQScreenSource(t(currentScreen)));
+    dispatch(setIsUpdatingSurvey(false));
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 

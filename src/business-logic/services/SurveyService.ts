@@ -54,6 +54,31 @@ class SurveyService {
     }
   }
 
+  /**
+   * Retrieves a survey by ID.
+   * @param surveyID - The ID of the survey to retrieve.
+   * @param token - The authentication token (optional).
+   * @returns A promise that resolves to the survey with the specified ID.
+   * @throws If an error occurs while retrieving the survey.
+  */
+  async update(surveyID: string, value: string, token: IToken | null): Promise<ISurvey> {
+    try {
+      const url = `${this.baseRoute}/${surveyID}`;
+      console.log('he', url );
+      const updatedSurvey = await APIService.put(url, { value }, token?.value as string);
+      return updatedSurvey;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves a survey by ID.
+   * @param surveyID - The ID of the survey to retrieve.
+   * @param token - The authentication token (optional).
+   * @returns A promise that resolves to the survey with the specified ID.
+   * @throws If an error occurs while retrieving the survey.
+  */
   async delete(surveyID: string, token: IToken | null): Promise<void> {
     try {
       const url = `${this.baseRoute}/${surveyID}`;
