@@ -44,6 +44,8 @@ enum NavigationRoutes {
   SMQRegulatoryAffairsScreen = 'SMQRegulatoryAffairsScreen',
   // Surveys
   SurveysScreen = 'SurveysScreen',
+  // Form Creation
+  FormEditionScreen = 'FormEditionScreen',
 }
 
 export default NavigationRoutes;
