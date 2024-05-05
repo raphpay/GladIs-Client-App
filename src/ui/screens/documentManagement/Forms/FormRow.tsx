@@ -9,17 +9,18 @@ import styles from '../../../assets/styles/forms/FormRowStyles';
 
 type FormRowProps = {
   form: IForm;
+  showActionDialog: (form: IForm) => void;
 };
 
 function FormRow(props: FormRowProps): React.JSX.Element {
 
+  const { form, showActionDialog } = props;
 
-  const { form } = props;
 
   return (
     <View style={styles.documentLineContainer}>
       <View style={styles.documentLineRow}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity onPress={() => showActionDialog(form)}>
           <View style={styles.documentButton}>
             <View style={styles.documentTextContainer}>
               <Text style={styles.documentText}>
@@ -28,7 +29,7 @@ function FormRow(props: FormRowProps): React.JSX.Element {
             </View>
           </View>
         </TouchableOpacity>
-        <Tooltip action={() => {}} />
+        <Tooltip action={() => showActionDialog(form)} />
       </View>
       <View style={styles.separator}/>
     </View>
