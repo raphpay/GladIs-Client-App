@@ -1,7 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -15,6 +14,7 @@ import { RootState } from '../../../../business-logic/store/store';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
+import ContentUnavailableView from '../../../components/ContentUnavailableView';
 import Grid from '../../../components/Grid/Grid';
 import FormRow from './FormRow';
 
@@ -36,6 +36,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   );
 
   const plusIcon = require('../../../assets/images/plus.png');
+  const docIcon = require('../../../assets/images/doc.fill.png');
 
   // Sync Methods
   function navigateBack() {
@@ -102,7 +103,11 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
             }
           />
         ) : (
-          <Text>{t('forms.noForms')}</Text>
+          <ContentUnavailableView
+            title={t('forms.noDocs.title')}
+            message={currentUser?.userType === UserType.Admin ? t('forms.noDocs.message.admin') : t('forms.noDocs.message.client')}
+            image={docIcon}
+          />
         )
       }
     </AppContainer>

@@ -639,6 +639,13 @@
     },
     "buttons": {
       "add": "Add a form"
+    },
+    "noDocs": {
+      "title": "No forms found",
+      "message": {
+        "admin": "Add a form now",
+        "client": "Please come back later"
+      }
     }
   }
 }

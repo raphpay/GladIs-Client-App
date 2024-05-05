@@ -642,6 +642,13 @@
     },
     "buttons": {
       "add": "Ajouter un formulaire",
+    },
+    "noDocs": {
+      "title": "Aucun formulaire trouvé",
+      "message": {
+        "admin": "Ajoutez un formulaire maintenant",
+        "client": "Veuillez réessayer plus tard"
+      }
     }
   }
 }
