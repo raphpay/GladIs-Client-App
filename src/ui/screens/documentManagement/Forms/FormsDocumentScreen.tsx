@@ -44,11 +44,11 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
 
   const popoverActions: IAction[] = [
     {
-      title: t('forms.tooltip.actions.open'),
+      title: t('forms.actions.tooltip.open'),
       onPress: () => openForm(),
     },
     {
-      title: t('forms.tooltip.actions.remove'),
+      title: t('forms.actions.tooltip.remove'),
       onPress: () => deleteForm(),
       isDestructive: true,
     }
@@ -117,7 +117,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   function TooltipActionContent() {
-    const tooltipTitle = `${t('forms.tooltip.actions.title')}: ${selectedForm.title}`;
+    const tooltipTitle = `${t('forms.actions.tooltip.title')}: ${selectedForm.title}`;
 
     return (
       <TooltipAction

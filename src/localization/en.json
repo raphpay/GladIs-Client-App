@@ -636,6 +636,11 @@
       "addColumn": "Add a column",
       "addRow": "Add a row",
       "exportToCSV": "Export to CSV",
+      "tooltip": {
+        "title": "Actions on the form",
+        "open": "Open",
+        "remove": "Remove"
+      }
     },
     "buttons": {
       "add": "Add a form"

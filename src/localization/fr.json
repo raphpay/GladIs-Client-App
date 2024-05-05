@@ -639,6 +639,11 @@
       "addColumn": "Ajouter une colonne",
       "addRow": "Ajouter une ligne",
       "exportToCSV": "Exporter en CSV",
+      "tooltip": {
+        "title": "Actions sur le formulaire",
+        "open": "Ouvrir",
+        "remove": "Supprimer"
+      }
     },
     "buttons": {
       "add": "Ajouter un formulaire",
@@ -649,6 +654,6 @@
         "admin": "Ajoutez un formulaire maintenant",
         "client": "Veuillez réessayer plus tard"
       }
-    }
+    },
   }
 }
