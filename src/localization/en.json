@@ -624,13 +624,18 @@
     "title": "Forms",
     "creation": {
       "title": "Create a form",
-      "actions": "Actions",
       "confirm": "Close",
       "formTitle": "Form title",
       "creationDate": "Creation date",
       "creationActor": "Created by",
       "updateDate": "Update date",
       "updateActor": "Updated by"
+    },
+    "actions": {
+      "title": "Actions",
+      "addColumn": "Add a column",
+      "addRow": "Add a row",
+      "exportToCSV": "Export to CSV",
     },
     "buttons": {
       "add": "Add a form"

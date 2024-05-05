@@ -42,23 +42,15 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   const popoverActions: IAction[] = [
     {
-      title: 'Set a title',
-      onPress: () => console.log('Set a title'),
-    },
-    {
-      title: 'Set a creator',
-      onPress: () => console.log('Set a creator'),
-    },
-    {
-      title: 'Add a column',
+      title: t('forms.actions.addColumn'),
       onPress: () => addColumn(),
     },
     {
-      title: 'Add a row',
+      title: t('forms.actions.addRow'),
       onPress: () => addRow(),
     },
     {
-      title: 'Export to CSV',
+      title: t('forms.actions.exportToCSV'),
       onPress: () => arrayToCsv(),
     }
   ];
@@ -120,11 +112,17 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     setShowActionDialog(true);
   }
 
+  function saveForm() {
+    // TODO: Display a confirmation dialog
+    // It should be disabled if no grid is present, no title is set
+    console.log('Save form');
+  }
+
   // Components
   function ActionButton() {
     return (
       <IconButton
-        title={t('forms.creations.actions')}
+        title={t('forms.actions.title')}
         icon={plusIcon}
         onPress={displayActionDialog}
       />
@@ -135,7 +133,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     return (
       <TooltipAction
         showDialog={showActionDialog}
-        title={t('forms.creation.actions')}
+        title={t('forms.actions.title')}
         isConfirmAvailable={true}
         confirmTitle={t('forms.creation.confirm')}
         isCancelAvailable={false}
@@ -143,7 +141,18 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         onCancel={() => {}}
         popoverActions={popoverActions}
       />
-    )
+    );
+  }
+
+  function SaveButton() {
+    return (
+      <IconButton
+        title={t('components.buttons.save')}
+        icon={plusIcon}
+        onPress={saveForm}
+        style={styles.saveButton}
+      />
+    );
   }
 
   return (
@@ -155,6 +164,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         adminButton={ActionButton()}
         showBackButton={true}
         navigateBack={navigateBack}
+        additionalComponent={SaveButton()}
       >
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
           <FormTextInput

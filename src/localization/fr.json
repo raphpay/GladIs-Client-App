@@ -627,13 +627,18 @@
     "title": "Formulaires",
     "creation": {
       "title": "Créer un formulaire",
-      "actions": "Actions",
       "confirm": "Fermer",
       "formTitle": "Titre du formulaire",
       "creationDate": "Date de création",
       "creationActor": "Créé par",
       "updateDate": "Date de mise à jour",
       "updateActor": "Mis à jour par"
+    },
+    "actions": {
+      "title": "Actions",
+      "addColumn": "Ajouter une colonne",
+      "addRow": "Ajouter une ligne",
+      "exportToCSV": "Exporter en CSV",
     },
     "buttons": {
       "add": "Ajouter un formulaire",

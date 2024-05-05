@@ -35,7 +35,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 2,
     backgroundColor: 'black',
-  }
+  },
+  saveButton: {
+    marginRight: 10,
+  },
 });
 
 export default styles;
