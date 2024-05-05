@@ -27,7 +27,7 @@ function FormTextInput(props: FormTextInputProps): React.JSX.Element {
   } = props;
 
   const placeholderTextColor = (isTitle ? 'rgba(255, 255, 255, 0.5)' : 'rgba(0, 0, 0, 0.5)');
-  const backgroundColor = isTitle ? { backgroundColor: Colors.secondary } : null;
+  const backgroundColor = isTitle ? { backgroundColor: Colors.primary } : null;
   const textColor = isTitle ? { color: Colors.white } : null;
 
   return (

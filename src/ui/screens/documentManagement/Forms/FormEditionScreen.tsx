@@ -124,7 +124,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   function ActionButton() {
     return (
       <IconButton
-        title={t('actions')}
+        title={t('forms.creations.actions')}
         icon={plusIcon}
         onPress={displayActionDialog}
       />
@@ -135,9 +135,9 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     return (
       <TooltipAction
         showDialog={showActionDialog}
-        title={t('actions')}
+        title={t('forms.creation.actions')}
         isConfirmAvailable={true}
-        confirmTitle='Fermer'
+        confirmTitle={t('forms.creation.confirm')}
         isCancelAvailable={false}
         onConfirm={() => setShowActionDialog(false)}
         onCancel={() => {}}
@@ -149,7 +149,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   return (
     <>
       <AppContainer
-        mainTitle="Form Creation"
+        mainTitle={t('forms.creation.title')}
         showSearchText={false}
         showSettings={false}
         adminButton={ActionButton()}
@@ -161,7 +161,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
             value={formTitle}
             onChangeText={setFormTitle}
             isTitle={true}
-            placeholder={t('formTitle')}
+            placeholder={t('forms.creation.formTitle')}
             editable={!showActionDialog}
             multiline={true}
             numberOfLines={2}
@@ -173,14 +173,14 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
               onChangeText={setFormCreation}
               editable={!showActionDialog}
               isTitle={true}
-              placeholder='Creation date'
+              placeholder={t('forms.creation.creationDate')}
             />
             <FormTextInput
               value={formCreationActor}
               onChangeText={setFormCreationActor}
               editable={!showActionDialog}
               isTitle={true}
-              placeholder='Creation actor'
+              placeholder={t('forms.creation.creationActor')}
             />
           </View>
           <View style={styles.cellRow}>
@@ -189,14 +189,14 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
               onChangeText={setFormUpdate}
               editable={!showActionDialog}
               isTitle={true}
-              placeholder='Update date'
+              placeholder={t('forms.creation.updateDate')}
             />
             <FormTextInput
               value={formUpdateActor}
               onChangeText={setFormUpdateActor}
               editable={!showActionDialog}
               isTitle={true}
-              placeholder='Update actor'
+              placeholder={t('forms.creation.updateActor')}
             />
           </View>
           <View style={styles.separator}/>
