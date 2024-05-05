@@ -1,18 +1,20 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
 import IAction from '../../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-
 import Utils from '../../../../business-logic/utils/Utils';
+
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
 import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
+
+import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
 interface ICell {
   id: string;
@@ -28,10 +30,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   // States
   const [showActionDialog, setShowActionDialog] = useState(false);
-
-  // Make a grid of ICell
   const [grid, setGrid] = useState<ICell[][]>([[]]);
-
+  // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
   const [formUpdate, setFormUpdate] = useState('');
@@ -63,17 +63,12 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     }
   ];
 
-  // const addColumn = () => {
-  //   const updatedGrid = grid.map(row => [...row, '']);
-  //   setGrid(updatedGrid);
-  //   setShowActionDialog(false);
-  // };
-
+  // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
 
-  const addColumn = () => {
+  function addColumn() {
     let updatedGrid: ICell[][];
 
     updatedGrid = grid.map((row, index) => {
@@ -83,29 +78,29 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
     setGrid(updatedGrid);
     setShowActionDialog(false);
-  };
-
-  const addRow = () => {
-  if (grid[0].length > 0) {
-    const newRow = Array(grid[0].length).fill({}).map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
-    setGrid([...grid, newRow]);
-  } else {
-    console.log('Add column first');
   }
-  setShowActionDialog(false);
-};
 
-  const removeColumn = () => {
+  function addRow() {
+    if (grid[0].length > 0) {
+      const newRow = Array(grid[0].length).fill({}).map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
+      setGrid([...grid, newRow]);
+    } else {
+      console.log('Add column first');
+    }
+    setShowActionDialog(false);
+  }
+
+  function removeColumn() {
     const updatedGrid = grid.map(row => row.slice(0, -1));
     setGrid(updatedGrid);
   };
 
-  const removeRow = () => {
+  function removeRow() {
     const updatedGrid = grid.slice(0, -1);
     setGrid(updatedGrid);
-  };
+  }
 
-  const updateCell = (rowIndex: number, columnIndex: number, newText: string) => {
+  function updateCell(rowIndex: number, columnIndex: number, newText: string) {
     // Create a copy of the grid
     const newGrid = [...grid];
 
@@ -125,6 +120,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     setShowActionDialog(true);
   }
 
+  // Components
   function ActionButton() {
     return (
       <IconButton
@@ -223,43 +219,5 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  content: {
-    padding: 20,
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  cell: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: 'black',
-    padding: 10,
-    margin: 5,
-    minWidth: 50,
-  },
-  midCell: {
-    flex: 0.5,
-    borderWidth: 1,
-    borderColor: 'black',
-    padding: 10,
-    margin: 5,
-    minWidth: 50,
-  },
-  cellRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  separator: {
-    width: '100%',
-    height: 2,
-    backgroundColor: 'black',
-  }
-});
 
 export default FormEditionScreen;
