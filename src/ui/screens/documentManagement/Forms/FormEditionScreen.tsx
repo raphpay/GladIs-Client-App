@@ -14,13 +14,15 @@ import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
-import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
 import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
+import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
+
+import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
 type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
 
@@ -41,6 +43,10 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const [formUpdate, setFormUpdate] = useState('');
   const [formCreationActor, setFormCreationActor] = useState('');
   const [formUpdateActor, setFormUpdateActor] = useState('');
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const plusIcon = require('../../../assets/images/plus.png');
 
@@ -131,23 +137,25 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     return isFilled;
   }
 
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
+  
   // Async Methods
   async function saveForm() {
-    if (form) {
-      // Update
-      try {
+    try {
+      if (form) {
+        // Update
         const updateUserID = currentUser?.id as string;
         const newForm: IFormUpdateInput = {
           updatedBy: updateUserID,
           value: arrayToCsv(),
         };
         await FormService.getInstance().update(form.id as string, newForm, token);
-      } catch (error) {
-        // TODO: Display toast
-      }
-    } else {
-      // Create
-      try {
+      } else {
+        // Create
         const newForm: IFormInput = {
           title: formTitle,
           createdBy: currentUser?.id as string,
@@ -156,9 +164,10 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
           clientID: currentClient?.id as string,
         };
         await FormService.getInstance().create(newForm, token);
-      } catch (error) {
-        // TODO: Display toast
       }
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
     }
   }
 
@@ -263,6 +272,23 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       />
     );
   }
+  
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
 
   return (
     <>
@@ -336,6 +362,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       </AppContainer>
       { ActionDialogContent() }
       { showApproveDialog && ApproveDialogContent() }
+      { ToastContent() }
     </>
   );
 }
