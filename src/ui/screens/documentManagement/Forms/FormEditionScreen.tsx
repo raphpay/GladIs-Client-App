@@ -6,31 +6,35 @@ import { ScrollView, View } from 'react-native';
 import { IRootStackParams } from '../../../../navigation/Routes';
 
 import IAction from '../../../../business-logic/model/IAction';
-import { IFormCell } from '../../../../business-logic/model/IForm';
+import { IFormCell, IFormInput, IFormUpdateInput } from '../../../../business-logic/model/IForm';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import Utils from '../../../../business-logic/utils/Utils';
-
-import AppContainer from '../../../components/AppContainer/AppContainer';
-import IconButton from '../../../components/Buttons/IconButton';
-import TooltipAction from '../../../components/TooltipAction';
-import FormTextInput from '../DocumentScreen/FormTextInput';
-
+import FormService from '../../../../business-logic/services/FormService';
 import UserService from '../../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
+import Utils from '../../../../business-logic/utils/Utils';
+
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
+import AppContainer from '../../../components/AppContainer/AppContainer';
+import IconButton from '../../../components/Buttons/IconButton';
+import TextButton from '../../../components/Buttons/TextButton';
+import Dialog from '../../../components/Dialogs/Dialog';
+import TooltipAction from '../../../components/TooltipAction';
+import FormTextInput from '../DocumentScreen/FormTextInput';
 
 type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
 
 function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   const { navigation } = props;
-  const { form } = props.route.params;
+  const { form, documentPath } = props.route.params;
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   // States
-  const [showActionDialog, setShowActionDialog] = useState(false);
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
+  const [showActionDialog, setShowActionDialog] = useState(false);
+  const [showApproveDialog, setShowApproveDialog] = useState(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
@@ -106,17 +110,56 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   function arrayToCsv() {
     // TODO: Export the title and the dates too
     const csv = grid.map(row => row.map(cell => cell.value).join(',')).join('\n');
-    console.log('csv', csv);
+    return csv;
   }
 
   function displayActionDialog() {
     setShowActionDialog(true);
   }
 
-  function saveForm() {
-    // TODO: Display a confirmation dialog
-    // It should be disabled if no grid is present, no title is set
-    console.log('Save form');
+  function displayApproveDialog() {
+    setShowActionDialog(false);
+    setShowApproveDialog(true);
+  }
+
+  function isFormFilled() {
+    let isFilled = false;
+    isFilled = formTitle.length > 0 &&
+      formCreation.length > 0 &&
+      formCreationActor.length > 0 &&
+      grid.length > 1;
+    return isFilled;
+  }
+
+  // Async Methods
+  async function saveForm() {
+    if (form) {
+      // Update
+      try {
+        const updateUserID = currentUser?.id as string;
+        const newForm: IFormUpdateInput = {
+          updatedBy: updateUserID,
+          value: arrayToCsv(),
+        };
+        await FormService.getInstance().update(form.id as string, newForm, token);
+      } catch (error) {
+        // TODO: Display toast
+      }
+    } else {
+      // Create
+      try {
+        const newForm: IFormInput = {
+          title: formTitle,
+          createdBy: currentUser?.id as string,
+          value: arrayToCsv(),
+          path: documentPath,
+          clientID: currentClient?.id as string,
+        };
+        await FormService.getInstance().create(newForm, token);
+      } catch (error) {
+        // TODO: Display toast
+      }
+    }
   }
 
   async function loadFormInfo() {
@@ -140,6 +183,9 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       }
       const gridFromCSV = Utils.csvToGrid(form.value);
       setGrid(gridFromCSV);
+    } else {
+      setFormCreation(Utils.formatStringDate(new Date(), 'numeric'));
+      setFormCreationActor(currentUser?.firstName + ' ' + currentUser?.lastName);
     }
   }
 
@@ -157,7 +203,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     async function init() {
       loadFormInfo();
     }
-
     init();
   }, []);
 
@@ -172,6 +217,11 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     )
   }
 
+  function resetDialogs() {
+    setShowActionDialog(false);
+    setShowApproveDialog(false);
+  }
+
   function ActionDialogContent() {
     return (
       <TooltipAction
@@ -180,7 +230,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         isConfirmAvailable={true}
         confirmTitle={t('forms.creation.confirm')}
         isCancelAvailable={false}
-        onConfirm={() => setShowActionDialog(false)}
+        onConfirm={() => resetDialogs()}
         onCancel={() => {}}
         popoverActions={popoverActions}
       />
@@ -189,11 +239,27 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   function SaveButton() {
     return (
-      <IconButton
+      <TextButton
+        width={'30%'}
         title={t('components.buttons.save')}
-        icon={plusIcon}
-        onPress={saveForm}
-        style={styles.saveButton}
+        onPress={displayApproveDialog}
+        disabled={!isFormFilled()}
+        extraStyle={styles.saveButton}
+      />
+    );
+  }
+
+  function ApproveDialogContent() {
+    return (
+      <Dialog
+        title={t('forms.dialog.approve.title')}
+        description={t('forms.dialog.approve.description')}
+        isConfirmAvailable={true}
+        confirmTitle={t('forms.dialog.approve.confirm')}
+        onConfirm={() => saveForm()}
+        cancelTitle={t('forms.dialog.approve.cancel')}
+        isCancelAvailable={true}
+        onCancel={() => setShowApproveDialog(false)}
       />
     );
   }
@@ -210,7 +276,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         additionalComponent={SaveButton()}
       >
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-          <FormTextInput
+        <FormTextInput
             value={formTitle}
             onChangeText={setFormTitle}
             isTitle={true}
@@ -269,6 +335,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         </ScrollView>
       </AppContainer>
       { ActionDialogContent() }
+      { showApproveDialog && ApproveDialogContent() }
     </>
   );
 }

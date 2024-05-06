@@ -89,7 +89,7 @@ export type IRootStackParams = {
   SurveysScreen: undefined,
   // Forms
   FormsDocumentScreen: { documentPath: string },
-  FormEditionScreen: { form? : IForm },
+  FormEditionScreen: { form? : IForm, documentPath: string },
 }
 
 export type IClientCreationStack = {

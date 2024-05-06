@@ -1,4 +1,4 @@
-import IForm, { IFormInput } from '../model/IForm';
+import IForm, { IFormInput, IFormUpdateInput } from '../model/IForm';
 import IToken from '../model/IToken';
 
 import APIService from './APIService';
@@ -52,6 +52,21 @@ class FormService {
       const route = `${this.baseRoute}/client/${clientID}/path`
       const forms = await APIService.post<IForm[]>(route, { value: path }, token?.value as string);
       return forms;
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * Update a form.
+   * @param formID The form ID.
+   * @param newForm The new form data.
+   * @param token The token to be used for authentication.
+   * @throws An error if the operation fails. 
+   */
+  async update(formID: string, newForm: IFormUpdateInput, token: IToken | null): Promise<void> {
+    try {
+      await APIService.put(`${this.baseRoute}/${formID}`, newForm, token?.value as string);
     } catch (error) {
       throw error
     }

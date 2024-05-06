@@ -650,6 +650,14 @@
         "remove": "Remove"
       }
     },
+    "dialog": {
+      "approve": {
+        "title": "Are you sure you want to approve this form ?",
+        "description": "The form will be sent to the provider in its current state.",
+        "confirm": "Yes",
+        "cancel": "No"
+      }
+    },
     "buttons": {
       "add": "Add a form"
     },

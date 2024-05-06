@@ -653,6 +653,14 @@
         "remove": "Supprimer"
       }
     },
+    "dialog": {
+      "approve": {
+        "title": "Etes-vous sûr de vouloir approuver ce formulaire ?",
+        "description": "Le formulaire sera envoyé au fournisseur dans son état actuel.",
+        "confirm": "Oui",
+        "cancel": "Non"
+      }
+    },
     "buttons": {
       "add": "Ajouter un formulaire",
     },

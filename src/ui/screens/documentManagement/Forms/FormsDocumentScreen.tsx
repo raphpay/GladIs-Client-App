@@ -69,7 +69,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   function addForm() {
-    navigation.navigate(NavigationRoutes.FormEditionScreen, { form: undefined });
+    navigation.navigate(NavigationRoutes.FormEditionScreen, { form: undefined, documentPath });
   }
 
   function displayActionDialog(form: IForm) {
@@ -81,7 +81,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     if (selectedForm) {
       setShowDialog(false);
       setShowRemoveConfirmationDialog(false);
-      navigation.navigate(NavigationRoutes.FormEditionScreen, { form: selectedForm });
+      navigation.navigate(NavigationRoutes.FormEditionScreen, { form: selectedForm, documentPath });
     }
   }
 

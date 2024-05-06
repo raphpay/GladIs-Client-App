@@ -11,9 +11,19 @@ export default interface IForm {
 
 export interface IFormInput {
   title: string;
-  clientID: string;
+  createdBy: string;
   value: string;
+  path: string;
+  clientID: string;
 }
+
+export interface IFormUpdateInput {
+  updatedBy: string;
+  value: string;
+  // title: string;
+  // createdBy: string;
+}
+
 
 export interface IFormCell {
   id: string;
