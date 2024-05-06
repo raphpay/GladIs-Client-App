@@ -23,6 +23,7 @@ type TooltipActionProps = {
   onConfirm: () => void;
   onCancel: () => void;
   popoverActions: IAction[];
+  children?: JSX.Element;
 };
 
 function TooltipAction(props: TooltipActionProps): React.JSX.Element {
@@ -39,6 +40,7 @@ function TooltipAction(props: TooltipActionProps): React.JSX.Element {
     onConfirm,
     onCancel,
     popoverActions,
+    children
   } = props;
 
   function textColor(action: IAction): string {
@@ -67,6 +69,7 @@ function TooltipAction(props: TooltipActionProps): React.JSX.Element {
             onCancel={onCancel}
           >
             <>
+              {children}
               {popoverActions.map((action: IAction, index: number) => (
                 <TouchableOpacity
                   key={index}

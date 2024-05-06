@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Text, View } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -21,6 +22,8 @@ import Grid from '../../../components/Grid/Grid';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
+
+import styles from '../../../assets/styles/forms/FormsDocumentScreenStyles';
 
 type FormsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormsDocumentScreen>;
 
@@ -51,7 +54,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   const plusIcon = require('../../../assets/images/plus.png');
   const docIcon = require('../../../assets/images/doc.fill.png');
 
-  const popoverActions: IAction[] = [
+  const basicActions: IAction[] = [
     {
       title: t('forms.actions.tooltip.open'),
       onPress: () => openForm(),
@@ -63,6 +66,8 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     }
   ];
 
+  const [popoverActions, setPopoverActions] = useState<IAction[]>(basicActions);
+
   // Sync Methods
   function navigateBack() {
     navigation.goBack();
@@ -72,9 +77,25 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     navigation.navigate(NavigationRoutes.FormEditionScreen, { form: undefined, documentPath });
   }
 
+  function loadActions(form: IForm) {
+    const approveTitle = form.approvedByAdmin ? t('forms.actions.tooltip.deapprove') : t('forms.actions.tooltip.approve');
+    const approveAction: IAction = {
+      title: approveTitle,
+      onPress: () => approveForm(),
+    };
+
+    const newActions = [...basicActions];
+    const openActionIndex = newActions.findIndex(action => action.title === t('forms.actions.tooltip.open'));
+    if (openActionIndex !== -1) {
+      newActions.splice(openActionIndex + 1, 0, approveAction);
+    }
+    setPopoverActions(newActions);
+  }
+
   function displayActionDialog(form: IForm) {
     setSelectedForm(form);
     setShowDialog(true);
+    loadActions(form);
   }
 
   function openForm() {
@@ -112,6 +133,24 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     } catch (error) {
       console.log('error', error );
     }
+  }
+
+  async function approveForm() {
+    try {
+      const selectedFormID = selectedForm.id as string;
+      const userType = currentUser?.userType as UserType;
+      const updatedForm = await FormService.getInstance().approve(selectedFormID, userType, token);
+      // Display success message
+      const approvalStatus = userType === UserType.Admin ? updatedForm.approvedByAdmin : updatedForm.approvedByClient;
+      const message = approvalStatus ? t('forms.toast.success.approve') : t('forms.toast.success.deapprove');
+      displayToast(message);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+    }
+
+    setShowDialog(false);
+    await loadForms();
   }
 
   async function deleteForm() {
@@ -183,7 +222,26 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         onConfirm={() => setShowDialog(false)}
         onCancel={() => {}}
         popoverActions={popoverActions}
-      />
+      >
+        <View style={styles.dialogChildren}>
+          <>
+            {
+              selectedForm?.approvedByAdmin ? (
+                <Text style={styles.approvedText}>{t('forms.dialog.approve.title')}</Text>
+              ) : (
+                <Text style={styles.approvedText}>{t('forms.dialog.approve.admin.no')}</Text>
+              )
+            }
+            {
+              selectedForm?.approvedByClient ? (
+                <Text style={styles.approvedText}>{t('forms.dialog.approve.client.yes')}</Text>
+              ) : (
+                <Text style={styles.approvedText}>{t('forms.dialog.approve.client.no')}</Text>
+              )
+            }
+          </>
+        </View>
+      </TooltipAction>
     )
   }
 

@@ -647,6 +647,8 @@
       "tooltip": {
         "title": "Actions on the form",
         "open": "Open",
+        "approve": "Approve",
+        "deapprove": "Deapprove",
         "remove": "Remove"
       }
     },
@@ -655,7 +657,21 @@
         "title": "Are you sure you want to approve this form ?",
         "description": "The form will be sent to the provider in its current state.",
         "confirm": "Yes",
-        "cancel": "No"
+        "cancel": "No",
+        "admin": {
+          "yes": "Is approved by the admininstrator",
+          "no": "Is not approved by the admininstrator"
+        },
+        "client": {
+          "yes": "Is approved by client",
+          "no": "Is not approved by client"
+        }
+      }
+    },
+    "toast": {
+      "success": {
+        "approve": "Form successfully approved",
+        "deapprove": "Form successfully deapproved"
       }
     },
     "buttons": {

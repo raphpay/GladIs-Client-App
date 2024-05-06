@@ -7,6 +7,8 @@ export default interface IForm {
   createdBy?: string;
   updatedAt?: Date;
   updatedBy?: string;
+  approvedByAdmin: boolean;
+  approvedByClient: boolean;
 }
 
 export interface IFormInput {

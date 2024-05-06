@@ -1,5 +1,6 @@
 import IForm, { IFormInput, IFormUpdateInput } from '../model/IForm';
 import IToken from '../model/IToken';
+import UserType from '../model/enums/UserType';
 
 import APIService from './APIService';
 
@@ -23,6 +24,7 @@ class FormService {
     return FormService.instance;
   }
 
+  // CREATE
   /**
    * Creates a new form.
    * @param form The form to be created.
@@ -39,6 +41,7 @@ class FormService {
     }
   }
 
+  // READ
   /**
    * Get all forms by client ID and path.
    * @param clientID The client ID.
@@ -57,6 +60,7 @@ class FormService {
     }
   }
 
+  // UPDATE
   /**
    * Update a form.
    * @param formID The form ID.
@@ -72,6 +76,31 @@ class FormService {
     }
   }
 
+  /**
+   * Toggle the form approval status.
+   * @param formID The form ID.
+   * @param userType The user type.
+   * @param token The token to be used for authentication.
+   * @returns The updated form.
+   * @throws An error if the operation fails.
+   */
+  async approve(formID: string, userType: UserType, token: IToken | null): Promise<IForm> {
+    try {
+      let userRoute = '';
+      if (userType === UserType.Client) {
+        userRoute = 'client';
+      } else if (userType === UserType.Admin) {
+        userRoute = 'admin';
+      }
+      const route = `${this.baseRoute}/${userRoute}/${formID}/approval`;
+      const form = await APIService.put(route, null, token?.value as string);
+      return form;
+    } catch (error) {
+      throw error
+    }
+  }
+
+  // DELETE
   /**
    * Deletes a form.
    * @param formID The form ID.
