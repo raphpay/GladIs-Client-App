@@ -174,8 +174,8 @@ class Utils {
    * @param date - The date to format.
    * @returns A string representation of the date in the format 'DD/MM/YYYY'.
    */
-  static formatStringDate(date: Date): string {
-    return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', }).format(date);
+  static formatStringDate(date: Date, monthFormat: 'numeric' | 'long' = 'long'): string {
+    return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: monthFormat, year: 'numeric', }).format(date);
   }
 
   static formatDateForComparison(date: Date): Date {

@@ -15,6 +15,9 @@ import IconButton from '../../../components/Buttons/IconButton';
 import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
 
+import UserService from '../../../../business-logic/services/UserService';
+import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { RootState } from '../../../../business-logic/store/store';
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
 type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
@@ -24,6 +27,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const { navigation } = props;
   const { form } = props.route.params;
   const { t } = useTranslation();
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   // States
   const [showActionDialog, setShowActionDialog] = useState(false);
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
@@ -100,6 +104,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   };
 
   function arrayToCsv() {
+    // TODO: Export the title and the dates too
     const csv = grid.map(row => row.map(cell => cell.value).join(',')).join('\n');
     console.log('csv', csv);
   }
@@ -114,18 +119,46 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     console.log('Save form');
   }
 
-  function loadFormInfo() {
-    // TODO: Load more infos
+  async function loadFormInfo() {
     if (form) {
       setFormTitle(form.title);
+      if (form.createdAt && form.createdBy) {
+        const creationDate = Utils.formatStringDate(new Date(form.createdAt), 'numeric');
+        setFormCreation(creationDate);
+        const createdByUser = await loadUser(form.createdBy);
+        if (createdByUser) {
+          setFormCreationActor(createdByUser.firstName + ' ' + createdByUser.lastName);
+        }
+      }
+      if (form.updatedAt && form.updatedBy) {
+        const updateDate = form.updatedAt && Utils.formatStringDate(new Date(form.updatedAt), 'numeric');
+        setFormUpdate(updateDate);
+        const updatedByUser = await loadUser(form.updatedBy);
+        if (updatedByUser) {
+          setFormUpdateActor(updatedByUser.firstName + ' ' + updatedByUser.lastName);
+        }
+      }
       const gridFromCSV = Utils.csvToGrid(form.value);
       setGrid(gridFromCSV);
     }
   }
 
+  async function loadUser(id: string) {
+    try {
+      const user = await UserService.getInstance().getUserByID(id, token);
+      return user;
+    } catch (error) {
+      console.log('Error loading user', error);
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
-    loadFormInfo();
+    async function init() {
+      loadFormInfo();
+    }
+
+    init();
   }, []);
 
   // Components
