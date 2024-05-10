@@ -262,10 +262,19 @@ class Utils {
     return csv;
   }
 
+  /**
+   * Get the date in the format 'YYYY-MM-DD'.
+   * @param date - The date to format.
+   * @returns The date in the format 'YYYY-MM-DD'.
+   */
   static getJSFormatDate(date: Date): string {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
   }
   
+  /**
+   * Generates a UUID.
+   * @returns A UUID.
+   */
   static generateUUID(): string{
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
@@ -273,6 +282,11 @@ class Utils {
     });
   }
 
+  /**
+   * Converts a CSV string to a grid.
+   * @param value - The CSV string to convert.
+   * @returns The grid representation of the CSV string.
+   */
   static csvToGrid(value: string): IFormCell[][] {
     const rows = value.split('\n');
     const grid = rows.map(row => {
