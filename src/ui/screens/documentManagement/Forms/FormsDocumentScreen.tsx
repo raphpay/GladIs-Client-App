@@ -1,3 +1,4 @@
+import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +34,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   const { documentPath } = props.route.params;
   const { t } = useTranslation();
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { formsCount } = useAppSelector((state: RootState) => state.forms);
   const { token } = useAppSelector((state: RootState) => state.tokens);
   // States
   const [searchText, setSearchText] = useState<string>('');
@@ -54,19 +56,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   const plusIcon = require('../../../assets/images/plus.png');
   const docIcon = require('../../../assets/images/doc.fill.png');
 
-  const basicActions: IAction[] = [
-    {
-      title: t('forms.actions.tooltip.open'),
-      onPress: () => openForm(),
-    },
-    {
-      title: t('forms.actions.tooltip.remove'),
-      onPress: () => displayRemoveConfirmationDialog(),
-      isDestructive: true,
-    }
-  ];
-
-  const [popoverActions, setPopoverActions] = useState<IAction[]>(basicActions);
+  const [popoverActions, setPopoverActions] = useState<IAction[]>([]);
 
   // Sync Methods
   function navigateBack() {
@@ -78,43 +68,55 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   function loadActions(form: IForm) {
+    const basicActions: IAction[] = [
+      {
+        title: t('forms.actions.tooltip.open'),
+        onPress: () => openForm(form),
+      },
+      {
+        title: t('forms.actions.tooltip.remove'),
+        onPress: () => displayRemoveConfirmationDialog(),
+        isDestructive: true,
+      }
+    ];
+
     const approveTitle = form.approvedByAdmin ? t('forms.actions.tooltip.deapprove') : t('forms.actions.tooltip.approve');
     const approveAction: IAction = {
       title: approveTitle,
-      onPress: () => approveForm(),
+      onPress: () => approveForm(form),
     };
 
     const newActions = [...basicActions];
     const openActionIndex = newActions.findIndex(action => action.title === t('forms.actions.tooltip.open'));
     if (openActionIndex !== -1) {
       newActions.splice(openActionIndex + 1, 0, approveAction);
+      if (currentUser?.userType === UserType.Admin) {
+        const exportAction: IAction = {
+          title: t('forms.actions.exportToCSV'),
+          onPress: () => exportToCSV(form),
+        }
+        newActions.splice(openActionIndex + 2, 0, exportAction);
+      }
     }
     setPopoverActions(newActions);
   }
 
   function displayActionDialog(form: IForm) {
     setSelectedForm(form);
-    setShowDialog(true);
     loadActions(form);
+    setShowDialog(true);
   }
 
-  function openForm() {
-    if (selectedForm) {
-      setShowDialog(false);
-      setShowRemoveConfirmationDialog(false);
-      navigation.navigate(NavigationRoutes.FormEditionScreen, { form: selectedForm, documentPath });
-    }
+  function openForm(form: IForm) {
+    setShowDialog(false);
+    setShowRemoveConfirmationDialog(false);
+    navigation.navigate(NavigationRoutes.FormEditionScreen, { form, documentPath });
   }
 
   function displayRemoveConfirmationDialog() {
-    if (selectedForm) {
-      if (currentUser?.userType === UserType.Admin) {
-        setShowDialog(false);
-        setShowRemoveConfirmationDialog(true);
-      } else {
-        setShowDialog(false);
-        displayToast(t('forms.actions.remove.forbiddenAction'), true);
-      }
+    if (currentUser?.userType === UserType.Admin) {
+      setShowDialog(false);
+      setShowRemoveConfirmationDialog(true);
     }
   }
 
@@ -122,6 +124,16 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
+  }
+
+  function exportToCSV(form: IForm) {
+    const value = form.value;
+    Clipboard.setString(value);
+    // Display toast
+    displayToast(t('smqSurvey.toast.csvCopied'));
+    // Hide alert
+    setShowDialog(false);
+    setShowRemoveConfirmationDialog(false);
   }
 
   // Async Methods
@@ -135,11 +147,11 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     }
   }
 
-  async function approveForm() {
+  async function approveForm(form: IForm) {
     try {
-      const selectedFormID = selectedForm.id as string;
+      const formID = form.id as string;
       const userType = currentUser?.userType as UserType;
-      const updatedForm = await FormService.getInstance().approve(selectedFormID, userType, token);
+      const updatedForm = await FormService.getInstance().approve(formID, userType, token);
       // Display success message
       const approvalStatus = userType === UserType.Admin ? updatedForm.approvedByAdmin : updatedForm.approvedByClient;
       const message = approvalStatus ? t('forms.toast.success.approve') : t('forms.toast.success.deapprove');
@@ -175,6 +187,13 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     }
     init();
   }, []);
+
+  useEffect(() => {
+    async function init() {
+      loadForms();
+    }
+    init();
+  }, [formsCount]);
 
   // Components
   function AddFormButton() {
@@ -227,7 +246,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
           <>
             {
               selectedForm?.approvedByAdmin ? (
-                <Text style={styles.approvedText}>{t('forms.dialog.approve.title')}</Text>
+                <Text style={styles.approvedText}>{t('forms.dialog.approve.admin.yes')}</Text>
               ) : (
                 <Text style={styles.approvedText}>{t('forms.dialog.approve.admin.no')}</Text>
               )

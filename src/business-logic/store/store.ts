@@ -1,5 +1,6 @@
 import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
 import appStateReducer from './slices/appStateReducer';
+import formsReducer from './slices/formReducer';
 import smqReducer from './slices/smqReducer';
 import tokenReducer from './slices/tokenReducer';
 import userReducer from './slices/userReducer';
@@ -10,6 +11,7 @@ import userReducer from './slices/userReducer';
 const store = configureStore({
   reducer: {
     appState: appStateReducer,
+    forms: formsReducer,
     smq: smqReducer,
     tokens: tokenReducer,
     users: userReducer,

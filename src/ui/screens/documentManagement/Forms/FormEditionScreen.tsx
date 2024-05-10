@@ -10,7 +10,8 @@ import { IFormCell, IFormInput, IFormUpdateInput } from '../../../../business-lo
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import FormService from '../../../../business-logic/services/FormService';
 import UserService from '../../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
+import { setFormsCount } from '../../../../business-logic/store/slices/formReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -33,6 +34,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { formsCount } = useAppSelector((state: RootState) => state.forms);
+  const dispatch = useAppDispatch();
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
   const [showActionDialog, setShowActionDialog] = useState(false);
@@ -169,6 +172,11 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       const errorMessage = (error as Error).message;
       displayToast(errorMessage, true);
     }
+    
+    resetDialogs();
+    navigateBack();
+    // Reload forms
+    dispatch(setFormsCount(formsCount + 1));
   }
 
   async function loadFormInfo() {
