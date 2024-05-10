@@ -9,8 +9,10 @@ import { IRootStackParams } from '../../../../navigation/Routes';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 
 import IAction from '../../../../business-logic/model/IAction';
+import { IEventInput } from '../../../../business-logic/model/IEvent';
 import IForm from '../../../../business-logic/model/IForm';
 import UserType from '../../../../business-logic/model/enums/UserType';
+import EventService from '../../../../business-logic/services/EventService';
 import FormService from '../../../../business-logic/services/FormService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
@@ -80,7 +82,13 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
       }
     ];
 
-    const approveTitle = form.approvedByAdmin ? t('forms.actions.tooltip.deapprove') : t('forms.actions.tooltip.approve');
+    let approveTitle = '';
+    if (currentUser?.userType === UserType.Client) {
+      approveTitle = form.approvedByClient ? t('forms.actions.tooltip.deapprove') : t('forms.actions.tooltip.approve');
+    } else if (currentUser?.userType === UserType.Admin) {
+      approveTitle = form.approvedByAdmin ? t('forms.actions.tooltip.deapprove') : t('forms.actions.tooltip.approve');
+    }
+
     const approveAction: IAction = {
       title: approveTitle,
       onPress: () => approveForm(form),
@@ -152,6 +160,14 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
       const formID = form.id as string;
       const userType = currentUser?.userType as UserType;
       const updatedForm = await FormService.getInstance().approve(formID, userType, token);
+      if (
+        userType === UserType.Client &&
+        updatedForm.approvedByClient === true &&
+        updatedForm.approvedByAdmin === false
+      ) {
+        // Send reminder to Admin
+        createFormApprovalEvent(updatedForm);
+      }
       // Display success message
       const approvalStatus = userType === UserType.Admin ? updatedForm.approvedByAdmin : updatedForm.approvedByClient;
       const message = approvalStatus ? t('forms.toast.success.approve') : t('forms.toast.success.deapprove');
@@ -163,6 +179,20 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
 
     setShowDialog(false);
     await loadForms();
+  }
+
+  async function createFormApprovalEvent(form: IForm) {
+    const eventInput: IEventInput = {
+      name: `Formulaire \"${form.title}\" à approuver. Dossier: ${form.path}`,
+      date: Date.now(),
+      clientID: form.clientID,
+    };
+    try {
+      await EventService.getInstance().create(eventInput, token);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(errorMessage, true);
+    }
   }
 
   async function deleteForm() {

@@ -9,6 +9,7 @@ export default interface IForm {
   updatedBy?: string;
   approvedByAdmin: boolean;
   approvedByClient: boolean;
+  path?: string;
 }
 
 export interface IFormInput {
