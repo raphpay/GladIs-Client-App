@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -11,11 +10,12 @@ import SurveyService from '../../../business-logic/services/SurveyService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import Clipboard from '@react-native-clipboard/clipboard';
 import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
+import Utils from '../../../business-logic/utils/Utils';
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
@@ -98,8 +98,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   async function exportToCSV(survey: ISurvey) {
     // export to csv
     const surveyValue = JSON.parse(survey.value);
-    const surveyValueKeys = surveyValue.survey
-    const csv = Utils.convertJSONToCSV(surveyValueKeys);
+    const csv = Utils.convertJSONToCSV(surveyValue);
     Clipboard.setString(csv);
     // Display toast
     displayToast(t('smqSurvey.toast.csvCopied'));
