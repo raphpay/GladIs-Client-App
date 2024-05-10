@@ -85,17 +85,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
     setToastMessage(message);
   }
 
-  // Async Methods
-  async function loadSurveys() {
-    try {
-      const surveys = await SurveyService.getInstance().getAll(token);
-      setSurveys(surveys);
-    } catch (error) {
-      console.log('Error loading surveys', error);
-    }
-  }
-
-  async function exportToCSV(survey: ISurvey) {
+  function exportToCSV(survey: ISurvey) {
     // export to csv
     const surveyValue = JSON.parse(survey.value);
     const csv = Utils.convertJSONToCSV(surveyValue);
@@ -104,6 +94,16 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
     displayToast(t('smqSurvey.toast.csvCopied'));
     // Hide alert
     setShowActionDialog(false);
+  }
+  
+  // Async Methods
+  async function loadSurveys() {
+    try {
+      const surveys = await SurveyService.getInstance().getAll(token);
+      setSurveys(surveys);
+    } catch (error) {
+      console.log('Error loading surveys', error);
+    }
   }
 
   function displayRemoveDialog() {
