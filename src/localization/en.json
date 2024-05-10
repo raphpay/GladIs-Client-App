@@ -653,11 +653,13 @@
       }
     },
     "dialog": {
-      "approve": {
-        "title": "Are you sure you want to approve this form ?",
+      "save": {
+        "title": "Are you sure you want to save this form ?",
         "description": "The form will be sent to the provider in its current state.",
         "confirm": "Yes",
-        "cancel": "No",
+        "cancel": "No"
+      },
+      "approve": {
         "admin": {
           "yes": "Is approved by the admininstrator",
           "no": "Is not approved by the admininstrator"

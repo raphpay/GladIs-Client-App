@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, View } from 'react-native';
+import { Keyboard, ScrollView, View } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -39,7 +39,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
   const [showActionDialog, setShowActionDialog] = useState(false);
-  const [showApproveDialog, setShowApproveDialog] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
@@ -123,12 +123,14 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   function displayActionDialog() {
+    Keyboard.dismiss();
     setShowActionDialog(true);
   }
 
-  function displayApproveDialog() {
+  function displaySaveDialog() {
     setShowActionDialog(false);
-    setShowApproveDialog(true);
+    Keyboard.dismiss();
+    setShowSaveDialog(true);
   }
 
   function isFormFilled() {
@@ -156,6 +158,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
           updatedBy: updateUserID,
           value: arrayToCsv(),
         };
+        console.log('new form', newForm );
         await FormService.getInstance().update(form.id as string, newForm, token);
       } else {
         // Create
@@ -236,7 +239,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   function resetDialogs() {
     setShowActionDialog(false);
-    setShowApproveDialog(false);
+    setShowSaveDialog(false);
   }
 
   function ActionDialogContent() {
@@ -259,24 +262,24 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       <TextButton
         width={'30%'}
         title={t('components.buttons.save')}
-        onPress={displayApproveDialog}
+        onPress={displaySaveDialog}
         disabled={!isFormFilled()}
         extraStyle={styles.saveButton}
       />
     );
   }
 
-  function ApproveDialogContent() {
+  function SaveDialogContent() {
     return (
       <Dialog
-        title={t('forms.dialog.approve.title')}
-        description={t('forms.dialog.approve.description')}
+        title={t('forms.dialog.save.title')}
+        description={t('forms.dialog.save.description')}
         isConfirmAvailable={true}
-        confirmTitle={t('forms.dialog.approve.confirm')}
+        confirmTitle={t('forms.dialog.save.confirm')}
         onConfirm={() => saveForm()}
-        cancelTitle={t('forms.dialog.approve.cancel')}
+        cancelTitle={t('forms.dialog.save.cancel')}
         isCancelAvailable={true}
-        onCancel={() => setShowApproveDialog(false)}
+        onCancel={() => setShowSaveDialog(false)}
       />
     );
   }
@@ -315,7 +318,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
             onChangeText={setFormTitle}
             isTitle={true}
             placeholder={t('forms.creation.formTitle')}
-            editable={!showActionDialog}
+            editable={!showActionDialog && !showSaveDialog}
             multiline={true}
             numberOfLines={2}
           />
@@ -324,14 +327,14 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
             <FormTextInput
               value={formCreation}
               onChangeText={setFormCreation}
-              editable={!showActionDialog}
+              editable={!showActionDialog && !showSaveDialog}
               isTitle={true}
               placeholder={t('forms.creation.creationDate')}
             />
             <FormTextInput
               value={formCreationActor}
               onChangeText={setFormCreationActor}
-              editable={!showActionDialog}
+              editable={!showActionDialog && !showSaveDialog}
               isTitle={true}
               placeholder={t('forms.creation.creationActor')}
             />
@@ -340,14 +343,14 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
             <FormTextInput
               value={formUpdate}
               onChangeText={setFormUpdate}
-              editable={!showActionDialog}
+              editable={!showActionDialog && !showSaveDialog}
               isTitle={true}
               placeholder={t('forms.creation.updateDate')}
             />
             <FormTextInput
               value={formUpdateActor}
               onChangeText={setFormUpdateActor}
-              editable={!showActionDialog}
+              editable={!showActionDialog && !showSaveDialog}
               isTitle={true}
               placeholder={t('forms.creation.updateActor')}
             />
@@ -360,7 +363,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   key={columnIndex}
                   value={cell.value}
                   onChangeText={(newText) => updateCell(rowIndex, columnIndex, newText)}
-                  editable={!showActionDialog}
+                  editable={!showActionDialog && !showSaveDialog}
                   isTitle={cell.isTitle}
                 />
               ))}
@@ -369,7 +372,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         </ScrollView>
       </AppContainer>
       { ActionDialogContent() }
-      { showApproveDialog && ApproveDialogContent() }
+      { showSaveDialog && SaveDialogContent() }
       { ToastContent() }
     </>
   );

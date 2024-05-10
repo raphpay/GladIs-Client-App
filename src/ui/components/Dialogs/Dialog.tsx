@@ -59,7 +59,10 @@ function Dialog(props: DialogProps): React.JSX.Element {
         <View style={styles.buttonContainer}>
           {
             isCancelAvailable ? (
-              <TouchableOpacity onPress={onCancel}>
+              <TouchableOpacity
+                style={styles.dialogButton}
+                onPress={onCancel}
+              >
                 <Text style={[styles.buttonText, { color: Colors.danger }]}>{cancelTitle ?? t('components.dialog.cancel')}</Text>
               </TouchableOpacity>
             ) : (
@@ -69,7 +72,10 @@ function Dialog(props: DialogProps): React.JSX.Element {
           {
             isConfirmAvailable == true || isConfirmAvailable == undefined ? (
               <View style={{flexDirection: 'row-reverse'}}>
-                <TouchableOpacity onPress={onConfirm} disabled={isConfirmDisabled}>
+                <TouchableOpacity
+                  style={styles.dialogButton}
+                  onPress={onConfirm}
+                  disabled={isConfirmDisabled}>
                   <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
                 </TouchableOpacity>
                 {extraConfirmButtonAction && extraConfirmButtonTitle && (

@@ -70,7 +70,8 @@ class FormService {
    */
   async update(formID: string, newForm: IFormUpdateInput, token: IToken | null): Promise<void> {
     try {
-      await APIService.put(`${this.baseRoute}/${formID}`, newForm, token?.value as string);
+      const route = `${this.baseRoute}/${formID}`;
+      await APIService.put(route, newForm, token?.value as string);
     } catch (error) {
       throw error
     }

@@ -656,11 +656,13 @@
       }
     },
     "dialog": {
-      "approve": {
+      "save": {
         "title": "Etes-vous sûr de vouloir approuver ce formulaire ?",
         "description": "Le formulaire sera envoyé au fournisseur dans son état actuel.",
         "confirm": "Oui",
-        "cancel": "Non",
+        "cancel": "Non"
+      },
+      "approve": {
         "admin": {
           "yes": "Est approuvé par l'administrateur",
           "no": "N'est pas approuvé par l'administrateur"
