@@ -12,7 +12,6 @@ import Utils from "../utils/Utils";
 /**
  * A class to handle form edition logic
  */
-// TODO: Add documentation
 class FormEditionManager {
   private static instance: FormEditionManager;
   private grid: IFormCell[][] = [[]];
@@ -83,50 +82,10 @@ class FormEditionManager {
   }
 
   // Sync Methods
-  addColumn(): IFormCell[][] {
-    let updatedGrid: IFormCell[][];
-
-    updatedGrid = this.grid.map((row, index) => {
-      const newCell = { id: Utils.generateUUID(), value: '', isTitle: index === 0 };
-      return [...row, newCell];
-    });
-
-    return updatedGrid;
-  }
-
-  addRow() {
-    if (this.grid[0].length > 0) {
-      const newRow = Array(this.grid[0].length).fill({}).map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
-      this.setGrid([...this.grid, newRow]);
-    } else {
-      console.log('Add column first');
-    }
-    return this.grid;
-  }
-
-  removeColumn() {
-    const updatedGrid = this.grid.map(row => row.slice(0, -1));
-    this.setGrid(updatedGrid);
-  };
-
-  removeRow() {
-    const updatedGrid = this.grid.slice(0, -1);
-    this.setGrid(updatedGrid);
-  }
-
-  updateCell(rowIndex: number, columnIndex: number, newText: string): IFormCell[][] {
-    // Create a copy of the grid
-    const newGrid = [...this.grid];
-    console.log('new', newGrid );
-
-    // Update the cell value in the copied grid
-    // newGrid[rowIndex][columnIndex].value = newText;
-
-    // // Update the state with the new grid
-    // this.setGrid(newGrid);
-    // return this.grid;
-  };
-
+  /**
+   * Converts the grid to a CSV string
+   * @returns The CSV string
+   */
   arrayToCsv() {
     // TODO: Export the title and the dates too
     const csv = this.grid.map(row => row.map(cell => cell.value).join(',')).join('\n');
@@ -134,6 +93,10 @@ class FormEditionManager {
   }
 
   // Async Methods
+  /**
+   * Loads and sets the grid from a form
+   * @param form The form to load the grid from
+  */
   async loadGrid(form: IForm | undefined) {
     if (form) {
       const gridFromCSV = Utils.csvToGrid(form.value);
@@ -141,6 +104,12 @@ class FormEditionManager {
     }
   }
 
+  /**
+   * Loads and sets the form info
+   * @param form The form to load the info from
+   * @param currentUser The current user
+   * @param token The token
+   */
   async loadFormInfo(form: IForm | undefined, currentUser: IUser | undefined, token: IToken | null) {
     if (form) {
       this.setFormTitle(form.title);
@@ -168,6 +137,15 @@ class FormEditionManager {
     }
   }
 
+  /**
+   * Saves the form
+   * @param form The form to save
+   * @param documentPath The document path
+   * @param currentUser The current user
+   * @param currentClient The current client
+   * @param token The token
+   * @throws Error if there is an error saving the form
+   */
   async saveForm(
     form: IForm | undefined,
     documentPath: string,
@@ -187,6 +165,11 @@ class FormEditionManager {
   }
 
   // Private Methods
+  /**
+   * Loads a user by ID
+   * @param id The user ID
+   * @param token The token
+   */
   private async loadUser(id: string, token: IToken | null) {
     try {
       const user = await UserService.getInstance().getUserByID(id, token);
@@ -196,6 +179,14 @@ class FormEditionManager {
     }
   }
 
+  /**
+   * Creates a form
+   * @param documentPath The document path
+   * @param currentUser The current user
+   * @param currentClient The current client
+   * @param token The token
+   * @throws Error if there is an error creating the form
+   */
   private async createForm(
     documentPath: string,
     currentUser: IUser | undefined, currentClient: IUser | undefined,
@@ -215,6 +206,13 @@ class FormEditionManager {
     }
   }
 
+  /**
+   * Updates a form
+   * @param form The form to update
+   * @param currentUser The current user
+   * @param token The token
+   * @throws Error if there is an error updating the form 
+   */
   private async updateForm(form: IForm, currentUser: IUser | undefined, token: IToken | null) {
     try {
       const updateUserID = currentUser?.id as string;
