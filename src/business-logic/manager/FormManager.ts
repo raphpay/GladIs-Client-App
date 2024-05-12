@@ -15,10 +15,11 @@ export interface IResult {
   message: string;
 }
 
-// TODO: Add documentation
+/**
+ * A class to handle form management logic
+ */
 class FormManager {
   private static instance: FormManager;
-  private forms: IForm[] = [];
 
   private constructor() {}
 
@@ -30,27 +31,28 @@ class FormManager {
     return FormManager.instance;
   }
 
-  // Setters
-  setForms(forms: IForm[]) {
-    this.forms = forms;
-  }
-
-  // Getters
-  getForms(): IForm[] {
-    return this.forms;
-  }
-
   // Sync Methods
+  /**
+   * Export form to CSV
+   * @param form The form to export
+   * @returns void
+   */
   exportToCSV(form: IForm) {
     const value = form.value;
     Clipboard.setString(value);
   }
 
   // Async Methods
+  /**
+   * Load forms
+   * @param clientID The client ID
+   * @param atPath The path
+   * @param token The token
+   * @returns A promise of an array of forms
+   */
   async loadForms(clientID: string, atPath: string, token: IToken | null): Promise<IForm[]> {
     try {
       const forms = await FormService.getInstance().getAllByClientAtPath(clientID, atPath, token);
-      this.setForms(forms);
       return forms;
     } catch (error) {
       throw error;
@@ -58,6 +60,13 @@ class FormManager {
   }
 
   // TODO: Integrate diagram logic
+  /**
+   * Approve form
+   * @param form The form to approve
+   * @param userType The user type
+   * @param token The token
+   * @returns A promise of a result
+   */
   async approve(form: IForm, userType: UserType, token: IToken | null): Promise<IResult> {
     let result: IResult = {
       success: false,
@@ -77,6 +86,12 @@ class FormManager {
     return result;
   }
 
+  /**
+   * Delete form
+   * @param selectedForm The selected form
+   * @param token The token
+   * @returns A promise of a result
+   */
   async deleteForm(selectedForm: IForm, token: IToken | null): Promise<IResult> {
     let result: IResult = {
       success: false,
@@ -95,6 +110,12 @@ class FormManager {
   }
 
   // Private methods
+  /** 
+   * Approve form by client
+   * @param form The form to approve
+   * @param token The token
+   * @returns A promise of a result
+  */
   private async clientApprove(form: IForm, token: IToken | null): Promise<IResult> {
     let result: IResult = {
       success: false,
@@ -117,6 +138,12 @@ class FormManager {
     return result;
   }
   
+  /** 
+   * Approve form by admin
+   * @param form The form to approve
+   * @param token The token
+   * @returns A promise of a result
+  */
   private async adminApprove(form: IForm, token: IToken | null) : Promise<IResult> {
     const result: IResult = {
       success: false,
@@ -138,6 +165,12 @@ class FormManager {
     return result;
   }
 
+  /** 
+   * Create form approval event
+   * @param form The form
+   * @param token The token
+   * @returns void
+  */
   private async createFormApprovalEvent(form: IForm, token: IToken | null) {
     const eventInput: IEventInput = {
       name: `Formulaire \"${form.title}\" à approuver. Dossier: ${form.path}`,
