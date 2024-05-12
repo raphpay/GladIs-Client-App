@@ -1,4 +1,3 @@
-import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,12 +7,10 @@ import { IRootStackParams } from '../../../../navigation/Routes';
 
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 
+import FormManager, { IResult } from '../../../../business-logic/manager/FormManager';
 import IAction from '../../../../business-logic/model/IAction';
-import { IEventInput } from '../../../../business-logic/model/IEvent';
 import IForm from '../../../../business-logic/model/IForm';
 import UserType from '../../../../business-logic/model/enums/UserType';
-import EventService from '../../../../business-logic/services/EventService';
-import FormService from '../../../../business-logic/services/FormService';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 
@@ -135,8 +132,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   function exportToCSV(form: IForm) {
-    const value = form.value;
-    Clipboard.setString(value);
+    FormManager.getInstance().exportToCSV(form);
     // Display toast
     displayToast(t('smqSurvey.toast.csvCopied'));
     // Hide alert
@@ -147,67 +143,31 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   // Async Methods
   async function loadForms() {
     try {
-      const clientID = currentClient?.id as string;
-      const forms = await FormService.getInstance().getAllByClientAtPath(clientID, documentPath, token);
+      const forms = await FormManager.getInstance().loadForms(currentClient?.id as string, documentPath, token)
       setForms(forms);
     } catch (error) {
-      console.log('error', error );
+      console.log('Error loading forms', error);
     }
   }
 
   async function approveForm(form: IForm) {
-    try {
-      const formID = form.id as string;
-      const userType = currentUser?.userType as UserType;
-      const updatedForm = await FormService.getInstance().approve(formID, userType, token);
-      if (
-        userType === UserType.Client &&
-        updatedForm.approvedByClient === true &&
-        updatedForm.approvedByAdmin === false
-      ) {
-        // Send reminder to Admin
-        createFormApprovalEvent(updatedForm);
-      }
-      // Display success message
-      const approvalStatus = userType === UserType.Admin ? updatedForm.approvedByAdmin : updatedForm.approvedByClient;
-      const message = approvalStatus ? t('forms.toast.success.approve') : t('forms.toast.success.deapprove');
-      displayToast(message);
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
-    }
-
-    setShowDialog(false);
+    // Approve form
+    const result: IResult = await FormManager.getInstance().approve(form, currentUser?.userType as UserType, token);
+    displayToast(t(`${result.message}`), !result.success);
+    // Load forms
     await loadForms();
-  }
-
-  async function createFormApprovalEvent(form: IForm) {
-    const eventInput: IEventInput = {
-      name: `Formulaire \"${form.title}\" à approuver. Dossier: ${form.path}`,
-      date: Date.now(),
-      clientID: form.clientID,
-    };
-    try {
-      await EventService.getInstance().create(eventInput, token);
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
-    }
+    // Hide alert
+    setShowDialog(false);
   }
 
   async function deleteForm() {
-    try {
-      const selectedFormID = selectedForm.id as string;
-      await FormService.getInstance().delete(selectedFormID, token);
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(errorMessage, true);
-    }
-    
+    // Delete form
+    const result: IResult = await FormManager.getInstance().deleteForm(selectedForm, token);
+    displayToast(t(`${result.message}`), !result.success);
+    // Load forms
     await loadForms();
-
+    // Hide alert
     setShowRemoveConfirmationDialog(false);
-    displayToast(t('forms.actions.remove.success'));
   }
 
   // Lifecycle Methods
