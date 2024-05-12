@@ -75,6 +75,9 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       const newCell = { id: Utils.generateUUID(), value: '', isTitle: index === 0 };
       return [...row, newCell];
     });
+
+    setGrid(updatedGrid);
+    setShowActionDialog(false);
   }
 
   function addRow() {
