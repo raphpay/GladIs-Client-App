@@ -125,8 +125,10 @@ class FormManager {
 
     try {
       const updatedForm = await FormService.getInstance().approve(formID, UserType.Client, token);
-      // Send reminder to Admin
-      this.createFormApprovalEvent(updatedForm, token);
+      if (updatedForm.approvedByClient && !updatedForm.approvedByAdmin) {
+        // Send reminder to Admin
+        this.createFormApprovalEvent(updatedForm, token);
+      }
       result.success = true;
       const message = updatedForm.approvedByClient ? 'forms.toast.success.approve' : 'forms.toast.success.deapprove';
       result.message = message;
