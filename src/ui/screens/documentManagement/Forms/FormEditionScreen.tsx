@@ -109,6 +109,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
     // Update the state with the new grid
     setGrid(newGrid);
+    FormEditionManager.getInstance().setGrid(newGrid);
   };
 
   function displayActionDialog() {
@@ -140,7 +141,17 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   // Async Methods
   async function saveForm() {
     try {
-      await FormEditionManager.getInstance().saveForm(form, documentPath, currentUser, currentClient, token);
+      if (form) {
+        await FormEditionManager.getInstance().updateForm(form, currentUser, token);
+      } else {
+        await FormEditionManager.getInstance().createForm(
+          formTitle,
+          currentUser?.id as string,
+          documentPath,
+          currentClient?.id as string,
+          token
+        );
+      }
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(errorMessage, true);

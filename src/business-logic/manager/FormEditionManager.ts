@@ -138,26 +138,46 @@ class FormEditionManager {
   }
 
   /**
-   * Saves the form
-   * @param form The form to save
-   * @param documentPath The document path
-   * @param currentUser The current user
-   * @param currentClient The current client
+   * Creates a form
+   * @param title The form title
+   * @param currentUserID The current user ID
+   * @param path The form path
+   * @param clientID The client ID
    * @param token The token
-   * @throws Error if there is an error saving the form
+   * @throws Error if there is an error creating the form
    */
-  async saveForm(
-    form: IForm | undefined,
-    documentPath: string,
-    currentUser: IUser | undefined, currentClient: IUser | undefined,
-    token: IToken | null
-  ) {
+  async createForm(title: string, currentUserID: string, path: string, clientID: string, token: IToken | null) {
     try {
-      if (form) {
-        // Update
-        await this.updateForm(form, currentUser, token);
-      } else {
-        await this.createForm(documentPath, currentUser, currentClient, token);
+      const newForm: IFormInput = {
+        title,
+        createdBy: currentUserID,
+        value: this.arrayToCsv(),
+        path,
+        clientID,
+      }
+      await FormService.getInstance().create(newForm, token);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Updates a form
+   * @param form The form to update
+   * @param currentUser The current user
+   * @param token The token
+   * @throws Error if there is an error updating the form 
+   */
+  async updateForm(form: IForm, currentUser: IUser | undefined, token: IToken | null) {
+    try {
+      const updateUserID = currentUser?.id as string;
+      const newForm: IFormUpdateInput = {
+        updatedBy: updateUserID,
+        value: this.arrayToCsv(),
+      };
+      await FormService.getInstance().update(form.id as string, newForm, token);
+      if (form.approvedByAdmin || form.approvedByClient) {
+        await FormService.getInstance().unapprove(form.id as string, token);
       }
     } catch (error) {
       throw error;
@@ -176,53 +196,6 @@ class FormEditionManager {
       return user;
     } catch (error) {
       console.log('Error loading user', error);
-    }
-  }
-
-  /**
-   * Creates a form
-   * @param documentPath The document path
-   * @param currentUser The current user
-   * @param currentClient The current client
-   * @param token The token
-   * @throws Error if there is an error creating the form
-   */
-  private async createForm(
-    documentPath: string,
-    currentUser: IUser | undefined, currentClient: IUser | undefined,
-    token: IToken | null
-  ) {
-    try {
-      const newForm: IFormInput = {
-        title: this.getFormTitle(),
-        createdBy: currentUser?.id as string,
-        value: FormEditionManager.getInstance().arrayToCsv(),
-        path: documentPath,
-        clientID: currentClient?.id as string,
-      };
-      await FormService.getInstance().create(newForm, token);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * Updates a form
-   * @param form The form to update
-   * @param currentUser The current user
-   * @param token The token
-   * @throws Error if there is an error updating the form 
-   */
-  private async updateForm(form: IForm, currentUser: IUser | undefined, token: IToken | null) {
-    try {
-      const updateUserID = currentUser?.id as string;
-      const newForm: IFormUpdateInput = {
-        updatedBy: updateUserID,
-        value: this.arrayToCsv(),
-      };
-      await FormService.getInstance().update(form.id as string, newForm, token);
-    } catch (error) {
-      throw error;
     }
   }
 }

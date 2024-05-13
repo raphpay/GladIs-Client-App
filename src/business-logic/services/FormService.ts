@@ -125,6 +125,21 @@ class FormService {
     }
   }
 
+  /**
+   * Unapprove a form for both client and admin.
+   * @param formID The form ID.
+   * @param token The token to be used for authentication.
+   * @throws An error if the operation fails.
+  */
+  async unapprove(formID: string, token: IToken | null): Promise<void> {
+    try {
+      await this.deapprove(formID, UserType.Client, token);
+      await this.deapprove(formID, UserType.Admin, token);
+    } catch (error) {
+      throw error
+    }
+  }
+
   // DELETE
   /**
    * Deletes a form.
