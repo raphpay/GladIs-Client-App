@@ -625,6 +625,13 @@
   },
   "forms": {
     "title": "Formulaires",
+    "headerCells": {
+      "title": "Titre du formulaire",
+      "createdAt": "Date de création",
+      "createdBy": "Créé par",
+      "updatedAt": "Date de mise à jour",
+      "updatedBy": "Mis à jour par"
+    },
     "creation": {
       "title": "Créer un formulaire",
       "confirm": "Fermer",

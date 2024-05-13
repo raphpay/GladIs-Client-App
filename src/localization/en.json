@@ -622,6 +622,13 @@
   },
   "forms": {
     "title": "Forms",
+    "headerCells": {
+      "title": "Form title",
+      "createdAt": "Creation date",
+      "createdBy": "Created by",
+      "updatedAt": "Update date",
+      "updatedBy": "Updated by"
+    },
     "creation": {
       "title": "Create a form",
       "confirm": "Close",

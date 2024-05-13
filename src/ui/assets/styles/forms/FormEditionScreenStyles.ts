@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   container: {
@@ -39,6 +40,14 @@ const styles = StyleSheet.create({
   saveButton: {
     marginRight: 10,
   },
+  headerCell: {
+    flex: 1,
+  },
+  headerCellTitle: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontFamily: Fonts.poppinsSemiBold 
+  }
 });
 
 export default styles;

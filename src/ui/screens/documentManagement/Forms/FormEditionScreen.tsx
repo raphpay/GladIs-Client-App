@@ -21,6 +21,7 @@ import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
+import FormEditionHeaderCell from './FormEditionHeaderCell';
 
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
@@ -280,46 +281,44 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         additionalComponent={SaveButton()}
       >
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <FormTextInput
+          <FormEditionHeaderCell
             value={formTitle}
-            onChangeText={setFormTitle}
-            isTitle={true}
+            setValue={setFormTitle}
+            title={t('forms.headerCells.title')}
             placeholder={t('forms.creation.formTitle')}
             editable={!showActionDialog && !showSaveDialog}
-            multiline={true}
-            numberOfLines={2}
           />
           <View style={styles.separator}/>
           <View style={styles.cellRow}>
-            <FormTextInput
+            <FormEditionHeaderCell
               value={formCreation}
-              onChangeText={setFormCreation}
-              editable={!showActionDialog && !showSaveDialog}
-              isTitle={true}
+              setValue={setFormCreation}
+              title={t('forms.headerCells.createdAt')}
               placeholder={t('forms.creation.creationDate')}
-            />
-            <FormTextInput
-              value={formCreationActor}
-              onChangeText={setFormCreationActor}
               editable={!showActionDialog && !showSaveDialog}
-              isTitle={true}
+            />
+            <FormEditionHeaderCell
+              value={formCreationActor}
+              setValue={setFormCreationActor}
+              title={t('forms.headerCells.createdBy')}
               placeholder={t('forms.creation.creationActor')}
+              editable={!showActionDialog && !showSaveDialog}
             />
           </View>
           <View style={styles.cellRow}>
-            <FormTextInput
+            <FormEditionHeaderCell
               value={formUpdate}
-              onChangeText={setFormUpdate}
-              editable={!showActionDialog && !showSaveDialog}
-              isTitle={true}
+              setValue={setFormUpdate}
+              title={t('forms.headerCells.updatedAt')}
               placeholder={t('forms.creation.updateDate')}
-            />
-            <FormTextInput
-              value={formUpdateActor}
-              onChangeText={setFormUpdateActor}
               editable={!showActionDialog && !showSaveDialog}
-              isTitle={true}
+            />
+            <FormEditionHeaderCell
+              value={formUpdateActor}
+              setValue={setFormUpdateActor}
+              title={t('forms.headerCells.updatedBy')}
               placeholder={t('forms.creation.updateActor')}
+              editable={!showActionDialog && !showSaveDialog}
             />
           </View>
           <View style={styles.separator}/>
