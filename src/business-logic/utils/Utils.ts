@@ -289,9 +289,9 @@ class Utils {
    */
   static csvToGrid(value: string): IFormCell[][] {
     const rows = value.split('\n');
-    const grid = rows.map(row => {
+    const grid = rows.map((row, rowIndex) => {
       const cells = row.split(',');
-      return cells.map(cellValue => ({ id: Utils.generateUUID(), value: cellValue, isTitle: false }));
+      return cells.map(cellValue => ({ id: Utils.generateUUID(), value: cellValue, isTitle: rowIndex === 0}));
     });
     return grid;
   }
