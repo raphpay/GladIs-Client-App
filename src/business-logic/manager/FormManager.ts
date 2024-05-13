@@ -60,27 +60,94 @@ class FormManager {
   }
 
   // TODO: Integrate diagram logic
-  /**
-   * Approve form
+  /** 
+   * Approve form by client
    * @param form The form to approve
-   * @param userType The user type
    * @param token The token
    * @returns A promise of a result
-   */
-  async approve(form: IForm, userType: UserType, token: IToken | null): Promise<IResult> {
+  */
+  async clientApprove(form: IForm, token: IToken | null): Promise<IResult> {
     let result: IResult = {
       success: false,
       message: "",
     };
-    switch (userType) {
-      case UserType.Client:
-        result = await this.clientApprove(form, token);
-        break;
-      case UserType.Admin:
-        result = await this.adminApprove(form, token);
-        break;
-      default:
-        break;
+    const formID = form.id as string;
+
+    try {
+      const updatedForm = await FormService.getInstance().approve(formID, UserType.Client, token);
+      if (updatedForm.approvedByClient && !updatedForm.approvedByAdmin) {
+        // Send reminder to Admin
+        this.createFormApprovalEvent(updatedForm, token);
+      }
+      result.success = true;
+      result.message = 'forms.toast.success.approve';
+    } catch (error) {
+      result.message = (error as Error).message;
+      result.success = false;
+    }
+
+    return result;
+  }
+
+  async clientDeapprove(form: IForm, token: IToken | null): Promise<IResult> {
+    let result: IResult = {
+      success: false,
+      message: "",
+    };
+    const formID = form.id as string;
+
+    try {
+      await FormService.getInstance().deapprove(formID, UserType.Client, token);
+      result.success = true;
+      result.message = 'forms.toast.success.deapprove';
+    } catch (error) {
+      result.message = (error as Error).message;
+      result.success = false;
+    }
+
+    return result;
+  }
+  
+  /** 
+   * Approve form by admin
+   * @param form The form to approve
+   * @param token The token
+   * @returns A promise of a result
+  */
+  async adminApprove(form: IForm, token: IToken | null) : Promise<IResult> {
+    const result: IResult = {
+      success: false,
+      message: "",
+    };
+    
+    const formID = form.id as string;
+
+    try {
+      await FormService.getInstance().approve(formID, UserType.Admin, token);
+      result.success = true;
+      result.message = 'forms.toast.success.approve';
+    } catch (error) {
+      result.message = (error as Error).message;
+      result.success = false;
+    }
+
+    return result;
+  }
+
+  async adminDeapprove(form: IForm, token: IToken | null): Promise<IResult> {
+    let result: IResult = {
+      success: false,
+      message: "",
+    };
+    const formID = form.id as string;
+
+    try {
+      await FormService.getInstance().deapprove(formID, UserType.Admin, token);
+      result.success = true;
+      result.message = 'forms.toast.success.deapprove';
+    } catch (error) {
+      result.message = (error as Error).message;
+      result.success = false;
     }
 
     return result;
@@ -110,63 +177,6 @@ class FormManager {
   }
 
   // Private methods
-  /** 
-   * Approve form by client
-   * @param form The form to approve
-   * @param token The token
-   * @returns A promise of a result
-  */
-  private async clientApprove(form: IForm, token: IToken | null): Promise<IResult> {
-    let result: IResult = {
-      success: false,
-      message: "",
-    };
-    const formID = form.id as string;
-
-    try {
-      const updatedForm = await FormService.getInstance().approve(formID, UserType.Client, token);
-      if (updatedForm.approvedByClient && !updatedForm.approvedByAdmin) {
-        // Send reminder to Admin
-        this.createFormApprovalEvent(updatedForm, token);
-      }
-      result.success = true;
-      const message = updatedForm.approvedByClient ? 'forms.toast.success.approve' : 'forms.toast.success.deapprove';
-      result.message = message;
-    } catch (error) {
-      result.message = (error as Error).message;
-      result.success = false;
-    }
-
-    return result;
-  }
-  
-  /** 
-   * Approve form by admin
-   * @param form The form to approve
-   * @param token The token
-   * @returns A promise of a result
-  */
-  private async adminApprove(form: IForm, token: IToken | null) : Promise<IResult> {
-    const result: IResult = {
-      success: false,
-      message: "",
-    };
-    
-    const formID = form.id as string;
-
-    try {
-      const updatedForm = await FormService.getInstance().approve(formID, UserType.Admin, token);
-      result.success = true;
-      const message = updatedForm.approvedByAdmin ? 'forms.toast.success.approve' : 'forms.toast.success.deapprove';
-      result.message = message;
-    } catch (error) {
-      result.message = (error as Error).message;
-      result.success = false;
-    }
-
-    return result;
-  }
-
   /** 
    * Create form approval event
    * @param form The form

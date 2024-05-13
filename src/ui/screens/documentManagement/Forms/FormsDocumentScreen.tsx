@@ -151,9 +151,30 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   async function approveForm(form: IForm) {
-    // Approve form
-    const result: IResult = await FormManager.getInstance().approve(form, currentUser?.userType as UserType, token);
-    displayToast(t(`${result.message}`), !result.success);
+    let approvalResult: IResult = {
+      success: false,
+      message: "",
+    };
+    if (currentUser?.userType === UserType.Admin) {
+      if (form.approvedByAdmin) {
+        // Deapprove form
+        approvalResult = await FormManager.getInstance().adminDeapprove(form, token);
+      } else {
+        // Approve form
+        approvalResult = await FormManager.getInstance().adminApprove(form, token);
+      }
+    } else if (currentUser?.userType === UserType.Client) {
+      if (form.approvedByClient) {
+        // Deapprove form
+        approvalResult = await FormManager.getInstance().clientDeapprove(form, token);
+      } else {
+        // Approve form
+        approvalResult = await FormManager.getInstance().clientApprove(form, token);
+      }
+    }
+
+    // Display toast
+    displayToast(t(`${approvalResult.message}`), !approvalResult.success);
     // Load forms
     await loadForms();
     // Hide alert

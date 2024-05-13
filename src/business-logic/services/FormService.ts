@@ -78,7 +78,7 @@ class FormService {
   }
 
   /**
-   * Toggle the form approval status.
+   * Approve a form.
    * @param formID The form ID.
    * @param userType The user type.
    * @param token The token to be used for authentication.
@@ -93,7 +93,31 @@ class FormService {
       } else if (userType === UserType.Admin) {
         userRoute = 'admin';
       }
-      const route = `${this.baseRoute}/${userRoute}/${formID}/approval`;
+      const route = `${this.baseRoute}/${userRoute}/${formID}/approve`;
+      const form = await APIService.put(route, null, token?.value as string);
+      return form;
+    } catch (error) {
+      throw error
+    }
+  }
+
+  /**
+   * Deapprove a form.
+   * @param formID The form ID.
+   * @param userType The user type.
+   * @param token The token to be used for authentication.
+   * @returns The updated form.
+   * @throws An error if the operation fails.
+   */
+  async deapprove(formID: string, userType: UserType, token: IToken | null): Promise<IForm> {
+    try {
+      let userRoute = '';
+      if (userType === UserType.Client) {
+        userRoute = 'client';
+      } else if (userType === UserType.Admin) {
+        userRoute = 'admin';
+      }
+      const route = `${this.baseRoute}/${userRoute}/${formID}/deapprove`;
       const form = await APIService.put(route, null, token?.value as string);
       return form;
     } catch (error) {
