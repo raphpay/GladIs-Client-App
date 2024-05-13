@@ -4,15 +4,10 @@ import IForm, { IFormCell, IFormInput, IFormUpdateInput } from "../model/IForm";
 import IToken from "../model/IToken";
 // User
 import IUser from "../model/IUser";
-import UserType from "../model/enums/UserType";
 // Services
 import FormService from "../services/FormService";
 import UserService from "../services/UserService";
 import Utils from "../utils/Utils";
-// Document logs
-import { IDocumentActivityLogInput } from "../model/IDocumentActivityLog";
-import DocumentLogAction from "../model/enums/DocumentLogAction";
-import DocumentActivityLogsService from "../services/DocumentActivityLogsService";
 
 /**
  * A class to handle form edition logic
@@ -152,7 +147,6 @@ class FormEditionManager {
    * @throws Error if there is an error creating the form
    */
   async createForm(title: string, currentUserID: string, path: string, clientID: string, token: IToken | null) {
-    let createdForm: IForm | undefined;
     try {
       const newForm: IFormInput = {
         title,
@@ -161,18 +155,9 @@ class FormEditionManager {
         path,
         clientID,
       }
-      createdForm = await FormService.getInstance().create(newForm, token);
+      await FormService.getInstance().create(newForm, token);
     } catch (error) {
       throw error;
-    }
-
-    if (createdForm) {
-      // Record log
-      await this.recordLog(
-        DocumentLogAction.Creation, UserType.Admin,
-        currentUserID, currentUserID,
-        createdForm, token
-      );
     }
   }
 
@@ -183,11 +168,7 @@ class FormEditionManager {
    * @param token The token
    * @throws Error if there is an error updating the form 
    */
-  async updateForm(
-    form: IForm,
-    currentUser: IUser | undefined, currentClient: IUser | undefined,
-    token: IToken | null
-  ) {
+  async updateForm(form: IForm, currentUser: IUser | undefined, token: IToken | null) {
     try {
       const updateUserID = currentUser?.id as string;
       const newForm: IFormUpdateInput = {
@@ -201,12 +182,6 @@ class FormEditionManager {
     } catch (error) {
       throw error;
     }
-    // Record log
-    await this.recordLog(
-      DocumentLogAction.Modification, currentUser?.userType as UserType,
-      currentUser?.id as string, currentClient?.id as string,
-      form, token
-    );
   }
 
   // Private Methods
@@ -221,25 +196,6 @@ class FormEditionManager {
       return user;
     } catch (error) {
       console.log('Error loading user', error);
-    }
-  }
-
-  private async recordLog(
-    action: DocumentLogAction, userType: UserType,
-    currentUserId: string, currentClientId: string,
-    form: IForm, token: IToken | null
-  ) {
-    const logInput: IDocumentActivityLogInput = {
-      action,
-      actorIsAdmin: userType == UserType.Admin,
-      actorID: currentUserId as string,
-      clientID: currentClientId as string,
-      documentID: form?.id as string,
-    }
-    try {
-      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
-    } catch (error) {
-      throw error;
     }
   }
 }

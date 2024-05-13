@@ -657,7 +657,7 @@
     },
     "dialog": {
       "save": {
-        "title": "Etes-vous sûr de vouloir sauver ce formulaire ?",
+        "title": "Etes-vous sûr de vouloir approuver ce formulaire ?",
         "description": "Le formulaire sera envoyé au fournisseur dans son état actuel.",
         "confirm": "Oui",
         "cancel": "Non"

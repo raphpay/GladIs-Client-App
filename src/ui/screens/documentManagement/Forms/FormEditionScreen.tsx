@@ -142,7 +142,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   async function saveForm() {
     try {
       if (form) {
-        await FormEditionManager.getInstance().updateForm(form, currentUser, currentClient, token);
+        await FormEditionManager.getInstance().updateForm(form, currentUser, token);
       } else {
         await FormEditionManager.getInstance().createForm(
           formTitle,
