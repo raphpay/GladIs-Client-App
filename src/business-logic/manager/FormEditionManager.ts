@@ -4,10 +4,15 @@ import IForm, { IFormCell, IFormInput, IFormUpdateInput } from "../model/IForm";
 import IToken from "../model/IToken";
 // User
 import IUser from "../model/IUser";
+import UserType from "../model/enums/UserType";
 // Services
 import FormService from "../services/FormService";
 import UserService from "../services/UserService";
 import Utils from "../utils/Utils";
+// Logs
+import { IDocumentActivityLogInput } from "../model/IDocumentActivityLog";
+import DocumentLogAction from "../model/enums/DocumentLogAction";
+import DocumentActivityLogsService from "../services/DocumentActivityLogsService";
 
 /**
  * A class to handle form edition logic
@@ -146,7 +151,7 @@ class FormEditionManager {
    * @param token The token
    * @throws Error if there is an error creating the form
    */
-  async createForm(title: string, currentUserID: string, path: string, clientID: string, token: IToken | null) {
+  async createForm(title: string, currentUserID: string, path: string, clientID: string, token: IToken | null): Promise<IForm> {
     try {
       const newForm: IFormInput = {
         title,
@@ -155,7 +160,8 @@ class FormEditionManager {
         path,
         clientID,
       }
-      await FormService.getInstance().create(newForm, token);
+      const createdForm = await FormService.getInstance().create(newForm, token);
+      return createdForm;
     } catch (error) {
       throw error;
     }
@@ -182,6 +188,22 @@ class FormEditionManager {
     } catch (error) {
       throw error;
     }
+  }
+
+  async recordLog(
+    action: DocumentLogAction,
+    userType: UserType,
+    currentUserID: string, currentClientID: string,
+    form: IForm, token: IToken | null
+  ) {
+    const logInput: IDocumentActivityLogInput = {
+      action,
+      actorIsAdmin: userType == UserType.Admin,
+      actorID: currentUserID as string,
+      clientID: currentClientID as string,
+      formID: form.id,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
   // Private Methods

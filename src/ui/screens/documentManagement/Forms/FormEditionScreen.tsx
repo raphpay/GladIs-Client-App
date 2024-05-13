@@ -23,6 +23,8 @@ import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
 import FormEditionHeaderCell from './FormEditionHeaderCell';
 
+import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
+import UserType from '../../../../business-logic/model/enums/UserType';
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
 type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
@@ -144,12 +146,28 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     try {
       if (form) {
         await FormEditionManager.getInstance().updateForm(form, currentUser, token);
+        await FormEditionManager.getInstance().recordLog(
+          DocumentLogAction.Modification,
+          currentUser?.userType as UserType,
+          currentUser?.id as string,
+          currentClient?.id as string,
+          form,
+          token
+        )
       } else {
-        await FormEditionManager.getInstance().createForm(
+        const createdForm = await FormEditionManager.getInstance().createForm(
           formTitle,
           currentUser?.id as string,
           documentPath,
           currentClient?.id as string,
+          token
+        );
+        await FormEditionManager.getInstance().recordLog(
+          DocumentLogAction.Creation,
+          currentUser?.userType as UserType,
+          currentUser?.id as string,
+          currentClient?.id as string,
+          createdForm,
           token
         );
       }
@@ -163,6 +181,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     // Reload forms
     dispatch(setFormsCount(formsCount + 1));
   }
+
+  console.log('tok', token.value );
 
   async function loadFormInfo() {
     await FormEditionManager.getInstance().loadFormInfo(form, currentUser, token);
