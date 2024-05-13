@@ -23,6 +23,7 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
 
+import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import styles from '../../../assets/styles/forms/FormsDocumentScreenStyles';
 
 type FormsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormsDocumentScreen>;
@@ -162,6 +163,14 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
       } else {
         // Approve form
         approvalResult = await FormManager.getInstance().adminApprove(form, token);
+        await FormManager.getInstance().recordLog(
+          DocumentLogAction.Approbation,
+          UserType.Admin,
+          currentUser?.id as string,
+          currentClient?.id as string,
+          form,
+          token
+        );
       }
     } else if (currentUser?.userType === UserType.Client) {
       if (form.approvedByClient) {
@@ -170,6 +179,14 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
       } else {
         // Approve form
         approvalResult = await FormManager.getInstance().clientApprove(form, token);
+        await FormManager.getInstance().recordLog(
+          DocumentLogAction.Approbation,
+          UserType.Client,
+          currentUser?.id as string,
+          currentClient?.id as string,
+          form,
+          token
+        );
       }
     }
 
@@ -184,6 +201,14 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   async function deleteForm() {
     // Delete form
     const result: IResult = await FormManager.getInstance().deleteForm(selectedForm, token);
+    await FormManager.getInstance().recordLog(
+      DocumentLogAction.Deletion,
+      currentUser?.userType as UserType,
+      currentUser?.id as string,
+      currentClient?.id as string,
+      selectedForm,
+      token
+    );
     displayToast(t(`${result.message}`), !result.success);
     // Load forms
     await loadForms();

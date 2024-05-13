@@ -190,6 +190,17 @@ class FormEditionManager {
     }
   }
 
+  /**
+   * Record a log
+   * @param action The action
+   * @param userType The user type
+   * @param currentUserID The current user ID
+   * @param currentClientID The current client ID
+   * @param form The form
+   * @param token The token
+   * @returns void
+   * @throws Error if there is an error recording the log
+   */
   async recordLog(
     action: DocumentLogAction,
     userType: UserType,

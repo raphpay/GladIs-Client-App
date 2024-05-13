@@ -9,6 +9,10 @@ import UserType from "../model/enums/UserType";
 // Event
 import { IEventInput } from "../model/IEvent";
 import EventService from "../services/EventService";
+// Logs
+import { IDocumentActivityLogInput } from "../model/IDocumentActivityLog";
+import DocumentLogAction from "../model/enums/DocumentLogAction";
+import DocumentActivityLogsService from "../services/DocumentActivityLogsService";
 
 export interface IResult {
   success: boolean;
@@ -174,6 +178,33 @@ class FormManager {
     }
 
     return result;
+  }
+
+  /**
+   * Record a log
+   * @param action The action
+   * @param userType The user type
+   * @param currentUserID The current user ID
+   * @param currentClientID The current client ID
+   * @param form The form
+   * @param token The token
+   * @returns void
+   * @throws Error if there is an error recording the log
+   */
+  async recordLog(
+    action: DocumentLogAction,
+    userType: UserType,
+    currentUserID: string, currentClientID: string,
+    form: IForm, token: IToken | null
+  ) {
+    const logInput: IDocumentActivityLogInput = {
+      action,
+      actorIsAdmin: userType == UserType.Admin,
+      actorID: currentUserID as string,
+      clientID: currentClientID as string,
+      formID: form.id,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
   // Private methods
