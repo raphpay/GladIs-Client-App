@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import ISurvey from '../../model/ISurvey';
 
-export interface AppState {
+export interface SMQState {
   smqScreenSource: string,
   smqSurveysListCount: number,
   currentSurvey: ISurvey | undefined,
   isUpdatingSurvey: boolean,
 }
 
-const initialState: AppState = {
+const initialState: SMQState = {
   smqScreenSource: '',
   smqSurveysListCount: 0,
   currentSurvey: undefined,

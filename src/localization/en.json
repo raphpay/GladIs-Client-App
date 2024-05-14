@@ -619,5 +619,79 @@
   "legal": {
     "appName": "GladIs",
     "developer": "Developed by TwinPaw"
+  },
+  "forms": {
+    "title": "Forms",
+    "headerCells": {
+      "title": "Form title",
+      "createdAt": "Creation date",
+      "createdBy": "Created by",
+      "updatedAt": "Update date",
+      "updatedBy": "Updated by"
+    },
+    "creation": {
+      "title": "Create a form",
+      "confirm": "Close",
+      "formTitle": "Form title",
+      "creationDate": "Creation date",
+      "creationActor": "Created by",
+      "updateDate": "Update date",
+      "updateActor": "Updated by"
+    },
+    "actions": {
+      "title": "Actions",
+      "addColumn": "Add a column",
+      "addRow": "Add a row",
+      "exportToCSV": "Export to CSV",
+      "remove": {
+        "title": "Are you sure you want to remove this form ?",
+        "description": "The deletion is definitive.",
+        "confirm": "Yes",
+        "cancel": "No",
+        "success": "Form successfully removed",
+        "forbiddenAction": "You don't have the right to remove this form"
+      },
+      "tooltip": {
+        "title": "Actions on the form",
+        "open": "Open",
+        "approve": "Approve",
+        "deapprove": "Deapprove",
+        "remove": "Remove"
+      }
+    },
+    "dialog": {
+      "save": {
+        "title": "Are you sure you want to save this form ?",
+        "description": "The form will be sent to the provider in its current state.",
+        "confirm": "Yes",
+        "cancel": "No"
+      },
+      "approve": {
+        "admin": {
+          "yes": "Is approved by the admininstrator",
+          "no": "Is not approved by the admininstrator"
+        },
+        "client": {
+          "yes": "Is approved by client",
+          "no": "Is not approved by client"
+        }
+      }
+    },
+    "toast": {
+      "success": {
+        "approve": "Form successfully approved",
+        "deapprove": "Form successfully deapproved"
+      }
+    },
+    "buttons": {
+      "add": "Add a form"
+    },
+    "noDocs": {
+      "title": "No forms found",
+      "message": {
+        "admin": "Add a form now",
+        "client": "Please come back later"
+      }
+    }
   }
 }

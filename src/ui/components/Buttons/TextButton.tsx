@@ -1,8 +1,10 @@
 import React from 'react';
 import {
   DimensionValue,
+  StyleProp,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  ViewStyle
 } from 'react-native';
 
 import { Colors } from '../../assets/colors/colors';
@@ -12,11 +14,18 @@ type TextButtonProps = {
   title: string;
   onPress: () => void;
   disabled?: boolean;
-  width?: DimensionValue | undefined
+  width?: DimensionValue | undefined;
+  extraStyle?: StyleProp<ViewStyle>;
 };
 
 function TextButton(props: TextButtonProps): React.JSX.Element {
-  const { title, onPress, width, disabled } = props;
+  const {
+    title,
+    onPress,
+    width,
+    disabled,
+    extraStyle
+  } = props;
 
   return (
     <TouchableOpacity
@@ -25,7 +34,8 @@ function TextButton(props: TextButtonProps): React.JSX.Element {
         {
           width,
           backgroundColor: disabled ? Colors.inactive : Colors.primary
-        }
+        },
+        extraStyle
       ]}
       onPress={onPress}
       disabled={disabled}

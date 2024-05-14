@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 
 import IArea from '../business-logic/model/IArea';
 import IDocument from '../business-logic/model/IDocument';
+import IForm from '../business-logic/model/IForm';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
@@ -50,7 +51,9 @@ import SurveysScreen from '../ui/screens/dashboard/SurveysScreen';
 import MessagesScreen from '../ui/screens/chat/MessagesScreen';
 // SMQ Survey
 import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScreen';
-import SMQRegulatoryAffairsScreen from '../ui/screens/smqSurvey/SMQRegulatoryAffairs/SMQRegulatoryAffairsScreen';
+// Forms
+import FormEditionScreen from '../ui/screens/documentManagement/Forms/FormEditionScreen';
+import FormsDocumentScreen from '../ui/screens/documentManagement/Forms/FormsDocumentScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -84,6 +87,9 @@ export type IRootStackParams = {
   MessagesScreen: undefined,
   // SMQ Surveys
   SurveysScreen: undefined,
+  // Forms
+  FormsDocumentScreen: { documentPath: string },
+  FormEditionScreen: { form? : IForm, documentPath: string },
 }
 
 export type IClientCreationStack = {
@@ -174,11 +180,6 @@ function SMQSurvey() {
         component={SMQGeneralScreen}
         options={{headerShown: false}}
       />
-      <SMQSurveyStack.Screen
-        name={NavigationRoutes.SMQRegulatoryAffairsScreen}
-        component={SMQRegulatoryAffairsScreen}
-        options={{headerShown: false}}
-      />
     </SMQSurveyStack.Navigator>
   );
 
@@ -260,6 +261,16 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.SurveysScreen}
         component={SurveysScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.FormsDocumentScreen}
+        component={FormsDocumentScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.FormEditionScreen}
+        component={FormEditionScreen}
         options={{headerShown: false}}
       />
       <ClientCreationStack.Screen

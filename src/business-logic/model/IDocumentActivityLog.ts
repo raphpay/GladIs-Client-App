@@ -5,13 +5,18 @@ export default interface IDocumentActivityLog {
   name: string;
   actorUsername: string;
   actionDate: string;
-  documentID: IDocumentID;
+  documentID?: IDocumentID;
+  formID?: IFormID;
   clientID: IClientID;
   action: DocumentLogAction;
   actorIsAdmin: boolean;
 }
 
 interface IDocumentID {
+  id: string
+}
+
+interface IFormID {
   id: string
 }
 
@@ -24,7 +29,8 @@ export interface IDocumentActivityLogInput {
   actorIsAdmin: boolean;
   actorID: string;
   clientID: string;
-  documentID: string;
+  documentID?: string;
+  formID?: string;
 }
 
 export interface IDocumentActivityLogPaginatedOutput {

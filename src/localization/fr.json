@@ -622,5 +622,79 @@
   "legal": {
     "appName": "GladIs",
     "developer": "Developpé par TwinPaw"
+  },
+  "forms": {
+    "title": "Formulaires",
+    "headerCells": {
+      "title": "Titre du formulaire",
+      "createdAt": "Date de création",
+      "createdBy": "Créé par",
+      "updatedAt": "Date de mise à jour",
+      "updatedBy": "Mis à jour par"
+    },
+    "creation": {
+      "title": "Créer un formulaire",
+      "confirm": "Fermer",
+      "formTitle": "Titre du formulaire",
+      "creationDate": "Date de création",
+      "creationActor": "Créé par",
+      "updateDate": "Date de mise à jour",
+      "updateActor": "Mis à jour par"
+    },
+    "actions": {
+      "title": "Actions",
+      "addColumn": "Ajouter une colonne",
+      "addRow": "Ajouter une ligne",
+      "exportToCSV": "Exporter en CSV",
+      "remove": {
+        "title": "Etes-vous sûr de vouloir supprimer ce formulaire ?",
+        "description": "La suppression est définitive.",
+        "confirm": "Oui",
+        "cancel": "Non",
+        "success": "Formulaire supprimée avec succès",
+        "forbiddenAction": "Vous n'avez pas le droit de supprimer ce formulaire"
+      },
+      "tooltip": {
+        "title": "Actions sur le formulaire",
+        "open": "Ouvrir",
+        "approve": "Approuver",
+        "deapprove": "Désapprouver",
+        "remove": "Supprimer"
+      }
+    },
+    "dialog": {
+      "save": {
+        "title": "Etes-vous sûr de vouloir approuver ce formulaire ?",
+        "description": "Le formulaire sera envoyé au fournisseur dans son état actuel.",
+        "confirm": "Oui",
+        "cancel": "Non"
+      },
+      "approve": {
+        "admin": {
+          "yes": "Est approuvé par l'administrateur",
+          "no": "N'est pas approuvé par l'administrateur"
+        },
+        "client": {
+          "yes": "Est approuvé par le client",
+          "no": "N'est pas approuvé par le client"
+        }
+      }
+    },
+    "toast": {
+      "success": {
+        "approve": "Formulaire approuvé avec succès",
+        "deapprove": "Formulaire désapprouvé avec succès"
+      }
+    },
+    "buttons": {
+      "add": "Ajouter un formulaire",
+    },
+    "noDocs": {
+      "title": "Aucun formulaire trouvé",
+      "message": {
+        "admin": "Ajoutez un formulaire maintenant",
+        "client": "Veuillez réessayer plus tard"
+      }
+    },
   }
 }

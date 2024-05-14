@@ -53,6 +53,12 @@ const styles = StyleSheet.create({
   },
   extraButton: {
     paddingRight: 25,
+  },
+  dialogButton: {
+    height: 50,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
