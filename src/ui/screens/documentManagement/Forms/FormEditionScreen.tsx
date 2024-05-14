@@ -182,8 +182,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     dispatch(setFormsCount(formsCount + 1));
   }
 
-  console.log('tok', token.value );
-
   async function loadFormInfo() {
     await FormEditionManager.getInstance().loadFormInfo(form, currentUser, token);
     const formTitle = FormEditionManager.getInstance().getFormTitle();
