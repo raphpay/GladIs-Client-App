@@ -63,7 +63,6 @@ class FormManager {
     }
   }
 
-  // TODO: Integrate diagram logic
   /** 
    * Approve form by client
    * @param form The form to approve

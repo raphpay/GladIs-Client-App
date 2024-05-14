@@ -92,7 +92,6 @@ class FormEditionManager {
    * @returns The CSV string
    */
   arrayToCsv() {
-    // TODO: Export the title and the dates too
     const csv = this.grid.map(row => row.map(cell => cell.value).join(',')).join('\n');
     return csv;
   }
