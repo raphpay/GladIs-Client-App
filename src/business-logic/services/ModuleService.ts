@@ -8,6 +8,28 @@ import APIService from './APIService';
 class ModuleService {
   private static instance: ModuleService | null = null;
   private baseRoute = 'modules';
+  private modules: IModule[] = [
+    {
+      id: '1',
+      name: 'documentManagement',
+      index: 1,
+    },
+    {
+      id: '2',
+      name: 'tracking',
+      index: 2,
+    },
+    {
+      id: '3',
+      name: 'reminders',
+      index: 3,
+    },
+    {
+      id: '4',
+      name: 'chat',
+      index: 4,
+    }
+  ];
 
   private constructor() {}
 
@@ -24,16 +46,10 @@ class ModuleService {
 
   /**
    * Retrieves all modules.
-   * @returns A promise that resolves to an array of modules.
-   * @throws If there was an error retrieving the modules.
+   * @returns An array of modules.
    */
-  async getModules(): Promise<IModule[]> {
-    try {
-      const modules = await APIService.get<IModule[]>(this.baseRoute);
-      return modules;
-    } catch (error) {
-      throw error;
-    }
+  getModules(): IModule[] {
+    return this.modules
   }
 
   /**
