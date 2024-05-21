@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
@@ -44,7 +44,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [companyName, setCompanyName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [products, setProducts] = useState<string>('');
-  const [modules, setModules] = useState<IModule[]>([]);
   const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
   const [numberOfEmployees, setNumberOfEmployees] = useState<string>('');
   const [numberOfUsers, setNumberOfUsers] = useState<string>('');
@@ -62,8 +61,9 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { navigation } = props;
-
   const { t } = useTranslation();
+
+  const modules = ModuleService.getInstance().getModules();
 
   // Sync Methods
   function toggleCheckbox(module: IModule) {
@@ -180,16 +180,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       setLogoURI(doc.uri);
     }
   }
-
-  // Lifecycle
-  useEffect(() => {
-    async function init() {
-      const apiModules = await ModuleService.getInstance().getModules();  
-      setModules(apiModules);
-      setSelectedModules([]);
-    }
-    init();
-  }, []);
 
   // Components
   function PotentialEmployeeGridItem(item: IPotentialEmployee, index: number) {

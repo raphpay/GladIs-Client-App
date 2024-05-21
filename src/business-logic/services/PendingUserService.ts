@@ -1,4 +1,4 @@
-import IModule from '../model/IModule';
+import IModule, { IModuleInput } from '../model/IModule';
 import IPendingUser from '../model/IPendingUser';
 import IPotentialEmployee from '../model/IPotentialEmployee';
 import IToken from '../model/IToken';
@@ -67,15 +67,21 @@ class PendingUserService {
   }
 
   private async addModulesToPendingUser(modules: IModule[], pendingUser: IPendingUser) {
+    let modInputs: IModuleInput[] = [];
     for (const module of modules) {
-      const userID = pendingUser.id as string;
-      const moduleID = module.id as string;
-      try {
-        await APIService.post(`${this.baseRoute}/${userID}/modules/${moduleID}`);
-      } catch (error) {
-        console.log('Error adding module', moduleID, 'to user', userID, error);
-        throw error;
-      }
+      // Create the input
+      const moduleInput: IModuleInput = {
+        name: module.name,
+        index: module.index,
+      };
+      modInputs.push(moduleInput);
+    }
+
+    try {
+      const route = `${this.baseRoute}/${pendingUser.id}/modules`;
+      await APIService.put(route, modInputs)
+    } catch (error) {
+      throw error;
     }
   }
 
