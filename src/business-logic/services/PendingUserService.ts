@@ -77,6 +77,8 @@ class PendingUserService {
       modInputs.push(moduleInput);
     }
 
+    console.log('addModulesToPendingUser', modInputs );
+
     try {
       const route = `${this.baseRoute}/${pendingUser.id}/modules`;
       await APIService.put(route, modInputs)
@@ -126,15 +128,11 @@ class PendingUserService {
    * @returns A promise that resolves to an array of module IDs.
    * @throws If there is an error retrieving the module IDs.
    */
-  async getPendingUsersModulesIDs(id: string): Promise<string[]> {
+  async getPendingUsersModules(id: string): Promise<IModule[]> {
     try {
       let moduleIDs: string[] = [];
       const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`);
-      for (const module of modules) {
-        const id = module.id as string;
-        moduleIDs.push(id);
-      }
-      return moduleIDs;
+      return modules;
     } catch (error) {
       console.log('Error getting pending user\'s modules for id:', id, error);
       throw error;
