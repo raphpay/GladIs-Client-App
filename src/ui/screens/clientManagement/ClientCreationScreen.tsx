@@ -235,7 +235,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
     if (createdUser) {
       try {
-        await UserService.getInstance().addModules(createdUser.id as string, selectedModules, castedToken);
+        await UserService.getInstance().updateModules(createdUser.id as string, selectedModules, castedToken);
         const createdEmployees = await convertEmployeesToUser();
         for (const employee of createdEmployees) {
           await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);

@@ -28,7 +28,8 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   const { t } = useTranslation();
   const navigation = useNavigation();
 
-  const modulesFiltered = ModuleService.getInstance().getModules().filter(module => {
+  const modules = ModuleService.getInstance().getModules();
+  const modulesFiltered = modules.filter(module => {
       const translatedName = t(`modules.${module.name}`);
       return translatedName.toLowerCase().includes(searchText?.toLowerCase());
   });
@@ -41,7 +42,6 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   function navigateToModule(module: IModule) {
     if (clientModulesIndexes.includes(module.index.toString())) {
       dispatch(setModule(module));
-      const modules = ModuleService.getInstance().getModules();
       if (module.name === modules[0].name) {
         navigation.navigate(NavigationRoutes.DocumentManagementScreen);
       } else if (module.name === modules[1].name) {
@@ -58,10 +58,11 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   // Async Methods
   async function loadModules() {
+    // TODO: Load when changing modules in the backend
     if (currentClient) {
       try {
         const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
-        const usersModulesIndexes: string[] = usersModules.map(mod => mod.id);
+        const usersModulesIndexes: string[] = usersModules.map(mod => mod.index.toString());
         setClientModulesIndexes(usersModulesIndexes);
       } catch (error) {
         console.log('Error loading modules', error);
