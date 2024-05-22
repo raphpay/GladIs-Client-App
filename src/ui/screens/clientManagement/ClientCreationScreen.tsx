@@ -44,8 +44,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const [companyName, setCompanyName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [products, setProducts] = useState<string>('');
-  const [modules, setModules] = useState<IModule[]>([]);
-  const [selectedModulesIDs, setSelectedModulesIDs] = useState<string[]>([]);
+  const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
   const [employees, setEmployees] = useState<string>('');
   const [numberOfUsers, setNumberOfUsers] = useState<string>('');
   const [sales, setSales] = useState<string>('');
@@ -67,33 +66,38 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { pendingUserListCount, clientListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
-
   const { t } = useTranslation();
 
+  const modules = ModuleService.getInstance().getModules();
+
   // Sync Methods
-  function retrieveSelectedModules(): IModule[] {
-    const selectedModules: IModule[] = [];
-    for (const id of selectedModulesIDs) {
-      const module = modules.find(module => module.id === id) as IModule;
-      selectedModules.push(module);
+  function toggleCheckbox(module: IModule): void {
+    if (isModuleSelected(module)) {
+      // If the module is already selected, deselect it
+      removeModuleFromClient(module);
+    } else {
+      // If the module is not selected, select it
+      addModuleToClient(module);
     }
-    return selectedModules;
   }
 
-  function toggleCheckbox(module: IModule) {
-    setSelectedModulesIDs((prevSelectedObjectsIDs) => {
-      const moduleID = module.id as string;
-      if (prevSelectedObjectsIDs.includes(moduleID)) {
-        return prevSelectedObjectsIDs.filter((objectModule) => objectModule !== moduleID);
-      } else {
-        return [...prevSelectedObjectsIDs, moduleID];
-      }
-    });
+  function addModuleToClient(moduleToAdd: IModule) {
+    setSelectedModules((currentSelectedModules) => [
+      ...currentSelectedModules,
+      moduleToAdd,
+    ]);
+  }
+
+  function removeModuleFromClient(moduleToRemove: IModule) {
+    setSelectedModules((currentSelectedModules) =>
+      currentSelectedModules.filter(
+        (module) => module.index !== moduleToRemove.index
+      )
+    );
   }
 
   function isModuleSelected(module: IModule): boolean {
-    const id = module.id as string;
-    return selectedModulesIDs.includes(id);
+    return selectedModules.some(selectedModule => selectedModule.index === module.index);
   }
 
   function setDefaultValues() {
@@ -167,7 +171,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       salesAmount: parseFloat(sales),
       status: PendingUserStatus.pending
     };
-    const selectedModules = retrieveSelectedModules();
     let createdUser: IPendingUser | undefined;
     try {
       createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
@@ -231,11 +234,9 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       displayToast(t(errorTitle), true);
     }
 
-    const selectedModules = retrieveSelectedModules();
-
     if (createdUser) {
       try {
-        await UserService.getInstance().addModules(createdUser.id as string, selectedModules, castedToken);
+        await UserService.getInstance().updateModules(createdUser.id as string, selectedModules, castedToken);
         const createdEmployees = await convertEmployeesToUser();
         for (const employee of createdEmployees) {
           await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
@@ -277,13 +278,11 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   
   async function loadModules() {
     try {
-      const apiModules = await ModuleService.getInstance().getModules();  
-      setModules(apiModules);
       if (pendingUser?.id != null) {
-        const pendingUsersModulesIDs = await PendingUserService.getInstance().getPendingUsersModulesIDs(pendingUser.id);
-        setSelectedModulesIDs(pendingUsersModulesIDs);
+        const pendingUsersModules = await PendingUserService.getInstance().getPendingUsersModules(pendingUser.id);
+        setSelectedModules(pendingUsersModules);
       } else {
-        setSelectedModulesIDs([]);
+        setSelectedModules([]);
       }
     } catch (error) {
       console.log('Error loading modules', error);

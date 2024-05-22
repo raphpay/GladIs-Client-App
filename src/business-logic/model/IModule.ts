@@ -9,3 +9,8 @@ export interface ICheckBoxOption {
   name: string;
   value: boolean;
 }
+
+export interface IModuleInput {
+  name: string;
+  index: number;
+}

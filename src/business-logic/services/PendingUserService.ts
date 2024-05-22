@@ -1,4 +1,4 @@
-import IModule from '../model/IModule';
+import IModule, { IModuleInput } from '../model/IModule';
 import IPendingUser from '../model/IPendingUser';
 import IPotentialEmployee from '../model/IPotentialEmployee';
 import IToken from '../model/IToken';
@@ -67,15 +67,23 @@ class PendingUserService {
   }
 
   private async addModulesToPendingUser(modules: IModule[], pendingUser: IPendingUser) {
+    let modInputs: IModuleInput[] = [];
     for (const module of modules) {
-      const userID = pendingUser.id as string;
-      const moduleID = module.id as string;
-      try {
-        await APIService.post(`${this.baseRoute}/${userID}/modules/${moduleID}`);
-      } catch (error) {
-        console.log('Error adding module', moduleID, 'to user', userID, error);
-        throw error;
-      }
+      // Create the input
+      const moduleInput: IModuleInput = {
+        name: module.name,
+        index: module.index,
+      };
+      modInputs.push(moduleInput);
+    }
+
+    console.log('addModulesToPendingUser', modInputs );
+
+    try {
+      const route = `${this.baseRoute}/${pendingUser.id}/modules`;
+      await APIService.put(route, modInputs)
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -120,15 +128,11 @@ class PendingUserService {
    * @returns A promise that resolves to an array of module IDs.
    * @throws If there is an error retrieving the module IDs.
    */
-  async getPendingUsersModulesIDs(id: string): Promise<string[]> {
+  async getPendingUsersModules(id: string): Promise<IModule[]> {
     try {
       let moduleIDs: string[] = [];
       const modules = await APIService.get<IModule[]>(`${this.baseRoute}/${id}/modules`);
-      for (const module of modules) {
-        const id = module.id as string;
-        moduleIDs.push(id);
-      }
-      return moduleIDs;
+      return modules;
     } catch (error) {
       console.log('Error getting pending user\'s modules for id:', id, error);
       throw error;

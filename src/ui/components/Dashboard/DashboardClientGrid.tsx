@@ -22,13 +22,13 @@ type DashboardClientGridProps = {
 function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element {
   const { searchText, setShowErrorDialog } = props;
 
-  const [modules, setModules] = useState<IModule[]>([]);
-  const [clientModulesIDs, setClientModulesIDs] = useState<string[]>([]);
+  const [clientModulesIndexes, setClientModulesIndexes] = useState<string[]>([]);
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
   const { t } = useTranslation();
   const navigation = useNavigation();
 
+  const modules = ModuleService.getInstance().getModules();
   const modulesFiltered = modules.filter(module => {
       const translatedName = t(`modules.${module.name}`);
       return translatedName.toLowerCase().includes(searchText?.toLowerCase());
@@ -40,15 +40,15 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   // Sync Methods
   function navigateToModule(module: IModule) {
-    if (clientModulesIDs.includes(module.id)) {
+    if (clientModulesIndexes.includes(module.index.toString())) {
       dispatch(setModule(module));
-      if (module.name === 'documentManagement') {
+      if (module.name === modules[0].name) {
         navigation.navigate(NavigationRoutes.DocumentManagementScreen);
-      } else if (module.name === 'tracking') {
+      } else if (module.name === modules[1].name) {
         navigation.navigate(NavigationRoutes.TrackingScreen);
-      } else if (module.name === 'reminders') {
+      } else if (module.name === modules[2].name) {
         navigation.navigate(NavigationRoutes.RemindersScreen);
-      } else if (module.name === 'chat') {
+      } else if (module.name === modules[3].name) {
         navigation.navigate(NavigationRoutes.MessagesScreen);
       }
     } else {
@@ -58,14 +58,12 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   // Async Methods
   async function loadModules() {
+    // TODO: Load when changing modules in the backend
     if (currentClient) {
       try {
-        const apiModules = await ModuleService.getInstance().getSortedModules(token);
         const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
-        const usersModulesIDs: string[] = usersModules.map(mod => mod.id);
-        setClientModulesIDs(usersModulesIDs);
-        console.log('apimodules',  apiModules);
-        setModules(apiModules);
+        const usersModulesIndexes: string[] = usersModules.map(mod => mod.index.toString());
+        setClientModulesIndexes(usersModulesIndexes);
       } catch (error) {
         console.log('Error loading modules', error);
       }

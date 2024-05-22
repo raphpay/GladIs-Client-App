@@ -1,4 +1,4 @@
-import IModule from '../model/IModule';
+import IModule, { IModuleInput } from '../model/IModule';
 import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
@@ -66,20 +66,30 @@ class UserService {
   }
 
   /**
-   * Adds modules to a user.
+   * Adds a module array to a user.
    * @param id - The ID of the user.
-   * @param modules - The modules to add.
+   * @param modules - The modules to add to the user.
    * @param token - The authentication token.
+   * @returns A promise that resolves to the updated user.
    * @throws If an error occurs while adding the modules to the user.
    */
-  async addModules(id: string, modules: IModule[], token: IToken | null) {
+  async updateModules(id: string, modules: IModule[], token: IToken | null) {
+    let modInputs: IModuleInput[] = [];
     for (const module of modules) {
-      const moduleID = module.id as string;
-      try {
-        await APIService.post(`${this.baseRoute}/${id}/modules/${moduleID}`, null, token?.value as string)
-      } catch (error) {
-        throw error;
-      }
+      // Create the input
+      const moduleInput: IModuleInput = {
+        name: module.name,
+        index: module.index,
+      };
+      modInputs.push(moduleInput);
+    }
+    
+    // Add the modules to the user
+    try {
+      const route = `${this.baseRoute}/${id}/modules`;
+      await APIService.put(route, modInputs, token?.value as string);
+    } catch (error) {
+      throw error;
     }
   }
 

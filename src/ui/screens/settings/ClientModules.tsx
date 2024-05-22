@@ -23,7 +23,6 @@ import styles from '../../assets/styles/settings/ClientModulesStyles';
 type ClientModulesProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientModules>;
 
 function ClientModules(props: ClientModulesProps): React.JSX.Element {
-  const [modules, setModules] = useState<IModule[]>([]);
   const [selectedModules, setSelectedModules] = useState<IModule[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   // Toast
@@ -48,13 +47,15 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     }
   ];
 
+  const modules = ModuleService.getInstance().getModules();
+
   // Sync Methods
   function navigateBack() {
     navigation.goBack();
   }
 
   function isModuleSelected(module: IModule): boolean {
-    return selectedModules.some(selectedModule => selectedModule.id === module.id);
+    return selectedModules.some(selectedModule => selectedModule.index === module.index);
   }
 
   function toggleCheckbox(module: IModule): void {
@@ -77,7 +78,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   function removeModuleFromClient(moduleToRemove: IModule) {
     setSelectedModules((currentSelectedModules) =>
       currentSelectedModules.filter(
-        (module) => module.id !== moduleToRemove.id
+        (module) => module.index !== moduleToRemove.index
       )
     );
   }
@@ -90,13 +91,6 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   
   // Async Methods
   async function loadModules() {
-    try {
-      const apiModules = await ModuleService.getInstance().getModules();  
-      setModules(apiModules);
-    } catch (error) {
-      console.log('Error getting modules', error);
-    }
-
     if (currentClient && currentClient.id && token) {
       try {
         const usersModules = await UserService.getInstance().getUsersModules(currentClient.id as string, token);
@@ -111,7 +105,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     // TODO: Enhance save method ( should be disabled if no changes were made )
     if (currentClient && currentClient.id && token) {
       try {
-        await UserService.getInstance().addModules(currentClient.id, selectedModules, token);
+        await UserService.getInstance().updateModules(currentClient.id, selectedModules, token);
         navigation.goBack();
       } catch (error) {
         const errorMessage = (error as Error).message;
