@@ -18,6 +18,8 @@ export default interface IUser {
   userType: UserType;
   modules?: IModule[];
   isBlocked?: boolean;
+  isConnectionBlocked?: boolean;
+  connectionFailedAttempts?: number;
 }
 
 export interface EmailInput {

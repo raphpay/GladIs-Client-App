@@ -5,21 +5,17 @@ import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
-import IUser from '../../../business-logic/model/IUser';
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
+import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import CacheService from '../../../business-logic/services/CacheService';
-import EventService from '../../../business-logic/services/EventService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
 import { setCurrentClient, setCurrentUser, setIsAdmin } from '../../../business-logic/store/slices/userReducer';
 
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import AppIcon from '../../components/AppIcon';
 import SimpleTextButton from '../../components/Buttons/SimpleTextButton';
 import TextButton from '../../components/Buttons/TextButton';
@@ -27,11 +23,10 @@ import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
+import { IEventInput } from '../../../business-logic/model/IEvent';
+import IUser from '../../../business-logic/model/IUser';
+import EventService from '../../../business-logic/services/EventService';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
-
-interface ILoginTries {
-  [key: string]: number;
-}
 
 type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
 
@@ -101,72 +96,74 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     }
   }
 
-  async function setLoginAttemptToUser(count: number) {
-    const tries = await CacheService.getInstance().retrieveValue(CacheKeys.loginTries);
-    const loginTries = tries as ILoginTries;
-    const toStore = { ...loginTries, [identifier]: count };
-    await CacheService.getInstance().storeValue(CacheKeys.loginTries, toStore);
-  }
-
-  async function handleMaxLoginAttempts(tries: ILoginTries): Promise<boolean> {
-    let shouldContinue = true;
-    let count = tries ? tries[identifier] : 0;
-    if (count >= 5) {
-      shouldContinue = false;
-      displayToast(t('errors.login.tooManyAttempts'), true);
-      if (count == 5) {
-        try {
-          const attemptUser = await findUser();
-          const event: IEventInput = {
-            name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${attemptUser.email}`,
-            date: Date.now(),
-            clientID: attemptUser.id ?? '0',
-          }
-          await EventService.getInstance().createMaxAttemptsEvent(event);
-          await setLoginAttemptToUser(count + 1);
-        } catch (error) {
-          const errorMessage = (error as Error).message;
-          await setLoginAttemptToUser(count + 1);
-          displayToast(t(`errors.api.${errorMessage}`), true);
-        }
-      }
-    }
-    return shouldContinue;
-  }
-
   async function login() {
     let token: IToken | undefined;
-    const loginTries = await CacheService.getInstance().retrieveValue(CacheKeys.loginTries);
-    const loginTriesValue = loginTries as ILoginTries;
-    const shouldContinue = await handleMaxLoginAttempts(loginTriesValue);
-    if (shouldContinue) {
-      try {
-        token = await AuthenticationService.getInstance().login(identifier, password);
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        if (loginTriesValue) {
-          await setLoginAttemptToUser(loginTriesValue[identifier] + 1);
-        } else {
-          await setLoginAttemptToUser(1);
-        }
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
+    let toastMessage = '';
 
-      if (token) {
-        try {
-          const user = await UserService.getInstance().getUserByID(token.user.id, token);
-          dispatch(setCurrentUser(user));
-          dispatch(setIsAdmin(user.userType === UserType.Admin))
-          if (user.userType !== UserType.Admin) {
-            dispatch(setCurrentClient(user));
-          }
-          dispatch(setToken(token));
-          await setLoginAttemptToUser(0);
-        } catch (error) {
-          const errorMessage = (error as Error).message;
-          displayToast(t(`errors.api.${errorMessage}`), true);
-        }
+    try {
+      token = await AuthenticationService.getInstance().login(identifier, password);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      toastMessage = t(`errors.api.${errorMessage}`);
+      // TODO: Handle unauthorized.login.connection.blocked // Too many attempts
+      // displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+
+    if (token) {
+      dispatchValues(token);
+    } else {
+      const user = await findUser();
+      if (user) {
+        await updateUserConnectionAttempts(user, toastMessage);
       }
+    }
+  }
+
+  async function updateUserConnectionAttempts(user: IUser, toastMessage: string) {
+    let attempts = user.connectionFailedAttempts || 0;
+    try {
+      attempts = await UserService.getInstance().blockUserConnection(user.id as string);
+    } catch (error) {
+      console.log('Error updating user connection attempts', error);
+    }
+
+    if (attempts >= 5) {
+      // Show toast
+      toastMessage = t('errors.api.unauthorized.login.connection.blocked');
+      if (attempts === 5) {
+        // Send event
+        await sendMaxLoginEvent(user);
+      }
+    }
+
+    displayToast(toastMessage, true);
+  }
+
+  async function sendMaxLoginEvent(user: IUser) {
+    try {
+      const event: IEventInput = {
+        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${user.email}`,
+        date: Date.now(),
+        clientID: user.id ?? '0',
+      }
+      await EventService.getInstance().createMaxAttemptsEvent(event);
+    } catch (error) {
+      console.log('Error sending max attempts event', error );
+    }
+  }
+
+  async function dispatchValues(token: IToken) {
+    try {
+      const user = await UserService.getInstance().getUserByID(token.user.id, token);
+      dispatch(setCurrentUser(user));
+      dispatch(setIsAdmin(user.userType === UserType.Admin))
+      if (user.userType !== UserType.Admin) {
+        dispatch(setCurrentClient(user));
+      }
+      dispatch(setToken(token));
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 

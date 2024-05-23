@@ -386,6 +386,16 @@ class UserService {
     }
   }
 
+  async blockUserConnection(userID: string): Promise<number> {
+    try {
+      const route = `${this.baseRoute}/${userID}/block/connection`;
+      const user = await APIService.put(route);
+      return user.connectionFailedAttempts;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // DELETE
   /**
    * Removes a user.
