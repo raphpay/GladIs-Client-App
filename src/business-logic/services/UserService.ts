@@ -2,7 +2,7 @@ import IModule, { IModuleInput } from '../model/IModule';
 import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
-import IUser from '../model/IUser';
+import IUser, { ILoginTryOutput } from '../model/IUser';
 import { extractValidationErrors } from '../model/ValidationError';
 import CacheKeys from '../model/enums/CacheKeys';
 
@@ -198,22 +198,6 @@ class UserService {
   }
 
   /**
-   * Retrieves a user by username.
-   * @param username - The username of the user.
-   * @param token - The authentication token.
-   * @returns A promise that resolves to the user.
-   * @throws If an error occurs while retrieving the user.
-   */
-  async getUserByUsername(username: string): Promise<IUser> {
-    try {
-      const user = await APIService.post<IUser>(`${this.baseRoute}/byUsername`, { username });
-      return user;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
    * Retrieves the modules of a user.
    * @param id - The ID of the user.
    * @param token - The authentication token.
@@ -277,6 +261,22 @@ class UserService {
       const resetToken = await APIService.get<IPasswordResetToken>(`${this.baseRoute}/${userID}/resetToken`, token?.value as string);
       const value = resetToken.token as string;
       return value;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Retrieves the login try output of a user.
+   * @param username - The username of the user.
+   * @returns A promise that resolves to the login try output.
+   * @throws If an error occurs while retrieving the login try output.
+   */
+  async getUserLoginTryOutput(username: string): Promise<ILoginTryOutput> {
+    try {
+      const route = `${this.baseRoute}/userLoginTry`;
+      const output = await APIService.post<ILoginTryOutput>(route, { username });
+      return output;
     } catch (error) {
       throw error;
     }
@@ -381,6 +381,16 @@ class UserService {
     try {
       const manager = await APIService.put(`${this.baseRoute}/${managerID}/remove/${employeeID}`, null, token?.value as string);
       return manager;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async blockUserConnection(userID: string): Promise<number> {
+    try {
+      const route = `${this.baseRoute}/${userID}/block/connection`;
+      const user = await APIService.put(route);
+      return user.connectionFailedAttempts;
     } catch (error) {
       throw error;
     }

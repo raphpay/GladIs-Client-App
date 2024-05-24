@@ -5,10 +5,10 @@ import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import LoginScreenManager from '../../../business-logic/manager/authentification/LoginScreenManager';
 import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
-import IUser from '../../../business-logic/model/IUser';
-import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
+import { ILoginTryOutput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
@@ -19,7 +19,6 @@ import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
 import { setCurrentClient, setCurrentUser, setIsAdmin } from '../../../business-logic/store/slices/userReducer';
 
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import AppIcon from '../../components/AppIcon';
 import SimpleTextButton from '../../components/Buttons/SimpleTextButton';
 import TextButton from '../../components/Buttons/TextButton';
@@ -28,10 +27,6 @@ import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
-
-interface ILoginTries {
-  [key: string]: number;
-}
 
 type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
 
@@ -89,84 +84,68 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   async function submitLogin() {
     if (identifier.length !== 0 && password.length !== 0) {
       await login();
+    } else {
+      displayToast(t('login.errors.fillForm'), true);
     }
-  }
-
-  async function findUser(): Promise<IUser> {
-    try {
-      const user = await UserService.getInstance().getUserByUsername(identifier);
-      return user;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async function setLoginAttemptToUser(count: number) {
-    const tries = await CacheService.getInstance().retrieveValue(CacheKeys.loginTries);
-    const loginTries = tries as ILoginTries;
-    const toStore = { ...loginTries, [identifier]: count };
-    await CacheService.getInstance().storeValue(CacheKeys.loginTries, toStore);
-  }
-
-  async function handleMaxLoginAttempts(tries: ILoginTries): Promise<boolean> {
-    let shouldContinue = true;
-    let count = tries ? tries[identifier] : 0;
-    if (count >= 5) {
-      shouldContinue = false;
-      displayToast(t('errors.login.tooManyAttempts'), true);
-      if (count == 5) {
-        try {
-          const attemptUser = await findUser();
-          const event: IEventInput = {
-            name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${attemptUser.email}`,
-            date: Date.now(),
-            clientID: attemptUser.id ?? '0',
-          }
-          await EventService.getInstance().createMaxAttemptsEvent(event);
-          await setLoginAttemptToUser(count + 1);
-        } catch (error) {
-          const errorMessage = (error as Error).message;
-          await setLoginAttemptToUser(count + 1);
-          displayToast(t(`errors.api.${errorMessage}`), true);
-        }
-      }
-    }
-    return shouldContinue;
   }
 
   async function login() {
-    let token: IToken | undefined;
-    const loginTries = await CacheService.getInstance().retrieveValue(CacheKeys.loginTries);
-    const loginTriesValue = loginTries as ILoginTries;
-    const shouldContinue = await handleMaxLoginAttempts(loginTriesValue);
-    if (shouldContinue) {
-      try {
-        token = await AuthenticationService.getInstance().login(identifier, password);
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        if (loginTriesValue) {
-          await setLoginAttemptToUser(loginTriesValue[identifier] + 1);
-        } else {
-          await setLoginAttemptToUser(1);
-        }
+    try {
+      const token = await LoginScreenManager.getInstance().login(identifier, password);
+      await dispatchValues(token);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      if (errorMessage === 'unauthorized.login.invalidCredentials') {
+        await handleFailedLogin();
+      } else {
         displayToast(t(`errors.api.${errorMessage}`), true);
       }
+    }
+  }
 
-      if (token) {
-        try {
-          const user = await UserService.getInstance().getUserByID(token.user.id, token);
-          dispatch(setCurrentUser(user));
-          dispatch(setIsAdmin(user.userType === UserType.Admin))
-          if (user.userType !== UserType.Admin) {
-            dispatch(setCurrentClient(user));
-          }
-          dispatch(setToken(token));
-          await setLoginAttemptToUser(0);
-        } catch (error) {
-          const errorMessage = (error as Error).message;
-          displayToast(t(`errors.api.${errorMessage}`), true);
+  async function handleFailedLogin() {
+    try {
+      const output = await LoginScreenManager.getInstance().updateUserConnectionAttempts(identifier);
+      const count = output.connectionFailedAttempts || 0;
+      if (count >= 5) {
+        if (count === 5) {
+          sendMaxLoginEvent(output);
         }
+        displayToast(t('errors.api.unauthorized.login.connectionBlocked'), true);
+      } else {
+        displayToast(t('errors.api.unauthorized.login'), true);
       }
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+  }
+
+  async function sendMaxLoginEvent(tryOutput: ILoginTryOutput) {
+    try {
+      const event: IEventInput = {
+        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${tryOutput.email}`,
+        date: Date.now(),
+        clientID: tryOutput.id ?? '0',
+      }
+      await EventService.getInstance().createMaxAttemptsEvent(event);
+    } catch (error) {
+      console.log('Error sending max attempts event', error );
+    }
+  }
+
+  async function dispatchValues(token: IToken) {
+    try {
+      const user = await UserService.getInstance().getUserByID(token.user.id, token);
+      dispatch(setCurrentUser(user));
+      dispatch(setIsAdmin(user.userType === UserType.Admin))
+      if (user.userType !== UserType.Admin) {
+        dispatch(setCurrentClient(user));
+      }
+      dispatch(setToken(token));
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
