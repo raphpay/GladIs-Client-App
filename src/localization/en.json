@@ -8,6 +8,9 @@
     "forgottenPassword": "Forgot password?",
     "tooManyAttempts": {
       "eventName": "Too many login attempts for",
+    },
+    "errors": {
+      "fillForm": "Please fill all fields"
     }
   },
   "quotation": {
@@ -569,7 +572,11 @@
       "unauthorized": {
         "invalidCurrentPassword": "Invalid current password",
         "accountBlocked": "Account blocked. Please contact your provider",
-        "login": "Wrong username or password",
+        "login": {
+          "invalidCredentials": "Wrong username or password",
+          "accountBlocked": "Account blocked. Please contact your provider",
+          "connectionBlocked": "Connection blocked. Your provider will contact you ",
+        },
         "password": {
           "samePassword": "The new password should be different from the current one",
           "invalidLength": "The password should contain at least 12 characters",

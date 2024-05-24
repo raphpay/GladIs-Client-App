@@ -2,7 +2,7 @@ import IModule, { IModuleInput } from '../model/IModule';
 import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
-import IUser from '../model/IUser';
+import IUser, { ILoginTryOutput } from '../model/IUser';
 import { extractValidationErrors } from '../model/ValidationError';
 import CacheKeys from '../model/enums/CacheKeys';
 
@@ -277,6 +277,16 @@ class UserService {
       const resetToken = await APIService.get<IPasswordResetToken>(`${this.baseRoute}/${userID}/resetToken`, token?.value as string);
       const value = resetToken.token as string;
       return value;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getUserLoginTryOutput(username: string): Promise<ILoginTryOutput> {
+    try {
+      const route = `${this.baseRoute}/userLoginTry`;
+      const output = await APIService.post<ILoginTryOutput>(route, { username });
+      return output;
     } catch (error) {
       throw error;
     }

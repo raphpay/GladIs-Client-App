@@ -25,3 +25,10 @@ export default interface IUser {
 export interface EmailInput {
   email: string
 }
+
+export interface ILoginTryOutput {
+  id?: string;
+  isConnectionBlocked?: boolean;
+  connectionFailedAttempts?: number;
+  email: string;
+}

@@ -5,11 +5,14 @@ import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
+import { ILoginTryOutput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import CacheService from '../../../business-logic/services/CacheService';
+import EventService from '../../../business-logic/services/EventService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
@@ -23,9 +26,6 @@ import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
-import { IEventInput } from '../../../business-logic/model/IEvent';
-import IUser from '../../../business-logic/model/IUser';
-import EventService from '../../../business-logic/services/EventService';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
@@ -84,67 +84,52 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   async function submitLogin() {
     if (identifier.length !== 0 && password.length !== 0) {
       await login();
-    }
-  }
-
-  async function findUser(): Promise<IUser> {
-    try {
-      const user = await UserService.getInstance().getUserByUsername(identifier);
-      return user;
-    } catch (error) {
-      throw error;
+    } else {
+      displayToast(t('login.errors.fillForm'), true);
     }
   }
 
   async function login() {
-    let token: IToken | undefined;
-    let toastMessage = '';
-
     try {
-      token = await AuthenticationService.getInstance().login(identifier, password);
+      const token = await AuthenticationService.getInstance().login(identifier, password);
+      dispatchValues(token);
     } catch (error) {
       const errorMessage = (error as Error).message;
-      toastMessage = t(`errors.api.${errorMessage}`);
-      // TODO: Handle unauthorized.login.connection.blocked // Too many attempts
-      // displayToast(t(`errors.api.${errorMessage}`), true);
-    }
-
-    if (token) {
-      dispatchValues(token);
-    } else {
-      const user = await findUser();
-      if (user) {
-        await updateUserConnectionAttempts(user, toastMessage);
+      if (errorMessage === 'unauthorized.login.invalidCredentials') {
+        await updateUserConnectionAttempts();
+      } else {
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
 
-  async function updateUserConnectionAttempts(user: IUser, toastMessage: string) {
-    let attempts = user.connectionFailedAttempts || 0;
+  async function updateUserConnectionAttempts() {
     try {
-      attempts = await UserService.getInstance().blockUserConnection(user.id as string);
+      const output = await UserService.getInstance().getUserLoginTryOutput(identifier);
+      const tryAttempsCount = await UserService.getInstance().blockUserConnection(output.id as string);
+      await handleTryAttemptCount(tryAttempsCount, output);
     } catch (error) {
-      console.log('Error updating user connection attempts', error);
+      console.log('error updateUserConnectionAttempts', error);
     }
-
-    if (attempts >= 5) {
-      // Show toast
-      toastMessage = t('errors.api.unauthorized.login.connection.blocked');
-      if (attempts === 5) {
-        // Send event
-        await sendMaxLoginEvent(user);
-      }
-    }
-
-    displayToast(toastMessage, true);
   }
 
-  async function sendMaxLoginEvent(user: IUser) {
+  async function handleTryAttemptCount(count: number, tryOutput: ILoginTryOutput) {
+    if (count >= 5) {
+      if (count === 5) {
+        sendMaxLoginEvent(tryOutput);
+      }
+      displayToast(t('errors.api.unauthorized.login.connectionBlocked'), true);
+    } else {
+      displayToast(t('errors.api.unauthorized.login'), true);
+    }
+  }
+
+  async function sendMaxLoginEvent(tryOutput: ILoginTryOutput) {
     try {
       const event: IEventInput = {
-        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${user.email}`,
+        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${tryOutput.email}`,
         date: Date.now(),
-        clientID: user.id ?? '0',
+        clientID: tryOutput.id ?? '0',
       }
       await EventService.getInstance().createMaxAttemptsEvent(event);
     } catch (error) {
