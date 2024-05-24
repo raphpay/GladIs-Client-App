@@ -5,12 +5,12 @@ import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import LoginScreenManager from '../../../business-logic/manager/authentification/LoginScreenManager';
 import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
 import { ILoginTryOutput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import CacheService from '../../../business-logic/services/CacheService';
 import EventService from '../../../business-logic/services/EventService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
@@ -91,36 +91,33 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   async function login() {
     try {
-      const token = await AuthenticationService.getInstance().login(identifier, password);
-      dispatchValues(token);
+      const token = await LoginScreenManager.getInstance().login(identifier, password);
+      await dispatchValues(token);
     } catch (error) {
       const errorMessage = (error as Error).message;
       if (errorMessage === 'unauthorized.login.invalidCredentials') {
-        await updateUserConnectionAttempts();
+        await handleFailedLogin();
       } else {
         displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
 
-  async function updateUserConnectionAttempts() {
+  async function handleFailedLogin() {
     try {
-      const output = await UserService.getInstance().getUserLoginTryOutput(identifier);
-      const tryAttempsCount = await UserService.getInstance().blockUserConnection(output.id as string);
-      await handleTryAttemptCount(tryAttempsCount, output);
-    } catch (error) {
-      console.log('error updateUserConnectionAttempts', error);
-    }
-  }
-
-  async function handleTryAttemptCount(count: number, tryOutput: ILoginTryOutput) {
-    if (count >= 5) {
-      if (count === 5) {
-        sendMaxLoginEvent(tryOutput);
+      const output = await LoginScreenManager.getInstance().updateUserConnectionAttempts(identifier);
+      const count = output.connectionFailedAttempts || 0;
+      if (count >= 5) {
+        if (count === 5) {
+          sendMaxLoginEvent(output);
+        }
+        displayToast(t('errors.api.unauthorized.login.connectionBlocked'), true);
+      } else {
+        displayToast(t('errors.api.unauthorized.login'), true);
       }
-      displayToast(t('errors.api.unauthorized.login.connectionBlocked'), true);
-    } else {
-      displayToast(t('errors.api.unauthorized.login'), true);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
