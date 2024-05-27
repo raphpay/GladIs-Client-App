@@ -2,6 +2,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Image,
   Text,
   TouchableOpacity,
   View
@@ -33,6 +34,8 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
   const { t } = useTranslation();
   
   const { module } = useAppSelector((state: RootState) => state.appState);
+
+  const folderImage = require('../../assets/images/folder.png');
   
   const subcategories: ISubCategory[] = [
     {
@@ -73,7 +76,9 @@ function DocumentManagementScreen(props: DocumentManagementScreenProps): React.J
     return (
       <TouchableOpacity onPress={() => navigateTo(item)}>
         <View style={styles.categoryContainer}>
-          <View style={styles.categoryImageContainer} />
+          <View style={styles.categoryImageContainer}>
+            <Image source={folderImage} style={styles.folderImage} />
+          </View>
           <View style={styles.categoryTextsContainer}>
             <Text style={styles.categoryTitle}>{item.title}</Text>
           </View>

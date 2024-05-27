@@ -13,7 +13,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   categoryImageContainer: {
-    height: '75%'
+    height: '75%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   categoryTextsContainer: {
     height: '25%',
@@ -31,6 +33,11 @@ const styles = StyleSheet.create({
   categoryDescription: {
     fontSize: 10
   },
+  folderImage: {
+    width: '100%',
+    height: '75%',
+    resizeMode: 'contain',
+  }
 });
 
 export default styles;
