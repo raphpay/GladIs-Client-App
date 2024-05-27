@@ -8,6 +8,9 @@
     "forgottenPassword": "Mot de passe oublié ?",
     "tooManyAttempts": {
       "eventName": "Trop de tentatives pour",
+    },
+    "errors": {
+      "fillForm": "Veuillez remplir tous les champs"
     }
   },
   "quotation": {
@@ -569,7 +572,11 @@
       "unauthorized": {
         "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
         "accountBlocked": "Votre compte est bloqué. Veuillez contacter votre fournisseur.",
-        "login": "Identifiants incorrects",
+        "login": {
+          "invalidCredentials": "Identifiants incorrects",
+          "accountBlocked": "Compte bloqué. Veuillez contacter votre fournisseur",
+          "connectionBlocked": "Connexion bloquée. Votre fournisseur va vous contacter"
+        },
         "password": {
           "current": {
             "invalid": "Le mot de passe actuel est incorrect"
