@@ -252,7 +252,7 @@
     },
     "dialog": {
       "confirmButton": "Send",
-      "messageReceiverPlaceholder": "Contact",
+      "messageReceiverPlaceholder": "Contact email",
       "messageTitlePlaceholder": "Message object",
       "messageContentPlaceholder": "Message content",
       "charactersLeft": "Characters left",
