@@ -59,7 +59,11 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  confirmButtonsContainer: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+  },
 });
 
 export default styles;

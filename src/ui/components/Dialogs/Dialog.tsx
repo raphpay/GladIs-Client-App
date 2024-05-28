@@ -71,7 +71,7 @@ function Dialog(props: DialogProps): React.JSX.Element {
           }
           {
             isConfirmAvailable == true || isConfirmAvailable == undefined ? (
-              <View style={{flexDirection: 'row-reverse'}}>
+              <View style={styles.confirmButtonsContainer}>
                 <TouchableOpacity
                   style={styles.dialogButton}
                   onPress={onConfirm}
