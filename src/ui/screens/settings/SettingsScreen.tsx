@@ -131,9 +131,9 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
         {
           showDialog && (
             <Dialog
-              title={t('components.dialog.firstConnection.title')}
-              description={t('components.dialog.firstConnection.description')}
-              confirmTitle={t('components.dialog.firstConnection.confirmButton')}
+              title={t('settings.dialog.modifyPassword.title')}
+              description={t('settings.dialog.modifyPassword.description')}
+              confirmTitle={t('settings.dialog.modifyPassword.confirmButton')}
               isConfirmDisabled={oldPassword.length === 0 || newPassword.length === 0}
               onConfirm={submitPasswordChange}
               isCancelAvailable={true}
@@ -142,7 +142,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
               <>
                 <GladisTextInput 
                   value={oldPassword}
-                  placeholder={t('components.dialog.firstConnection.temporary')}
+                  placeholder={t('settings.dialog.modifyPassword.oldPasswordPlaceholder')}
                   onValueChange={setOldPassword}
                   secureTextEntry={true}
                   autoCapitalize={'none'}
@@ -151,7 +151,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
                 />
                 <GladisTextInput 
                   value={newPassword}
-                  placeholder={t('components.dialog.firstConnection.new')}
+                  placeholder={t('settings.dialog.modifyPassword.newPasswordPlaceholder')}
                   onValueChange={setNewPassword}
                   secureTextEntry={true}
                   autoCapitalize={'none'}
