@@ -62,6 +62,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     currentScreen,
     documentsPath,
     processNumber,
+    showGenerateSMQButton = true
   } = props.route.params;
 
   const { module, documentListCount } = useAppSelector((state: RootState) => state.appState);
@@ -320,7 +321,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     return (
       <>
         {
-          currentUser?.userType !== UserType.Employee && (
+          currentUser?.userType !== UserType.Employee && showGenerateSMQButton && (
             <IconButton 
               title={t('systemQuality.createSMQDoc.button')}
               onPress={navigateToSMQSurvey}

@@ -73,6 +73,7 @@ export type IRootStackParams = {
     currentScreen: string,
     documentsPath: string,
     processNumber: number | undefined,
+    showGenerateSMQButton?: boolean,
   },
   PDFScreen: { documentInput: IDocument },
   // Tracking
