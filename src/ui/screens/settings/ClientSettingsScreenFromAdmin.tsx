@@ -28,6 +28,7 @@ import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import Grid from '../../components/Grid/Grid';
 import Toast from '../../components/Toast';
 
+import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
 type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
@@ -93,12 +94,13 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       title: blockTitle,
       onPress: () => showBlockClient(),
       isDisabled: false,
+      isDestructive: true,
     },
   ];
 
   // Sync Methods
   function navigateBack() {
-    navigation.goBack()
+    navigation.goBack();
   }
 
   function navigateToBills() {
@@ -108,6 +110,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       currentScreen: t('settings.clientSettings.bills'),
       documentsPath: 'bills',
       processNumber: undefined,
+      showGenerateSMQButton: false,
     });
   }
 
@@ -270,13 +273,22 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   }
 
   function SettingsActionGridItem(item: IAction) {
+    
+    function textColor(): string {
+      let color: string = Colors.primary;
+      if (item.isDestructive) {
+        color = Colors.danger;
+      }
+      return color
+    }
+
     return (
       <TouchableOpacity
         disabled={item.isDisabled}
         style={styles.actionContainer}
         onPress={item.onPress}
       >
-        <Text style={item.isDisabled ? styles.text : styles.actionText}>{item.title}</Text>
+        <Text style={[item.isDisabled ? styles.text : styles.actionText, { color: textColor()}]}>{item.title}</Text>
         <View style={styles.separator} />
       </TouchableOpacity>
     )

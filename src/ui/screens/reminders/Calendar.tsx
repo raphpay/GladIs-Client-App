@@ -60,26 +60,6 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
   // Sync Methods
-  function doubleTapDayCell(day: number) {
-    const tappedDate = new Date(year, month, day);
-
-    const now = Date.now();
-    const DOUBLE_TAP_DELAY = 300; // milliseconds
-
-    if (lastTap && (now - lastTap) < DOUBLE_TAP_DELAY) {
-      // Reset lastTap
-      setLastTap(null);
-      // Perform action on double tap
-      setShowCreateDialog(true);
-      setSelectedDate(tappedDate);
-    } else {
-      // Update the lastTap timestamp
-      setLastTap(now);
-      // Optional: Perform action on single tap
-      // ...
-    }
-  }
-
   function openEventListDialog(dayEvents: IEvent[]) {
     setDaysEvents(dayEvents);
     setShowListDialog(true);
@@ -149,23 +129,11 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   }
 
   function DayCell(day: number, dayEvents: IEvent[]) {
-    if (dayEvents.length > 0) {
-      return (
-        <View key={`DayCell-${day}`} style={styles.dayCell}>
-          {DayCellContent(day, dayEvents)}
-        </View>
-      );
-    } else {
-      return (
-        <TouchableOpacity
-          key={`DayCell-${day}`} 
-          style={styles.dayCell}
-          onPress={() => doubleTapDayCell(day)}
-        >
-          {DayCellContent(day, dayEvents)}
-        </TouchableOpacity>
-      );
-    }
+    return (
+      <View key={`DayCell-${day}`} style={styles.dayCell}>
+        {DayCellContent(day, dayEvents)}
+      </View>
+    );
   }
   
   // TODO: Check scroll behavior

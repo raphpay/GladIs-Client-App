@@ -27,16 +27,16 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   const { t } = useTranslation();
   const navigation = useNavigation();
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { modulesReloadCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
 
   const modules = ModuleService.getInstance().getModules();
   const modulesFiltered = modules.filter(module => {
       const translatedName = t(`modules.${module.name}`);
       return translatedName.toLowerCase().includes(searchText?.toLowerCase());
   });
-
-  const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const dispatch = useAppDispatch();
 
   // Sync Methods
   function navigateToModule(module: IModule) {
@@ -58,7 +58,6 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   // Async Methods
   async function loadModules() {
-    // TODO: Load when changing modules in the backend
     if (currentClient) {
       try {
         const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
@@ -84,6 +83,13 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
     }
     reload();
   }, [currentClient]);
+
+  useEffect(() => {
+    async function reload() {
+      await loadModules();
+    }
+    reload();
+  }, [modulesReloadCount]);
   
   // Components
   return (

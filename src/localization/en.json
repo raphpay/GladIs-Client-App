@@ -204,6 +204,15 @@
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
     "logout": "Log out",
+    "dialog": {
+      "modifyPassword": {
+        "title": "Modify your password",
+        "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character.",
+        "oldPasswordPlaceholder": "Old password",
+        "newPasswordPlaceholder": "New password",
+        "confirmButton": "Confirm"
+      }
+    }
   },
   "calendar": {
     "today": "Today",
@@ -243,7 +252,7 @@
     },
     "dialog": {
       "confirmButton": "Send",
-      "messageReceiverPlaceholder": "Contact",
+      "messageReceiverPlaceholder": "Contact email",
       "messageTitlePlaceholder": "Message object",
       "messageContentPlaceholder": "Message content",
       "charactersLeft": "Characters left",

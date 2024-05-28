@@ -190,7 +190,16 @@
     },
     "userInfos": "Connecté en tant que",
     "modifyPassword": "Modifier le mot de passe",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "dialog": {
+      "modifyPassword": {
+        "title": "Modifier votre mot de passe",
+        "description": "Le mot de passe doit contenir au moins 12 caractères, dont 1 majuscule, 1 chiffre et 1 caractère spécial.",
+        "oldPasswordPlaceholder": "Ancien mot de passe",
+        "newPasswordPlaceholder": "Nouveau mot de passe",
+        "confirmButton": "Confirmer"
+      }
+    }
   },
   "pendingUserManagement": {
     "title": "Liste de clients en attente",
@@ -242,8 +251,8 @@
       "sendMessage": "Envoyer un Message"
     },
     "dialog": {
-      "confirmButton": "Send",
-      "messageReceiverPlaceholder": "Destinataire",
+      "confirmButton": "Envoyer",
+      "messageReceiverPlaceholder": "Email du destinataire",
       "messageTitlePlaceholder": "Objet du message",
       "messageContentPlaceholder": "Contenu du message",
       "charactersLeft": "Caractères restants",
