@@ -58,7 +58,6 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
 
   // Async Methods
   async function loadModules() {
-    // TODO: Load when changing modules in the backend
     if (currentClient) {
       try {
         const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
