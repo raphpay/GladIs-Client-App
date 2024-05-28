@@ -7,7 +7,8 @@ import IModule from '../../../business-logic/model/IModule';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import UserService from '../../../business-logic/services/UserService';
-import { useAppSelector } from '../../../business-logic/store/hooks';
+import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import { setModulesReloadCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
@@ -37,6 +38,8 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   const { t } = useTranslation();
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { modulesReloadCount } = useAppSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
 
@@ -106,6 +109,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     if (currentClient && currentClient.id && token) {
       try {
         await UserService.getInstance().updateModules(currentClient.id, selectedModules, token);
+        dispatch(setModulesReloadCount(modulesReloadCount + 1));
         navigation.goBack();
       } catch (error) {
         const errorMessage = (error as Error).message;

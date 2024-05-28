@@ -100,7 +100,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
   // Sync Methods
   function navigateBack() {
-    navigation.goBack()
+    navigation.goBack();
   }
 
   function navigateToBills() {

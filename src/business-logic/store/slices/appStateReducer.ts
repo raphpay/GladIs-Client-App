@@ -7,6 +7,7 @@ export interface AppState {
   clientListCount: number,
   documentListCount: number,
   passwordResetTokenCount: number,
+  modulesReloadCount: number,
 }
 
 const initialState: AppState = {
@@ -15,6 +16,7 @@ const initialState: AppState = {
   clientListCount: 0,
   documentListCount: 0,
   passwordResetTokenCount: 0,
+  modulesReloadCount: 0,
 };
 
 export const appStateSlice = createSlice({
@@ -39,7 +41,10 @@ export const appStateSlice = createSlice({
     },
     setPasswordResetTokenCount: (state, action: PayloadAction<number>) => {
       state.passwordResetTokenCount = action.payload;
-    }
+    },
+    setModulesReloadCount: (state, action: PayloadAction<number>) => {
+      state.modulesReloadCount = action.payload;
+    },
   },
 });
 
@@ -50,6 +55,7 @@ export const {
   setClientListCount,
   setDocumentListCount,
   setPasswordResetTokenCount,
+  setModulesReloadCount,
 } = appStateSlice.actions;
 
 export default appStateSlice.reducer;
