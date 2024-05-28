@@ -85,6 +85,8 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     setMessageReceiver('');
     setMessageTitle('');
     setMessageContent('');
+    setTitleCharactersLeft(60);
+    setContentCharactersLeft(300);
   }
 
   function onMessageTitleChange(text: string) {
