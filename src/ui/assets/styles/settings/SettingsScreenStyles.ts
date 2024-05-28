@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 14,
     fontFamily: Fonts.poppinsLight,
-    color: Colors.primary,
     margin: 4
   },
   separator: {
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    color: Colors.primary,
     margin: 4
   },
   dialogInput: {
