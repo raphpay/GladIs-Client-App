@@ -702,7 +702,12 @@
       "success": {
         "approve": "Formulaire approuvé avec succès",
         "deapprove": "Formulaire désapprouvé avec succès"
-      }
+      },
+      "warning": {
+        "addColumnFirst": "Veuillez ajouter une colonne d'abord",
+        "cleanRowFirst": "Veuillez effacer la ligne d'abord",
+        "cleanColumnFirst": "Veuillez effacer la colonne d'abord"
+      },
     },
     "buttons": {
       "add": "Ajouter un formulaire",

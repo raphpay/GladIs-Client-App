@@ -72,8 +72,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       const newRow = Array(grid[0].length).fill({}).map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
       setGrid([...grid, newRow]);
     } else {
-      // TODO: Display a toast
-      console.log('Add column first');
+      displayToast(t('forms.toast.warning.addColumnFirst'), true);
     }
   }
 
@@ -82,6 +81,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     if (isLastColumnEmpty) {
       const updatedGrid = grid.map(row => row.slice(0, -1));
       setGrid(updatedGrid);
+    } else {
+      displayToast(t('forms.toast.warning.cleanColumnFirst'), true);
     }
   };
 
@@ -91,6 +92,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     if (isLastRowEmpty) {
       const updatedGrid = grid.slice(0, -1);
       setGrid(updatedGrid);
+    } else {
+      displayToast(t('forms.toast.warning.cleanRowFirst'), true);
     }
   }
 

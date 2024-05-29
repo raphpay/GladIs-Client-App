@@ -699,6 +699,11 @@
       "success": {
         "approve": "Form successfully approved",
         "deapprove": "Form successfully deapproved"
+      },
+      "warning": {
+        "addColumnFirst": "Please add a column first",
+        "cleanRowFirst": "Please clean the row first",
+        "cleanColumnFirst": "Please clean the column first"
       }
     },
     "buttons": {
