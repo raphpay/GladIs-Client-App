@@ -660,7 +660,9 @@
     "actions": {
       "title": "Actions",
       "addColumn": "Ajouter une colonne",
+      "removeColumn": "Supprimer la dernière colonne",
       "addRow": "Ajouter une ligne",
+      "removeRow": "Supprimer la dernière ligne",
       "exportToCSV": "Exporter en CSV",
       "remove": {
         "title": "Etes-vous sûr de vouloir supprimer ce formulaire ?",
@@ -700,7 +702,12 @@
       "success": {
         "approve": "Formulaire approuvé avec succès",
         "deapprove": "Formulaire désapprouvé avec succès"
-      }
+      },
+      "warning": {
+        "addColumnFirst": "Veuillez ajouter une colonne d'abord",
+        "cleanRowFirst": "Veuillez effacer la ligne d'abord",
+        "cleanColumnFirst": "Veuillez effacer la colonne d'abord"
+      },
     },
     "buttons": {
       "add": "Ajouter un formulaire",

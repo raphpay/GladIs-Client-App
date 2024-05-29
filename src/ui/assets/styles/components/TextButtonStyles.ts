@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
     fontSize: Fonts.p,
     fontWeight: Fonts.bold,
     fontFamily: Fonts.bikoBold,
-    color: Colors.white
+    color: Colors.white,
+    marginHorizontal: 8,
   },
 });
 

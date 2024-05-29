@@ -6,25 +6,23 @@ import { Keyboard, ScrollView, View } from 'react-native';
 import { IRootStackParams } from '../../../../navigation/Routes';
 
 import FormEditionManager from '../../../../business-logic/manager/FormEditionManager';
-import IAction from '../../../../business-logic/model/IAction';
 import { IFormCell } from '../../../../business-logic/model/IForm';
+import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../../business-logic/model/enums/UserType';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setFormsCount } from '../../../../business-logic/store/slices/formReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
-import IconButton from '../../../components/Buttons/IconButton';
 import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
-import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
+import FormAddCellButton from './FormAddCellButton';
 import FormEditionHeaderCell from './FormEditionHeaderCell';
 
-import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
-import UserType from '../../../../business-logic/model/enums/UserType';
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
 type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
@@ -40,7 +38,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const dispatch = useAppDispatch();
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
-  const [showActionDialog, setShowActionDialog] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
@@ -52,19 +49,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
-
-  const plusIcon = require('../../../assets/images/plus.png');
-
-  const popoverActions: IAction[] = [
-    {
-      title: t('forms.actions.addColumn'),
-      onPress: () => addColumn(),
-    },
-    {
-      title: t('forms.actions.addRow'),
-      onPress: () => addRow(),
-    },
-  ];
+  const isUserEmployee = currentUser?.userType === UserType.Employee;
 
   // Sync Methods
   function navigateBack() {
@@ -80,7 +65,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     });
 
     setGrid(updatedGrid);
-    setShowActionDialog(false);
   }
 
   function addRow() {
@@ -88,19 +72,29 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       const newRow = Array(grid[0].length).fill({}).map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
       setGrid([...grid, newRow]);
     } else {
-      console.log('Add column first');
+      displayToast(t('forms.toast.warning.addColumnFirst'), true);
     }
-    setShowActionDialog(false);
   }
 
   function removeColumn() {
-    const updatedGrid = grid.map(row => row.slice(0, -1));
-    setGrid(updatedGrid);
+    const isLastColumnEmpty = grid.every(row => row[row.length - 1].value === '');
+    if (isLastColumnEmpty) {
+      const updatedGrid = grid.map(row => row.slice(0, -1));
+      setGrid(updatedGrid);
+    } else {
+      displayToast(t('forms.toast.warning.cleanColumnFirst'), true);
+    }
   };
 
   function removeRow() {
-    const updatedGrid = grid.slice(0, -1);
-    setGrid(updatedGrid);
+    const lastRow = grid[grid.length - 1];
+    const isLastRowEmpty = lastRow.every(cell => cell.value === '');
+    if (isLastRowEmpty) {
+      const updatedGrid = grid.slice(0, -1);
+      setGrid(updatedGrid);
+    } else {
+      displayToast(t('forms.toast.warning.cleanRowFirst'), true);
+    }
   }
 
   function updateCell(rowIndex: number, columnIndex: number, newText: string) {
@@ -115,13 +109,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     FormEditionManager.getInstance().setGrid(newGrid);
   };
 
-  function displayActionDialog() {
-    Keyboard.dismiss();
-    setShowActionDialog(true);
-  }
-
   function displaySaveDialog() {
-    setShowActionDialog(false);
     Keyboard.dismiss();
     setShowSaveDialog(true);
   }
@@ -213,34 +201,36 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }, []);
 
   // Components
-  function ActionButton() {
+  function ActionButtons() {
+    const isColumnGreaterThanOne = grid && grid[0].length >= 1;
+    const isRowGreaterThanOne = grid.length > 1;
+    
     return (
-      <IconButton
-        title={t('forms.actions.title')}
-        icon={plusIcon}
-        onPress={displayActionDialog}
-      />
-    )
+      <View style={styles.actionButtonContainer}>
+        {
+          !isUserEmployee && (
+            <>
+              <TextButton
+                title={t('forms.actions.removeColumn')}
+                onPress={removeColumn}
+                extraStyle={styles.actionButton}
+                disabled={!isColumnGreaterThanOne}
+              />
+              <TextButton
+                title={t('forms.actions.removeRow')}
+                onPress={removeRow}
+                extraStyle={styles.actionButton}
+                disabled={!isRowGreaterThanOne}
+              />
+            </>
+          )
+        }
+      </View>
+    );
   }
 
   function resetDialogs() {
-    setShowActionDialog(false);
     setShowSaveDialog(false);
-  }
-
-  function ActionDialogContent() {
-    return (
-      <TooltipAction
-        showDialog={showActionDialog}
-        title={t('forms.actions.title')}
-        isConfirmAvailable={true}
-        confirmTitle={t('forms.creation.confirm')}
-        isCancelAvailable={false}
-        onConfirm={() => resetDialogs()}
-        onCancel={() => {}}
-        popoverActions={popoverActions}
-      />
-    );
   }
 
   function SaveButton() {
@@ -284,7 +274,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
           )
         }
       </>
-    )
+    );
   }
 
   return (
@@ -293,51 +283,64 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         mainTitle={t('forms.creation.title')}
         showSearchText={false}
         showSettings={false}
-        adminButton={ActionButton()}
+        adminButton={ActionButtons()}
         showBackButton={true}
         navigateBack={navigateBack}
         additionalComponent={SaveButton()}
       >
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-          <FormEditionHeaderCell
-            value={formTitle}
-            setValue={setFormTitle}
-            title={t('forms.headerCells.title')}
-            placeholder={t('forms.creation.formTitle')}
-            editable={!showActionDialog && !showSaveDialog}
-          />
-          <View style={styles.separator}/>
-          <View style={styles.cellRow}>
-            <FormEditionHeaderCell
-              value={formCreation}
-              setValue={setFormCreation}
-              title={t('forms.headerCells.createdAt')}
-              placeholder={t('forms.creation.creationDate')}
-              editable={!showActionDialog && !showSaveDialog}
-            />
-            <FormEditionHeaderCell
-              value={formCreationActor}
-              setValue={setFormCreationActor}
-              title={t('forms.headerCells.createdBy')}
-              placeholder={t('forms.creation.creationActor')}
-              editable={!showActionDialog && !showSaveDialog}
-            />
-          </View>
-          <View style={styles.cellRow}>
-            <FormEditionHeaderCell
-              value={formUpdate}
-              setValue={setFormUpdate}
-              title={t('forms.headerCells.updatedAt')}
-              placeholder={t('forms.creation.updateDate')}
-              editable={!showActionDialog && !showSaveDialog}
-            />
-            <FormEditionHeaderCell
-              value={formUpdateActor}
-              setValue={setFormUpdateActor}
-              title={t('forms.headerCells.updatedBy')}
-              placeholder={t('forms.creation.updateActor')}
-              editable={!showActionDialog && !showSaveDialog}
-            />
+          <View style={styles.headerContainer}>
+            <View style={styles.headerCellContainer}>
+              <FormEditionHeaderCell
+                value={formTitle}
+                setValue={setFormTitle}
+                title={t('forms.headerCells.title')}
+                placeholder={t('forms.creation.formTitle')}
+                editable={!showSaveDialog}
+              />
+              <View style={styles.separator}/>
+              <View style={styles.cellRow}>
+                <FormEditionHeaderCell
+                  value={formCreation}
+                  setValue={setFormCreation}
+                  title={t('forms.headerCells.createdAt')}
+                  placeholder={t('forms.creation.creationDate')}
+                  editable={!showSaveDialog}
+                />
+                <FormEditionHeaderCell
+                  value={formCreationActor}
+                  setValue={setFormCreationActor}
+                  title={t('forms.headerCells.createdBy')}
+                  placeholder={t('forms.creation.creationActor')}
+                  editable={!showSaveDialog}
+                />
+              </View>
+              <View style={styles.cellRow}>
+                <FormEditionHeaderCell
+                  value={formUpdate}
+                  setValue={setFormUpdate}
+                  title={t('forms.headerCells.updatedAt')}
+                  placeholder={t('forms.creation.updateDate')}
+                  editable={!showSaveDialog}
+                />
+                <FormEditionHeaderCell
+                  value={formUpdateActor}
+                  setValue={setFormUpdateActor}
+                  title={t('forms.headerCells.updatedBy')}
+                  placeholder={t('forms.creation.updateActor')}
+                  editable={!showSaveDialog}
+                />
+              </View>
+            </View>
+            {
+              !isUserEmployee && (
+                <FormAddCellButton
+                  onPress={addColumn}
+                  height={'90%'}
+                  width={40}
+                />
+              )
+            }
           </View>
           <View style={styles.separator}/>
           {grid.map((row, rowIndex) => (
@@ -347,15 +350,24 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   key={columnIndex}
                   value={cell.value}
                   onChangeText={(newText) => updateCell(rowIndex, columnIndex, newText)}
-                  editable={!showActionDialog && !showSaveDialog}
+                  editable={!showSaveDialog}
                   isTitle={cell.isTitle}
                 />
               ))}
             </View>
           ))}
+          {
+            !isUserEmployee && (
+              <FormAddCellButton
+                onPress={addRow}
+                height={35}
+                width={'100%'}
+                extraStyle={styles.addRowButtonExtraStyle}
+              />
+            )
+          }
         </ScrollView>
       </AppContainer>
-      { ActionDialogContent() }
       { showSaveDialog && SaveDialogContent() }
       { ToastContent() }
     </>

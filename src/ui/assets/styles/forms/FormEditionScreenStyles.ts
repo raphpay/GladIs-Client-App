@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -47,7 +48,38 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontFamily: Fonts.poppinsSemiBold 
-  }
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerCellContainer: {
+    flex: 1,
+  },
+  addLineButton: {
+    margin: 10,
+  },
+  plusButton: {
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius : 5,
+  },
+  plusButtonText: {
+    fontFamily: Fonts.poppinsSemiBold,
+    color: Colors.white,
+  },
+  actionButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  actionButton: {
+    marginHorizontal: 5
+  },
+  addRowButtonExtraStyle: {
+    marginTop: 10
+  },
 });
 
 export default styles;
