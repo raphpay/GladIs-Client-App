@@ -20,7 +20,6 @@ import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
-import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
 import FormAddCellButton from './FormAddCellButton';
 import FormEditionHeaderCell from './FormEditionHeaderCell';
@@ -40,7 +39,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const dispatch = useAppDispatch();
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
-  const [showActionDialog, setShowActionDialog] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
@@ -78,7 +76,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     });
 
     setGrid(updatedGrid);
-    setShowActionDialog(false);
   }
 
   function addRow() {
@@ -89,7 +86,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       // TODO: Display a toast
       console.log('Add column first');
     }
-    setShowActionDialog(false);
   }
 
   function removeColumn() {
@@ -121,13 +117,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     FormEditionManager.getInstance().setGrid(newGrid);
   };
 
-  function displayActionDialog() {
-    Keyboard.dismiss();
-    setShowActionDialog(true);
-  }
-
   function displaySaveDialog() {
-    setShowActionDialog(false);
     Keyboard.dismiss();
     setShowSaveDialog(true);
   }
@@ -244,23 +234,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   function resetDialogs() {
-    setShowActionDialog(false);
     setShowSaveDialog(false);
-  }
-
-  function ActionDialogContent() {
-    return (
-      <TooltipAction
-        showDialog={showActionDialog}
-        title={t('forms.actions.title')}
-        isConfirmAvailable={true}
-        confirmTitle={t('forms.creation.confirm')}
-        isCancelAvailable={false}
-        onConfirm={() => resetDialogs()}
-        onCancel={() => {}}
-        popoverActions={popoverActions}
-      />
-    );
   }
 
   function SaveButton() {
@@ -326,7 +300,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                 setValue={setFormTitle}
                 title={t('forms.headerCells.title')}
                 placeholder={t('forms.creation.formTitle')}
-                editable={!showActionDialog && !showSaveDialog}
+                editable={!showSaveDialog}
               />
               <View style={styles.separator}/>
               <View style={styles.cellRow}>
@@ -335,14 +309,14 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   setValue={setFormCreation}
                   title={t('forms.headerCells.createdAt')}
                   placeholder={t('forms.creation.creationDate')}
-                  editable={!showActionDialog && !showSaveDialog}
+                  editable={!showSaveDialog}
                 />
                 <FormEditionHeaderCell
                   value={formCreationActor}
                   setValue={setFormCreationActor}
                   title={t('forms.headerCells.createdBy')}
                   placeholder={t('forms.creation.creationActor')}
-                  editable={!showActionDialog && !showSaveDialog}
+                  editable={!showSaveDialog}
                 />
               </View>
               <View style={styles.cellRow}>
@@ -351,14 +325,14 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   setValue={setFormUpdate}
                   title={t('forms.headerCells.updatedAt')}
                   placeholder={t('forms.creation.updateDate')}
-                  editable={!showActionDialog && !showSaveDialog}
+                  editable={!showSaveDialog}
                 />
                 <FormEditionHeaderCell
                   value={formUpdateActor}
                   setValue={setFormUpdateActor}
                   title={t('forms.headerCells.updatedBy')}
                   placeholder={t('forms.creation.updateActor')}
-                  editable={!showActionDialog && !showSaveDialog}
+                  editable={!showSaveDialog}
                 />
               </View>
             </View>
@@ -376,7 +350,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   key={columnIndex}
                   value={cell.value}
                   onChangeText={(newText) => updateCell(rowIndex, columnIndex, newText)}
-                  editable={!showActionDialog && !showSaveDialog}
+                  editable={!showSaveDialog}
                   isTitle={cell.isTitle}
                 />
               ))}
@@ -390,7 +364,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
           />
         </ScrollView>
       </AppContainer>
-      { ActionDialogContent() }
       { showSaveDialog && SaveDialogContent() }
       { ToastContent() }
     </>
