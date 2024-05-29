@@ -660,7 +660,9 @@
     "actions": {
       "title": "Actions",
       "addColumn": "Ajouter une colonne",
+      "removeColumn": "Supprimer la dernière colonne",
       "addRow": "Ajouter une ligne",
+      "removeRow": "Supprimer la dernière ligne",
       "exportToCSV": "Exporter en CSV",
       "remove": {
         "title": "Etes-vous sûr de vouloir supprimer ce formulaire ?",

@@ -17,7 +17,6 @@ import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
-import IconButton from '../../../components/Buttons/IconButton';
 import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
@@ -53,8 +52,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
-
-  const plusIcon = require('../../../assets/images/plus.png');
 
   const popoverActions: IAction[] = [
     {
@@ -96,13 +93,20 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   function removeColumn() {
-    const updatedGrid = grid.map(row => row.slice(0, -1));
-    setGrid(updatedGrid);
+    const isLastColumnEmpty = grid.every(row => row[row.length - 1].value === '');
+    if (isLastColumnEmpty) {
+      const updatedGrid = grid.map(row => row.slice(0, -1));
+      setGrid(updatedGrid);
+    }
   };
 
   function removeRow() {
-    const updatedGrid = grid.slice(0, -1);
-    setGrid(updatedGrid);
+    const lastRow = grid[grid.length - 1];
+    const isLastRowEmpty = lastRow.every(cell => cell.value === '');
+    if (isLastRowEmpty) {
+      const updatedGrid = grid.slice(0, -1);
+      setGrid(updatedGrid);
+    }
   }
 
   function updateCell(rowIndex: number, columnIndex: number, newText: string) {
@@ -216,12 +220,26 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   // Components
   function ActionButton() {
+    // Create a const to check if column is greater than 1
+    const isColumnGreaterThanOne = grid && grid[0].length >= 1;
+    // Create a const to check if row is greater than 1
+    const isRowGreaterThanOne = grid.length > 1;
+    
     return (
-      <IconButton
-        title={t('forms.actions.title')}
-        icon={plusIcon}
-        onPress={displayActionDialog}
-      />
+      <View style={styles.actionButtonContainer}>
+        <TextButton
+          title={t('forms.actions.removeColumn')}
+          onPress={removeColumn}
+          extraStyle={styles.actionButton}
+          disabled={!isColumnGreaterThanOne}
+        />
+        <TextButton
+          title={t('forms.actions.removeRow')}
+          onPress={removeRow}
+          extraStyle={styles.actionButton}
+          disabled={!isRowGreaterThanOne}
+        />
+      </View>
     )
   }
 
@@ -368,7 +386,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
             onPress={addRow}
             height={35}
             width={'100%'}
-            extraStyle={{marginTop: 10}}
+            extraStyle={styles.addRowButtonExtraStyle}
           />
         </ScrollView>
       </AppContainer>

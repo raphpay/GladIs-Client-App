@@ -657,7 +657,9 @@
     "actions": {
       "title": "Actions",
       "addColumn": "Add a column",
+      "removeColumn": "Remove last column",
       "addRow": "Add a row",
+      "removeRow": "Remove last row",
       "exportToCSV": "Export to CSV",
       "remove": {
         "title": "Are you sure you want to remove this form ?",

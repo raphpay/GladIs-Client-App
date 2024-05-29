@@ -69,7 +69,17 @@ const styles = StyleSheet.create({
   plusButtonText: {
     fontFamily: Fonts.poppinsSemiBold,
     color: Colors.white,
-  }
+  },
+  actionButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  actionButton: {
+    marginHorizontal: 5
+  },
+  addRowButtonExtraStyle: {
+    marginTop: 10
+  },
 });
 
 export default styles;
