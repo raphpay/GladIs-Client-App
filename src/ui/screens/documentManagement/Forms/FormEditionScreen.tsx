@@ -8,7 +8,9 @@ import { IRootStackParams } from '../../../../navigation/Routes';
 import FormEditionManager from '../../../../business-logic/manager/FormEditionManager';
 import IAction from '../../../../business-logic/model/IAction';
 import { IFormCell } from '../../../../business-logic/model/IForm';
+import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../../business-logic/model/enums/UserType';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setFormsCount } from '../../../../business-logic/store/slices/formReducer';
 import { RootState } from '../../../../business-logic/store/store';
@@ -21,10 +23,9 @@ import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormTextInput from '../DocumentScreen/FormTextInput';
+import FormAddCellButton from './FormAddCellButton';
 import FormEditionHeaderCell from './FormEditionHeaderCell';
 
-import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
-import UserType from '../../../../business-logic/model/enums/UserType';
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
 type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
@@ -88,6 +89,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       const newRow = Array(grid[0].length).fill({}).map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
       setGrid([...grid, newRow]);
     } else {
+      // TODO: Display a toast
       console.log('Add column first');
     }
     setShowActionDialog(false);
@@ -299,44 +301,53 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         additionalComponent={SaveButton()}
       >
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-          <FormEditionHeaderCell
-            value={formTitle}
-            setValue={setFormTitle}
-            title={t('forms.headerCells.title')}
-            placeholder={t('forms.creation.formTitle')}
-            editable={!showActionDialog && !showSaveDialog}
-          />
-          <View style={styles.separator}/>
-          <View style={styles.cellRow}>
-            <FormEditionHeaderCell
-              value={formCreation}
-              setValue={setFormCreation}
-              title={t('forms.headerCells.createdAt')}
-              placeholder={t('forms.creation.creationDate')}
-              editable={!showActionDialog && !showSaveDialog}
-            />
-            <FormEditionHeaderCell
-              value={formCreationActor}
-              setValue={setFormCreationActor}
-              title={t('forms.headerCells.createdBy')}
-              placeholder={t('forms.creation.creationActor')}
-              editable={!showActionDialog && !showSaveDialog}
-            />
-          </View>
-          <View style={styles.cellRow}>
-            <FormEditionHeaderCell
-              value={formUpdate}
-              setValue={setFormUpdate}
-              title={t('forms.headerCells.updatedAt')}
-              placeholder={t('forms.creation.updateDate')}
-              editable={!showActionDialog && !showSaveDialog}
-            />
-            <FormEditionHeaderCell
-              value={formUpdateActor}
-              setValue={setFormUpdateActor}
-              title={t('forms.headerCells.updatedBy')}
-              placeholder={t('forms.creation.updateActor')}
-              editable={!showActionDialog && !showSaveDialog}
+          <View style={styles.headerContainer}>
+            <View style={styles.headerCellContainer}>
+              <FormEditionHeaderCell
+                value={formTitle}
+                setValue={setFormTitle}
+                title={t('forms.headerCells.title')}
+                placeholder={t('forms.creation.formTitle')}
+                editable={!showActionDialog && !showSaveDialog}
+              />
+              <View style={styles.separator}/>
+              <View style={styles.cellRow}>
+                <FormEditionHeaderCell
+                  value={formCreation}
+                  setValue={setFormCreation}
+                  title={t('forms.headerCells.createdAt')}
+                  placeholder={t('forms.creation.creationDate')}
+                  editable={!showActionDialog && !showSaveDialog}
+                />
+                <FormEditionHeaderCell
+                  value={formCreationActor}
+                  setValue={setFormCreationActor}
+                  title={t('forms.headerCells.createdBy')}
+                  placeholder={t('forms.creation.creationActor')}
+                  editable={!showActionDialog && !showSaveDialog}
+                />
+              </View>
+              <View style={styles.cellRow}>
+                <FormEditionHeaderCell
+                  value={formUpdate}
+                  setValue={setFormUpdate}
+                  title={t('forms.headerCells.updatedAt')}
+                  placeholder={t('forms.creation.updateDate')}
+                  editable={!showActionDialog && !showSaveDialog}
+                />
+                <FormEditionHeaderCell
+                  value={formUpdateActor}
+                  setValue={setFormUpdateActor}
+                  title={t('forms.headerCells.updatedBy')}
+                  placeholder={t('forms.creation.updateActor')}
+                  editable={!showActionDialog && !showSaveDialog}
+                />
+              </View>
+            </View>
+            <FormAddCellButton
+              onPress={addColumn}
+              height={'90%'}
+              width={40}
             />
           </View>
           <View style={styles.separator}/>
@@ -353,6 +364,12 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
               ))}
             </View>
           ))}
+          <FormAddCellButton
+            onPress={addRow}
+            height={35}
+            width={'100%'}
+            extraStyle={{marginTop: 10}}
+          />
         </ScrollView>
       </AppContainer>
       { ActionDialogContent() }
