@@ -6,7 +6,6 @@ import { Keyboard, ScrollView, View } from 'react-native';
 import { IRootStackParams } from '../../../../navigation/Routes';
 
 import FormEditionManager from '../../../../business-logic/manager/FormEditionManager';
-import IAction from '../../../../business-logic/model/IAction';
 import { IFormCell } from '../../../../business-logic/model/IForm';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
@@ -50,17 +49,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
-
-  const popoverActions: IAction[] = [
-    {
-      title: t('forms.actions.addColumn'),
-      onPress: () => addColumn(),
-    },
-    {
-      title: t('forms.actions.addRow'),
-      onPress: () => addRow(),
-    },
-  ];
+  const isUserEmployee = currentUser?.userType === UserType.Employee;
 
   // Sync Methods
   function navigateBack() {
@@ -209,28 +198,32 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }, []);
 
   // Components
-  function ActionButton() {
-    // Create a const to check if column is greater than 1
+  function ActionButtons() {
     const isColumnGreaterThanOne = grid && grid[0].length >= 1;
-    // Create a const to check if row is greater than 1
     const isRowGreaterThanOne = grid.length > 1;
     
     return (
       <View style={styles.actionButtonContainer}>
-        <TextButton
-          title={t('forms.actions.removeColumn')}
-          onPress={removeColumn}
-          extraStyle={styles.actionButton}
-          disabled={!isColumnGreaterThanOne}
-        />
-        <TextButton
-          title={t('forms.actions.removeRow')}
-          onPress={removeRow}
-          extraStyle={styles.actionButton}
-          disabled={!isRowGreaterThanOne}
-        />
+        {
+          !isUserEmployee && (
+            <>
+              <TextButton
+                title={t('forms.actions.removeColumn')}
+                onPress={removeColumn}
+                extraStyle={styles.actionButton}
+                disabled={!isColumnGreaterThanOne}
+              />
+              <TextButton
+                title={t('forms.actions.removeRow')}
+                onPress={removeRow}
+                extraStyle={styles.actionButton}
+                disabled={!isRowGreaterThanOne}
+              />
+            </>
+          )
+        }
       </View>
-    )
+    );
   }
 
   function resetDialogs() {
@@ -278,7 +271,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
           )
         }
       </>
-    )
+    );
   }
 
   return (
@@ -287,7 +280,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         mainTitle={t('forms.creation.title')}
         showSearchText={false}
         showSettings={false}
-        adminButton={ActionButton()}
+        adminButton={ActionButtons()}
         showBackButton={true}
         navigateBack={navigateBack}
         additionalComponent={SaveButton()}
@@ -336,11 +329,15 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                 />
               </View>
             </View>
-            <FormAddCellButton
-              onPress={addColumn}
-              height={'90%'}
-              width={40}
-            />
+            {
+              !isUserEmployee && (
+                <FormAddCellButton
+                  onPress={addColumn}
+                  height={'90%'}
+                  width={40}
+                />
+              )
+            }
           </View>
           <View style={styles.separator}/>
           {grid.map((row, rowIndex) => (
@@ -356,12 +353,16 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
               ))}
             </View>
           ))}
-          <FormAddCellButton
-            onPress={addRow}
-            height={35}
-            width={'100%'}
-            extraStyle={styles.addRowButtonExtraStyle}
-          />
+          {
+            !isUserEmployee && (
+              <FormAddCellButton
+                onPress={addRow}
+                height={35}
+                width={'100%'}
+                extraStyle={styles.addRowButtonExtraStyle}
+              />
+            )
+          }
         </ScrollView>
       </AppContainer>
       { showSaveDialog && SaveDialogContent() }
