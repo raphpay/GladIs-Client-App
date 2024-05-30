@@ -22,4 +22,11 @@
         </intent-filter>
       </activity>
     </application>
+    <supports-screens
+      android:smallScreens="false"
+      android:normalScreens="false"
+      android:largeScreens="true"
+      android:xlargeScreens="true"
+      android:largestWidthLimitDp="600"
+    />
 </manifest>
