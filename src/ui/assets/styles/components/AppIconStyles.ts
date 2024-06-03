@@ -4,8 +4,8 @@ import { Fonts } from "../../fonts/fonts";
 
 const styles = StyleSheet.create({
   container: {
-    width: 150,
-    height: 170,
+    width: 170,
+    height: 190,
     alignItems: 'center',
   },
   imageContainer: {
@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.light,
     shadowColor: Colors.black,
-    zIndex: 20,
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.2,
     shadowRadius: 3,

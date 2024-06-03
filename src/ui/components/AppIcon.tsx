@@ -30,7 +30,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
-  const gladisLogo = require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent_Square.png')
+  const gladisLogo = require('../assets/images/AppIcon.png')
   const androidLogoStyles = Platform.OS === PlatformName.Android && styles.androidLogo;;
 
   // Async Methods
