@@ -8,7 +8,7 @@ import PlatformName from "../model/enums/PlatformName";
 
 // const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
 // const API_BASE_URL = 'http://localhost:8080/api';
-const API_BASE_URL = 'https://tmp.mdconsulting.secure4all.tech/api';
+const API_BASE_URL = 'https://tmp.mdconsulting.secure4all.tech/';
 
 
 class APIService {
@@ -48,6 +48,34 @@ class APIService {
     }
   }
 
+  static async getText<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {
+    try {
+      const url = `${API_BASE_URL}/api/${endpoint}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      // Include token in headers if provided
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(url, {
+        method: HttpMethod.GET,
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.text() as T;
+    } catch (error) {
+      console.log('Error fetching data:', error);
+      throw error;
+    }
+  }
+
   /**
    * Sends a POST request to the specified endpoint.
    * @param endpoint - The API endpoint to send the request to.
@@ -58,7 +86,7 @@ class APIService {
    */
   static async post<T>(endpoint: string, data: any = {}, token?: string): Promise<T> {
     try {
-      const url = `${API_BASE_URL}/${endpoint}`;
+      const url = `${API_BASE_URL}/api/${endpoint}`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
@@ -102,7 +130,7 @@ class APIService {
    */
   static async postWithoutResponse(endpoint: string, data: any = {}, token?: string): Promise<void> {
     try {
-      const url = `${API_BASE_URL}/${endpoint}`;
+      const url = `${API_BASE_URL}/api/${endpoint}`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
@@ -145,7 +173,7 @@ class APIService {
    */
   static async login<T>(endpoint: string, username: string, password: string): Promise<T> {
     try {
-      const url = `${API_BASE_URL}/${endpoint}`;
+      const url = `${API_BASE_URL}/api/${endpoint}`;
       const Buffer = require("buffer").Buffer;
       let encodedAuth = new Buffer(`${username}:${password}`).toString("base64");
 
@@ -188,7 +216,7 @@ class APIService {
    */
   static async put(endpoint: string, data: any = {}, token?: string): Promise<any> {
     try {
-      const url = `${API_BASE_URL}/${endpoint}`;
+      const url = `${API_BASE_URL}/api/${endpoint}`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
@@ -231,7 +259,7 @@ class APIService {
    */
   static async delete(endpoint: string, token?: string) {
     try {
-      const url = `${API_BASE_URL}/${endpoint}`;
+      const url = `${API_BASE_URL}/api/${endpoint}`;
       const headers: Record<string, string> = {};
   
       // Include token in headers if provided
@@ -261,7 +289,7 @@ class APIService {
    */
   static async download(endpoint: string, token: string): Promise<any> {
     try {
-      const url = `${API_BASE_URL}/${endpoint}`;
+      const url = `${API_BASE_URL}/api/${endpoint}`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
