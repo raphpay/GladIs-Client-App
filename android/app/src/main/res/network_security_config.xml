@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config> 
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">example.com or IP Address</domain> 
+        <domain includeSubdomains="true">https://tmp.mdconsulting.secure4all.tech/</domain> 
     </domain-config>
 </network-security-config>
