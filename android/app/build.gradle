@@ -79,7 +79,7 @@ android {
         applicationId "com.gladis"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
+        versionCode 7
         versionName "1.0"
     }
     signingConfigs {
