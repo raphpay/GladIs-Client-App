@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, Text } from 'react-native';
 
@@ -11,6 +11,7 @@ import IToken from '../../../business-logic/model/IToken';
 import { ILoginTryOutput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
+import APIService from '../../../business-logic/services/APIService';
 import CacheService from '../../../business-logic/services/CacheService';
 import EventService from '../../../business-logic/services/EventService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
@@ -181,6 +182,24 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     }
   }
 
+  async function testAPI() {
+    try {
+      const text = await APIService.getText<string>('hello');
+      displayToast(text);
+    } catch (error) {
+      displayToast('Error testing API ${error}', true);
+    }
+  }
+
+
+  // Lifecycle
+  useEffect(() => {
+    async function init() {
+      await testAPI();
+    }
+    init();
+  }, []);
+
   // Components
   function ResetDialogContent() {
     return (
@@ -269,7 +288,11 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <AppIcon style={styles.appIcon} />
+        <AppIcon
+          style={styles.appIcon}
+          isTouchable={true}
+          action={testAPI}
+        />
         <Text style={styles.title} >{t('login.title')}</Text>
         <GladisTextInput
           value={identifier}
