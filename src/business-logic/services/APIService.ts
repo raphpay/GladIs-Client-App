@@ -50,7 +50,7 @@ class APIService {
 
   static async getText<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {
     try {
-      const url = `${API_BASE_URL}/api/${endpoint}`;
+      const url = `${API_BASE_URL}/${endpoint}`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
