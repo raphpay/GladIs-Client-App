@@ -187,7 +187,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const text = await APIService.getText<string>('hello');
       displayToast(text);
     } catch (error) {
-      displayToast('Error testing API ${error}', true);
+      displayToast('Error testing API (9) ${error}', true);
     }
   }
 
