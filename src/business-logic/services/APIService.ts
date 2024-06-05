@@ -48,6 +48,29 @@ class APIService {
     }
   }
 
+  static async getPokemon<T>(pokemonName: string): Promise<T> {
+    try {
+      const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}/`
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      const response = await fetch(url, {
+        method: HttpMethod.GET,
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      return await response.json() as T;
+    } catch (error) {
+      console.log('Error fetching data:', error);
+      throw error;
+    }
+  }
+
   static async getText<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;

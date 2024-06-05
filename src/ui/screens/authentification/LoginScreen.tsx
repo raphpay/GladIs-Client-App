@@ -7,6 +7,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import LoginScreenManager from '../../../business-logic/manager/authentification/LoginScreenManager';
 import { IEventInput } from '../../../business-logic/model/IEvent';
+import IPokemon from '../../../business-logic/model/IPokemon';
 import IToken from '../../../business-logic/model/IToken';
 import { ILoginTryOutput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -187,10 +188,18 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const text = await APIService.getText<string>('hello');
       displayToast(text);
     } catch (error) {
-      displayToast('Error testing API (9) ${error}', true);
+      displayToast(`Error testing API (10) ${error}`, true);
     }
   }
 
+  async function testPokeAPI() {
+    try {
+      const result = await APIService.getPokemon<IPokemon>('pikachu');
+      displayToast(`Pokemon: ${result.name} - Height: ${result.height}`)
+    } catch (error) {
+      displayToast(`Error testing PokeAPI (10) ${error}`, true);
+    }
+  }
 
   // Lifecycle
   useEffect(() => {
@@ -291,7 +300,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         <AppIcon
           style={styles.appIcon}
           isTouchable={true}
-          action={testAPI}
+          action={testPokeAPI}
         />
         <Text style={styles.title} >{t('login.title')}</Text>
         <GladisTextInput
