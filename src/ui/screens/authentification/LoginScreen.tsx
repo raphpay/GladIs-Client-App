@@ -188,7 +188,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const text = await APIService.getText<string>('hello');
       displayToast(text);
     } catch (error) {
-      displayToast(`Error testing API (9) ${error}`, true);
+      displayToast(`Error testing API (10) ${error}`, true);
     }
   }
 
@@ -197,7 +197,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const result = await APIService.getPokemon<IPokemon>('pikachu');
       displayToast(`Pokemon: ${result.name} - Height: ${result.height}`)
     } catch (error) {
-      displayToast(`Error testing PokeAPI (9) ${error}`, true);
+      displayToast(`Error testing PokeAPI (10) ${error}`, true);
     }
   }
 
