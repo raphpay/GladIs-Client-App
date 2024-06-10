@@ -8,7 +8,8 @@ import PlatformName from "../model/enums/PlatformName";
 
 // const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
 // const API_BASE_URL = 'http://localhost:8080/api';
-const API_BASE_URL = 'https://tmp.mdconsulting.secure4all.tech/';
+// const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = 'https://tmp.mdconsulting.secure4all.tech';
 
 
 class APIService {
@@ -22,7 +23,7 @@ class APIService {
    */
   static async get<T>(endpoint: string, token?: string, params: Record<string, any> = {}): Promise<T> {
     try {
-      const url = `${API_BASE_URL}/${endpoint}`;
+      const url = `${API_BASE_URL}/api/${endpoint}`;
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
