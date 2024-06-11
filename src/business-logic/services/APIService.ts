@@ -5,8 +5,7 @@
 import { Platform } from "react-native";
 import HttpMethod from "../model/enums/HttpMethod";
 import PlatformName from "../model/enums/PlatformName";
-
-const API_BASE_URL = 'https://tmp.mdconsulting.secure4all.tech/api';
+import API_BASE_URL from "../utils/envConfig";
 
 
 class APIService {
