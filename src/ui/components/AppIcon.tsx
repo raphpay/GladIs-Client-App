@@ -4,7 +4,6 @@ import {
   Platform,
   StyleProp,
   Text,
-  TouchableWithoutFeedback,
   View,
   ViewStyle
 } from 'react-native';
@@ -20,13 +19,11 @@ import styles from '../assets/styles/components/AppIconStyles';
 
 type AppIconProps = {
   style?: StyleProp<ViewStyle>;
-  isTouchable?: boolean;
-  action?: () => void;
 };
 
 function AppIcon(props: AppIconProps): React.JSX.Element {
 
-  const { style, isTouchable = false, action } = props;
+  const { style } = props;
 
   const [logoURI, setLogoURI] = useState<string>('');
 
@@ -96,11 +93,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   // Component
   return (
     <View style={[styles.container, style]}>
-      <TouchableWithoutFeedback
-        style={styles.imageContainer}
-        disabled={!isTouchable}
-        onPress={action}
-      >
+      <View style={styles.imageContainer}>
         {
           logoURI ? (
             <Image
@@ -114,7 +107,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
             />
           )
         }
-      </TouchableWithoutFeedback>
+      </View>
       {
         currentClient && (
           <Text style={styles.clientName}>{currentClient.username}</Text>
