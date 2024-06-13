@@ -95,7 +95,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       await dispatchValues(token);
     } catch (error) {
       const errorMessage = (error as Error).message;
-      if (errorMessage === 'unauthorized.login.invalidCredentials') {
+      if (errorMessage.includes('unauthorized.login')) {
         await handleFailedLogin();
       } else {
         displayToast(t(`errors.api.${errorMessage}`), true);
@@ -117,6 +117,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
+      console.log('handleFailedLogin error', errorMessage );
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }

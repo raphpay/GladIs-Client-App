@@ -73,3 +73,6 @@ protected-contants.ts
 
 # Android release
 /android/app/release
+
+# API address
+/src/business-logic/utils/envConfig.ts

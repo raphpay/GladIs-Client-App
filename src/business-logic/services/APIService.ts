@@ -5,10 +5,7 @@
 import { Platform } from "react-native";
 import HttpMethod from "../model/enums/HttpMethod";
 import PlatformName from "../model/enums/PlatformName";
-
-// const API_BASE_URL = `http://${LOCAL_IP_ADDRESS}:8080/api`;
-// const API_BASE_URL = 'http://localhost:8080/api';
-const API_BASE_URL = 'https://tmp.mdconsulting.secure4all.tech/api';
+import API_BASE_URL from "../utils/envConfig";
 
 
 class APIService {
