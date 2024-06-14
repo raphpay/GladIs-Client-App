@@ -3,10 +3,15 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, View } from 'react-native';
 
+import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../business-logic/model/enums/UserType';
+import UserService from '../../../business-logic/services/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
+import { BASE_PASSWORD } from '../../../business-logic/utils/envConfig';
 
 import { IClientCreationStack } from '../../../navigation/Routes';
 
@@ -15,29 +20,24 @@ import TextButton from '../../components/Buttons/TextButton';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
-import IUser from '../../../business-logic/model/IUser';
-import UserType from '../../../business-logic/model/enums/UserType';
-import UserService from '../../../business-logic/services/UserService';
-import { BASE_PASSWORD } from '../../../business-logic/utils/envConfig';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type AdminCreationScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.AdminCreationScreen>;
 
 function AdminCreationScreen(props: AdminCreationScreenProps): React.JSX.Element {
+  // General
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('MD Consulting');
-  // Dialog
-  const [showDialog, setShowDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
-
+  // Navigation
   const { navigation } = props;
-
+  // Hooks
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { pendingUserListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
@@ -85,12 +85,11 @@ function AdminCreationScreen(props: AdminCreationScreenProps): React.JSX.Element
         navigateBack();
       }, delay); // 3-second delay (3000 milliseconds)
     } catch (error) {
-      const errorMessage = (error as Error).message as string;
-      displayToast(t(`errors.api.${errorMessage}`), true);
+      const errorKeys = error as string[];
+      const errorTitle = Utils.handleErrorKeys(errorKeys);
+      displayToast(t(errorTitle), true);
     }
   }
-
-  // Lifecycle Methods
 
   // Components
   function ToastContent() {
