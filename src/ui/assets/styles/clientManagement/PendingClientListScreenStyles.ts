@@ -44,6 +44,10 @@ const styles = StyleSheet.create({
   icon: {
     height: 8,
     width: 30,
+  },
+  addButton: {
+    marginHorizontal: 8,
+    marginVertical: 4,
   }
 });
 
