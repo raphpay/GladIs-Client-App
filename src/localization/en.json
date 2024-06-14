@@ -182,6 +182,9 @@
     "noPendingUsers": {
       "title": "No pending users for now",
       "message": "Come back later, or create one now"
+    },
+    "success": {
+      "adminCreation": "Admin successfully created"
     }
   },
   "settings": {
@@ -396,6 +399,8 @@
     "buttons": {
       "back": "Back",
       "addClient": "Add a client",
+      "addUser": "Add a user",
+      "addAdmin": "Add an admin",
       "addEmployee": "Add an employee",
       "continue": "Continue",
       "addDocument": "Add a document",

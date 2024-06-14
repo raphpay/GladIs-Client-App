@@ -199,7 +199,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
         adminButton={(
           isAdmin ? (
             <IconButton
-              title={t('components.buttons.addClient')}
+              title={t('components.buttons.addUser')}
               icon={plusIcon}
               onPress={navigateToClientList}
             />

@@ -19,6 +19,7 @@ enum NavigationRoutes {
   ClientCreationStack = 'ClientCreationStack',
   PendingClientListScreen = 'PendingClientListScreen',
   ClientCreationScreen = 'ClientCreationScreen',
+  AdminCreationScreen = 'AdminCreationScreen',
   // Settings
   SettingsScreen = 'SettingsScreen',
   // Client Management

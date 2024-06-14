@@ -32,6 +32,7 @@ import TechnicalDocumentationScreen from '../ui/screens/documentManagement/Techn
 // Tracking
 import TrackingScreen from '../ui/screens/tracking/TrackingScreen';
 // Client Creation
+import AdminCreationScreen from '../ui/screens/clientManagement/AdminCreationScreen';
 import ClientCreationScreen from '../ui/screens/clientManagement/ClientCreationScreen';
 import PendingClientListScreen from '../ui/screens/clientManagement/PendingClientListScreen';
 import ClientDashboardScreenFromAdmin from '../ui/screens/dashboard/ClientDashboardScreenFromAdmin';
@@ -98,6 +99,7 @@ export type IClientCreationStack = {
   ClientCreationStack: undefined;
   PendingClientListScreen: undefined;
   ClientCreationScreen: { pendingUser?: IPendingUser | null };
+  AdminCreationScreen: undefined;
 }
 
 export type IClientManagementParams = {
@@ -145,6 +147,11 @@ function ClientCreation() {
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationScreen}
         component={ClientCreationScreen}
+        options={{headerShown: false}}
+      />
+      <ClientCreationStack.Screen
+        name={NavigationRoutes.AdminCreationScreen}
+        component={AdminCreationScreen}
         options={{headerShown: false}}
       />
     </ClientCreationStack.Navigator>

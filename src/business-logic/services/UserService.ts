@@ -42,7 +42,9 @@ class UserService {
       const createdUser = await APIService.post<IUser>(this.baseRoute, user, token?.value as string);
       return createdUser;
     } catch (error) {
-      throw error;
+      const errorMessage = (error as Error).message;
+      const errorKeys = extractValidationErrors(errorMessage);
+      throw errorKeys;
     }
   }
 

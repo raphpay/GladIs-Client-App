@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity } from 'react-native';
+import { Dimensions, Platform, Text, TouchableOpacity, View } from 'react-native';
 
 import IAction from '../../../business-logic/model/IAction';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
@@ -14,6 +14,7 @@ import { RootState } from '../../../business-logic/store/store';
 import { IClientCreationStack } from '../../../navigation/Routes';
 
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
+import PlatformName, { Orientation } from '../../../business-logic/model/enums/PlatformName';
 import AppContainer from '../../components/AppContainer/AppContainer';
 import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -33,6 +34,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   const [selectedPendingUser, setSelectedPendingUser] = useState<IPendingUser>();
   const [showPendingUserDialog, setShowPendingUserDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -79,6 +81,10 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     navigation.navigate(NavigationRoutes.ClientCreationScreen, { pendingUser: null });
   }
 
+  function navigateToCreateAdmin() {
+    navigation.navigate(NavigationRoutes.AdminCreationScreen);
+  }
+
   function navigateBack() {
     navigation.goBack();
   }
@@ -98,6 +104,17 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
+  }
+
+  function determineAndSetOrientation() {
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
+
+    if (width < height) {
+      setOrientation(Orientation.Portrait);
+    } else {
+      setOrientation(Orientation.Landscape);
+    }
   }
 
   // Async Methods
@@ -153,6 +170,12 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     }
     init();
   }, [pendingUserListCount]);
+
+  useEffect(() => {
+    determineAndSetOrientation();
+    Dimensions.addEventListener('change', determineAndSetOrientation);
+    return () => {}
+  }, []);
 
   // Components
   function pendingUserDialog() {
@@ -216,6 +239,30 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
     )
   }
 
+  function AdminButtons() {
+    const shouldHaveColumn = (
+        Platform.OS === PlatformName.Android ||
+        Platform.OS === PlatformName.IOS
+      ) && orientation === Orientation.Portrait;
+    
+    return (
+      <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
+        <IconButton
+          title={t('components.buttons.addAdmin')}
+          icon={plusIcon}
+          onPress={navigateToCreateAdmin}
+          style={styles.addButton}
+        />
+        <IconButton
+          title={t('components.buttons.addClient')}
+          icon={plusIcon}
+          onPress={navigateToCreateClient}
+          style={styles.addButton}
+        />
+      </View>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -228,13 +275,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
         setShowDialog={setShowDialog}
         showSearchText={true}
         showSettings={true}
-        adminButton={
-          <IconButton
-            title={t('components.buttons.addClient')}
-            icon={plusIcon}
-            onPress={navigateToCreateClient}
-          />
-        }
+        adminButton={AdminButtons()}
       >
         {
           pendingUsersFiltered.length === 0 ? (

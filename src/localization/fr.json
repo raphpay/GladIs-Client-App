@@ -212,6 +212,9 @@
     "noPendingUsers": {
       "title": "Aucun utilisateur en attente pour le moment",
       "message": "Revenez plus tard, ou enregistrez-en un maintenant"
+    },
+    "success": {
+      "adminCreation": "Administrateur créé avec succès"
     }
   },
   "calendar": {
@@ -396,6 +399,8 @@
     "buttons": {
       "back": "Retour",
       "addClient": "Ajouter un client",
+      "addUser": "Ajouter un utilisateur",
+      "addAdmin": "Ajouter un administrateur",
       "addEmployee": "Ajouter un employé",
       "continue": "Continuer",
       "addDocument": "Ajouter un document",
