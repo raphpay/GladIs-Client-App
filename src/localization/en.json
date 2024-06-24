@@ -627,7 +627,8 @@
       "internalServerError": {
         "failedToCreateDirectory": "Failed to create directory"
       }
-    }
+    },
+    "noInternet": "Please check your internet connection",
   },
   "api": {
     "success": {

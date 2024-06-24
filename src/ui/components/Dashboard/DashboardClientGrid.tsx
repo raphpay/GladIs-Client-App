@@ -105,7 +105,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
     try {
       const usersModules = await CacheService.getInstance().retrieveValue(cacheKey) as IModule[];
       if (usersModules.length === 0) {
-        displayToast('errors.noInternet', true); // TODO: Add translations
+        displayToast(t('errors.noInternet'), true);
       } else {
         const usersModulesIndexes: string[] = usersModules.map(mod => mod.index.toString());
         setClientModulesIndexes(usersModulesIndexes);

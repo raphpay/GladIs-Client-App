@@ -630,7 +630,8 @@
       "internalServerError": {
         "failedToCreateDirectory": "Echec de la création du dossier"
       }
-    }
+    },
+    "noInternet": "Veuillez vérifier votre connection internet"
   },
   "api": {
     "success": {
