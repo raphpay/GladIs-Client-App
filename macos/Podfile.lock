@@ -852,6 +852,8 @@ PODS:
   - React-Mapbuffer (0.73.11):
     - glog
     - React-debug
+  - react-native-netinfo (11.3.2):
+    - React-Core
   - React-nativeconfig (0.73.11)
   - React-NativeModulesApple (0.73.11):
     - glog
@@ -1056,6 +1058,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native-macos/ReactCommon/jsinspector-modern`)
   - React-logger (from `../node_modules/react-native-macos/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native-macos/ReactCommon`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - React-nativeconfig (from `../node_modules/react-native-macos/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native-macos/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native-macos/ReactCommon/reactperflogger`)
@@ -1137,6 +1140,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-macos/ReactCommon/logger"
   React-Mapbuffer:
     :path: "../node_modules/react-native-macos/ReactCommon"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   React-nativeconfig:
     :path: "../node_modules/react-native-macos/ReactCommon"
   React-NativeModulesApple:
@@ -1216,6 +1221,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 407503444c73d2b814a079c9efcc4d103952b2a0
   React-logger: 4d81593daa9bab27248300b26bb6a45dfb4d257d
   React-Mapbuffer: b003937e7ac5232e918d6588d97cf682c14569fa
+  react-native-netinfo: 076df4f9b07f6670acf4ce9a75aac8d34c2e2ccc
   React-nativeconfig: 82b035721b8967c4757a1becd46a9d9078b64d93
   React-NativeModulesApple: 6688f7cecc367e41dfec6186b1af1e3cb4ff29de
   React-perflogger: bff470a9b41f9f873cfb35639f4d4f79fa1cceac
@@ -1244,4 +1250,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 916809b30b0313118749260e72fd0f7a012b98b8
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2
