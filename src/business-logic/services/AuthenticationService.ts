@@ -51,8 +51,7 @@ class AuthenticationService {
   async logout(token: IToken | null) {
     try {
       await APIService.delete(`${this.baseRoute}/${token?.id}`);
-      await CacheService.getInstance().removeValueAt(CacheKeys.currentUserID);
-      await CacheService.getInstance().removeValueAt(CacheKeys.currentUserToken);
+      await CacheService.getInstance().clearStorage();
     } catch (error) {
       // TODO: Remove all console.log
       console.log('Error logging user out', error);
