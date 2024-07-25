@@ -110,7 +110,10 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
       </View>
       {
         currentClient && (
-          <Text style={styles.clientName}>{currentClient.username}</Text>
+          <>
+            <Text style={[styles.clientName, { paddingTop: 4 }]}>{currentClient.firstName}</Text>
+            <Text style={styles.clientName}>{currentClient.lastName}</Text>
+          </>
         )
       }
     </View>

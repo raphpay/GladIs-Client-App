@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontSize: 14,
     fontFamily: Fonts.poppinsSemiBold,
-    marginTop: 5,
   },
   androidLogo: {
     borderRadius: 10,
