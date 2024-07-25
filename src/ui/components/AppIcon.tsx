@@ -26,8 +26,9 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   const { style } = props;
 
   const [logoURI, setLogoURI] = useState<string>('');
+  const [showClientName, setShowClientName] = useState<boolean>(false);
 
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
   const gladisLogo = require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent_Square.png')
@@ -86,6 +87,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   useEffect(() => {
     async function init() {
       await loadLogo();
+      setShowClientName(currentClient !== currentUser);
     }
     init();
   }, [currentClient]);
@@ -109,7 +111,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
         }
       </View>
       {
-        currentClient && (
+        currentClient && showClientName && (
           <>
             <Text style={[styles.clientName, { paddingTop: 4 }]}>{currentClient.firstName}</Text>
             <Text style={styles.clientName}>{currentClient.lastName}</Text>
