@@ -26,10 +26,11 @@ function GridClientItem(props: GridClientItemProps): React.JSX.Element {
   const [logoURI, setLogoURI] = useState<string>('');
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
+  const gladisLogo = require('../../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent_Square.png')
 
   const clientContainerStyles = () => ({
     ...styles.container,
-    backgroundColor: logoURI ? 'white' : Colors.primary,
+    backgroundColor: logoURI ? 'white' : Colors.inactive,
   });
 
   async function loadLogo() {
@@ -55,7 +56,12 @@ function GridClientItem(props: GridClientItemProps): React.JSX.Element {
             source={{uri: logoURI}}
             resizeMode="cover"
           />
-        ) : null}
+        ) : (
+          <Image
+            source={gladisLogo}
+            style={styles.gladisLogo}
+          />
+        )}
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{client.firstName}</Text>

@@ -12,12 +12,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   blueBox: {
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
     height: 160,
   },
   logo: {
     width: '100%',
     height: '100%',
+  },
+  gladisLogo: {
+    width: 150,
+    height: 150,
   },
   textContainer: {
     alignItems: 'center',
