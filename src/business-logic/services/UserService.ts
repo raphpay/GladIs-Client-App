@@ -2,7 +2,7 @@ import IModule, { IModuleInput } from '../model/IModule';
 import IPasswordResetToken from '../model/IPasswordResetToken';
 import ITechnicalDocTab from '../model/ITechnicalDocumentationTab';
 import IToken from '../model/IToken';
-import IUser, { ILoginTryOutput } from '../model/IUser';
+import IUser, { ILoginTryOutput, IUserUpdateInput } from '../model/IUser';
 import { extractValidationErrors } from '../model/ValidationError';
 import CacheKeys from '../model/enums/CacheKeys';
 
@@ -293,6 +293,22 @@ class UserService {
   async updateUser(user: IUser, token: IToken | null): Promise<void> {
     try {
       await APIService.put(`${this.baseRoute}/${user.id}/updateInfos/`, user, token?.value as string);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Updates the user.
+   * @param userID - The user to update.
+   * @param input - The input to change the user informations
+   * @param token - The authentication token.
+   * @returns - The updated user as a IUser object
+   */
+  async updateUserInfos(userID: string, input: IUserUpdateInput, token: IToken | null): Promise<IUser> {
+    try {
+      const updatedUser = await APIService.put(`${this.baseRoute}/${userID}/updateInfos/`, input, token?.value as string);
+      return updatedUser;
     } catch (error) {
       throw error;
     }

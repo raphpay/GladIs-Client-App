@@ -203,6 +203,12 @@
       "blockClient": "Block client",
       "unblockClient": "Unblock client",
       "logo": "Modify client's logo",
+      "clientModification": {
+        "title": "Modify client informations",
+        "description": "Please modify the desired fields",
+        "success": "Client successfully modified",
+        "noModification": "No modification entered"
+      }
     },
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
