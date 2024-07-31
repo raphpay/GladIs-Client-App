@@ -215,6 +215,12 @@
         }
       }
     },
+    "userModification": {
+      "title": "Modify your informations",
+      "description": "Please modify the desired fields",
+      "success": "User successfully modified",
+      "noModification": "No modification entered"
+    },
     "userInfos": "Logged in as",
     "modifyPassword": "Modify password",
     "logout": "Log out",
