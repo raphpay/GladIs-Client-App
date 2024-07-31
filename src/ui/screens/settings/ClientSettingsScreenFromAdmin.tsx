@@ -17,7 +17,7 @@ import CacheService from '../../../business-logic/services/CacheService';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
-import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setClientListCount, setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { changeClientBlockedStatus, setCurrentClient } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -43,7 +43,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const { documentListCount, clientListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useDispatch();
 
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
@@ -282,6 +282,8 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
         setShowModifyClientDialog(false);
         displayToast(t('settings.clientSettings.clientModification.success'));
         dispatch(setCurrentClient(updatedClient));
+        // Update the client list count to trigger a refresh
+        dispatch(setClientListCount(clientListCount + 1));
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
