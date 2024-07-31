@@ -17,8 +17,8 @@ import CacheService from '../../../business-logic/services/CacheService';
 import DocumentService from '../../../business-logic/services/DocumentService';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
-import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
-import { changeClientBlockedStatus } from '../../../business-logic/store/slices/userReducer';
+import { setClientListCount, setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { changeClientBlockedStatus, setCurrentClient } from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
@@ -28,8 +28,11 @@ import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import Grid from '../../components/Grid/Grid';
 import Toast from '../../components/Toast';
 
+import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
+import OutlinedTextButton from '../../components/Buttons/OutlinedTextButton';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
 
@@ -40,17 +43,24 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const { documentListCount, clientListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useDispatch();
 
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
   const [showBlockDialog, setShowBlockDialog] = useState<boolean>(false);
   const [blockTitle, setBlockTitle] = useState<string>('');
   const [dialogTitle, setDialogTitle] = useState<string>('');
+  const [showModifyClientDialog, setShowModifyClientDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  // Client modification
+  const [clientLastName, setClientLastName] = useState<string>('');
+  const [clientFirstName, setClientFirstName] = useState<string>('');
+  const [clientEmail, setClientEmail] = useState<string>('');
+  const [clientPhoneNumber, setClientPhoneNumber] = useState<string>('');
+  const [shouldUpdateUsername, setShouldUpdateUsername] = useState<boolean>(false);
 
   const navigationHistoryItems: IAction[] = [
     {
@@ -69,6 +79,11 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       title: `${t('settings.clientSettings.clientInfos')} ${currentClient?.username}`,
       onPress: () => {},
       isDisabled: true,
+    },
+    {
+      title: t('settings.clientSettings.clientModification.title'),
+      onPress: () => showUpdateUserDialog(),
+      isDisabled: false,
     },
     {
       title: t('settings.clientSettings.bills'),
@@ -101,6 +116,11 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   // Sync Methods
   function navigateBack() {
     navigation.goBack();
+  }
+
+  function showUpdateUserDialog() {
+    setShowModifyClientDialog(true);
+    setDialogTitle(t('settings.clientSettings.clientModification.title'));
   }
 
   function navigateToBills() {
@@ -219,10 +239,65 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     reloadBlockTitle();
   }
 
+  // Client modification
+  async function loadClientInfos() {
+    if (currentClient) {
+      setClientLastName(currentClient.lastName as string);
+      setClientFirstName(currentClient.firstName as string);
+      setClientEmail(currentClient.email as string);
+      setClientPhoneNumber(currentClient.phoneNumber as string);
+    }
+  }
+
+  async function updateClient() {
+    const currentClientID = currentClient?.id as string;
+    const modifiedUser: IUserUpdateInput = {
+      firstName: clientFirstName,
+      lastName: clientLastName,
+      email: clientEmail,
+      phoneNumber: clientPhoneNumber,
+      shouldUpdateUsername: shouldUpdateUsername
+    }
+
+    let modificationCount = 0;
+
+    if (currentClient) {
+      if (currentClient.firstName !== clientFirstName) {
+        modificationCount += 1;
+      }
+      if (currentClient.lastName !== clientLastName) {
+        modificationCount += 1;
+      }
+      if (currentClient.email !== clientEmail) {
+        modificationCount += 1;
+      }
+      if (currentClient.phoneNumber !== clientPhoneNumber) {
+        modificationCount += 1;
+      }
+    }
+
+    if (modificationCount !== 0) {
+      try {
+        const updatedClient = await UserService.getInstance().updateUserInfos(currentClientID, modifiedUser, token);
+        setShowModifyClientDialog(false);
+        displayToast(t('settings.clientSettings.clientModification.success'));
+        dispatch(setCurrentClient(updatedClient));
+        // Update the client list count to trigger a refresh
+        dispatch(setClientListCount(clientListCount + 1));
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+    } else {
+      displayToast(t('settings.clientSettings.clientModification.noModification'), true);
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
       await loadClientIsBlocked();
+      await loadClientInfos();
     }
     init();
   }, []);
@@ -266,6 +341,66 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
               onConfirm={toggleClientBlock}
               onCancel={() => setShowBlockDialog(false)}
             />
+          )
+        }
+      </>
+    )
+  }
+
+  function modifyClientDialog() {
+    function buttonTapped(update: boolean) {
+      setShouldUpdateUsername(update);
+    }
+
+    return (
+      <>
+        {
+          showModifyClientDialog && (
+            <Dialog
+              title={dialogTitle}
+              description={t('settings.clientSettings.clientModification.description')}
+              isCancelAvailable={true}
+              onConfirm={updateClient}
+              onCancel={() => setShowModifyClientDialog(false)}
+            >
+              <>
+                <GladisTextInput
+                  value={clientLastName}
+                  onValueChange={setClientLastName}
+                  placeholder={t('quotation.lastName')}
+                />
+                <GladisTextInput
+                  value={clientFirstName}
+                  onValueChange={setClientFirstName}
+                  placeholder={t('quotation.firstName')}
+                />
+                <GladisTextInput
+                  value={clientEmail}
+                  onValueChange={setClientEmail}
+                  placeholder={t('quotation.email')}
+                />
+                <GladisTextInput
+                  value={clientPhoneNumber}
+                  onValueChange={setClientPhoneNumber}
+                  placeholder={t('quotation.phone')}
+                />
+                <View style={styles.usernameButtonsContainer}>
+                  <Text style={styles.usernameQuestion}>{t('settings.clientSettings.clientModification.updateUsername.question')}</Text>
+                  <OutlinedTextButton
+                    title={t('settings.clientSettings.clientModification.updateUsername.yes')}
+                    onPress={() => buttonTapped(true)}
+                    width="20%"
+                    isSelected={shouldUpdateUsername}
+                  />
+                  <OutlinedTextButton
+                    title={t('settings.clientSettings.clientModification.updateUsername.no')}
+                    onPress={() => buttonTapped(false)}
+                    width="20%"
+                    isSelected={!shouldUpdateUsername}
+                  />
+                </View>
+              </>
+            </Dialog>
           )
         }
       </>
@@ -330,6 +465,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       </AppContainer>
       {blockDialog()}
       {errorDialog()}
+      {modifyClientDialog()}
       {ToastContent()}
     </>
   );

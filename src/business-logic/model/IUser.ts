@@ -32,3 +32,11 @@ export interface ILoginTryOutput {
   connectionFailedAttempts?: number;
   email: string;
 }
+
+export interface IUserUpdateInput {
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+  email?: string;
+  shouldUpdateUsername?: boolean;
+}
