@@ -385,16 +385,15 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
                   placeholder={t('quotation.phone')}
                 />
                 <View style={styles.usernameButtonsContainer}>
-                {/* TODO: Add translations */}
-                  <Text style={styles.usernameQuestion}>Should update username ? </Text>
+                  <Text style={styles.usernameQuestion}>{t('settings.clientSettings.clientModification.updateUsername.question')}</Text>
                   <OutlinedTextButton
-                    title="Yes"
+                    title={t('settings.clientSettings.clientModification.updateUsername.yes')}
                     onPress={() => buttonTapped(true)}
                     width="20%"
                     isSelected={shouldUpdateUsername}
                   />
                   <OutlinedTextButton
-                    title="No"
+                    title={t('settings.clientSettings.clientModification.updateUsername.no')}
                     onPress={() => buttonTapped(false)}
                     width="20%"
                     isSelected={!shouldUpdateUsername}

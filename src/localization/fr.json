@@ -191,7 +191,12 @@
         "title": "Modifier les informations du client",
         "description": "Veuillez modifier les champs désirés",
         "success": "Client modifié avec succès",
-        "noModification": "Aucune modification entrée"
+        "noModification": "Aucune modification entrée",
+        "updateUsername": {
+          "question": "Voulez-vous mettre à jour le nom d'utilisateur ?",
+          "yes": "Oui",
+          "no": "Non"
+        }
       }
     },
     "userInfos": "Connecté en tant que",

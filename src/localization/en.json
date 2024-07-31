@@ -207,7 +207,12 @@
         "title": "Modify client informations",
         "description": "Please modify the desired fields",
         "success": "Client successfully modified",
-        "noModification": "No modification entered"
+        "noModification": "No modification entered",
+        "updateUsername": {
+          "question": "Do you want to update the username ?",
+          "yes": "Yes",
+          "no": "No"
+        }
       }
     },
     "userInfos": "Logged in as",
