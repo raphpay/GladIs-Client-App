@@ -31,6 +31,7 @@ import Toast from '../../components/Toast';
 import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
+import OutlinedTextButton from '../../components/Buttons/OutlinedTextButton';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
@@ -59,6 +60,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   const [clientFirstName, setClientFirstName] = useState<string>('');
   const [clientEmail, setClientEmail] = useState<string>('');
   const [clientPhoneNumber, setClientPhoneNumber] = useState<string>('');
+  const [shouldUpdateUsername, setShouldUpdateUsername] = useState<boolean>(false);
 
   const navigationHistoryItems: IAction[] = [
     {
@@ -254,6 +256,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       lastName: clientLastName,
       email: clientEmail,
       phoneNumber: clientPhoneNumber,
+      shouldUpdateUsername: shouldUpdateUsername
     }
 
     let modificationCount = 0;
@@ -343,6 +346,10 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   }
 
   function modifyClientDialog() {
+    function buttonTapped(update: boolean) {
+      setShouldUpdateUsername(update);
+    }
+
     return (
       <>
         {
@@ -375,6 +382,22 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
                   onValueChange={setClientPhoneNumber}
                   placeholder={t('quotation.phone')}
                 />
+                <View style={styles.usernameButtonsContainer}>
+                {/* TODO: Add translations */}
+                  <Text style={styles.usernameQuestion}>Should update username ? </Text>
+                  <OutlinedTextButton
+                    title="Yes"
+                    onPress={() => buttonTapped(true)}
+                    width="20%"
+                    isSelected={shouldUpdateUsername}
+                  />
+                  <OutlinedTextButton
+                    title="No"
+                    onPress={() => buttonTapped(false)}
+                    width="20%"
+                    isSelected={!shouldUpdateUsername}
+                  />
+                </View>
               </>
             </Dialog>
           )

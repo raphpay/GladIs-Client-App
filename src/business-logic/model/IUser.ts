@@ -38,4 +38,5 @@ export interface IUserUpdateInput {
   lastName?: string;
   phoneNumber?: string;
   email?: string;
+  shouldUpdateUsername?: boolean;
 }
