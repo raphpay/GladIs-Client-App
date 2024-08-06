@@ -151,28 +151,32 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
       displayToast(t(`${errorTitle}`), true);
     }
 
-    if (receiver && currentUser) {
-      // Create message
-      const senderID: IUserID = { id: currentUser.id as string };
-      const receiverID: IUserID = { id: receiver.id as string };
-      const message: IMessageInput = {
-        title: messageTitle,
-        content: messageContent,
-        senderID: senderID.id,
-        senderMail: currentUser.email,
-        receiverID: receiverID.id,
-        receiverMail: receiver.email
-      }
+    if (receiver) {
+      if (currentUser) {
+        // Create message
+        const senderID: IUserID = { id: currentUser.id as string };
+        const receiverID: IUserID = { id: receiver.id as string };
+        const message: IMessageInput = {
+          title: messageTitle,
+          content: messageContent,
+          senderID: senderID.id,
+          senderMail: currentUser.email,
+          receiverID: receiverID.id,
+          receiverMail: receiver.email
+        }
 
-      // Send message
-      try {
-        const newMessage = await MessageService.getInstance().sendMessage(message, token);
-        setMessages([...messages, newMessage]);
-        resetDialogs();
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
+        // Send message
+        try {
+          const newMessage = await MessageService.getInstance().sendMessage(message, token);
+          setMessages([...messages, newMessage]);
+          resetDialogs();
+        } catch (error) {
+          const errorMessage = (error as Error).message;
+          displayToast(t(`errors.api.${errorMessage}`), true);
+        }
       }
+    } else {
+      displayToast(t('errors.api.notFound.user'), true);
     }
   }
 

@@ -3,29 +3,34 @@ import { Colors } from '../../colors/colors';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
-  clientContainer: {
-    width: 150,
-    height: 150,
-    margin: 8,
+  container: {
     borderRadius: 10,
+    backgroundColor: 'white',
+    margin: 10,
+    minWidth: 150,
+    height: 200,
+    overflow: 'hidden',
+  },
+  blueBox: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    height: 160,
   },
   logo: {
     width: '100%',
     height: '100%',
-    resizeMode: 'contain',
   },
-  clientLogo: {
-    height: '75%',
-    padding: 4,
+  gladisLogo: {
+    width: 150,
+    height: 150,
   },
-  nameContainer: {
-    height: '25%',
+  textContainer: {
+    alignItems: 'center',
     backgroundColor: Colors.inactive,
-    borderBottomStartRadius: 10,
-    borderBottomEndRadius: 10,
-    padding: 4,
+    padding: 10,
   },
-  clientNameText: {
+  text: {
     fontSize: 16,
     fontFamily: Fonts.poppinsLight
   },
