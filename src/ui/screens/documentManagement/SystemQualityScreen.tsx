@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Text,
@@ -9,19 +9,22 @@ import {
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import UserType from '../../../business-logic/model/enums/UserType';
+import UserServiceRead from '../../../business-logic/services/UserService.read';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
+import { setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid/Grid';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
-import SMQManager from '../../../business-logic/manager/SMQManager';
-import UserType from '../../../business-logic/model/enums/UserType';
-import { setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 import IconButton from '../../components/Buttons/IconButton';
 
@@ -35,6 +38,8 @@ type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, Navigat
 
 function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [processNewName, setProcessNewName] = useState<string>('');
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const plusIcon = require('../../assets/images/plus.png');
   
@@ -43,6 +48,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const { navigation } = props;
 
   const { isAdmin, currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { token } = useAppSelector((state: RootState) => state.tokens);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
@@ -125,16 +131,44 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
+  function displayModificationProcessDialog(item: ISystemQualityItem) {
+    if (currentUser?.userType === UserType.Admin) {
+      setShowDialog(true);
+      setProcessNewName(item.title);
+    }
+  }
+  
+  // Async Methods
   async function navigateToSMQGeneral() {
     dispatch(setSMQScreenSource(NavigationRoutes.SystemQualityScreen));
     SMQManager.getInstance().setClientID(currentClient?.id as string);
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 
+  async function saveProcessName() {}
+
+  // Lifecycle Methods
+  useEffect(() => {
+    async function init() {
+      try {
+        const userID = currentUser?.id as string;
+        const processes = await UserServiceRead.getSystemQualityFolders(userID, token);
+        console.log('Processes:', processes);
+      } catch (error) {
+        console.log('Error getting system quality folders:', error);
+      }
+    }
+    init();
+  }, []);
+
   // Components
   function SystemQualityGridItem(item: ISystemQualityItem) {
     return (
-      <TouchableOpacity key={item.id} onPress={() => navigateTo(item)}>
+      <TouchableOpacity
+        key={item.id}
+        onPress={() => navigateTo(item)}
+        onLongPress={() => displayModificationProcessDialog(item)}
+        >
         <View style={styles.processusContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
@@ -158,33 +192,63 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     );
   }
 
-  return (
-    <AppContainer
-      mainTitle={t('systemQuality.title')}
-      navigationHistoryItems={navigationHistoryItems}
-      searchText={searchText}
-      setSearchText={setSearchText}
-      showBackButton={true}
-      showSearchText={true}
-      showSettings={true}
-      navigateBack={navigateBack}
-      adminButton={CreateSMQDocButton()}
-    >
-      {
-        systemQualityItemsFiltered && systemQualityItemsFiltered.length === 0 ? (
-          <ContentUnavailableView
-            title={t('systemQuality.noItems.title')}
-            message={t('systemQuality.noItems.message')}
-            image={clipboardIcon}
-          />
-        ) : (
-          <Grid
-            data={systemQualityItemsFiltered}
-            renderItem={({ item }) => SystemQualityGridItem(item)}
-          />
+  function ModifyProcessNameDialog() {
+    return (
+      <>{
+        showDialog && (
+          <Dialog
+            title='Modify Process Name'
+            description='Enter the new name for the process'
+            confirmTitle='Save'
+            cancelTitle='Cancel'
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+            onConfirm={() => console.log('Save')}
+            onCancel={() => console.log('Cancel')}
+          >
+            <GladisTextInput
+              value={processNewName}
+              onValueChange={setProcessNewName}
+              placeholder='New Process Name'
+              autoCapitalize='words'
+            />
+          </Dialog>
         )
       }
-    </AppContainer>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <AppContainer
+        mainTitle={t('systemQuality.title')}
+        navigationHistoryItems={navigationHistoryItems}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showBackButton={true}
+        showSearchText={true}
+        showSettings={true}
+        navigateBack={navigateBack}
+        adminButton={CreateSMQDocButton()}
+      >
+        {
+          systemQualityItemsFiltered && systemQualityItemsFiltered.length === 0 ? (
+            <ContentUnavailableView
+              title={t('systemQuality.noItems.title')}
+              message={t('systemQuality.noItems.message')}
+              image={clipboardIcon}
+            />
+          ) : (
+            <Grid
+              data={systemQualityItemsFiltered}
+              renderItem={({ item }) => SystemQualityGridItem(item)}
+            />
+          )
+        }
+      </AppContainer>
+      {ModifyProcessNameDialog()}
+    </>
   );
 }
 
