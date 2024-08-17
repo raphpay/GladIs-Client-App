@@ -8,7 +8,7 @@ class UserServiceRead extends UserService {
 
   static async getSystemQualityFolders(userID: string, token: IToken | null): Promise<IProcessus[]> {
     try {
-      const processus = await APIService.get<IProcessus[]>(`${this.baseRoute}/${userID}/processes/systemQuality`, token?.value as string);
+      const processus = await APIService.get<IProcessus[]>(`${this.baseRoute}/${userID}/processus/systemQuality`, token?.value as string);
       return processus;
     } catch (error) {
       throw error;

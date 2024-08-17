@@ -11,8 +11,10 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
+import { Folder, IProcessusInput } from '../../../business-logic/model/IProcessus';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
+import ProcessusService from '../../../business-logic/services/ProcessusService';
 import UserServiceRead from '../../../business-logic/services/UserService.read';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
@@ -40,6 +42,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const [searchText, setSearchText] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [processNewName, setProcessNewName] = useState<string>('');
+  const [processNumber, setProcessNumber] = useState<number>(0);
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const plusIcon = require('../../assets/images/plus.png');
   
@@ -56,6 +59,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     {
       id: 'qualityManualID',
       title: t('systemQuality.qualityManual'),
+      number: 0,
     },
     {
       id: 'processus1ID',
@@ -135,6 +139,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     if (currentUser?.userType === UserType.Admin) {
       setShowDialog(true);
       setProcessNewName(item.title);
+      setProcessNumber(item.number ?? 1);
     }
   }
   
@@ -145,15 +150,39 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 
-  async function saveProcessName() {}
+  // TODO: Save process name
+  async function saveProcessName() {
+    console.log('name', processNewName, processNumber);
+    try { } catch (error) { }
+  }
+
+  async function createInitialProcessus() {
+    for (const process of systemQualityItems) {
+      try {
+        const processNumber = process.number as number;
+        const currentUserID = currentUser?.id as string;
+        const processus: IProcessusInput = {
+          title: process.title,
+          number: processNumber,
+          folder: Folder.SystemQuality,
+          userID: currentUserID
+        };
+        await ProcessusService.getInstance().create(processus, token);
+      } catch (error) {
+        console.log('error', error);
+      }
+    }
+  }
 
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
       try {
         const userID = currentUser?.id as string;
-        const processes = await UserServiceRead.getSystemQualityFolders(userID, token);
-        console.log('Processes:', processes);
+        const processus = await UserServiceRead.getSystemQualityFolders(userID, token);
+        if (processus.length === 0) {
+          await createInitialProcessus();
+        }
       } catch (error) {
         console.log('Error getting system quality folders:', error);
       }
@@ -192,6 +221,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     );
   }
 
+  // TODO: Add translations
   function ModifyProcessNameDialog() {
     return (
       <>{
@@ -203,8 +233,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             cancelTitle='Cancel'
             isConfirmAvailable={true}
             isCancelAvailable={true}
-            onConfirm={() => console.log('Save')}
-            onCancel={() => console.log('Cancel')}
+            onConfirm={() => saveProcessName()}
+            onCancel={() => setShowDialog(false)}
           >
             <GladisTextInput
               value={processNewName}

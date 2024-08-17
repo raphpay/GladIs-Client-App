@@ -6,7 +6,14 @@ export default interface IProcessus {
   userID: IUserID,
 }
 
-enum Folder {
+export interface IProcessusInput {
+  title: string,
+  number: number,
+  folder: Folder,
+  userID: string,
+}
+
+export enum Folder {
   SystemQuality = 'systemQuality',
   Record ='record'
 }
