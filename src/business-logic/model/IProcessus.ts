@@ -13,6 +13,11 @@ export interface IProcessusInput {
   userID: string,
 }
 
+export interface IProcessusUpdateInput {
+  title?: string,
+  number?: number,
+}
+
 export enum Folder {
   SystemQuality = 'systemQuality',
   Record ='record'
