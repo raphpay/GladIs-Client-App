@@ -197,6 +197,17 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
+  async function deleteProcessus() {
+    try {
+      await ProcessusService.getInstance().delete(processID, token);
+      setProcessusItems(prevItems => prevItems.filter(item => item.id !== processID));
+      setShowDialog(false);
+      // TODO: Display toast
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
@@ -256,10 +267,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             description='Enter the new name for the process'
             confirmTitle='Save'
             cancelTitle='Cancel'
+            extraConfirmButtonTitle='Delete'
             isConfirmAvailable={true}
             isCancelAvailable={true}
             onConfirm={() => modifyProcessName()}
             onCancel={() => setShowDialog(false)}
+            extraConfirmButtonAction={() => deleteProcessus()}
           >
             <GladisTextInput
               value={processNewName}
