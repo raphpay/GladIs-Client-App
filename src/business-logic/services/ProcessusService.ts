@@ -22,8 +22,14 @@ class ProcessusService {
     return ProcessusService.instance;
   }
 
-  // TODO: Add documentation
   // CREATE
+  /**
+   * Creates a new process.
+   * @param input The input for the process to create.
+   * @param token The token to use for authentication.
+   * @returns The created process.
+   * @throws An error if the process could not be created.
+   */
   async create(input: IProcessusInput, token: IToken | null): Promise<void> {
     try {
       await APIService.post<IProcessusInput>(this.baseRoute, input, token?.value as string);
@@ -33,6 +39,14 @@ class ProcessusService {
   }
 
   // UPDATE
+  /**
+   * Updates a process.
+   * @param input The input for the process to update.
+   * @param processID The ID of the process to update.
+   * @param token The token to use for authentication.
+   * @returns The updated process.
+   * @throws An error if the process could not be updated.
+   */
   async update(input: IProcessusUpdateInput, processID: string, token: IToken | null): Promise<IProcessus> {
     try {
       const updatedProcess = await APIService.put(`${this.baseRoute}/${processID}`, input, token?.value as string) as IProcessus;
@@ -43,6 +57,12 @@ class ProcessusService {
   }
 
   // DELETE
+  /**
+   * Deletes a process.
+   * @param processID The ID of the process to delete.
+   * @param token The token to use for authentication.
+   * @throws An error if the process could not be deleted.
+   */
   async delete(processID: string, token: IToken | null): Promise<void> {
     try {
       await APIService.delete(`${this.baseRoute}/${processID}`, token?.value as string);
