@@ -25,13 +25,13 @@ import { setSMQScreenSource } from '../../../business-logic/store/slices/smqRedu
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid/Grid';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
-import IconButton from '../../components/Buttons/IconButton';
 
 type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SystemQualityScreen>;
 
@@ -114,6 +114,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       userID: { id: currentUser?.id as string },
     }
   ]);
+
   const processusItemsFiltered = processusItems.filter(processusItem =>
     processusItem.title.toLowerCase().includes(searchText.toLowerCase()),
   );
@@ -286,17 +287,16 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     )
   }
 
-  // TODO: Add translations
   function ModifyProcessNameDialog() {
     return (
       <>{
         showDialog && (
           <Dialog
-            title='Modify Process Name'
-            description='Enter the new name for the process'
-            confirmTitle='Save'
-            cancelTitle='Cancel'
-            extraConfirmButtonTitle='Delete'
+            title={t('systemQuality.modifyProcess.title')}
+            description={t('systemQuality.modifyProcess.description')}
+            confirmTitle={t('components.buttons.save')}
+            cancelTitle={t('components.cancel')}
+            extraConfirmButtonTitle={t('components.buttons.delete')}
             isConfirmAvailable={true}
             isCancelAvailable={true}
             onConfirm={() => modifyProcessName()}
@@ -306,7 +306,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             <GladisTextInput
               value={processNewName}
               onValueChange={setProcessNewName}
-              placeholder='New Process Name'
+              placeholder={t('systemQuality.modifyProcess.placeholder')}
               autoCapitalize='words'
             />
           </Dialog>
@@ -321,10 +321,10 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       <>{
         showCreateFolderDialog && (
           <Dialog
-            title='Create Folder'
-            description='Enter the name for the new folder'
-            confirmTitle='Create'
-            cancelTitle='Cancel'
+            title={t('systemQuality.create.title')}
+            description={t('systemQuality.create.description')}
+            confirmTitle={t('systemQuality.create.confirm')}
+            cancelTitle={t('components.dialog.cancel')}
             isConfirmAvailable={true}
             isCancelAvailable={true}
             onConfirm={createProcessus}
@@ -333,7 +333,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             <GladisTextInput
               value={processNewName}
               onValueChange={setProcessNewName}
-              placeholder='Folder Name'
+              placeholder={t('systemQuality.create.placeholder')}
               autoCapitalize='words'
             />
           </Dialog>
