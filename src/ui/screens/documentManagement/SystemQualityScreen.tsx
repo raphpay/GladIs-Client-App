@@ -149,7 +149,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         processNumber: undefined,
       });
     } else {
-      navigation.navigate(NavigationRoutes.ProcessesScreen, { processNumber: item.number ?? 1})
+      navigation.navigate(NavigationRoutes.ProcessesScreen, { currentProcessus: item})
     }
   }
 
