@@ -186,6 +186,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     setToastIsShowingError(isError);
     setToastMessage(message);
   }
+
+  function closeDialogs() {
+    setShowCreateFolderDialog(false);
+    setShowDialog(false);
+    setProcessNewName('');
+  }
   
   // Async Methods
   async function navigateToSMQGeneral() {
@@ -210,7 +216,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
           const newItems = [...prevItems, processus];
           return newItems.sort((a, b) => a.number - b.number);
         });
-        setShowCreateFolderDialog(false);
+        closeDialogs();
         displayToast(t('systemQuality.create.success'));
       } catch (error) {
         const errorMessage = (error as Error).message;
@@ -231,7 +237,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
           item.number === updatedProcessus.number ? { ...item, title: updatedProcessus.title } : item
         )
       );
-      setShowDialog(false);
+      closeDialogs();
       displayToast(t('systemQuality.modifyProcess.success'));
     } catch (error) {
       const errorMessage = (error as Error).message;
@@ -262,7 +268,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     try {
       await ProcessusService.getInstance().delete(processID, token);
       setProcessusItems(prevItems => prevItems.filter(item => item.id !== processID));
-      setShowDialog(false);
+      closeDialogs();
       displayToast(t('systemQuality.delete.success'));
     } catch (error) {
       const errorMessage = (error as Error).message;
@@ -317,13 +323,13 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             title={t('systemQuality.modifyProcess.title')}
             description={t('systemQuality.modifyProcess.description')}
             confirmTitle={t('components.buttons.save')}
-            cancelTitle={t('components.cancel')}
+            cancelTitle={t('components.dialog.cancel')}
             extraConfirmButtonTitle={t('components.buttons.delete')}
             isConfirmAvailable={true}
             isCancelAvailable={true}
-            onConfirm={() => modifyProcessName()}
-            onCancel={() => setShowDialog(false)}
-            extraConfirmButtonAction={() => deleteProcessus()}
+            onConfirm={modifyProcessName}
+            onCancel={closeDialogs}
+            extraConfirmButtonAction={deleteProcessus}
           >
             <GladisTextInput
               value={processNewName}
@@ -350,7 +356,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             isConfirmAvailable={true}
             isCancelAvailable={true}
             onConfirm={createProcessus}
-            onCancel={() => setShowCreateFolderDialog(false)}
+            onCancel={closeDialogs}
           >
             <GladisTextInput
               value={processNewName}
