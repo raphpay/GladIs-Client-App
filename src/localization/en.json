@@ -92,6 +92,23 @@
     },
     "createSMQDoc": {
       "button": "Generate the SMQ documentation"
+    },
+    "modifyProcess": {
+      "title": "Modify Process Name",
+      "description": "Enter the new name for the process",
+      "placeholder": "New process name",
+      "success": "Process name successfully modified"
+    },
+    "create": {
+      "button": "Create a new folder",
+      "title": "Create a new folder",
+      "description": "Enter the name of the new folder",
+      "placeholder": "Folder name",
+      "confirm": "Create",
+      "success": "Folder successfully created"
+    },
+    "delete": {
+      "success": "Folder successfully deleted"
     }
   },
   "technicalDocumentation": {

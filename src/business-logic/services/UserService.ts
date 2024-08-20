@@ -16,7 +16,7 @@ class UserService {
   private static instance: UserService | null = null;
   private baseRoute = 'users';
 
-  private constructor() {}
+  constructor() {}
 
   /**
    * Returns the singleton instance of the UserService class.

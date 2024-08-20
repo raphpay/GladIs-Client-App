@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
   },
+  adminButton: {
+    marginHorizontal: 3,
+  }
 });
 
 export default styles;

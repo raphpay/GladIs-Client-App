@@ -33,7 +33,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const dispatch = useAppDispatch();
 
   const { navigation } = props;
-  const { processNumber } = props.route.params;
+  const { currentProcessus } = props.route.params;
 
   const processes: IProcessItem[] = [
     {
@@ -88,13 +88,13 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   function navigateTo(item: IProcessItem) {
     dispatch(setDocumentListCount(documentListCount + 1));
     if (item.id === 'formsID') {
-      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: `process${processNumber}/${item.title}` });
+      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: `${currentProcessus}/${item.title}` });
     } else {
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
-        previousScreen: 'process',
-        processNumber: processNumber,
+        previousScreen: currentProcessus.title,
+        processNumber: currentProcessus.number,
         currentScreen: item.title,
-        documentsPath: `process${processNumber}/${item.title}`
+        documentsPath: `${currentProcessus.title}/${item.title}`
       });
     }
   }
@@ -112,7 +112,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
 
   return (
     <AppContainer 
-      mainTitle={`${t('process.title.single')} ${processNumber}`}
+      mainTitle={currentProcessus.title}
       navigationHistoryItems={navigationHistoryItems}
       searchText={searchText}
       setSearchText={setSearchText}

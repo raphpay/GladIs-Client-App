@@ -8,6 +8,7 @@ import IArea from '../business-logic/model/IArea';
 import IDocument from '../business-logic/model/IDocument';
 import IForm from '../business-logic/model/IForm';
 import IPendingUser from '../business-logic/model/IPendingUser';
+import IProcessus from '../business-logic/model/IProcessus';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
@@ -68,7 +69,7 @@ export type IRootStackParams = {
   SystemQualityScreen: undefined,
   TechnicalDocumentationScreen: undefined,
   TechnicalDocAreaScreen: { area: IArea },
-  ProcessesScreen: { processNumber: number },
+  ProcessesScreen: { currentProcessus: IProcessus },
   DocumentsScreen: {
     previousScreen: string,
     currentScreen: string,
