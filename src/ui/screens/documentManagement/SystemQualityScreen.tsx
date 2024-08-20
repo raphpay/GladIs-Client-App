@@ -64,64 +64,65 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
-  const [processusItems, setProcessusItems] = useState<IProcessus[]>([
+  const baseProcessusItems: IProcessus[] = [
     {
       id: 'qualityManualID',
       title: t('systemQuality.qualityManual'),
       number: 0,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     },
     {
       id: 'processus1ID',
       title: `${t('process.title.single')} 1`,
       number: 1,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     },
     {
       id: 'processus2ID',
       title: `${t('process.title.single')} 2`,
       number: 2,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     },
     {
       id: 'processus3ID',
       title: `${t('process.title.single')} 3`,
       number: 3,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     },
     {
       id: 'processus4ID',
       title: `${t('process.title.single')} 4`,
       number: 4,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     },
     {
       id: 'processus5ID',
       title: `${t('process.title.single')} 5`,
       number: 5,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     },
     {
       id: 'processus6ID',
       title: `${t('process.title.single')} 6`,
       number: 6,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     },
     {
       id: 'processus7ID',
       title: `${t('process.title.single')} 7`,
       number: 7,
       folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      userID: { id: currentClient?.id as string },
     }
-  ]);
+  ];
+  const [processusItems, setProcessusItems] = useState<IProcessus[]>([]);
 
   const processusItemsFiltered = processusItems.filter(processusItem =>
     processusItem.title.toLowerCase().includes(searchText.toLowerCase()),
@@ -203,13 +204,13 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   async function createProcessus() {
     if (processNewName) {
       // TODO: Let the admin choose the placement of the processus
-      setProcessNumber(processusItems.length + 1);
+      setProcessNumber(1);
       try {
         const input: IProcessusInput = {
           title: processNewName,
           number: processNumber,
           folder: Folder.SystemQuality,
-          userID: currentUser?.id as string,
+          userID: currentClient?.id as string,
         };
         const processus = await ProcessusService.getInstance().create(input, token);
         setProcessusItems(prevItems => {
@@ -246,15 +247,16 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   async function createInitialProcessus() {
-    for (const process of processusItems) {
+    setProcessusItems(baseProcessusItems);
+    for (const process of baseProcessusItems) {
       try {
         const processNumber = process.number as number;
-        const currentUserID = currentUser?.id as string;
+        const currentClientID = currentClient?.id as string;
         const processus: IProcessusInput = {
           title: process.title,
           number: processNumber,
           folder: Folder.SystemQuality,
-          userID: currentUserID
+          userID: currentClientID
         };
         await ProcessusService.getInstance().create(processus, token);
       } catch (error) {
@@ -280,7 +282,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   useEffect(() => {
     async function init() {
       try {
-        const userID = currentUser?.id as string;
+        const userID = currentClient?.id as string;
         const processus = await UserServiceRead.getSystemQualityFolders(userID, token);
         if (processus.length === 0) {
           await createInitialProcessus();
