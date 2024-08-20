@@ -96,7 +96,11 @@ export type IRootStackParams = {
   FormsDocumentScreen: { documentPath: string },
   FormEditionScreen: { form? : IForm, documentPath: string },
   // Records
-  RecordsDocumentScreen: { currentProcessus: IProcessus, documentsPath: string },
+  RecordsDocumentScreen: {
+    currentProcessus: IProcessus,
+    documentsPath: string,
+    currentScreen: string,
+  },
 }
 
 export type IClientCreationStack = {

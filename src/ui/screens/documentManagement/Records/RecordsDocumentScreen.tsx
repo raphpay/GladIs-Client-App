@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, Text, TouchableOpacity, View } from 'react-native';
 
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
@@ -16,6 +16,7 @@ import DocumentService from '../../../../business-logic/services/DocumentService
 import UserServiceRead from '../../../../business-logic/services/UserService.read';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../../business-logic/store/slices/appStateReducer';
+import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -27,8 +28,10 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
+import PlatformName, { Orientation } from '../../../../business-logic/model/enums/PlatformName';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/ProcessesScreenStyles';
+import IconButton from '../../../components/Buttons/IconButton';
 import Pagination from '../../../components/Pagination';
 
 type RecordsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RecordsDocumentScreen>;
@@ -38,10 +41,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   // General
   const [searchText, setSearchText] = useState<string>('');
   const [folders, setFolders] = useState<IProcessus[]>([]);
+  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
   // Documents
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<IDocument>();
   // Dialog
+  const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -53,7 +58,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { navigation } = props;
-  const { currentProcessus, documentsPath } = props.route.params;
+  const { currentProcessus, currentScreen, documentsPath } = props.route.params;
 
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
@@ -66,6 +71,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   );
   const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
   const docsPerPage = 8;
+  const plusIcon = require('../../../assets/images/plus.png');
 
   const popoverActions: IAction[] = [
     {
@@ -92,6 +98,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       documentsPath: `${currentProcessus.title}/records/${item.title}`
     });
     dispatch(setDocumentListCount(documentListCount + 1));
+  }
+
+  function navigateToSMQSurvey() {
+    dispatch(setSMQScreenSource(t(currentScreen)));
+    dispatch(setIsUpdatingSurvey(false));
+    navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 
   function showDocumentDialog(item: IDocument) {
@@ -228,6 +240,54 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     )
   }
 
+  function CreateSMQDocButton() {
+    return (
+      <>
+        {
+          currentUser?.userType !== UserType.Employee && (
+            <IconButton
+              title={t('systemQuality.createSMQDoc.button')}
+              onPress={navigateToSMQSurvey}
+              icon={plusIcon}
+              style={styles.smqButton}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function AddDocumentButton() {
+    return (
+      <>
+        {
+          currentUser?.userType == UserType.Admin && (
+            <IconButton
+              title={t('components.buttons.addDocument')}
+              icon={plusIcon}
+              onPress={() => setShowDialog(true)}
+              style={styles.smqButton}
+            />
+          )
+        }
+      </>
+    );
+  }
+
+  function AdminButtons() {
+    const shouldHaveColumn = (
+        Platform.OS === PlatformName.Android ||
+        Platform.OS === PlatformName.IOS
+      ) && orientation === Orientation.Portrait;
+    
+    return (
+      <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
+        {CreateSMQDocButton()}
+        {AddDocumentButton()}
+      </View>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -245,6 +305,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         }
+        adminButton={AdminButtons()}
       >
         <>
           {

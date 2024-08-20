@@ -19,6 +19,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
   },
+  smqButton: {
+    marginHorizontal: 8,
+    marginVertical: 4,
+  }
 });
 
 export default styles;

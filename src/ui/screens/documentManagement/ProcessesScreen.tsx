@@ -92,6 +92,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     } else if (item.id === 'recordsID') {
       navigation.navigate(NavigationRoutes.RecordsDocumentScreen, {
         currentProcessus,
+        currentScreen: item.title,
         documentsPath: `${currentProcessus.title}/records/${item.title}`
       });
     } else {

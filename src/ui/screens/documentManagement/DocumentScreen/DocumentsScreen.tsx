@@ -19,7 +19,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
-import { setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
+import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
@@ -29,11 +29,10 @@ import Dialog from '../../../components/Dialogs/Dialog';
 import Pagination from '../../../components/Pagination';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
+import DocumentGrid from './DocumentGrid';
 
-import { setIsUpdatingSurvey } from '../../../../business-logic/store/slices/smqReducer';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
-import DocumentGrid from './DocumentGrid';
 
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
