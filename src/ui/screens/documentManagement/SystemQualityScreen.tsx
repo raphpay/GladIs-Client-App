@@ -386,7 +386,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         {
           currentUser?.userType === UserType.Admin && (
             <IconButton 
-              title={t('systemQuality.createFolder.button')}
+              title={t('systemQuality.create.button')}
               onPress={() => setShowCreateFolderDialog(true)}
               icon={plusIcon}
               style={styles.adminButton}

@@ -100,6 +100,7 @@
       "success": "Nom du processus modifié avec succès"
     },
     "create": {
+      "button": "Créer un nouveau dossier",
       "title": "Créer un nouveau dossier",
       "description": "Entrez le nom du nouveau dossier",
       "placeholder": "Nom du dossier",
