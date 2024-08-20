@@ -1,4 +1,4 @@
-import IProcessus, { IProcessusInput, IProcessusUpdateInput } from "../model/IProcessus";
+import IProcessus, { IProcessusInput, IProcessusMultipleInput, IProcessusUpdateInput } from "../model/IProcessus";
 import IToken from "../model/IToken";
 import APIService from "./APIService";
 
@@ -35,6 +35,20 @@ class ProcessusService {
       const newProcessus = await APIService.post<IProcessusInput>(this.baseRoute, input, token?.value as string);
       const processus = this.convertInputToProcessus(newProcessus);
       return processus;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Creates multiple processes.
+   * @param input The input for the processes to create.
+   * @param token The token to use for authentication.
+   * @throws An error if the processes could not be created.
+   */
+  async createMultiple(input: IProcessusMultipleInput, token: IToken | null): Promise<void> {
+    try {
+      await APIService.post<IProcessusMultipleInput>(`${this.baseRoute}/multiple`, input, token?.value as string);
     } catch (error) {
       throw error;
     }

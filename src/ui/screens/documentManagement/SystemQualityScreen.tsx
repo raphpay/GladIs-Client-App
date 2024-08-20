@@ -13,7 +13,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
-import IProcessus, { Folder, IProcessusInput, IProcessusUpdateInput } from '../../../business-logic/model/IProcessus';
+import IProcessus, { Folder, IProcessusInput, IProcessusMultipleInput, IProcessusUpdateInput } from '../../../business-logic/model/IProcessus';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName, { Orientation } from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
@@ -70,56 +70,56 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       title: t('systemQuality.qualityManual'),
       number: 0,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     },
     {
       id: 'processus1ID',
       title: `${t('process.title.single')} 1`,
       number: 1,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     },
     {
       id: 'processus2ID',
       title: `${t('process.title.single')} 2`,
       number: 2,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     },
     {
       id: 'processus3ID',
       title: `${t('process.title.single')} 3`,
       number: 3,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     },
     {
       id: 'processus4ID',
       title: `${t('process.title.single')} 4`,
       number: 4,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     },
     {
       id: 'processus5ID',
       title: `${t('process.title.single')} 5`,
       number: 5,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     },
     {
       id: 'processus6ID',
       title: `${t('process.title.single')} 6`,
       number: 6,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     },
     {
       id: 'processus7ID',
       title: `${t('process.title.single')} 7`,
       number: 7,
       folder: Folder.SystemQuality,
-      userID: { id: currentClient?.id as string },
+      userID: currentClient?.id as string,
     }
   ];
   const [processusItems, setProcessusItems] = useState<IProcessus[]>([]);
@@ -248,21 +248,15 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   async function createInitialProcessus() {
     setProcessusItems(baseProcessusItems);
-    for (const process of baseProcessusItems) {
-      try {
-        const processNumber = process.number as number;
-        const currentClientID = currentClient?.id as string;
-        const processus: IProcessusInput = {
-          title: process.title,
-          number: processNumber,
-          folder: Folder.SystemQuality,
-          userID: currentClientID
-        };
-        await ProcessusService.getInstance().create(processus, token);
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
+    try {
+      const input: IProcessusMultipleInput = {
+        inputs: baseProcessusItems,
+        userID: currentClient?.id as string,
+      };
+      await ProcessusService.getInstance().createMultiple(input, token);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 

@@ -3,7 +3,7 @@ export default interface IProcessus {
   title: string,
   number: number,
   folder: Folder,
-  userID: IUserID,
+  userID: IUserID | string,
 }
 
 export interface IProcessusInput {
@@ -16,6 +16,11 @@ export interface IProcessusInput {
 export interface IProcessusUpdateInput {
   title?: string,
   number?: number,
+}
+
+export interface IProcessusMultipleInput {
+  inputs: IProcessus[],
+  userID: string,
 }
 
 export enum Folder {
