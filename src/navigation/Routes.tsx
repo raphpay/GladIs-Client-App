@@ -56,6 +56,8 @@ import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScree
 // Forms
 import FormEditionScreen from '../ui/screens/documentManagement/Forms/FormEditionScreen';
 import FormsDocumentScreen from '../ui/screens/documentManagement/Forms/FormsDocumentScreen';
+// Records
+import RecordsDocumentScreen from '../ui/screens/documentManagement/Records/RecordsDocumentScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -93,6 +95,8 @@ export type IRootStackParams = {
   // Forms
   FormsDocumentScreen: { documentPath: string },
   FormEditionScreen: { form? : IForm, documentPath: string },
+  // Records
+  RecordsDocumentScreen: { currentProcessus: IProcessus, documentsPath: string },
 }
 
 export type IClientCreationStack = {
@@ -280,6 +284,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.FormEditionScreen}
         component={FormEditionScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.RecordsDocumentScreen}
+        component={RecordsDocumentScreen}
         options={{headerShown: false}}
       />
       <ClientCreationStack.Screen

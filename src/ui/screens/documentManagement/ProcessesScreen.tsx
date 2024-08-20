@@ -89,6 +89,11 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     dispatch(setDocumentListCount(documentListCount + 1));
     if (item.id === 'formsID') {
       navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: `${currentProcessus}/${item.title}` });
+    } else if (item.id === 'recordsID') {
+      navigation.navigate(NavigationRoutes.RecordsDocumentScreen, {
+        currentProcessus,
+        documentsPath: `${currentProcessus.title}/records/${item.title}`
+      });
     } else {
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         previousScreen: currentProcessus.title,
