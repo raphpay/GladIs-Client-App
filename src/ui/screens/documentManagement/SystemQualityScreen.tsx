@@ -2,6 +2,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Dimensions,
+  Platform,
   Text,
   TouchableOpacity,
   View
@@ -13,6 +15,7 @@ import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
 import IProcessus, { Folder, IProcessusInput, IProcessusUpdateInput } from '../../../business-logic/model/IProcessus';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import PlatformName, { Orientation } from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
 import ProcessusService from '../../../business-logic/services/ProcessusService';
 import UserServiceRead from '../../../business-logic/services/UserService.read';
@@ -38,6 +41,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const [processNewName, setProcessNewName] = useState<string>('');
   const [processNumber, setProcessNumber] = useState<number>(0);
   const [processID, setProcessID] = useState<string>('');
+  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
+  const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const plusIcon = require('../../assets/images/plus.png');
@@ -155,12 +160,46 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       setProcessID(item.id as string);
     }
   }
+
+  function determineAndSetOrientation() {
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
+
+    if (width < height) {
+      setOrientation(Orientation.Portrait);
+    } else {
+      setOrientation(Orientation.Landscape);
+    }
+  }
   
   // Async Methods
   async function navigateToSMQGeneral() {
     dispatch(setSMQScreenSource(NavigationRoutes.SystemQualityScreen));
     SMQManager.getInstance().setClientID(currentClient?.id as string);
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
+  }
+
+  async function createProcessus() {
+    if (processNewName) {
+      // TODO: Let the admin choose the placement of the processus
+      setProcessNumber(processusItems.length + 1);
+      try {
+        const input: IProcessusInput = {
+          title: processNewName,
+          number: processNumber,
+          folder: Folder.SystemQuality,
+          userID: currentUser?.id as string,
+        };
+        const processus = await ProcessusService.getInstance().create(input, token);
+        setProcessusItems(prevItems => {
+          const newItems = [...prevItems, processus];
+          return newItems.sort((a, b) => a.number - b.number);
+        });
+        setShowCreateFolderDialog(false);
+      } catch (error) {
+        console.log('error', error);
+      }
+    }
   }
 
   async function modifyProcessName() {
@@ -226,6 +265,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     init();
   }, []);
 
+  useEffect(() => {
+    determineAndSetOrientation();
+    Dimensions.addEventListener('change', determineAndSetOrientation);
+    return () => {}
+  }, []);
+
   // Components
   function ProcessusGridItem(item: IProcessus) {
     return (
@@ -239,22 +284,6 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         </View>
       </TouchableOpacity>
     )
-  }
-
-  function CreateSMQDocButton() {
-    return (
-      <>
-        {
-          currentUser?.userType !== UserType.Employee && (
-            <IconButton 
-              title={t('systemQuality.createSMQDoc.button')}
-              onPress={navigateToSMQGeneral}
-              icon={plusIcon}
-            />
-          )
-        }
-      </>
-    );
   }
 
   // TODO: Add translations
@@ -287,6 +316,65 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     )
   }
 
+  function CreateFolderDialog() {
+    return (
+      <>{
+        showCreateFolderDialog && (
+          <Dialog
+            title='Create Folder'
+            description='Enter the name for the new folder'
+            confirmTitle='Create'
+            cancelTitle='Cancel'
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+            onConfirm={createProcessus}
+            onCancel={() => setShowCreateFolderDialog(false)}
+          >
+            <GladisTextInput
+              value={processNewName}
+              onValueChange={setProcessNewName}
+              placeholder='Folder Name'
+              autoCapitalize='words'
+            />
+          </Dialog>
+        )
+      }
+      </>
+    )
+  }
+
+  function AdminButtons() {
+    const shouldHaveColumn = (
+        Platform.OS === PlatformName.Android ||
+        Platform.OS === PlatformName.IOS
+      ) && orientation === Orientation.Portrait;
+    
+    return (
+      <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
+        {
+          currentUser?.userType !== UserType.Employee && (
+            <IconButton 
+              title={t('systemQuality.createSMQDoc.button')}
+              onPress={navigateToSMQGeneral}
+              icon={plusIcon}
+              style={styles.adminButton}
+            />
+          )
+        }
+        {
+          currentUser?.userType === UserType.Admin && (
+            <IconButton 
+              title={t('systemQuality.createFolder.button')}
+              onPress={() => setShowCreateFolderDialog(true)}
+              icon={plusIcon}
+              style={styles.adminButton}
+            />
+          )
+        }
+      </View>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -298,7 +386,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         showSearchText={true}
         showSettings={true}
         navigateBack={navigateBack}
-        adminButton={CreateSMQDocButton()}
+        adminButton={AdminButtons()}
       >
         {
           processusItemsFiltered && processusItemsFiltered.length === 0 ? (
@@ -316,6 +404,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         }
       </AppContainer>
       {ModifyProcessNameDialog()}
+      {CreateFolderDialog()}
     </>
   );
 }

@@ -30,9 +30,11 @@ class ProcessusService {
    * @returns The created process.
    * @throws An error if the process could not be created.
    */
-  async create(input: IProcessusInput, token: IToken | null): Promise<void> {
+  async create(input: IProcessusInput, token: IToken | null): Promise<IProcessus> {
     try {
-      await APIService.post<IProcessusInput>(this.baseRoute, input, token?.value as string);
+      const newProcessus = await APIService.post<IProcessusInput>(this.baseRoute, input, token?.value as string);
+      const processus = this.convertInputToProcessus(newProcessus);
+      return processus;
     } catch (error) {
       throw error;
     }
@@ -69,6 +71,17 @@ class ProcessusService {
     } catch (error) {
       throw error;
     }
+  }
+
+  private convertInputToProcessus(input: IProcessusInput): IProcessus {
+    return {
+      title: input.title,
+      number: input.number,
+      folder: input.folder,
+      userID: {
+        id: input.userID,
+      },
+    };
   }
 }
 
