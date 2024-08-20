@@ -96,13 +96,18 @@
     "modifyProcess": {
       "title": "Modify Process Name",
       "description": "Enter the new name for the process",
-      "placeholder": "New process name"
+      "placeholder": "New process name",
+      "success": "Process name successfully modified"
     },
     "create": {
       "title": "Create a new folder",
       "description": "Enter the name of the new folder",
       "placeholder": "Folder name",
-      "confirm": "Create"
+      "confirm": "Create",
+      "success": "Folder successfully created"
+    },
+    "delete": {
+      "success": "Folder successfully deleted"
     }
   },
   "technicalDocumentation": {

@@ -96,13 +96,18 @@
     "modifyProcess": {
       "title": "Modifier le nom du processus",
       "description": "Entrez le nouveau nom du processus",
-      "placeholder": "Nouveau nom du processus"
+      "placeholder": "Nouveau nom du processus",
+      "success": "Nom du processus modifié avec succès"
     },
     "create": {
       "title": "Créer un nouveau dossier",
       "description": "Entrez le nom du nouveau dossier",
       "placeholder": "Nom du dossier",
-      "confirm": "Créer"
+      "confirm": "Créer",
+      "success": "Dossier créé avec succès"
+    },
+    "delete": {
+      "success": "Dossier supprimé avec succès"
     }
   },
   "technicalDocumentation": {

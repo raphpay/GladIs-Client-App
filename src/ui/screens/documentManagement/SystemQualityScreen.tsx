@@ -32,17 +32,25 @@ import Grid from '../../components/Grid/Grid';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
+import Toast from '../../components/Toast';
 
 type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SystemQualityScreen>;
 
 function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
+  // General
   const [searchText, setSearchText] = useState<string>('');
+  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
+  // Dialogs
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
+  // Processus
   const [processNewName, setProcessNewName] = useState<string>('');
   const [processNumber, setProcessNumber] = useState<number>(0);
   const [processID, setProcessID] = useState<string>('');
-  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
-  const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
+  // Toast
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const plusIcon = require('../../assets/images/plus.png');
@@ -172,6 +180,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       setOrientation(Orientation.Landscape);
     }
   }
+
+  function displayToast(message: string, isError: boolean = false) {
+    setShowToast(true);
+    setToastIsShowingError(isError);
+    setToastMessage(message);
+  }
   
   // Async Methods
   async function navigateToSMQGeneral() {
@@ -197,8 +211,10 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
           return newItems.sort((a, b) => a.number - b.number);
         });
         setShowCreateFolderDialog(false);
+        displayToast(t('systemQuality.create.success'));
       } catch (error) {
-        console.log('error', error);
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
@@ -216,7 +232,11 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         )
       );
       setShowDialog(false);
-    } catch (error) { }
+      displayToast(t('systemQuality.modifyProcess.success'));
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
   }
 
   async function createInitialProcessus() {
@@ -232,7 +252,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         };
         await ProcessusService.getInstance().create(processus, token);
       } catch (error) {
-        console.log('error', error);
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
   }
@@ -242,9 +263,10 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       await ProcessusService.getInstance().delete(processID, token);
       setProcessusItems(prevItems => prevItems.filter(item => item.id !== processID));
       setShowDialog(false);
-      // TODO: Display toast
+      displayToast(t('systemQuality.delete.success'));
     } catch (error) {
-      console.log('error', error);
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
@@ -375,6 +397,23 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     )
   }
 
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -405,6 +444,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       </AppContainer>
       {ModifyProcessNameDialog()}
       {CreateFolderDialog()}
+      {ToastContent()}
     </>
   );
 }
