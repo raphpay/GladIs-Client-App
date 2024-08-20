@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { Colors } from '../../colors/colors';
-import { Fonts } from '../../fonts/fonts';
+import { Colors } from '../../../colors/colors';
+import { Fonts } from '../../../fonts/fonts';
 
 const styles = StyleSheet.create({
   // Containers
@@ -18,6 +18,10 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
+  },
+  smqButton: {
+    marginHorizontal: 8,
+    marginVertical: 4,
   }
 });
 

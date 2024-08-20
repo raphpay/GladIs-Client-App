@@ -30,7 +30,7 @@ import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
 import PlatformName, { Orientation } from '../../../../business-logic/model/enums/PlatformName';
 import { Colors } from '../../../assets/colors/colors';
-import styles from '../../../assets/styles/documentManagement/ProcessesScreenStyles';
+import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
 import IconButton from '../../../components/Buttons/IconButton';
 import Pagination from '../../../components/Pagination';
 
