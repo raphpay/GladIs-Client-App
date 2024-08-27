@@ -12,7 +12,7 @@ import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../../business-logic/model/IFile';
-import IFolder, { IFolderInput, IFolderUserRecordInput, Sleeve } from '../../../../business-logic/model/IFolder';
+import IFolder, { IFolderInput, IFolderUpdateInput, IFolderUserRecordInput, Sleeve } from '../../../../business-logic/model/IFolder';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
@@ -144,6 +144,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setShowFolderModificationDialog(false);
     setShowCreateFolderDialog(false);
     setShowDocumentActionDialog(false);
+    setFolderNewName('');
   }
 
   // Async Methods
@@ -271,6 +272,38 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     }
   }
 
+  async function modifyFolderName() {
+    try {
+      const updateInput: IFolderUpdateInput = {
+        title: folderNewName,
+        number: folderNumber,
+      };
+      const updatedFolder = await FolderService.getInstance().update(updateInput, folderID, token);
+      setFolders(prevItems =>
+        prevItems.map(item =>
+          item.number === updatedFolder.number ? { ...item, title: updatedFolder.title } : item
+        )
+      );
+      closeDialogs();
+      displayToast(t('systemQuality.modifyProcess.success'));
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+  }
+
+  async function deleteFolder() {
+    try {
+      await FolderService.getInstance().delete(folderID, token);
+      setFolders(prevItems => prevItems.filter(item => item.id !== folderID));
+      closeDialogs();
+      displayToast(t('systemQuality.delete.success'));
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
@@ -382,6 +415,35 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
         }
       </>
     );
+  }
+
+  function ModifyProcessNameDialog() {
+    return (
+      <>{
+        showFolderModificationDialog && (
+          <Dialog
+            title={t('systemQuality.modifyProcess.title')}
+            description={t('systemQuality.modifyProcess.description')}
+            confirmTitle={t('components.buttons.save')}
+            cancelTitle={t('components.dialog.cancel')}
+            extraConfirmButtonTitle={t('components.buttons.delete')}
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+            onConfirm={modifyFolderName}
+            onCancel={closeDialogs}
+            extraConfirmButtonAction={deleteFolder}
+          >
+            <GladisTextInput
+              value={folderNewName}
+              onValueChange={setFolderNewName}
+              placeholder={t('systemQuality.modifyProcess.placeholder')}
+              autoCapitalize='words'
+            />
+          </Dialog>
+        )
+      }
+      </>
+    )
   }
 
   function CreateSMQDocButton() {
@@ -499,6 +561,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       {ToastContent()}
       {AddDocumentDialog()}
       {CreateFolderDialog()}
+      {ModifyProcessNameDialog()}
     </>
   );
 }
