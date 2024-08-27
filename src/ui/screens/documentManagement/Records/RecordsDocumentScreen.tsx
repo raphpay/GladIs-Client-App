@@ -1,15 +1,19 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import PlatformName, { Orientation } from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
 import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
+import IFile from '../../../../business-logic/model/IFile';
 import IProcessus from '../../../../business-logic/model/IProcessus';
+import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
@@ -23,16 +27,16 @@ import Utils from '../../../../business-logic/utils/Utils';
 import { IRootStackParams } from '../../../../navigation/Routes';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
+import IconButton from '../../../components/Buttons/IconButton';
+import Dialog from '../../../components/Dialogs/Dialog';
 import Grid from '../../../components/Grid/Grid';
+import Pagination from '../../../components/Pagination';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
-import PlatformName, { Orientation } from '../../../../business-logic/model/enums/PlatformName';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
-import IconButton from '../../../components/Buttons/IconButton';
-import Pagination from '../../../components/Pagination';
 
 type RecordsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RecordsDocumentScreen>;
 
@@ -45,8 +49,10 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   // Documents
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<IDocument>();
+  const [documentName, setDocumentName] = useState<string>('');
   // Dialog
-  const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [showAddDocumentDialog, setShowAddDocumentDialog] = useState<boolean>(false);
+  const [showFolderModificationDialog, setShowFolderModificationDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -56,6 +62,10 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // Folders
+  const [folderNewName, setFolderNewName] = useState<string>('');
+  const [folderNumber, setFolderNumber] = useState<number>(0);
+  const [folderID, setFolderID] = useState<string>('');
 
   const { navigation } = props;
   const { currentProcessus, currentScreen, documentsPath } = props.route.params;
@@ -115,7 +125,16 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
-  } 
+  }
+
+  function displayModificationProcessDialog(item: IProcessus) {
+    if (currentUser?.userType === UserType.Admin) {
+      setShowFolderModificationDialog(true);
+      setFolderNewName(item.title);
+      setFolderNumber(item.number ?? 1);
+      setFolderID(item.id as string);
+    }
+  }
 
   // Async Methods
   async function navigateToDocument(doc: IDocument) {
@@ -162,7 +181,8 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadPaginatedDocuments() {
     try {
       setIsLoading(true);
-      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
+      const formattedPath = Utils.removeWhitespace(path);
+      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(formattedPath, token, currentPage, docsPerPage);
       setDocuments(paginatedOutput.documents);
       setTotalPages(paginatedOutput.pageCount);
       setIsLoading(false); 
@@ -180,6 +200,35 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       }
     } catch (error) {
       console.log('Error getting records folders:', error);
+    }
+  }
+
+  async function pickAFile() {
+    const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
+    let data: string = '';
+    if (Platform.OS !== PlatformName.Mac) {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
+      data = await Utils.getFileBase64FromURI(doc.uri) as string;
+    } else {
+      data = await FinderModule.getInstance().pickPDF();
+    }
+    try {
+      const file: IFile = { data, filename: filename}
+      const formattedPath = Utils.removeWhitespace(path);
+      const createdDocument = await DocumentService.getInstance().upload(file, filename, formattedPath, token);
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Creation,
+        actorIsAdmin: true,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: createdDocument.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      setDocumentName('');
+      setShowAddDocumentDialog(false);
+      await loadPaginatedDocuments();
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
     }
   }
 
@@ -232,7 +281,10 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
 
   function FolderGridItem(item: IProcessus) {
     return (
-      <TouchableOpacity onPress={() => navigateTo(item)}>
+      <TouchableOpacity
+        onPress={() => navigateTo(item)}
+        onLongPress={() => displayModificationProcessDialog(item)}
+      >
         <View style={styles.processusContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
@@ -265,7 +317,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
             <IconButton
               title={t('components.buttons.addDocument')}
               icon={plusIcon}
-              onPress={() => setShowDialog(true)}
+              onPress={() => setShowAddDocumentDialog(true)}
               style={styles.smqButton}
             />
           )
@@ -273,6 +325,8 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       </>
     );
   }
+
+  // TODO: Add <Add folder> button
 
   function AdminButtons() {
     const shouldHaveColumn = (
@@ -286,6 +340,32 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
         {AddDocumentButton()}
       </View>
     )
+  }
+
+  function AddDocumentDialog() {
+    return (
+      <>
+        {
+          showAddDocumentDialog && (
+            <Dialog
+              title={t('components.dialog.addDocument.title')}
+              confirmTitle={t('components.dialog.addDocument.confirmButton')}
+              onConfirm={pickAFile}
+              isCancelAvailable={true}
+              onCancel={() => setShowAddDocumentDialog(false)}
+              isConfirmDisabled={documentName.length === 0}
+            >
+              <TextInput
+                value={documentName}
+                onChangeText={setDocumentName}
+                placeholder={t('components.dialog.addDocument.placeholder')}
+                style={styles.dialogInput}
+              />
+            </Dialog>
+          )
+        }
+      </>
+    );
   }
 
   return (
@@ -335,6 +415,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
         popoverActions={popoverActions}
       />
       {ToastContent()}
+      {AddDocumentDialog()}
     </>
   );
 }

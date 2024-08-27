@@ -22,7 +22,14 @@ const styles = StyleSheet.create({
   smqButton: {
     marginHorizontal: 8,
     marginVertical: 4,
-  }
+  },
+  dialogInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
 });
 
 export default styles;
