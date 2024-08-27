@@ -69,56 +69,56 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       id: 'qualityManualID',
       title: t('systemQuality.qualityManual'),
       number: 0,
-      folder: Folder.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder1ID',
       title: `${t('process.title.single')} 1`,
       number: 1,
-      folder: Sleeve.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder2ID',
       title: `${t('process.title.single')} 2`,
       number: 2,
-      folder: Sleeve.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder3ID',
       title: `${t('process.title.single')} 3`,
       number: 3,
-      folder: Sleeve.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder4ID',
       title: `${t('process.title.single')} 4`,
       number: 4,
-      folder: Sleeve.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder5ID',
       title: `${t('process.title.single')} 5`,
       number: 5,
-      folder: Sleeve.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder6ID',
       title: `${t('process.title.single')} 6`,
       number: 6,
-      folder: Sleeve.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder7ID',
       title: `${t('process.title.single')} 7`,
       number: 7,
-      folder: Sleeve.SystemQuality,
+      sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     }
   ];
@@ -209,7 +209,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         const input: IFolderInput = {
           title: processNewName,
           number: processNumber,
-          folder: Folder.SystemQuality,
+          sleeve: Sleeve.SystemQuality,
           userID: currentClient?.id as string,
         };
         const folder = await FolderService.getInstance().create(input, token);

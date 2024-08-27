@@ -2,14 +2,14 @@ export default interface IFolder {
   id?: string,
   title: string,
   number: number,
-  folder: Sleeve,
+  sleeve: Sleeve,
   userID: IUserID | string,
 }
 
 export interface IFolderInput {
   title: string,
   number: number,
-  folder: Sleeve,
+  sleeve: Sleeve,
   userID: string,
 }
 
