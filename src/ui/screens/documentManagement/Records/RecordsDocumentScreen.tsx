@@ -12,7 +12,7 @@ import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../../business-logic/model/IFile';
-import IProcessus, { Folder, IProcessusInput } from '../../../../business-logic/model/IProcessus';
+import IFolder, { IFolderInput, Sleeve } from '../../../../business-logic/model/IFolder';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
@@ -35,7 +35,7 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
-import ProcessusService from '../../../../business-logic/services/ProcessusService';
+import FolderService from '../../../../business-logic/services/FolderService';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
@@ -46,7 +46,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
 
   // General
   const [searchText, setSearchText] = useState<string>('');
-  const [folders, setFolders] = useState<IProcessus[]>([]);
+  const [folders, setFolders] = useState<IFolder[]>([]);
   const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
   // Documents
   const [documents, setDocuments] = useState<IDocument[]>([]);
@@ -71,7 +71,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const [folderID, setFolderID] = useState<string>('');
 
   const { navigation } = props;
-  const { currentProcessus, currentScreen, documentsPath } = props.route.params;
+  const { currentFolder, currentScreen, documentsPath } = props.route.params;
 
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
@@ -103,12 +103,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     navigation.goBack();
   }
 
-  function navigateTo(item: IProcessus) {
+  function navigateTo(item: IFolder) {
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: 'Records',
-      processNumber: currentProcessus.number,
+      processNumber: currentFolder.number,
       currentScreen: item.title,
-      documentsPath: `${currentProcessus.title}/records/${item.title}`
+      documentsPath: `${currentFolder.title}/records/${item.title}`
     });
     dispatch(setDocumentListCount(documentListCount + 1));
   }
@@ -130,7 +130,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setToastMessage(message);
   }
 
-  function displayModificationProcessDialog(item: IProcessus) {
+  function displayModificationProcessDialog(item: IFolder) {
     if (currentUser?.userType === UserType.Admin) {
       setShowFolderModificationDialog(true);
       setFolderNewName(item.title);
@@ -204,9 +204,9 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadFolders() {
     try {
       const userID = currentClient?.id as string;
-      const processus = await UserServiceRead.getRecordsFolders(userID, token);
-      if (processus.length !== 0) {
-        setFolders(processus);
+      const folder = await UserServiceRead.getRecordsFolders(userID, token);
+      if (folder.length !== 0) {
+        setFolders(folder);
       }
     } catch (error) {
       console.log('Error getting records folders:', error);
@@ -244,18 +244,18 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
 
   async function createFolder() {
     if (folderNewName) {
-      // TODO: Let the admin choose the placement of the processus
+      // TODO: Let the admin choose the placement of the folder
       setFolderNumber(1);
       try {
-        const input: IProcessusInput = {
+        const input: IFolderInput = {
           title: folderNewName,
           number: folderNumber, 
-          folder: Folder.Record,
+          folder: Sleeve.Record,
           userID: currentClient?.id as string,
         };
-        const processus = await ProcessusService.getInstance().create(input, token);
+        const folder = await FolderService.getInstance().create(input, token);
         setFolders(prevItems => {
-          const newItems = [...prevItems, processus];
+          const newItems = [...prevItems, folder];
           return newItems.sort((a, b) => a.number - b.number);
         });
         closeDialogs();
@@ -314,13 +314,13 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     );
   }
 
-  function FolderGridItem(item: IProcessus) {
+  function FolderGridItem(item: IFolder) {
     return (
       <TouchableOpacity
         onPress={() => navigateTo(item)}
         onLongPress={() => displayModificationProcessDialog(item)}
       >
-        <View style={styles.processusContainer}>
+        <View style={styles.folderContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
       </TouchableOpacity>

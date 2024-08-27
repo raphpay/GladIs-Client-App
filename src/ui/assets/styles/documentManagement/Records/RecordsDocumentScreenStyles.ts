@@ -4,7 +4,7 @@ import { Fonts } from '../../../fonts/fonts';
 
 const styles = StyleSheet.create({
   // Containers
-  processusContainer: {
+  folderContainer: {
     backgroundColor: Colors.inactive,
     padding: 4,
     justifyContent: 'center',

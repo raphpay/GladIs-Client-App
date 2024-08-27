@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react';
 
 import IArea from '../business-logic/model/IArea';
 import IDocument from '../business-logic/model/IDocument';
+import IFolder from '../business-logic/model/IFolder';
 import IForm from '../business-logic/model/IForm';
 import IPendingUser from '../business-logic/model/IPendingUser';
-import IProcessus from '../business-logic/model/IProcessus';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
@@ -71,7 +71,7 @@ export type IRootStackParams = {
   SystemQualityScreen: undefined,
   TechnicalDocumentationScreen: undefined,
   TechnicalDocAreaScreen: { area: IArea },
-  ProcessesScreen: { currentProcessus: IProcessus },
+  ProcessesScreen: { currentFolder: IFolder },
   DocumentsScreen: {
     previousScreen: string,
     currentScreen: string,
@@ -97,7 +97,7 @@ export type IRootStackParams = {
   FormEditionScreen: { form? : IForm, documentPath: string },
   // Records
   RecordsDocumentScreen: {
-    currentProcessus: IProcessus,
+    currentFolder: IFolder,
     documentsPath: string,
     currentScreen: string,
   },

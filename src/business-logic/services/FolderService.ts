@@ -1,25 +1,25 @@
-import IProcessus, { IProcessusInput, IProcessusMultipleInput, IProcessusUpdateInput } from "../model/IProcessus";
+import IFolder, { IFolderInput, IFolderMultipleInput, IFolderUpdateInput } from "../model/IFolder";
 import IToken from "../model/IToken";
 import APIService from "./APIService";
 
 /**
  * Represents a service for managing documents.
  */
-class ProcessusService {
-  private static instance: ProcessusService | null = null;
-  private baseRoute = 'processus';
+class FolderService {
+  private static instance: FolderService | null = null;
+  private baseRoute = 'folders';
 
   private constructor() {}
 
   /**
-   * Gets the singleton instance of the ProcessusService class.
-   * @returns The singleton instance of the ProcessusService class.
+   * Gets the singleton instance of the FolderService class.
+   * @returns The singleton instance of the FolderService class.
    */
-  static getInstance(): ProcessusService {
-    if (!ProcessusService.instance) {
-      ProcessusService.instance = new ProcessusService();
+  static getInstance(): FolderService {
+    if (!FolderService.instance) {
+      FolderService.instance = new FolderService();
     }
-    return ProcessusService.instance;
+    return FolderService.instance;
   }
 
   // CREATE
@@ -30,11 +30,11 @@ class ProcessusService {
    * @returns The created process.
    * @throws An error if the process could not be created.
    */
-  async create(input: IProcessusInput, token: IToken | null): Promise<IProcessus> {
+  async create(input: IFolderInput, token: IToken | null): Promise<IFolder> {
     try {
-      const newProcessus = await APIService.post<IProcessusInput>(this.baseRoute, input, token?.value as string);
-      const processus = this.convertInputToProcessus(newProcessus);
-      return processus;
+      const newFolder = await APIService.post<IFolderInput>(this.baseRoute, input, token?.value as string);
+      const folder = this.convertInputToFolder(newFolder);
+      return folder;
     } catch (error) {
       throw error;
     }
@@ -46,9 +46,9 @@ class ProcessusService {
    * @param token The token to use for authentication.
    * @throws An error if the processes could not be created.
    */
-  async createMultiple(input: IProcessusMultipleInput, token: IToken | null): Promise<void> {
+  async createMultiple(input: IFolderMultipleInput, token: IToken | null): Promise<void> {
     try {
-      await APIService.post<IProcessusMultipleInput>(`${this.baseRoute}/multiple`, input, token?.value as string);
+      await APIService.post<IFolderMultipleInput>(`${this.baseRoute}/multiple`, input, token?.value as string);
     } catch (error) {
       throw error;
     }
@@ -63,9 +63,9 @@ class ProcessusService {
    * @returns The updated process.
    * @throws An error if the process could not be updated.
    */
-  async update(input: IProcessusUpdateInput, processID: string, token: IToken | null): Promise<IProcessus> {
+  async update(input: IFolderUpdateInput, processID: string, token: IToken | null): Promise<IFolder> {
     try {
-      const updatedProcess = await APIService.put(`${this.baseRoute}/${processID}`, input, token?.value as string) as IProcessus;
+      const updatedProcess = await APIService.put(`${this.baseRoute}/${processID}`, input, token?.value as string) as IFolder;
       return updatedProcess;
     } catch (error) {
       throw error;
@@ -87,7 +87,7 @@ class ProcessusService {
     }
   }
 
-  private convertInputToProcessus(input: IProcessusInput): IProcessus {
+  private convertInputToFolder(input: IFolderInput): IFolder {
     return {
       title: input.title,
       number: input.number,
@@ -99,4 +99,4 @@ class ProcessusService {
   }
 }
 
-export default ProcessusService;
+export default FolderService;

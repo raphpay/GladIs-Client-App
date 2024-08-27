@@ -1,29 +1,29 @@
-export default interface IProcessus {
+export default interface IFolder {
   id?: string,
   title: string,
   number: number,
-  folder: Folder,
+  folder: Sleeve,
   userID: IUserID | string,
 }
 
-export interface IProcessusInput {
+export interface IFolderInput {
   title: string,
   number: number,
-  folder: Folder,
+  folder: Sleeve,
   userID: string,
 }
 
-export interface IProcessusUpdateInput {
+export interface IFolderUpdateInput {
   title?: string,
   number?: number,
 }
 
-export interface IProcessusMultipleInput {
-  inputs: IProcessus[],
+export interface IFolderMultipleInput {
+  inputs: IFolder[],
   userID: string,
 }
 
-export enum Folder {
+export enum Sleeve {
   SystemQuality = 'systemQuality',
   Record ='record'
 }
