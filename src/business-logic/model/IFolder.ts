@@ -11,6 +11,7 @@ export interface IFolderInput {
   number: number,
   sleeve: Sleeve,
   userID: string,
+  path?: string
 }
 
 export interface IFolderUpdateInput {

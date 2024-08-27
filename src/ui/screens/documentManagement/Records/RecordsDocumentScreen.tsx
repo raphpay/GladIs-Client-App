@@ -247,11 +247,13 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       // TODO: Let the admin choose the placement of the folder
       setFolderNumber(1);
       try {
+        const formattedPath = Utils.removeWhitespace(path);
         const input: IFolderInput = {
           title: folderNewName,
           number: folderNumber, 
-          folder: Sleeve.Record,
+          sleeve: Sleeve.Record,
           userID: currentClient?.id as string,
+          path: formattedPath,
         };
         const folder = await FolderService.getInstance().create(input, token);
         setFolders(prevItems => {
