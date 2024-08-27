@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
   },
-  smqButton: {
+  adminButton: {
     marginHorizontal: 8,
     marginVertical: 4,
   },

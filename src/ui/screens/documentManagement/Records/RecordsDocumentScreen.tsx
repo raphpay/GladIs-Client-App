@@ -12,7 +12,7 @@ import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../../business-logic/model/IFile';
-import IProcessus from '../../../../business-logic/model/IProcessus';
+import IProcessus, { Folder, IProcessusInput } from '../../../../business-logic/model/IProcessus';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
@@ -35,8 +35,10 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
+import ProcessusService from '../../../../business-logic/services/ProcessusService';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
+import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
 type RecordsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RecordsDocumentScreen>;
 
@@ -53,6 +55,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   // Dialog
   const [showAddDocumentDialog, setShowAddDocumentDialog] = useState<boolean>(false);
   const [showFolderModificationDialog, setShowFolderModificationDialog] = useState<boolean>(false);
+  const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -134,6 +137,13 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       setFolderNumber(item.number ?? 1);
       setFolderID(item.id as string);
     }
+  }
+
+  function closeDialogs() {
+    setShowAddDocumentDialog(false);
+    setShowFolderModificationDialog(false);
+    setShowCreateFolderDialog(false);
+    setShowDocumentActionDialog(false);
   }
 
   // Async Methods
@@ -232,6 +242,31 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     }
   }
 
+  async function createFolder() {
+    if (folderNewName) {
+      // TODO: Let the admin choose the placement of the processus
+      setFolderNumber(1);
+      try {
+        const input: IProcessusInput = {
+          title: folderNewName,
+          number: folderNumber, 
+          folder: Folder.Record,
+          userID: currentClient?.id as string,
+        };
+        const processus = await ProcessusService.getInstance().create(input, token);
+        setFolders(prevItems => {
+          const newItems = [...prevItems, processus];
+          return newItems.sort((a, b) => a.number - b.number);
+        });
+        closeDialogs();
+        displayToast(t('systemQuality.create.success'));
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
@@ -292,53 +327,30 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     )
   }
 
-  function CreateSMQDocButton() {
+  function CreateFolderDialog() {
     return (
-      <>
-        {
-          currentUser?.userType !== UserType.Employee && (
-            <IconButton
-              title={t('systemQuality.createSMQDoc.button')}
-              onPress={navigateToSMQSurvey}
-              icon={plusIcon}
-              style={styles.smqButton}
+      <>{
+        showCreateFolderDialog && (
+          <Dialog
+            title={t('systemQuality.create.title')}
+            description={t('systemQuality.create.description')}
+            confirmTitle={t('systemQuality.create.confirm')}
+            cancelTitle={t('components.dialog.cancel')}
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+            onConfirm={createFolder}
+            onCancel={closeDialogs}
+          >
+            <GladisTextInput
+              value={folderNewName}
+              onValueChange={setFolderNewName}
+              placeholder={t('systemQuality.create.placeholder')}
+              autoCapitalize='words'
             />
-          )
-        }
+          </Dialog>
+        )
+      }
       </>
-    )
-  }
-
-  function AddDocumentButton() {
-    return (
-      <>
-        {
-          currentUser?.userType == UserType.Admin && (
-            <IconButton
-              title={t('components.buttons.addDocument')}
-              icon={plusIcon}
-              onPress={() => setShowAddDocumentDialog(true)}
-              style={styles.smqButton}
-            />
-          )
-        }
-      </>
-    );
-  }
-
-  // TODO: Add <Add folder> button
-
-  function AdminButtons() {
-    const shouldHaveColumn = (
-        Platform.OS === PlatformName.Android ||
-        Platform.OS === PlatformName.IOS
-      ) && orientation === Orientation.Portrait;
-    
-    return (
-      <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
-        {CreateSMQDocButton()}
-        {AddDocumentButton()}
-      </View>
     )
   }
 
@@ -366,6 +378,72 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
         }
       </>
     );
+  }
+
+  function CreateSMQDocButton() {
+    return (
+      <>
+        {
+          currentUser?.userType !== UserType.Employee && (
+            <IconButton
+              title={t('systemQuality.createSMQDoc.button')}
+              onPress={navigateToSMQSurvey}
+              icon={plusIcon}
+              style={styles.adminButton}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function AddDocumentButton() {
+    return (
+      <>
+        {
+          currentUser?.userType == UserType.Admin && (
+            <IconButton
+              title={t('components.buttons.addDocument')}
+              icon={plusIcon}
+              onPress={() => setShowAddDocumentDialog(true)}
+              style={styles.adminButton}
+            />
+          )
+        }
+      </>
+    );
+  }
+
+  function AddFolderButton() {
+    return (
+      <>
+      {
+          currentUser?.userType === UserType.Admin && (
+            <IconButton 
+              title={t('systemQuality.create.button')}
+              onPress={() => setShowCreateFolderDialog(true)}
+              icon={plusIcon}
+              style={styles.adminButton}
+            />
+          )
+        }
+      </>
+    )
+  }
+
+  function AdminButtons() {
+    const shouldHaveColumn = (
+        Platform.OS === PlatformName.Android ||
+        Platform.OS === PlatformName.IOS
+      ) && orientation === Orientation.Portrait;
+    
+    return (
+      <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
+        {CreateSMQDocButton()}
+        {AddDocumentButton()}
+        {AddFolderButton()}
+      </View>
+    )
   }
 
   return (
@@ -416,6 +494,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       />
       {ToastContent()}
       {AddDocumentDialog()}
+      {CreateFolderDialog()}
     </>
   );
 }
