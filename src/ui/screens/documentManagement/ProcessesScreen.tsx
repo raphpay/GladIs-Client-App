@@ -33,7 +33,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const dispatch = useAppDispatch();
 
   const { navigation } = props;
-  const { currentProcessus } = props.route.params;
+  const { currentFolder } = props.route.params;
 
   const processes: IProcessItem[] = [
     {
@@ -88,13 +88,19 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   function navigateTo(item: IProcessItem) {
     dispatch(setDocumentListCount(documentListCount + 1));
     if (item.id === 'formsID') {
-      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: `${currentProcessus}/${item.title}` });
+      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: `${currentFolder}/${item.title}` });
+    } else if (item.id === 'recordsID') {
+      navigation.navigate(NavigationRoutes.RecordsDocumentScreen, {
+        currentFolder,
+        currentScreen: item.title,
+        documentsPath: `${currentFolder.title}/records/${item.title}`
+      });
     } else {
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
-        previousScreen: currentProcessus.title,
-        processNumber: currentProcessus.number,
+        previousScreen: currentFolder.title,
+        processNumber: currentFolder.number,
         currentScreen: item.title,
-        documentsPath: `${currentProcessus.title}/${item.title}`
+        documentsPath: `${currentFolder.title}/${item.title}`
       });
     }
   }
@@ -112,7 +118,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
 
   return (
     <AppContainer 
-      mainTitle={currentProcessus.title}
+      mainTitle={currentFolder.title}
       navigationHistoryItems={navigationHistoryItems}
       searchText={searchText}
       setSearchText={setSearchText}

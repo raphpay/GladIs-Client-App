@@ -13,11 +13,11 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
-import IProcessus, { Folder, IProcessusInput, IProcessusUpdateInput } from '../../../business-logic/model/IProcessus';
+import IFolder, { IFolderInput, IFolderMultipleInput, IFolderUpdateInput, Sleeve } from '../../../business-logic/model/IFolder';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName, { Orientation } from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
-import ProcessusService from '../../../business-logic/services/ProcessusService';
+import FolderService from '../../../business-logic/services/FolderService';
 import UserServiceRead from '../../../business-logic/services/UserService.read';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
@@ -43,10 +43,10 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   // Dialogs
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
-  // Processus
-  const [processNewName, setProcessNewName] = useState<string>('');
-  const [processNumber, setProcessNumber] = useState<number>(0);
-  const [processID, setProcessID] = useState<string>('');
+  // Folder
+  const [folderNewName, setFolderNewName] = useState<string>('');
+  const [folderNumber, setFolderNumber] = useState<number>(0);
+  const [folderID, setFolderID] = useState<string>('');
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -64,67 +64,68 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const { documentListCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
-  const [processusItems, setProcessusItems] = useState<IProcessus[]>([
+  const baseFolderItems: IFolder[] = [
     {
       id: 'qualityManualID',
       title: t('systemQuality.qualityManual'),
       number: 0,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     },
     {
-      id: 'processus1ID',
-      title: `${t('process.title.single')} 1`,
+      id: 'folder1ID',
+      title: `${t('folder.title.single')} 1`,
       number: 1,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     },
     {
-      id: 'processus2ID',
-      title: `${t('process.title.single')} 2`,
+      id: 'folder2ID',
+      title: `${t('folder.title.single')} 2`,
       number: 2,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     },
     {
-      id: 'processus3ID',
-      title: `${t('process.title.single')} 3`,
+      id: 'folder3ID',
+      title: `${t('folder.title.single')} 3`,
       number: 3,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     },
     {
-      id: 'processus4ID',
-      title: `${t('process.title.single')} 4`,
+      id: 'folder4ID',
+      title: `${t('folder.title.single')} 4`,
       number: 4,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     },
     {
-      id: 'processus5ID',
-      title: `${t('process.title.single')} 5`,
+      id: 'folder5ID',
+      title: `${t('folder.title.single')} 5`,
       number: 5,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     },
     {
-      id: 'processus6ID',
-      title: `${t('process.title.single')} 6`,
+      id: 'folder6ID',
+      title: `${t('folder.title.single')} 6`,
       number: 6,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     },
     {
-      id: 'processus7ID',
-      title: `${t('process.title.single')} 7`,
+      id: 'folder7ID',
+      title: `${t('folder.title.single')} 7`,
       number: 7,
-      folder: Folder.SystemQuality,
-      userID: { id: currentUser?.id as string },
+      sleeve: Sleeve.SystemQuality,
+      userID: currentClient?.id as string,
     }
-  ]);
+  ];
+  const [folderItems, setFolderItems] = useState<IFolder[]>([]);
 
-  const processusItemsFiltered = processusItems.filter(processusItem =>
-    processusItem.title.toLowerCase().includes(searchText.toLowerCase()),
+  const folderItemsFiltered = folderItems.filter(folderItem =>
+    folderItem.title.toLowerCase().includes(searchText.toLowerCase()),
   );
 
   const navigationHistoryItems: IAction[] = [
@@ -147,26 +148,26 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     navigation.navigate(isAdmin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
   }
 
-  function navigateTo(item: IProcessus) {
+  function navigateTo(item: IFolder) {
     if (item.id === 'qualityManualID') {
       dispatch(setDocumentListCount(documentListCount + 1));
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         previousScreen: t('systemQuality.title'),
         currentScreen: t('systemQuality.qualityManual'),
         documentsPath: 'systemQuality/qualityManual',
-        processNumber: undefined,
+        folderNumber: undefined,
       });
     } else {
-      navigation.navigate(NavigationRoutes.ProcessesScreen, { currentProcessus: item})
+      navigation.navigate(NavigationRoutes.ProcessesScreen, { currentFolder: item})
     }
   }
 
-  function displayModificationProcessDialog(item: IProcessus) {
+  function displayModificationFolderDialog(item: IFolder) {
     if (currentUser?.userType === UserType.Admin) {
       setShowDialog(true);
-      setProcessNewName(item.title);
-      setProcessNumber(item.number ?? 1);
-      setProcessID(item.id as string);
+      setFolderNewName(item.title);
+      setFolderNumber(item.number ?? 1);
+      setFolderID(item.id as string);
     }
   }
 
@@ -190,7 +191,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   function closeDialogs() {
     setShowCreateFolderDialog(false);
     setShowDialog(false);
-    setProcessNewName('');
+    setFolderNewName('');
   }
   
   // Async Methods
@@ -200,20 +201,20 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     navigation.navigate(NavigationRoutes.SMQSurveyStack);
   }
 
-  async function createProcessus() {
-    if (processNewName) {
-      // TODO: Let the admin choose the placement of the processus
-      setProcessNumber(processusItems.length + 1);
+  async function createFolder() {
+    if (folderNewName) {
+      // TODO: Let the admin choose the placement of the folder
+      setFolderNumber(1);
       try {
-        const input: IProcessusInput = {
-          title: processNewName,
-          number: processNumber,
-          folder: Folder.SystemQuality,
-          userID: currentUser?.id as string,
+        const input: IFolderInput = {
+          title: folderNewName,
+          number: folderNumber,
+          sleeve: Sleeve.SystemQuality,
+          userID: currentClient?.id as string,
         };
-        const processus = await ProcessusService.getInstance().create(input, token);
-        setProcessusItems(prevItems => {
-          const newItems = [...prevItems, processus];
+        const folder = await FolderService.getInstance().create(input, token);
+        setFolderItems(prevItems => {
+          const newItems = [...prevItems, folder];
           return newItems.sort((a, b) => a.number - b.number);
         });
         closeDialogs();
@@ -225,49 +226,44 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
-  async function modifyProcessName() {
+  async function modifyFolderName() {
     try {
-      const updateInput: IProcessusUpdateInput = {
-        title: processNewName,
-        number: processNumber,
+      const updateInput: IFolderUpdateInput = {
+        title: folderNewName,
+        number: folderNumber,
       };
-      const updatedProcessus = await ProcessusService.getInstance().update(updateInput, processID, token);
-      setProcessusItems(prevItems =>
+      const updatedFolder = await FolderService.getInstance().update(updateInput, folderID, token);
+      setFolderItems(prevItems =>
         prevItems.map(item =>
-          item.number === updatedProcessus.number ? { ...item, title: updatedProcessus.title } : item
+          item.number === updatedFolder.number ? { ...item, title: updatedFolder.title } : item
         )
       );
       closeDialogs();
-      displayToast(t('systemQuality.modifyProcess.success'));
+      displayToast(t('systemQuality.modifyFolder.success'));
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
-  async function createInitialProcessus() {
-    for (const process of processusItems) {
-      try {
-        const processNumber = process.number as number;
-        const currentUserID = currentUser?.id as string;
-        const processus: IProcessusInput = {
-          title: process.title,
-          number: processNumber,
-          folder: Folder.SystemQuality,
-          userID: currentUserID
-        };
-        await ProcessusService.getInstance().create(processus, token);
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
+  async function createInitialFolder() {
+    setFolderItems(baseFolderItems);
+    try {
+      const input: IFolderMultipleInput = {
+        inputs: baseFolderItems,
+        userID: currentClient?.id as string,
+      };
+      await FolderService.getInstance().createMultiple(input, token);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
-  async function deleteProcessus() {
+  async function deleteFolder() {
     try {
-      await ProcessusService.getInstance().delete(processID, token);
-      setProcessusItems(prevItems => prevItems.filter(item => item.id !== processID));
+      await FolderService.getInstance().delete(folderID, token);
+      setFolderItems(prevItems => prevItems.filter(item => item.id !== folderID));
       closeDialogs();
       displayToast(t('systemQuality.delete.success'));
     } catch (error) {
@@ -280,12 +276,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   useEffect(() => {
     async function init() {
       try {
-        const userID = currentUser?.id as string;
-        const processus = await UserServiceRead.getSystemQualityFolders(userID, token);
-        if (processus.length === 0) {
-          await createInitialProcessus();
+        const userID = currentClient?.id as string;
+        const folder = await UserServiceRead.getSystemQualityFolders(userID, token);
+        if (folder.length === 0) {
+          await createInitialFolder();
         } else {
-          setProcessusItems(processus);
+          setFolderItems(folder);
         }
       } catch (error) {
         console.log('Error getting system quality folders:', error);
@@ -301,40 +297,40 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }, []);
 
   // Components
-  function ProcessusGridItem(item: IProcessus) {
+  function FolderGridItem(item: IFolder) {
     return (
       <TouchableOpacity
         key={item.id}
         onPress={() => navigateTo(item)}
-        onLongPress={() => displayModificationProcessDialog(item)}
+        onLongPress={() => displayModificationFolderDialog(item)}
         >
-        <View style={styles.processusContainer}>
+        <View style={styles.folderContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
       </TouchableOpacity>
     )
   }
 
-  function ModifyProcessNameDialog() {
+  function ModifyFolderNameDialog() {
     return (
       <>{
         showDialog && (
           <Dialog
-            title={t('systemQuality.modifyProcess.title')}
-            description={t('systemQuality.modifyProcess.description')}
+            title={t('systemQuality.modifyFolder.title')}
+            description={t('systemQuality.modifyFolder.description')}
             confirmTitle={t('components.buttons.save')}
             cancelTitle={t('components.dialog.cancel')}
             extraConfirmButtonTitle={t('components.buttons.delete')}
             isConfirmAvailable={true}
             isCancelAvailable={true}
-            onConfirm={modifyProcessName}
+            onConfirm={modifyFolderName}
             onCancel={closeDialogs}
-            extraConfirmButtonAction={deleteProcessus}
+            extraConfirmButtonAction={deleteFolder}
           >
             <GladisTextInput
-              value={processNewName}
-              onValueChange={setProcessNewName}
-              placeholder={t('systemQuality.modifyProcess.placeholder')}
+              value={folderNewName}
+              onValueChange={setFolderNewName}
+              placeholder={t('systemQuality.modifyFolder.placeholder')}
               autoCapitalize='words'
             />
           </Dialog>
@@ -355,12 +351,12 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             cancelTitle={t('components.dialog.cancel')}
             isConfirmAvailable={true}
             isCancelAvailable={true}
-            onConfirm={createProcessus}
+            onConfirm={createFolder}
             onCancel={closeDialogs}
           >
             <GladisTextInput
-              value={processNewName}
-              onValueChange={setProcessNewName}
+              value={folderNewName}
+              onValueChange={setFolderNewName}
               placeholder={t('systemQuality.create.placeholder')}
               autoCapitalize='words'
             />
@@ -434,7 +430,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         adminButton={AdminButtons()}
       >
         {
-          processusItemsFiltered && processusItemsFiltered.length === 0 ? (
+          folderItemsFiltered && folderItemsFiltered.length === 0 ? (
             <ContentUnavailableView
               title={t('systemQuality.noItems.title')}
               message={t('systemQuality.noItems.message')}
@@ -442,13 +438,13 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             />
           ) : (
             <Grid
-              data={processusItemsFiltered}
-              renderItem={({ item }) => ProcessusGridItem(item)}
+              data={folderItemsFiltered}
+              renderItem={({ item }) => FolderGridItem(item)}
             />
           )
         }
       </AppContainer>
-      {ModifyProcessNameDialog()}
+      {ModifyFolderNameDialog()}
       {CreateFolderDialog()}
       {ToastContent()}
     </>

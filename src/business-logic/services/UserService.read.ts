@@ -1,4 +1,4 @@
-import IProcessus from "../model/IProcessus";
+import IFolder from "../model/IFolder";
 import IToken from "../model/IToken";
 import APIService from "./APIService";
 import UserService from "./UserService";
@@ -6,10 +6,33 @@ import UserService from "./UserService";
 class UserServiceRead extends UserService {
   static baseRoute = 'users';
 
-  static async getSystemQualityFolders(userID: string, token: IToken | null): Promise<IProcessus[]> {
+  /**
+   * Get the system quality folders for the user
+   * @param userID The user ID
+   * @param token The token
+   * @returns The system quality folders
+   * @throws Error
+   */
+  static async getSystemQualityFolders(userID: string, token: IToken | null): Promise<IFolder[]> {
     try {
-      const processus = await APIService.get<IProcessus[]>(`${this.baseRoute}/${userID}/processus/systemQuality`, token?.value as string);
-      return processus;
+      const folder = await APIService.get<IFolder[]>(`${this.baseRoute}/${userID}/folders/systemQuality`, token?.value as string);
+      return folder;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get the records folders for the user
+   * @param userID The user ID
+   * @param token The token
+   * @returns The records folders
+   * @throws Error
+   */
+  static async getRecordsFolders(userID: string, token: IToken | null): Promise<IFolder[]> {
+    try {
+      const folder = await APIService.get<IFolder[]>(`${this.baseRoute}/${userID}/folders/records`, token?.value as string);
+      return folder;
     } catch (error) {
       throw error;
     }

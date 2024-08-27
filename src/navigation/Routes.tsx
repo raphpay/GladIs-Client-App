@@ -6,9 +6,9 @@ import React, { useEffect, useState } from 'react';
 
 import IArea from '../business-logic/model/IArea';
 import IDocument from '../business-logic/model/IDocument';
+import IFolder from '../business-logic/model/IFolder';
 import IForm from '../business-logic/model/IForm';
 import IPendingUser from '../business-logic/model/IPendingUser';
-import IProcessus from '../business-logic/model/IProcessus';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
 import AuthenticationService from '../business-logic/services/AuthenticationService';
@@ -56,6 +56,8 @@ import SMQGeneralScreen from '../ui/screens/smqSurvey/SMQGeneral/SMQGeneralScree
 // Forms
 import FormEditionScreen from '../ui/screens/documentManagement/Forms/FormEditionScreen';
 import FormsDocumentScreen from '../ui/screens/documentManagement/Forms/FormsDocumentScreen';
+// Records
+import RecordsDocumentScreen from '../ui/screens/documentManagement/Records/RecordsDocumentScreen';
 
 export type IRootStackParams = {
   // Login Stack
@@ -69,7 +71,7 @@ export type IRootStackParams = {
   SystemQualityScreen: undefined,
   TechnicalDocumentationScreen: undefined,
   TechnicalDocAreaScreen: { area: IArea },
-  ProcessesScreen: { currentProcessus: IProcessus },
+  ProcessesScreen: { currentFolder: IFolder },
   DocumentsScreen: {
     previousScreen: string,
     currentScreen: string,
@@ -93,6 +95,12 @@ export type IRootStackParams = {
   // Forms
   FormsDocumentScreen: { documentPath: string },
   FormEditionScreen: { form? : IForm, documentPath: string },
+  // Records
+  RecordsDocumentScreen: {
+    currentFolder: IFolder,
+    documentsPath: string,
+    currentScreen: string,
+  },
 }
 
 export type IClientCreationStack = {
@@ -280,6 +288,11 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.FormEditionScreen}
         component={FormEditionScreen}
+        options={{headerShown: false}}
+      />
+      <RootStack.Screen
+        name={NavigationRoutes.RecordsDocumentScreen}
+        component={RecordsDocumentScreen}
         options={{headerShown: false}}
       />
       <ClientCreationStack.Screen

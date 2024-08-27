@@ -295,6 +295,10 @@ class Utils {
     });
     return grid;
   }
+
+  static removeWhitespace(input: string): string {
+    return input.replace(/\s+/g, '');
+  }
 }
 
 export default Utils;

@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { Colors } from '../../colors/colors';
-import { Fonts } from '../../fonts/fonts';
+import { Colors } from '../../../colors/colors';
+import { Fonts } from '../../../fonts/fonts';
 
 const styles = StyleSheet.create({
   // Containers
-  processusContainer: {
+  folderContainer: {
     backgroundColor: Colors.inactive,
     padding: 4,
     justifyContent: 'center',
@@ -18,7 +18,18 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
-  }
+  },
+  adminButton: {
+    marginHorizontal: 8,
+    marginVertical: 4,
+  },
+  dialogInput: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
 });
 
 export default styles;

@@ -48,6 +48,8 @@ enum NavigationRoutes {
   // Forms
   FormsDocumentScreen = 'FormsDocumentScreen',
   FormEditionScreen = 'FormEditionScreen',
+  // Records
+  RecordsDocumentScreen = 'RecordsDocumentScreen',
 }
 
 export default NavigationRoutes;
