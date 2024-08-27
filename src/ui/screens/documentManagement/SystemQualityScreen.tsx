@@ -44,9 +44,9 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
   // Folder
-  const [processNewName, setProcessNewName] = useState<string>('');
-  const [processNumber, setProcessNumber] = useState<number>(0);
-  const [processID, setProcessID] = useState<string>('');
+  const [folderNewName, setFolderNewName] = useState<string>('');
+  const [folderNumber, setFolderNumber] = useState<number>(0);
+  const [folderID, setFolderID] = useState<string>('');
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -74,49 +74,49 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     },
     {
       id: 'folder1ID',
-      title: `${t('process.title.single')} 1`,
+      title: `${t('folder.title.single')} 1`,
       number: 1,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder2ID',
-      title: `${t('process.title.single')} 2`,
+      title: `${t('folder.title.single')} 2`,
       number: 2,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder3ID',
-      title: `${t('process.title.single')} 3`,
+      title: `${t('folder.title.single')} 3`,
       number: 3,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder4ID',
-      title: `${t('process.title.single')} 4`,
+      title: `${t('folder.title.single')} 4`,
       number: 4,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder5ID',
-      title: `${t('process.title.single')} 5`,
+      title: `${t('folder.title.single')} 5`,
       number: 5,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder6ID',
-      title: `${t('process.title.single')} 6`,
+      title: `${t('folder.title.single')} 6`,
       number: 6,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
     },
     {
       id: 'folder7ID',
-      title: `${t('process.title.single')} 7`,
+      title: `${t('folder.title.single')} 7`,
       number: 7,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
@@ -155,19 +155,19 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         previousScreen: t('systemQuality.title'),
         currentScreen: t('systemQuality.qualityManual'),
         documentsPath: 'systemQuality/qualityManual',
-        processNumber: undefined,
+        folderNumber: undefined,
       });
     } else {
       navigation.navigate(NavigationRoutes.ProcessesScreen, { currentFolder: item})
     }
   }
 
-  function displayModificationProcessDialog(item: IFolder) {
+  function displayModificationFolderDialog(item: IFolder) {
     if (currentUser?.userType === UserType.Admin) {
       setShowDialog(true);
-      setProcessNewName(item.title);
-      setProcessNumber(item.number ?? 1);
-      setProcessID(item.id as string);
+      setFolderNewName(item.title);
+      setFolderNumber(item.number ?? 1);
+      setFolderID(item.id as string);
     }
   }
 
@@ -191,7 +191,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   function closeDialogs() {
     setShowCreateFolderDialog(false);
     setShowDialog(false);
-    setProcessNewName('');
+    setFolderNewName('');
   }
   
   // Async Methods
@@ -202,13 +202,13 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   async function createFolder() {
-    if (processNewName) {
+    if (folderNewName) {
       // TODO: Let the admin choose the placement of the folder
-      setProcessNumber(1);
+      setFolderNumber(1);
       try {
         const input: IFolderInput = {
-          title: processNewName,
-          number: processNumber,
+          title: folderNewName,
+          number: folderNumber,
           sleeve: Sleeve.SystemQuality,
           userID: currentClient?.id as string,
         };
@@ -226,20 +226,20 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     }
   }
 
-  async function modifyProcessName() {
+  async function modifyFolderName() {
     try {
       const updateInput: IFolderUpdateInput = {
-        title: processNewName,
-        number: processNumber,
+        title: folderNewName,
+        number: folderNumber,
       };
-      const updatedFolder = await FolderService.getInstance().update(updateInput, processID, token);
+      const updatedFolder = await FolderService.getInstance().update(updateInput, folderID, token);
       setFolderItems(prevItems =>
         prevItems.map(item =>
           item.number === updatedFolder.number ? { ...item, title: updatedFolder.title } : item
         )
       );
       closeDialogs();
-      displayToast(t('systemQuality.modifyProcess.success'));
+      displayToast(t('systemQuality.modifyFolder.success'));
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
@@ -262,8 +262,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   async function deleteFolder() {
     try {
-      await FolderService.getInstance().delete(processID, token);
-      setFolderItems(prevItems => prevItems.filter(item => item.id !== processID));
+      await FolderService.getInstance().delete(folderID, token);
+      setFolderItems(prevItems => prevItems.filter(item => item.id !== folderID));
       closeDialogs();
       displayToast(t('systemQuality.delete.success'));
     } catch (error) {
@@ -302,7 +302,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       <TouchableOpacity
         key={item.id}
         onPress={() => navigateTo(item)}
-        onLongPress={() => displayModificationProcessDialog(item)}
+        onLongPress={() => displayModificationFolderDialog(item)}
         >
         <View style={styles.folderContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
@@ -311,26 +311,26 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     )
   }
 
-  function ModifyProcessNameDialog() {
+  function ModifyFolderNameDialog() {
     return (
       <>{
         showDialog && (
           <Dialog
-            title={t('systemQuality.modifyProcess.title')}
-            description={t('systemQuality.modifyProcess.description')}
+            title={t('systemQuality.modifyFolder.title')}
+            description={t('systemQuality.modifyFolder.description')}
             confirmTitle={t('components.buttons.save')}
             cancelTitle={t('components.dialog.cancel')}
             extraConfirmButtonTitle={t('components.buttons.delete')}
             isConfirmAvailable={true}
             isCancelAvailable={true}
-            onConfirm={modifyProcessName}
+            onConfirm={modifyFolderName}
             onCancel={closeDialogs}
             extraConfirmButtonAction={deleteFolder}
           >
             <GladisTextInput
-              value={processNewName}
-              onValueChange={setProcessNewName}
-              placeholder={t('systemQuality.modifyProcess.placeholder')}
+              value={folderNewName}
+              onValueChange={setFolderNewName}
+              placeholder={t('systemQuality.modifyFolder.placeholder')}
               autoCapitalize='words'
             />
           </Dialog>
@@ -355,8 +355,8 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             onCancel={closeDialogs}
           >
             <GladisTextInput
-              value={processNewName}
-              onValueChange={setProcessNewName}
+              value={folderNewName}
+              onValueChange={setFolderNewName}
               placeholder={t('systemQuality.create.placeholder')}
               autoCapitalize='words'
             />
@@ -444,7 +444,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
           )
         }
       </AppContainer>
-      {ModifyProcessNameDialog()}
+      {ModifyFolderNameDialog()}
       {CreateFolderDialog()}
       {ToastContent()}
     </>
