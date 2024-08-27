@@ -1,3 +1,4 @@
+import IFolder from "../model/IFolder";
 import IToken from "../model/IToken";
 import APIService from "./APIService";
 import UserService from "./UserService";

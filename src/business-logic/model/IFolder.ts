@@ -24,6 +24,10 @@ export interface IFolderMultipleInput {
   userID: string,
 }
 
+export interface IFolderUserRecordInput {
+  path: string,
+}
+
 export enum Sleeve {
   SystemQuality = 'systemQuality',
   Record ='record'

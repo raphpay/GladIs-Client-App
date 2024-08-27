@@ -12,12 +12,13 @@ import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../../business-logic/model/IFile';
-import IFolder, { IFolderInput, Sleeve } from '../../../../business-logic/model/IFolder';
+import IFolder, { IFolderInput, IFolderUserRecordInput, Sleeve } from '../../../../business-logic/model/IFolder';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
-import UserServiceRead from '../../../../business-logic/services/UserService.read';
+import FolderService from '../../../../business-logic/services/FolderService';
+import UserServicePost from '../../../../business-logic/services/UserService/UserService.post';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../../business-logic/store/slices/appStateReducer';
 import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
@@ -35,7 +36,6 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
-import FolderService from '../../../../business-logic/services/FolderService';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
@@ -204,9 +204,11 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadFolders() {
     try {
       const userID = currentClient?.id as string;
-      const folder = await UserServiceRead.getRecordsFolders(userID, token);
-      if (folder.length !== 0) {
-        setFolders(folder);
+      const formattedPath = Utils.removeWhitespace(path);
+      const pathInput: IFolderUserRecordInput = { path: formattedPath }
+      const folders = await UserServicePost.getRecordsFolders(userID, token, pathInput );
+      if (folders.length !== 0) {
+        setFolders(folders);
       }
     } catch (error) {
       console.log('Error getting records folders:', error);
