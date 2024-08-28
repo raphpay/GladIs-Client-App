@@ -317,12 +317,24 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function deleteDocument() {
     try {
       const documentID = selectedDocument?.id as string;
+      await recordDocumentDeletionActivity(documentID);
       await DocumentServiceDelete.delete(documentID, token);
       closeDialogs();
       await loadPaginatedDocuments();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
+  }
+
+  async function recordDocumentDeletionActivity(documentID: string) {
+    const logInput: IDocumentActivityLogInput = {
+      action: DocumentLogAction.Deletion,
+      actorIsAdmin: currentUser?.userType == UserType.Admin,
+      actorID: currentUser?.id as string,
+      clientID: currentClient?.id as string,
+      documentID,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
   // Lifecycle Methods
