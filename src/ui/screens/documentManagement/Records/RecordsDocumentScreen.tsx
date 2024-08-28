@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
@@ -17,6 +17,7 @@ import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
+import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
 import FolderService from '../../../../business-logic/services/FolderService';
 import UserServicePost from '../../../../business-logic/services/UserService/UserService.post';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
@@ -32,13 +33,13 @@ import IconButton from '../../../components/Buttons/IconButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Grid from '../../../components/Grid/Grid';
 import Pagination from '../../../components/Pagination';
+import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
-import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
 type RecordsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RecordsDocumentScreen>;
 
@@ -57,6 +58,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const [showFolderModificationDialog, setShowFolderModificationDialog] = useState<boolean>(false);
   const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
+  const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
@@ -78,11 +80,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { width } = useWindowDimensions();
 
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
-  const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+  const path = Utils.removeWhitespace(`${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`);
   const docsPerPage = 8;
   const plusIcon = require('../../../assets/images/plus.png');
 
@@ -94,6 +97,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     {
       title: t('components.dialog.documentActions.download'),
       onPress: () => download(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.delete'),
+      onPress: () => openDeleteDialog(),
+      isDisabled: currentUser?.userType !== UserType.Admin,
+      isDestructive: true,
     }
   ];
 
@@ -144,7 +153,13 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setShowFolderModificationDialog(false);
     setShowCreateFolderDialog(false);
     setShowDocumentActionDialog(false);
+    setShowDeleteConfimationDialog(false);
     setFolderNewName('');
+  }
+
+  function openDeleteDialog() {
+    closeDialogs();
+    setShowDeleteConfimationDialog(true);
   }
 
   // Async Methods
@@ -192,8 +207,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadPaginatedDocuments() {
     try {
       setIsLoading(true);
-      const formattedPath = Utils.removeWhitespace(path);
-      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(formattedPath, token, currentPage, docsPerPage);
+      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
       setDocuments(paginatedOutput.documents);
       setTotalPages(paginatedOutput.pageCount);
       setIsLoading(false); 
@@ -205,8 +219,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadFolders() {
     try {
       const userID = currentClient?.id as string;
-      const formattedPath = Utils.removeWhitespace(path);
-      const pathInput: IFolderUserRecordInput = { path: formattedPath }
+      const pathInput: IFolderUserRecordInput = { path }
       const folders = await UserServicePost.getRecordsFolders(userID, token, pathInput );
       if (folders.length !== 0) {
         setFolders(folders);
@@ -227,8 +240,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     }
     try {
       const file: IFile = { data, filename: filename}
-      const formattedPath = Utils.removeWhitespace(path);
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, formattedPath, token);
+      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Creation,
         actorIsAdmin: true,
@@ -250,13 +262,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       // TODO: Let the admin choose the placement of the folder
       setFolderNumber(1);
       try {
-        const formattedPath = Utils.removeWhitespace(path);
         const input: IFolderInput = {
           title: folderNewName,
           number: folderNumber, 
           sleeve: Sleeve.Record,
           userID: currentClient?.id as string,
-          path: formattedPath,
+          path,
         };
         const folder = await FolderService.getInstance().create(input, token);
         setFolders(prevItems => {
@@ -302,6 +313,29 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
+  }
+
+  async function deleteDocument() {
+    try {
+      const documentID = selectedDocument?.id as string;
+      await recordDocumentDeletionActivity(documentID);
+      await DocumentServiceDelete.delete(documentID, token);
+      closeDialogs();
+      await loadPaginatedDocuments();
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
+    }
+  }
+
+  async function recordDocumentDeletionActivity(documentID: string) {
+    const logInput: IDocumentActivityLogInput = {
+      action: DocumentLogAction.Deletion,
+      actorIsAdmin: currentUser?.userType == UserType.Admin,
+      actorID: currentUser?.id as string,
+      clientID: currentClient?.id as string,
+      documentID,
+    }
+    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
   // Lifecycle Methods
@@ -446,6 +480,26 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     )
   }
 
+  function DeleteConfirmationDialog() {
+    return (
+      <>
+        {
+          showDeleteConfimationDialog && (
+            <Dialog
+              title={`${t('components.dialog.deleteDocument.title')} ${selectedDocument?.name}`}
+              description={t('components.dialog.deleteDocument.description')}
+              confirmTitle={t('components.dialog.deleteDocument.confirmButton')}
+              onConfirm={deleteDocument}
+              onCancel={closeDialogs}
+              isConfirmAvailable={true}
+              isCancelAvailable={true}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   function CreateSMQDocButton() {
     return (
       <>
@@ -498,10 +552,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   }
 
   function AdminButtons() {
-    const shouldHaveColumn = (
-        Platform.OS === PlatformName.Android ||
-        Platform.OS === PlatformName.IOS
-      ) && orientation === Orientation.Portrait;
+    const shouldHaveColumn = width < 1100;
     
     return (
       <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
@@ -562,6 +613,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       {AddDocumentDialog()}
       {CreateFolderDialog()}
       {ModifyProcessNameDialog()}
+      {DeleteConfirmationDialog()}
     </>
   );
 }
