@@ -17,6 +17,7 @@ import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
+import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
 import FolderService from '../../../../business-logic/services/FolderService';
 import UserServicePost from '../../../../business-logic/services/UserService/UserService.post';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
@@ -32,13 +33,13 @@ import IconButton from '../../../components/Buttons/IconButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Grid from '../../../components/Grid/Grid';
 import Pagination from '../../../components/Pagination';
+import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
-import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 
 type RecordsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RecordsDocumentScreen>;
 
@@ -57,6 +58,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const [showFolderModificationDialog, setShowFolderModificationDialog] = useState<boolean>(false);
   const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
+  const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
@@ -94,6 +96,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     {
       title: t('components.dialog.documentActions.download'),
       onPress: () => download(selectedDocument as IDocument),
+    },
+    {
+      title: t('components.dialog.documentActions.delete'),
+      onPress: () => openDeleteDialog(),
+      isDisabled: currentUser?.userType !== UserType.Admin,
+      isDestructive: true,
     }
   ];
 
@@ -144,7 +152,13 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setShowFolderModificationDialog(false);
     setShowCreateFolderDialog(false);
     setShowDocumentActionDialog(false);
+    setShowDeleteConfimationDialog(false);
     setFolderNewName('');
+  }
+
+  function openDeleteDialog() {
+    closeDialogs();
+    setShowDeleteConfimationDialog(true);
   }
 
   // Async Methods
@@ -300,6 +314,17 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     }
   }
 
+  async function deleteDocument() {
+    try {
+      const documentID = selectedDocument?.id as string;
+      await DocumentServiceDelete.delete(documentID, token);
+      closeDialogs();
+      await loadPaginatedDocuments();
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
@@ -442,6 +467,26 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     )
   }
 
+  function DeleteConfirmationDialog() {
+    return (
+      <>
+        {
+          showDeleteConfimationDialog && (
+            <Dialog
+              title={`${t('components.dialog.deleteDocument.title')} ${selectedDocument?.name}`}
+              description={t('components.dialog.deleteDocument.description')}
+              confirmTitle={t('components.dialog.deleteDocument.confirmButton')}
+              onConfirm={deleteDocument}
+              onCancel={closeDialogs}
+              isConfirmAvailable={true}
+              isCancelAvailable={true}
+            />
+          )
+        }
+      </>
+    )
+  }
+
   function CreateSMQDocButton() {
     return (
       <>
@@ -558,6 +603,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       {AddDocumentDialog()}
       {CreateFolderDialog()}
       {ModifyProcessNameDialog()}
+      {DeleteConfirmationDialog()}
     </>
   );
 }
