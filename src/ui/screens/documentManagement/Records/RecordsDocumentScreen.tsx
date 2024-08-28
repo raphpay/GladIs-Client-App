@@ -82,7 +82,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
-  const path = `${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`;
+  const path = Utils.removeWhitespace(`${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`);
   const docsPerPage = 8;
   const plusIcon = require('../../../assets/images/plus.png');
 
@@ -192,8 +192,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadPaginatedDocuments() {
     try {
       setIsLoading(true);
-      const formattedPath = Utils.removeWhitespace(path);
-      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(formattedPath, token, currentPage, docsPerPage);
+      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
       setDocuments(paginatedOutput.documents);
       setTotalPages(paginatedOutput.pageCount);
       setIsLoading(false); 
@@ -205,8 +204,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadFolders() {
     try {
       const userID = currentClient?.id as string;
-      const formattedPath = Utils.removeWhitespace(path);
-      const pathInput: IFolderUserRecordInput = { path: formattedPath }
+      const pathInput: IFolderUserRecordInput = { path }
       const folders = await UserServicePost.getRecordsFolders(userID, token, pathInput );
       if (folders.length !== 0) {
         setFolders(folders);
@@ -227,8 +225,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     }
     try {
       const file: IFile = { data, filename: filename}
-      const formattedPath = Utils.removeWhitespace(path);
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, formattedPath, token);
+      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Creation,
         actorIsAdmin: true,
@@ -250,13 +247,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       // TODO: Let the admin choose the placement of the folder
       setFolderNumber(1);
       try {
-        const formattedPath = Utils.removeWhitespace(path);
         const input: IFolderInput = {
           title: folderNewName,
           number: folderNumber, 
           sleeve: Sleeve.Record,
           userID: currentClient?.id as string,
-          path: formattedPath,
+          path,
         };
         const folder = await FolderService.getInstance().create(input, token);
         setFolders(prevItems => {

@@ -76,7 +76,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
 
-  const path = `${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`;
+  const path = Utils.removeWhitespace(`${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`);
   const docsPerPage = 8;
   
   const documentsFiltered = documents.filter(doc =>
@@ -281,6 +281,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     try {
       const documentID = selectedDocument?.id as string;
       await DocumentServiceDelete.delete(documentID, token);
+      closeDialogs();
+      await loadPaginatedDocuments();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
@@ -416,9 +418,9 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               description={t('components.dialog.deleteDocument.description')}
               confirmTitle={t('components.dialog.deleteDocument.confirmButton')}
               onConfirm={deleteDocument}
-              isCancelAvailable={true}
               onCancel={closeDialogs}
-              isConfirmDisabled={documentName.length === 0}
+              isConfirmAvailable={true}
+              isCancelAvailable={true}
             />
           )
         }

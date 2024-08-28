@@ -90,7 +90,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     } else {
       setSelectedProductsFilename(filename);
     }
-    const path = `${currentClient?.companyName ?? "noCompany"}/smqSurvey/`;
+    const path = Utils.removeWhitespace(`${currentClient?.companyName ?? "noCompany"}/smqSurvey/`);
     let data: string = '';
     if (Platform.OS !== PlatformName.Mac) {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
