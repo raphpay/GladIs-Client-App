@@ -10,6 +10,7 @@ import IAction from '../../../business-logic/model/IAction';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -87,20 +88,21 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
 
   function navigateTo(item: IProcessItem) {
     dispatch(setDocumentListCount(documentListCount + 1));
+    const formattedPath = Utils.removeWhitespace(`${currentFolder.title}/${item.title}`);
     if (item.id === 'formsID') {
-      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: `${currentFolder}/${item.title}` });
+      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: formattedPath });
     } else if (item.id === 'recordsID') {
       navigation.navigate(NavigationRoutes.RecordsDocumentScreen, {
         currentFolder,
         currentScreen: item.title,
-        documentsPath: `${currentFolder.title}/records/${item.title}`
+        documentsPath: Utils.removeWhitespace(`${currentFolder.title}/${t('process.items.records')}/${item.title}`)
       });
     } else {
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         previousScreen: currentFolder.title,
         processNumber: currentFolder.number,
         currentScreen: item.title,
-        documentsPath: `${currentFolder.title}/${item.title}`
+        documentsPath: formattedPath
       });
     }
   }
