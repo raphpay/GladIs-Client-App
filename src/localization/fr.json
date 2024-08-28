@@ -513,7 +513,13 @@
         "title": "Actions sur le document:",
         "open": "Ouvrir",
         "download": "Télécharger",
-        "approve": "Approuver"
+        "approve": "Approuver",
+        "delete": "Supprimer"
+      },
+      "deleteDocument": {
+        "title": "Etes-vous sûr de vouloir supprimer ce document ?",
+        "description": "La suppression est définitive.",
+        "confirmButton": "Oui"
       },
       "blockClient": "Êtes-vous sûr de vouloir bloquer ce client ?",
       "unblockClient": "Êtes-vous sûr de vouloir débloquer ce client ?",

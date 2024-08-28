@@ -18,6 +18,7 @@ import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
+import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
@@ -37,19 +38,25 @@ import styles from '../../../assets/styles/documentManagement/DocumentsScreenSty
 type DocumentsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DocumentsScreen>;
 
 function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
+  // General
   const [searchText, setSearchText] = useState<string>('');
-  const [documents, setDocuments] = useState<IDocument[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
+  // Dialog
+  const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] = useState<boolean>(false);
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
+  // Documents
+  const [documents, setDocuments] = useState<IDocument[]>([]);
+  const [documentName, setDocumentName] = useState<string>('');
+  const [selectedDocument, setSelectedDocument] = useState<IDocument>();
+  // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [documentName, setDocumentName] = useState<string>('');
-  const [selectedDocument, setSelectedDocument] = useState<IDocument>();
+  // Pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
 
   const plusIcon = require('../../../assets/images/plus.png');
   
@@ -104,6 +111,12 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       title: t('components.dialog.documentActions.approve'),
       onPress: () => approveDocument(selectedDocument as IDocument),
       isDisabled: currentUser?.userType === UserType.Employee,
+    },
+    {
+      title: t('components.dialog.documentActions.delete'),
+      onPress: () => openDeleteDialog(),
+      isDisabled: currentUser?.userType !== UserType.Admin,
+      isDestructive: true,
     }
   ];
 
@@ -153,6 +166,17 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
   }
 
+  function closeDialogs() {
+    setShowDialog(false);
+    setShowDocumentActionDialog(false);
+    setShowDeleteConfimationDialog(false);
+  }
+
+  function openDeleteDialog() {
+    closeDialogs();
+    setShowDeleteConfimationDialog(true);
+  }
+
   // Async Methods
   async function navigateToDocument(doc: IDocument) {
     try {
@@ -191,7 +215,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       }
       await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
       setDocumentName('');
-      setShowDialog(false);
+      closeDialogs();
       await loadPaginatedDocuments();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
@@ -217,7 +241,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       } else {
         displayToast(t('documentsScreen.alreadyDownloaded'));
       }
-      setShowDocumentActionDialog(false);
+      closeDialogs();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
@@ -235,7 +259,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       }
       await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
       displayToast(t('documentsScreen.approvalSuccess'));
-      setShowDocumentActionDialog(false);
+      closeDialogs();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
@@ -250,6 +274,15 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       setIsLoading(false); 
     } catch (error) {
       console.log('Error getting paginated documents:', error);
+    }
+  }
+
+  async function deleteDocument() {
+    try {
+      const documentID = selectedDocument?.id as string;
+      await DocumentServiceDelete.delete(documentID, token);
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
     }
   }
 
@@ -357,7 +390,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
               confirmTitle={t('components.dialog.addDocument.confirmButton')}
               onConfirm={pickAFile}
               isCancelAvailable={true}
-              onCancel={() => setShowDialog(false)}
+              onCancel={closeDialogs}
               isConfirmDisabled={documentName.length === 0}
             >
               <TextInput
@@ -371,6 +404,26 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         }
       </>
     );
+  }
+
+  function DeleteConfirmationDialog() {
+    return (
+      <>
+        {
+          showDeleteConfimationDialog && (
+            <Dialog
+              title={`${t('components.dialog.deleteDocument.title')} ${selectedDocument?.name}`}
+              description={t('components.dialog.deleteDocument.description')}
+              confirmTitle={t('components.dialog.deleteDocument.confirmButton')}
+              onConfirm={deleteDocument}
+              isCancelAvailable={true}
+              onCancel={closeDialogs}
+              isConfirmDisabled={documentName.length === 0}
+            />
+          )
+        }
+      </>
+    )
   }
 
   return (
@@ -414,6 +467,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         popoverActions={popoverActions}
       />
       {ToastContent()}
+      {DeleteConfirmationDialog()}
     </>
   );
 }

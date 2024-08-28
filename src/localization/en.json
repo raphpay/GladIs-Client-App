@@ -505,7 +505,13 @@
         "title": "Actions on document:",
         "open": "Open",
         "download": "Download",
-        "approve": "Approve"
+        "approve": "Approve",
+        "delete": "Delete"
+      },
+      "deleteDocument": {
+        "title": "Are you sure you want to delete this document ?",
+        "description": "The deletion is definitive.",
+        "confirmButton": "Yes"
       },
       "calendar": {
         "newEvent": {

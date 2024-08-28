@@ -82,7 +82,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
-  const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+  const path = `${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`;
   const docsPerPage = 8;
   const plusIcon = require('../../../assets/images/plus.png');
 

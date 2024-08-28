@@ -10,7 +10,7 @@ class DocumentService {
   private static instance: DocumentService | null = null;
   private baseRoute = 'documents';
 
-  private constructor() {}
+  constructor() {}
 
   /**
    * Gets the singleton instance of the DocumentService class.
