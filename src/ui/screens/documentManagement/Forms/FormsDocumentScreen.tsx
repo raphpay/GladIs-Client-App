@@ -224,7 +224,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     let data: string = '';
     if (Platform.OS !== PlatformName.Mac) {
       const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.csv })
-      data = await Utils.getFileBase64FromURI(doc.uri) as string;
+      data = await Utils.getCSVFromFile(doc.uri) as string;
     } else {
       data = await FinderModule.getInstance().pickCSV();
       data = Utils.replaceAllOccurrences(data, ";", ",");
