@@ -76,7 +76,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
 
-  const path = `${currentClient?.companyName ?? ""}/${documentsPath}/`;
+  const path = `${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`;
   const docsPerPage = 8;
   
   const documentsFiltered = documents.filter(doc =>
