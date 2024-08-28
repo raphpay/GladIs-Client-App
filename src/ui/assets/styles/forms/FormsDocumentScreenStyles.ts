@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Fonts.poppinsLight
   },
+  adminButton: {
+    marginHorizontal: 3,
+  }
 });
 
 export default styles;

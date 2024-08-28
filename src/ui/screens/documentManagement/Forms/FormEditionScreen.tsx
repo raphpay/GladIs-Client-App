@@ -128,6 +128,10 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     setToastIsShowingError(isError);
     setToastMessage(message);
   }
+
+  function resetDialogs() {
+    setShowSaveDialog(false);
+  }
   
   // Async Methods
   async function saveForm() {
@@ -227,10 +231,6 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         }
       </View>
     );
-  }
-
-  function resetDialogs() {
-    setShowSaveDialog(false);
   }
 
   function SaveButton() {

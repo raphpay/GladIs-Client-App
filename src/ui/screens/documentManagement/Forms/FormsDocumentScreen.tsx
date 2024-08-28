@@ -266,6 +266,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
               title={t('forms.buttons.add')}
               icon={plusIcon}
               onPress={addForm}
+              style={styles.adminButton}
             />
           )
         }
@@ -279,9 +280,10 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         {
           currentUser?.userType == UserType.Admin && (
             <IconButton
-              title={t('forms.buttons.import')}
+              title={t('forms.buttons.importCSV')}
               icon={plusIcon}
               onPress={pickAFile}
+              style={styles.adminButton}
             />
           )
         }
