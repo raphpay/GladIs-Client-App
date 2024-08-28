@@ -106,6 +106,18 @@ class Utils {
     return data;
   }
 
+  // Utility function to read file content from a URI
+  static async getCSVFromFile(uri: string): Promise<string> {
+    try {
+      const response = await fetch(uri);
+      const text = await response.text();
+      return text;
+    } catch (error) {
+      console.error('Error reading file:', error);
+      throw error;
+    }
+  }
+
   /**
    * Changes the MIME type of a base64 string.
    * @param base64String - The base64 string to modify.
@@ -298,6 +310,11 @@ class Utils {
 
   static removeWhitespace(input: string): string {
     return input.replace(/\s+/g, '');
+  }
+
+  static replaceAllOccurrences(input: string, target: string, replacement: string): string {
+    // Use the split and join method to replace all occurrences
+    return input.split(target).join(replacement);
   }
 }
 

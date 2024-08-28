@@ -752,10 +752,11 @@
         "addColumnFirst": "Veuillez ajouter une colonne d'abord",
         "cleanRowFirst": "Veuillez effacer la ligne d'abord",
         "cleanColumnFirst": "Veuillez effacer la colonne d'abord"
-      },
+      }
     },
     "buttons": {
       "add": "Ajouter un formulaire",
+      "importCSV": "Importer un fichier CSV"
     },
     "noDocs": {
       "title": "Aucun formulaire trouvé",

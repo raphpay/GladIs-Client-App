@@ -752,7 +752,8 @@
       }
     },
     "buttons": {
-      "add": "Add a form"
+      "add": "Add a form",
+      "importCSV": "Import a CSV file"
     },
     "noDocs": {
       "title": "No forms found",

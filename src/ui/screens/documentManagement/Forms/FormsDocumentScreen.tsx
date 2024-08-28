@@ -1,7 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -10,9 +11,13 @@ import NavigationRoutes from '../../../../business-logic/model/enums/NavigationR
 import FormManager, { IResult } from '../../../../business-logic/manager/FormManager';
 import IAction from '../../../../business-logic/model/IAction';
 import IForm from '../../../../business-logic/model/IForm';
+import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
+import PlatformName from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
+import FinderModule from '../../../../business-logic/modules/FinderModule';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
+import Utils from '../../../../business-logic/utils/Utils';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
@@ -23,20 +28,12 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
 
-import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import styles from '../../../assets/styles/forms/FormsDocumentScreenStyles';
 
 type FormsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormsDocumentScreen>;
 
 function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element {
-
-  const { navigation } = props;
-  const { documentPath } = props.route.params;
-  const { t } = useTranslation();
-  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
-  const { formsCount } = useAppSelector((state: RootState) => state.forms);
-  const { token } = useAppSelector((state: RootState) => state.tokens);
-  // States
+  // General
   const [searchText, setSearchText] = useState<string>('');
   // Form
   const [forms, setForms] = useState<IForm[]>([]);
@@ -48,6 +45,13 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+
+  const { navigation } = props;
+  const { documentPath } = props.route.params;
+  const { t } = useTranslation();
+  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { formsCount } = useAppSelector((state: RootState) => state.forms);
+  const { token } = useAppSelector((state: RootState) => state.tokens);
 
   const formsFiltered = forms.filter(form =>
     form.title.toLowerCase().includes(searchText.toLowerCase()),
@@ -216,6 +220,27 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     setShowRemoveConfirmationDialog(false);
   }
 
+  async function pickAFile() {
+    let data: string = '';
+    if (Platform.OS !== PlatformName.Mac) {
+      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.csv })
+      data = await Utils.getCSVFromFile(doc.uri) as string;
+    } else {
+      data = await FinderModule.getInstance().pickCSV();
+      data = Utils.replaceAllOccurrences(data, ";", ",");
+    }
+    const form: IForm = {
+      title: "",
+      createdBy: currentUser?.id as string,
+      value: data,
+      approvedByAdmin: false,
+      approvedByClient: false,
+      clientID: currentClient?.id as string as string,
+    }
+    openForm(form);
+    return data;
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
@@ -241,6 +266,24 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
               title={t('forms.buttons.add')}
               icon={plusIcon}
               onPress={addForm}
+              style={styles.adminButton}
+            />
+          )
+        }
+      </>
+    );
+  }
+
+  function ImportButton() {
+    return (
+      <>
+        {
+          currentUser?.userType == UserType.Admin && (
+            <IconButton
+              title={t('forms.buttons.importCSV')}
+              icon={plusIcon}
+              onPress={pickAFile}
+              style={styles.adminButton}
             />
           )
         }
@@ -317,6 +360,15 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     )
   }
 
+  function AdminButtons() {
+    return (
+      <>
+        {AddFormButton()}
+        {ImportButton()}
+      </>
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -326,7 +378,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         searchText={searchText}
         setSearchText={setSearchText}
         showSettings={true}
-        adminButton={AddFormButton()}
+        adminButton={AdminButtons()}
         navigateBack={navigateBack}
       >
         {
