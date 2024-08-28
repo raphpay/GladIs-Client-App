@@ -124,7 +124,15 @@ class FormEditionManager {
         if (createdByUser) {
           this.setFormCreationActor(createdByUser.firstName + ' ' + createdByUser.lastName);
         }
+      } else {
+        const creationDate = Utils.formatStringDate(new Date(), 'numeric');
+        this.setFormCreation(creationDate);
+        const createdByUser = await this.loadUser(currentUser?.id as string, token);
+        if (createdByUser) {
+          this.setFormCreationActor(createdByUser.firstName + ' ' + createdByUser.lastName);
+        }
       }
+      
       if (form.updatedAt && form.updatedBy) {
         const updateDate = form.updatedAt && Utils.formatStringDate(new Date(form.updatedAt), 'numeric');
         this.setFormUpdate(updateDate);

@@ -5,7 +5,7 @@
 import { Platform } from "react-native";
 import HttpMethod from "../model/enums/HttpMethod";
 import PlatformName from "../model/enums/PlatformName";
-import API_BASE_URL from "../utils/envConfig";
+import { API_BASE_URL } from "../utils/envConfig.ts";
 
 
 class APIService {

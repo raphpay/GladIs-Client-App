@@ -44,6 +44,14 @@ class FinderModule {
       });
     });
   }
+
+  async pickCSV(): Promise<string> {
+    return new Promise((resolve) => {
+      NativeModules.FinderModule.pickCSVFile((res: any) => {
+        resolve(res as string);
+      });
+    });
+  }
 }
 
 export default FinderModule;

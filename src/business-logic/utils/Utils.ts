@@ -299,6 +299,11 @@ class Utils {
   static removeWhitespace(input: string): string {
     return input.replace(/\s+/g, '');
   }
+
+  static replaceAllOccurrences(input: string, target: string, replacement: string): string {
+    // Use the split and join method to replace all occurrences
+    return input.split(target).join(replacement);
+  }
 }
 
 export default Utils;
