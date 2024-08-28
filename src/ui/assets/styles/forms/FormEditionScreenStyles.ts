@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   headerCellTitle: {
     textAlign: 'center',
     fontSize: 16,
-    fontFamily: Fonts.poppinsSemiBold 
+    fontFamily: Fonts.poppinsSemiBold,
   },
   headerContainer: {
     flexDirection: 'row',
