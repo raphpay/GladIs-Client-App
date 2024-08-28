@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
@@ -80,6 +80,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { width } = useWindowDimensions();
 
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
@@ -551,10 +552,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   }
 
   function AdminButtons() {
-    const shouldHaveColumn = (
-        Platform.OS === PlatformName.Android ||
-        Platform.OS === PlatformName.IOS
-      ) && orientation === Orientation.Portrait;
+    const shouldHaveColumn = width < 1100;
     
     return (
       <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
