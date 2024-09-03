@@ -9,12 +9,13 @@ import { IClientManagementParams } from '../../../navigation/Routes';
 
 import IAction from '../../../business-logic/model/IAction';
 import IFile from '../../../business-logic/model/IFile';
+import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import CacheService from '../../../business-logic/services/CacheService';
-import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import UserService from '../../../business-logic/services/UserService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { setClientListCount, setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
@@ -23,16 +24,15 @@ import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
+import OutlinedTextButton from '../../components/Buttons/OutlinedTextButton';
 import Dialog from '../../components/Dialogs/Dialog';
 import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import Grid from '../../components/Grid/Grid';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
-import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
-import OutlinedTextButton from '../../components/Buttons/OutlinedTextButton';
-import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
 
@@ -174,7 +174,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
           data,
           filename
         };
-        await DocumentService.getInstance().uploadLogo(file, filename, `${currentClient.companyName}/logos/`);
+        await DocumentServicePost.uploadLogo(file, filename, `${currentClient.companyName}/logos/`);
         await CacheService.getInstance().storeValue(`${currentClient?.id}/logo`, data);
         await CacheService.getInstance().storeValue(`${currentClient?.id}/logo-lastModified`, new Date());
         displayToast(t('api.success.logoUploaded'), false);

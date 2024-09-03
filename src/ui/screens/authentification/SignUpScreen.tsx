@@ -20,7 +20,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
-import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
@@ -142,7 +142,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           data: imageData,
           filename: fileName
         }
-        await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
+        await DocumentServicePost.uploadLogo(file, fileName, `${companyName}/logos/`);
       } catch (error) {
         console.log('Error uploading logo', error);
       }
