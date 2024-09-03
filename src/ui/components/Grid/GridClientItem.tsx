@@ -9,6 +9,7 @@ import {
 
 import IUser from '../../../business-logic/model/IUser';
 import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -35,7 +36,7 @@ function GridClientItem(props: GridClientItemProps): React.JSX.Element {
 
   async function loadLogo() {
     const company = client.companyName as string;
-    const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+    const docs = await DocumentServicePost.getDocumentsAtPath(`${company}/logos/`, token);
     const logo = docs[0];
     if (logo && logo.id) {
       const logoData = await DocumentService.getInstance().download(logo.id as string, token);

@@ -19,6 +19,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
+import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
 import DocumentServiceUpdate from '../../../../business-logic/services/DocumentService/DocumentService.update';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
@@ -206,7 +207,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
     try {
       const file: IFile = { data, filename: filename}
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
+      const createdDocument = await DocumentServicePost.upload(file, filename, path, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Creation,
         actorIsAdmin: true,
@@ -269,7 +270,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   async function loadPaginatedDocuments() {
     try {
       setIsLoading(true);
-      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
+      const paginatedOutput = await DocumentServicePost.getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
       setDocuments(paginatedOutput.documents);
       setTotalPages(paginatedOutput.pageCount);
       setIsLoading(false); 

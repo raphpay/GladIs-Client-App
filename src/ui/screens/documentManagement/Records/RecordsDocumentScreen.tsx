@@ -18,6 +18,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
+import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
 import FolderService from '../../../../business-logic/services/FolderService';
 import UserServicePost from '../../../../business-logic/services/UserService/UserService.post';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
@@ -207,7 +208,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadPaginatedDocuments() {
     try {
       setIsLoading(true);
-      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
+      const paginatedOutput = await DocumentServicePost.getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
       setDocuments(paginatedOutput.documents);
       setTotalPages(paginatedOutput.pageCount);
       setIsLoading(false); 
@@ -240,7 +241,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     }
     try {
       const file: IFile = { data, filename: filename}
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
+      const createdDocument = await DocumentServicePost.upload(file, filename, path, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Creation,
         actorIsAdmin: true,

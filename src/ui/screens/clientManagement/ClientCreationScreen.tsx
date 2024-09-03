@@ -304,7 +304,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   async function loadLogo() {
     const company = pendingUser?.companyName as string;
     if (company) {
-      const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+      const docs = await DocumentServicePost.getDocumentsAtPath(`${company}/logos/`, token);
       if (docs.length > 0) {
         const logo = docs[0];
         const logoData = await DocumentService.getInstance().download(logo.id as string, token);

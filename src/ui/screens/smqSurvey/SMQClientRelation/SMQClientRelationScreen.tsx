@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Platform, Text, View } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 
+import SMQManager from '../../../../business-logic/manager/SMQManager';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
 import IFile from '../../../../business-logic/model/IFile';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import PlatformName from '../../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
-import DocumentService from '../../../../business-logic/services/DocumentService';
+import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
@@ -18,7 +19,6 @@ import TextButton from '../../../components/Buttons/TextButton';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import Toast from '../../../components/Toast';
 
-import SMQManager from '../../../../business-logic/manager/SMQManager';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQClientRelationScreenProps = {
@@ -100,7 +100,7 @@ function SMQClientRelationScreen(props: SMQClientRelationScreenProps): React.JSX
     }
     try {
       const file: IFile = { data, filename: filename}
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
+      const createdDocument = await DocumentServicePost.upload(file, filename, path, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Creation,
         actorIsAdmin: true,
