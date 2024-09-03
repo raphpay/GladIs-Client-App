@@ -3,6 +3,7 @@ import IToken from "../../model/IToken";
 import { ILoginTryOutput } from "../../model/IUser";
 
 import AuthenticationService from "../../services/AuthenticationService/AuthenticationService";
+import EventServicePost from "../../services/EventService/EventService.post";
 import UserServicePost from "../../services/UserService/UserService.post";
 import UserServicePut from "../../services/UserService/UserService.put";
 
@@ -61,7 +62,7 @@ class LoginScreenManager {
         date: Date.now(),
         clientID: tryOutput.id ?? '0',
       }
-      await EventService.getInstance().createMaxAttemptsEvent(event);
+      await EventServicePost.createMaxAttemptsEvent(event);
     } catch (error) {
       console.log('Error sending max attempts event', error );
     }

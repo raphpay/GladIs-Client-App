@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { IEvent, IEventInput } from '../../../business-logic/model/IEvent';
-import EventService from '../../../business-logic/services/EventService';
+import EventServicePost from '../../../business-logic/services/EventService/EventService.post';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -61,7 +61,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
           date: selectedDateTimestamp,
           clientID: currentClient?.id as string
         }
-        const newEvent = await EventService.getInstance().create(event, token);
+        const newEvent = await EventServicePost.create(event, token);
         setEvents([...events, newEvent]);
         resetDialog();
       } catch (error) {

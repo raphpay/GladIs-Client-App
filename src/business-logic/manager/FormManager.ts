@@ -8,11 +8,11 @@ import FormService from "../services/FormService";
 import UserType from "../model/enums/UserType";
 // Event
 import { IEventInput } from "../model/IEvent";
-import EventService from "../services/EventService";
 // Logs
 import { IDocumentActivityLogInput } from "../model/IDocumentActivityLog";
 import DocumentLogAction from "../model/enums/DocumentLogAction";
 import DocumentActivityLogsService from "../services/DocumentActivityLogsService";
+import EventServicePost from "../services/EventService/EventService.post";
 
 export interface IResult {
   success: boolean;
@@ -220,7 +220,7 @@ class FormManager {
       clientID: form.clientID,
     };
     try {
-      await EventService.getInstance().create(eventInput, token);
+      await EventServicePost.create(eventInput, token);
     } catch (error) {
       throw error;
     }
