@@ -8,7 +8,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import MessageService from '../../../business-logic/services/MessageService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import SurveyService from '../../../business-logic/services/SurveyService';
-import UserService from '../../../business-logic/services/UserService';
+import UserService from '../../../business-logic/services/UserService/UserService';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';

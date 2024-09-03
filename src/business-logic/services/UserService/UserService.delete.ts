@@ -1,6 +1,6 @@
 import IToken from "../../model/IToken";
 import APIService from "../APIService";
-import UserService from "../UserService";
+import UserService from "./UserService";
 
 class UserServiceDelete extends UserService {
   static baseRoute = 'users';

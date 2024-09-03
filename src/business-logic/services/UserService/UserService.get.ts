@@ -6,7 +6,7 @@ import IToken from "../../model/IToken";
 import IUser from "../../model/IUser";
 import APIService from "../APIService";
 import CacheService from "../CacheService";
-import UserService from "../UserService";
+import UserService from "./UserService";
 
 class UserServiceGet extends UserService {
   static baseRoute = 'users';

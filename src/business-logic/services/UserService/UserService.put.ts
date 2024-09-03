@@ -2,7 +2,7 @@ import IModule, { IModuleInput } from "../../model/IModule";
 import IToken from "../../model/IToken";
 import IUser, { IUserUpdateInput } from "../../model/IUser";
 import APIService from "../APIService";
-import UserService from "../UserService";
+import UserService from "./UserService";
 
 class UserServicePut extends UserService {
   static baseRoute = 'users';

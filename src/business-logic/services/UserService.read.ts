@@ -1,7 +1,7 @@
 import IFolder from "../model/IFolder";
 import IToken from "../model/IToken";
 import APIService from "./APIService";
-import UserService from "./UserService";
+import UserService from "./UserService/UserService";
 
 class UserServiceRead extends UserService {
   static baseRoute = 'users';

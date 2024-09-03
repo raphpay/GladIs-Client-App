@@ -4,7 +4,7 @@ import IToken from "../../model/IToken";
 import IUser, { ILoginTryOutput } from "../../model/IUser";
 import { extractValidationErrors } from "../../model/ValidationError";
 import APIService from "../APIService";
-import UserService from "../UserService";
+import UserService from "./UserService";
 
 class UserServicePost extends UserService {
   static baseRoute = 'users';

@@ -9,7 +9,7 @@ import IAction from '../../../business-logic/model/IAction';
 import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentationTab';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import TechnicalDocumentationTabService from '../../../business-logic/services/TechnicalDocumentationTabService';
-import UserService from '../../../business-logic/services/UserService';
+import UserService from '../../../business-logic/services/UserService/UserService';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
