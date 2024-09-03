@@ -100,7 +100,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
   ];
 
-  const popoverActions: IAction[] = [
+  const basePopoverActions: IAction[] = [
     {
       title: t('components.dialog.documentActions.open'),
       onPress: () => navigateToDocument(selectedDocument as IDocument),
@@ -110,17 +110,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       onPress: () => download(selectedDocument as IDocument),
     },
     {
-      title: t('components.dialog.documentActions.approve'),
-      onPress: () => approveDocument(selectedDocument as IDocument),
-      isDisabled: currentUser?.userType === UserType.Employee,
-    },
-    {
       title: t('components.dialog.documentActions.delete'),
       onPress: () => openDeleteDialog(),
       isDisabled: currentUser?.userType !== UserType.Admin,
       isDestructive: true,
     }
   ];
+  const [popoverActions, setPopoverActions] = useState<IAction[]>(basePopoverActions);
 
   // Sync Methods
   function navigateToDashboard() {
@@ -136,8 +132,23 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
-  function showDocumentDialog(item: IDocument) {
+  function displayDocumentDialog(item: IDocument) {
     setSelectedDocument(item);
+    let actions = [...basePopoverActions]; // Create a copy of the base actions array
+    const newAction = {
+      title: item.status !== DocumentStatus.APPROVED
+        ? t('components.dialog.documentActions.approve')
+        : t('components.dialog.documentActions.unapprove'),
+      onPress: item.status !== DocumentStatus.APPROVED
+        ? () => approveDocument(item)
+        : () => unapproveDocument(item),
+      isDisabled: currentUser?.userType === UserType.Employee,
+    };
+  
+    const insertIndex = 2; // Specify the index where you want to insert the new action
+    actions.splice(insertIndex, 0, newAction);
+  
+    setPopoverActions(actions);
     setShowDocumentActionDialog(true);
   }
 
@@ -262,6 +273,26 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
       displayToast(t('documentsScreen.approvalSuccess'));
       closeDialogs();
+      await loadPaginatedDocuments();
+    } catch (error) {
+      displayToast(t(`errors.api.${error}`), true);
+    }
+  }
+
+  async function unapproveDocument(document: IDocument) {
+    try {
+      await DocumentServicePut.updateStatus(document.id, DocumentStatus.NONE, token);
+      const logInput: IDocumentActivityLogInput = {
+        action: DocumentLogAction.Modification,
+        actorIsAdmin: true,
+        actorID: currentUser?.id as string,
+        clientID: currentClient?.id as string,
+        documentID: document.id,
+      }
+      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+      displayToast(t('documentsScreen.approvalSuccess'));
+      closeDialogs();
+      await loadPaginatedDocuments();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
@@ -442,6 +473,20 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     )
   }
 
+  function TooltipActionContent() {
+    return (
+      <TooltipAction
+        showDialog={showDocumentActionDialog}
+        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+        isConfirmAvailable={false}
+        isCancelAvailable={true}
+        onConfirm={() => {}}
+        onCancel={() => setShowDocumentActionDialog(false)}
+        popoverActions={popoverActions}
+      />
+    );
+  }
+
   return (
     <>
       <AppContainer
@@ -467,22 +512,14 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
             isLoading ? (
               <ActivityIndicator size="large" color={Colors.primary} />
             ) : (
-              <DocumentGrid documentsFiltered={documentsFiltered} showDocumentDialog={showDocumentDialog} />
+              <DocumentGrid documentsFiltered={documentsFiltered} showDocumentDialog={displayDocumentDialog} />
             )
           }
         </>
       </AppContainer>
-      {AddDocumentDialog()}
-      <TooltipAction
-        showDialog={showDocumentActionDialog}
-        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
-        isConfirmAvailable={false}
-        isCancelAvailable={true}
-        onConfirm={() => {}}
-        onCancel={() => setShowDocumentActionDialog(false)}
-        popoverActions={popoverActions}
-      />
       {ToastContent()}
+      {TooltipActionContent()}
+      {AddDocumentDialog()}
       {DeleteConfirmationDialog()}
     </>
   );

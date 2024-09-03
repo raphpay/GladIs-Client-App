@@ -515,6 +515,7 @@
         "open": "Ouvrir",
         "download": "Télécharger",
         "approve": "Approuver",
+        "unapprove": "Désapprouver",
         "delete": "Supprimer"
       },
       "deleteDocument": {

@@ -507,6 +507,7 @@
         "open": "Open",
         "download": "Download",
         "approve": "Approve",
+        "unapprove": "Unapprove",
         "delete": "Delete"
       },
       "deleteDocument": {
