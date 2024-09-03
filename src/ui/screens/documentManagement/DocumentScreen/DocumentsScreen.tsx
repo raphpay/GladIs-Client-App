@@ -19,6 +19,7 @@ import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentService from '../../../../business-logic/services/DocumentService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
+import DocumentServiceUpdate from '../../../../business-logic/services/DocumentService/DocumentService.update';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
@@ -249,7 +250,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   async function approveDocument(document: IDocument) {
     try {
-      await DocumentService.getInstance().updateStatus(document.id, DocumentStatus.APPROVED, token);
+      await DocumentServiceUpdate.updateStatus(document.id, DocumentStatus.APPROVED, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Approbation,
         actorIsAdmin: true,
