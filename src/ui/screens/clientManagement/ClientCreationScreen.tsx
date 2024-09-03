@@ -242,6 +242,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         const createdEmployees = await convertEmployeesToUser();
         for (const employee of createdEmployees) {
           await UserServicePut.addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
+          await UserServicePut.updateModules(employee.id as string, selectedModules, castedToken);
         }
       } catch (error) {
         const errorMessage = (error as Error).message;
