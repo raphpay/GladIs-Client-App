@@ -6,7 +6,8 @@ import IAction from '../../../business-logic/model/IAction';
 import IModule from '../../../business-logic/model/IModule';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../../business-logic/services/ModuleService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setModulesReloadCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -96,7 +97,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
   async function loadModules() {
     if (currentClient && currentClient.id && token) {
       try {
-        const usersModules = await UserService.getInstance().getUsersModules(currentClient.id as string, token);
+        const usersModules = await UserServiceGet.getUsersModules(currentClient.id as string, token);
         setSelectedModules(usersModules);
       } catch (error) {
         console.log('Error getting modules for current client', error);
@@ -108,7 +109,7 @@ function ClientModules(props: ClientModulesProps): React.JSX.Element {
     // TODO: Enhance save method ( should be disabled if no changes were made )
     if (currentClient && currentClient.id && token) {
       try {
-        await UserService.getInstance().updateModules(currentClient.id, selectedModules, token);
+        await UserServicePut.updateModules(currentClient.id, selectedModules, token);
         dispatch(setModulesReloadCount(modulesReloadCount + 1));
         navigation.goBack();
       } catch (error) {

@@ -9,7 +9,10 @@ import IAction from '../../../business-logic/model/IAction';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceDelete from '../../../business-logic/services/UserService/UserService.delete';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
+import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -172,7 +175,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   async function loadEmployees() {
     if (currentClient && token) {
       try {
-        const clientEmployees = await UserService.getInstance().getClientEmployees(currentClient.id as string, token);
+        const clientEmployees = await UserServiceGet.getClientEmployees(currentClient.id as string, token);
         setEmployees(clientEmployees);
       } catch (error) {
         console.log('Error loading employees', error);
@@ -201,8 +204,8 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
       // Create user and add manager to user
       let user: IUser | undefined;
       try {
-        user = await UserService.getInstance().createUser(newEmployee, token);
-        await UserService.getInstance().addManagerToUser(user.id as string, currentClient.id as string, token);
+        user = await UserServicePost.createUser(newEmployee, token);
+        await UserServicePut.addManagerToUser(user.id as string, currentClient.id as string, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
@@ -226,7 +229,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
       }
 
       try {
-        await UserService.getInstance().updateUser(modifiedEmployee, token);
+        await UserServicePut.updateUser(modifiedEmployee, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
@@ -240,8 +243,8 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   async function deleteSelectedEmployee() {
     if (selectedEmployee) {
       try {
-        await UserService.getInstance().removeUser(selectedEmployee?.id as string, token);
-        await UserService.getInstance().removeEmployeeFromManager(currentClient?.id as string, selectedEmployee.id as string, token);
+        await UserServiceDelete.removeUser(selectedEmployee?.id as string, token);
+        await UserServicePut.removeEmployeeFromManager(currentClient?.id as string, selectedEmployee.id as string, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);

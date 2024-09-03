@@ -1,8 +1,10 @@
 import { IEventInput } from "../../model/IEvent";
 import IToken from "../../model/IToken";
 import { ILoginTryOutput } from "../../model/IUser";
+
 import AuthenticationService from "../../services/AuthenticationService";
-import UserService from "../../services/UserService";
+import UserServicePost from "../../services/UserService/UserService.post";
+import UserServicePut from "../../services/UserService/UserService.put";
 
 /**
  * A class to handle login screen logic
@@ -31,8 +33,8 @@ class LoginScreenManager {
 
   async updateUserConnectionAttempts(identifier: string): Promise<ILoginTryOutput> {
     try {
-      const output = await UserService.getInstance().getUserLoginTryOutput(identifier);
-      const tryAttempsCount = await UserService.getInstance().blockUserConnection(output.id as string);
+      const output = await UserServicePost.getUserLoginTryOutput(identifier);
+      const tryAttempsCount = await UserServicePut.blockUserConnection(output.id as string);
       output.connectionFailedAttempts = tryAttempsCount;
       return output;
     } catch (error) {

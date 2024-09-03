@@ -7,7 +7,8 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../business-logic/services/CacheService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -64,8 +65,8 @@ function DashboardScreen(props: DashboardScreenProps): any {
         if (currentUser) {
           try {
             const userID = currentUser.id as string; 
-            await UserService.getInstance().changePassword(userID, oldPassword, newPassword, token);
-            await UserService.getInstance().setUserFirstConnectionToFalse(userID, token);
+            await UserServicePut.changePassword(userID, oldPassword, newPassword, token);
+            await UserServicePut.setUserFirstConnectionToFalse(userID, token);
             setShowDialog(false);
             displayToast(t('api.success.passwordChanged'), false);
           } catch (error) {
@@ -83,7 +84,7 @@ function DashboardScreen(props: DashboardScreenProps): any {
       setShowDialog(currentUser.firstConnection ?? false);
     } else {
       const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
-      const user = await UserService.getInstance().getUserByID(userID as string, token);
+      const user = await UserServiceGet.getUserByID(userID as string, token);
       setDialogDescription(t('components.dialog.firstConnection.description'))
       setShowDialog(user.firstConnection ?? false);
     }

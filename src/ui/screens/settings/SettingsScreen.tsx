@@ -9,7 +9,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import IAction from '../../../business-logic/model/IAction';
 import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { removeModule, setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
@@ -104,7 +104,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   async function submitPasswordChange() {
     if (oldPassword.length !== 0 && newPassword.length !== 0) {
       try {
-        await UserService.getInstance().changePassword(currentUser?.id as string, oldPassword, newPassword, token);
+        await UserServicePut.changePassword(currentUser?.id as string, oldPassword, newPassword, token);
         setShowDialog(false);
         displayToast(t('api.success.passwordChanged'), false);
       } catch (error) {
@@ -144,7 +144,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
     if (modificationCount !== 0) {
       try {
-        const updatedUser = await UserService.getInstance().updateUserInfos(currentUserID, modifiedUser, token);
+        const updatedUser = await UserServicePut.updateUserInfos(currentUserID, modifiedUser, token);
         setShowModifyInfosDialog(false);
         displayToast(t('settings.userModification.success'));
         dispatch(setCurrentUser(updatedUser));

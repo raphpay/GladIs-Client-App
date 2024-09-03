@@ -16,7 +16,8 @@ import FinderModule from '../../../business-logic/modules/FinderModule';
 import AuthenticationService from '../../../business-logic/services/AuthenticationService';
 import CacheService from '../../../business-logic/services/CacheService';
 import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { setClientListCount, setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { changeClientBlockedStatus, setCurrentClient } from '../../../business-logic/store/slices/userReducer';
@@ -197,12 +198,12 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   async function blockClient() {
     // Block the client and its employees
     try {
-      await UserService.getInstance().blockUser(currentClient?.id as string, token);
+      await UserServicePut.blockUser(currentClient?.id as string, token);
       await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
-      const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+      const employees = await UserServiceGet.getClientEmployees(currentClient?.id as string, token);
       if (employees && employees.length !== 0) {
         for (const employee of employees) {
-          await UserService.getInstance().blockUser(employee.id as string, token);
+          await UserServicePut.blockUser(employee.id as string, token);
           await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
         }
       }
@@ -217,11 +218,11 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   async function unblockClient() {
     // Unblock the client and its employees
     try {
-      await UserService.getInstance().unblockUser(currentClient?.id as string, token);
-      const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+      await UserServicePut.unblockUser(currentClient?.id as string, token);
+      const employees = await UserServiceGet.getClientEmployees(currentClient?.id as string, token);
       if (employees && employees.length !== 0) {
         for (const employee of employees) {
-          await UserService.getInstance().blockUser(employee.id as string, token);
+          await UserServicePut.blockUser(employee.id as string, token);
           await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
         }
       }
@@ -234,7 +235,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   }
 
   async function loadClientIsBlocked() {
-    const client = await UserService.getInstance().getUserByID(currentClient?.id as string, token);
+    const client = await UserServiceGet.getUserByID(currentClient?.id as string, token);
     dispatch(changeClientBlockedStatus(client.isBlocked as boolean));
     reloadBlockTitle();
   }
@@ -278,7 +279,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
     if (modificationCount !== 0) {
       try {
-        const updatedClient = await UserService.getInstance().updateUserInfos(currentClientID, modifiedUser, token);
+        const updatedClient = await UserServicePut.updateUserInfos(currentClientID, modifiedUser, token);
         setShowModifyClientDialog(false);
         displayToast(t('settings.clientSettings.clientModification.success'));
         dispatch(setCurrentClient(updatedClient));

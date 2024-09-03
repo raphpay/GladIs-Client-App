@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import ISurvey from '../../../business-logic/model/ISurvey';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -60,7 +60,7 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
   async function loadClientInfos() {
     try {
       const clientID = survey.client.id;
-      const user = await UserService.getInstance().getUserByID(clientID, token);
+      const user = await UserServiceGet.getUserByID(clientID, token);
       setClientName(`${user.firstName} ${user.lastName}`);
       setClientCompany(user.companyName);
     } catch (error) {

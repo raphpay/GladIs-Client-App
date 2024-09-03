@@ -7,7 +7,7 @@ import IUser from "../model/IUser";
 import UserType from "../model/enums/UserType";
 // Services
 import FormService from "../services/FormService";
-import UserService from "../services/UserService";
+import UserServiceGet from "../services/UserService/UserService.get";
 import Utils from "../utils/Utils";
 // Logs
 import { IDocumentActivityLogInput } from "../model/IDocumentActivityLog";
@@ -232,7 +232,7 @@ class FormEditionManager {
    */
   private async loadUser(id: string, token: IToken | null) {
     try {
-      const user = await UserService.getInstance().getUserByID(id, token);
+      const user = await UserServiceGet.getUserByID(id, token);
       return user;
     } catch (error) {
       console.log('Error loading user', error);

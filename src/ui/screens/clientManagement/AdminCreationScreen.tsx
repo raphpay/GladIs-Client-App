@@ -6,7 +6,7 @@ import { ScrollView, View } from 'react-native';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
-import UserService from '../../../business-logic/services/UserService';
+import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -77,7 +77,7 @@ function AdminCreationScreen(props: AdminCreationScreenProps): React.JSX.Element
       password: BASE_PASSWORD,
     };
     try {
-      await UserService.getInstance().createUser(newAdmin, token);
+      await UserServicePost.createUser(newAdmin, token);
       displayToast(t('pendingUserManagement.success.adminCreation'));
 
       const delay = 2000; // 2 seconds

@@ -10,6 +10,7 @@ import ITechnicalDocTab from '../../../business-logic/model/ITechnicalDocumentat
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import TechnicalDocumentationTabService from '../../../business-logic/services/TechnicalDocumentationTabService';
 import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -116,7 +117,7 @@ function TechnicalDocAreaScreen(props: TechnicalDocAreaScreenProps): React.JSX.E
 
   async function loadTabs() {
     try {
-      const tabs = await UserService.getInstance().getUsersTabs(currentClient?.id, token)
+      const tabs = await UserServiceGet.getUsersTabs(currentClient?.id, token)
       const areaTabs = tabs.filter(tab => {
         return tab.area === area.id.toLowerCase();
       })

@@ -19,7 +19,7 @@ import DocumentServicePost from '../../../business-logic/services/DocumentServic
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -237,10 +237,10 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
     if (createdUser) {
       try {
-        await UserService.getInstance().updateModules(createdUser.id as string, selectedModules, castedToken);
+        await UserServicePut.updateModules(createdUser.id as string, selectedModules, castedToken);
         const createdEmployees = await convertEmployeesToUser();
         for (const employee of createdEmployees) {
-          await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
+          await UserServicePut.addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
         }
       } catch (error) {
         const errorMessage = (error as Error).message;

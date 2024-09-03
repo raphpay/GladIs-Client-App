@@ -9,7 +9,7 @@ import { IMessage, IMessageInput, IUserID } from '../../../business-logic/model/
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import MessageService from '../../../business-logic/services/MessageService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -144,7 +144,7 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     // Get user by mail
     let receiver: IUser | undefined;
     try {
-      receiver = await UserService.getInstance().getUserByEmail(messageReceiver, token);
+      receiver = await UserServicePost.getUserByEmail(messageReceiver, token);
     } catch (error) {
       const errorKeys: string[] = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
