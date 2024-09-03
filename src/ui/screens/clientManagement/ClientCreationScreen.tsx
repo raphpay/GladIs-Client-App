@@ -14,7 +14,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
-import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
 import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserService from '../../../business-logic/services/PendingUserService';
@@ -307,7 +307,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       const docs = await DocumentServicePost.getDocumentsAtPath(`${company}/logos/`, token);
       if (docs.length > 0) {
         const logo = docs[0];
-        const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+        const logoData = await DocumentServiceGet.download(logo.id as string, token);
         Platform.OS === PlatformName.Mac ?
           setLogoURI(`data:image/png;base64,${logoData}`) :
           setLogoURI(logoData);

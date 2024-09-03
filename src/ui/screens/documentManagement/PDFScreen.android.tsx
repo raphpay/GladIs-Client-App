@@ -11,7 +11,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../business-logic/services/CacheService';
-import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -56,7 +56,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // Async Methods
   async function loadFromAPI() {
     try {
-      let data = await DocumentService.getInstance().download(documentInput.id as string, token)
+      let data = await DocumentServiceGet.download(documentInput.id as string, token)
       await CacheService.getInstance().storeValue(documentInput.id as string, data);
       data = Utils.changeMimeType(data, 'application/pdf');
       setPDFData(data);

@@ -11,7 +11,7 @@ import {
 import IDocument from '../../business-logic/model/IDocument';
 import PlatformName from '../../business-logic/model/enums/PlatformName';
 import CacheService from '../../business-logic/services/CacheService';
-import DocumentService from '../../business-logic/services/DocumentService';
+import DocumentServiceGet from '../../business-logic/services/DocumentService/DocumentService.get';
 import DocumentServicePost from '../../business-logic/services/DocumentService/DocumentService.post';
 import { useAppSelector } from '../../business-logic/store/hooks';
 import { RootState } from '../../business-logic/store/store';
@@ -48,7 +48,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   async function loadLogoFromAPI() {
     const logoDoc = await getLogoDocument();
     if (logoDoc) {
-      const logoData = await DocumentService.getInstance().download(logoDoc.id, token);
+      const logoData = await DocumentServiceGet.download(logoDoc.id, token);
       await CacheService.getInstance().storeValue(`${currentClient?.id}/logo`, logoData)
       await CacheService.getInstance().storeValue(`${currentClient?.id}/logo-lastModified`, logoDoc.lastModified);
       displayLogo(logoData);

@@ -7,13 +7,13 @@ import {
   View
 } from 'react-native';
 
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import IUser from '../../../business-logic/model/IUser';
-import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
 import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/components/GridClientItemStyles';
 
@@ -39,7 +39,7 @@ function GridClientItem(props: GridClientItemProps): React.JSX.Element {
     const docs = await DocumentServicePost.getDocumentsAtPath(`${company}/logos/`, token);
     const logo = docs[0];
     if (logo && logo.id) {
-      const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+      const logoData = await DocumentServiceGet.download(logo.id as string, token);
       Platform.OS == PlatformName.Mac ? setLogoURI(`data:image/png;base64,${logoData}`) : setLogoURI(logoData);
     }
   }

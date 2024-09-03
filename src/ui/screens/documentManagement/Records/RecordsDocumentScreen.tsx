@@ -16,8 +16,8 @@ import IFolder, { IFolderInput, IFolderUpdateInput, IFolderUserRecordInput, Slee
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
-import DocumentService from '../../../../business-logic/services/DocumentService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
+import DocumentServiceGet from '../../../../business-logic/services/DocumentService/DocumentService.get';
 import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
 import FolderService from '../../../../business-logic/services/FolderService';
 import UserServicePost from '../../../../business-logic/services/UserService/UserService.post';
@@ -184,7 +184,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     try {
       const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
       if (cachedData === null || cachedData == undefined) {
-        let docData = await DocumentService.getInstance().download(document.id, token);
+        let docData = await DocumentServiceGet.download(document.id, token);
         docData = Utils.changeMimeType(docData, 'application/pdf');
         await CacheService.getInstance().storeValue(document.id as string, docData);
         const logInput: IDocumentActivityLogInput = {
