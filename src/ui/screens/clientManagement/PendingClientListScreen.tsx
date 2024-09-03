@@ -7,7 +7,9 @@ import IAction from '../../../business-logic/model/IAction';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import PendingUserService from '../../../business-logic/services/PendingUserService';
+import PendingUserServiceDelete from '../../../business-logic/services/PendingUserService/PendingUserService.delete';
+import PendingUserServiceGet from '../../../business-logic/services/PendingUserService/PendingUserService.get';
+import PendingUserServicePut from '../../../business-logic/services/PendingUserService/PendingUserService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -120,7 +122,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   // Async Methods
   async function updatePendingUserStatus(pendingUser: IPendingUser, status: PendingUserStatus) {
     try {
-      await PendingUserService.getInstance().updatePendingUserStatus(pendingUser, token, status);
+      await PendingUserServicePut.updatePendingUserStatus(pendingUser, token, status);
       // Update the grid
       await loadPendingUsers();
       // Close the dialogs
@@ -135,7 +137,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
   async function loadPendingUsers() {
     try {
       const castedToken = token as IToken;
-      const users = await PendingUserService.getInstance().getUsers(castedToken);
+      const users = await PendingUserServiceGet.getUsers(castedToken);
       setPendingUsers(users); 
     } catch (error) {
       console.log('Error loading pending users', error);
@@ -144,7 +146,7 @@ function PendingClientListScreen(props: PendingClientListScreenProps): React.JSX
 
   async function removePendingUser() {
     try {
-      await PendingUserService.getInstance().removePendingUser(selectedPendingUser?.id, token);
+      await PendingUserServiceDelete.removePendingUser(selectedPendingUser?.id, token);
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);

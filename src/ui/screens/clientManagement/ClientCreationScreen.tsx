@@ -17,7 +17,8 @@ import FinderModule from '../../../business-logic/modules/FinderModule';
 import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
 import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import ModuleService from '../../../business-logic/services/ModuleService';
-import PendingUserService from '../../../business-logic/services/PendingUserService';
+import PendingUserServiceGet from '../../../business-logic/services/PendingUserService/PendingUserService.get';
+import PendingUserServicePost from '../../../business-logic/services/PendingUserService/PendingUserService.post';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
@@ -174,7 +175,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     };
     let createdUser: IPendingUser | undefined;
     try {
-      createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+      createdUser = await PendingUserServicePost.askForSignUp(newPendingUser, selectedModules)
     } catch (error) {
       const errorKeys: string[] = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
@@ -228,7 +229,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     let createdUser: IUser | undefined;
 
     try {
-      createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
+      createdUser = await PendingUserServicePost.convertPendingUserToUser(id, castedToken);
     } catch (error) {
       const errorKeys = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
@@ -280,7 +281,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   async function loadModules() {
     try {
       if (pendingUser?.id != null) {
-        const pendingUsersModules = await PendingUserService.getInstance().getPendingUsersModules(pendingUser.id);
+        const pendingUsersModules = await PendingUserServiceGet.getPendingUsersModules(pendingUser.id);
         setSelectedModules(pendingUsersModules);
       } else {
         setSelectedModules([]);
@@ -293,7 +294,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   async function loadEmployees() {
     if (pendingUser != null) {
       try {
-        const employees = await PendingUserService.getInstance().getPotentialEmployees(pendingUser?.id, token);
+        const employees = await PendingUserServiceGet.getPotentialEmployees(pendingUser?.id, token);
         setPotentialEmployees(employees);
       } catch (error) {
         console.log('Error loading employees', error);
