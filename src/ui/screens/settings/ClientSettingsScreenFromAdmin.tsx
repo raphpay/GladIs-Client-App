@@ -13,7 +13,7 @@ import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import AuthenticationServiceDelete from '../../../business-logic/services/AuthenticationService/AuthenticationService.delete';
 import CacheService from '../../../business-logic/services/CacheService';
 import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
@@ -199,12 +199,12 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
     // Block the client and its employees
     try {
       await UserServicePut.blockUser(currentClient?.id as string, token);
-      await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+      await AuthenticationServiceDelete.removeTokenForUser(currentClient?.id as string, token);
       const employees = await UserServiceGet.getClientEmployees(currentClient?.id as string, token);
       if (employees && employees.length !== 0) {
         for (const employee of employees) {
           await UserServicePut.blockUser(employee.id as string, token);
-          await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+          await AuthenticationServiceDelete.removeTokenForUser(currentClient?.id as string, token);
         }
       }
       dispatch(changeClientBlockedStatus(true));
@@ -223,7 +223,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
       if (employees && employees.length !== 0) {
         for (const employee of employees) {
           await UserServicePut.blockUser(employee.id as string, token);
-          await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+          await AuthenticationServiceDelete.removeTokenForUser(currentClient?.id as string, token);
         }
       }
       dispatch(changeClientBlockedStatus(false));

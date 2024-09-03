@@ -2,7 +2,7 @@ import { IEventInput } from "../../model/IEvent";
 import IToken from "../../model/IToken";
 import { ILoginTryOutput } from "../../model/IUser";
 
-import AuthenticationService from "../../services/AuthenticationService";
+import AuthenticationService from "../../services/AuthenticationService/AuthenticationService";
 import UserServicePost from "../../services/UserService/UserService.post";
 import UserServicePut from "../../services/UserService/UserService.put";
 

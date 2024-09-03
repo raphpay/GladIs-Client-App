@@ -8,7 +8,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import IAction from '../../../business-logic/model/IAction';
 import { IUserUpdateInput } from '../../../business-logic/model/IUser';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import AuthenticationServiceDelete from '../../../business-logic/services/AuthenticationService/AuthenticationService.delete';
 import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { removeModule, setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
@@ -116,7 +116,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
   async function logout() {
     try {
-      await AuthenticationService.getInstance().logout(token);
+      await AuthenticationServiceDelete.logout(token);
       removeAllReduxStates();
     } catch (error) {
       const errorMessage = (error as Error).message;
