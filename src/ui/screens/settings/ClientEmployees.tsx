@@ -16,6 +16,7 @@ import UserServicePut from '../../../business-logic/services/UserService/UserSer
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
+import { BASE_PASSWORD } from '../../../business-logic/utils/envConfig';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
 import IconButton from '../../components/Buttons/IconButton';
@@ -34,19 +35,18 @@ type ClientEmployeesProps = NativeStackScreenProps<IClientManagementParams, Navi
 function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   // Dialogs
-  const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [dialogTitle, setDialogTitle] = useState<string>('');
   const [dialogDescription, setDialogDescription] = useState<string>('');
-  const [showEmployeeDialog, setShowEmployeeDialog] = useState<boolean>(false);
+  const [showAddEmployeeDialog, setShowAddEmployeeDialog] = useState<boolean>(false);
   const [showDeleteEmployeeDialog, setShowDeleteEmployeeDialog] = useState<boolean>(false);
+  const [showModifyDialog, setShowModifyDialog] = useState<boolean>(false);
+  const [showTooltipAction, setShowTooltipAction] = useState<boolean>(false);
   // Potential Employee
   const [potentialEmployeeFirstName, setPotentialEmployeeFirstName] = useState<string>('');
   const [potentialEmployeeLastName, setPotentialEmployeeLastName] = useState<string>('');
   const [potentialEmployeeEmail, setPotentialEmployeeEmail] = useState<string>('');
   const [potentialEmployeePhoneNumber, setPotentialEmployeePhoneNumber] = useState<string>('');
   const [selectedEmployee, setSelectedEmployee] = useState<IUser>();
-  // Modifying Employee
-  const [isModifyingEmployee, setIsModifiyingEmployee] = useState<boolean>(false);
+  // Employee
   const [employees, setEmployees] = useState<IUser[]>([]);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -77,11 +77,12 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
   const popoverActions: IAction[] = [
     {
       title: t('components.tooltip.modify'),
-      onPress: () => showModifyEmployeeDialog(selectedEmployee as IUser)
+      onPress: () => displayModifyEmployeeDialog(selectedEmployee as IUser)
     },
     {
       title: t('components.buttons.delete'),
-      onPress: () => displayDeleteEmployeeDialog(selectedEmployee as IUser)
+      onPress: () => displayDeleteEmployeeDialog(),
+      isDestructive: true
     }
   ];
 
@@ -116,45 +117,40 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     return isFilled;
   }
 
-  function showModifyEmployeeDialog(employee: IUser) {
-    setShowEmployeeDialog(false);
-    setIsModifiyingEmployee(true);
-    setShowDialog(true);
+  function closeDialogs() {
+    setShowAddEmployeeDialog(false);
+    setShowDeleteEmployeeDialog(false);
+    setShowModifyDialog(false);
+    setShowTooltipAction(false);
+  }
+
+  function displayModifyEmployeeDialog(employee: IUser) {
+    closeDialogs();
+    setShowModifyDialog(true);
+    setDialogDescription(t('components.dialog.modifyEmployee.description'));
     if (employee) {
       setPotentialEmployeeFirstName(employee.firstName);
       setPotentialEmployeeLastName(employee.lastName);
       setPotentialEmployeeEmail(employee.email);
       setPotentialEmployeePhoneNumber(employee.phoneNumber);
-      setDialogTitle(t('components.dialog.modifyEmployee.title'));
-      setDialogDescription(t('components.dialog.modifyEmployee.description'));
     }
   }
 
-  function showAddEmployeeDialog() {
-    setShowDialog(true);
-    setIsModifiyingEmployee(false);
-    setDialogTitle(t('components.dialog.addEmployee.title'));
+  function displayAddEmployeeDialog() {
+    closeDialogs();
+    setShowAddEmployeeDialog(true);
     setDialogDescription(t('components.dialog.addEmployee.description'));
   }
 
   function displayEmployeeDialog(item: IUser) {
+    closeDialogs();
     setSelectedEmployee(item);
-    setDialogTitle(`${t('components.dialog.pendingUserManagement.action')} : ${item.username}`);
-    setShowEmployeeDialog(true);
+    setShowTooltipAction(true);
   }
 
-  function displayDeleteEmployeeDialog(employee: IUser) {
-    setShowEmployeeDialog(false);
+  function displayDeleteEmployeeDialog() {
+    closeDialogs();
     setShowDeleteEmployeeDialog(true);
-    setDialogTitle(`${t('components.dialog.deleteEmployee.title')} ${employee.username} ?`);
-    setDialogDescription(t('components.dialog.deleteEmployee.description'));
-  }
-
-  function resetDialog() {
-    setShowDialog(false);
-    setShowDeleteEmployeeDialog(false);
-    setDialogTitle('');
-    setDialogDescription('');
   }
 
   function displayToast(message: string, isError: boolean = false) {
@@ -168,7 +164,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     setPotentialEmployeeLastName('');
     setPotentialEmployeeEmail('');
     setPotentialEmployeePhoneNumber('');
-    setShowDialog(false);
+    closeDialogs();
   }
 
   // Async Methods
@@ -182,14 +178,6 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
       }
     }
   }
-
-  async function addOrModifyEmployee() {
-    if (isModifyingEmployee) {
-      await modifyEmployee(selectedEmployee as IUser);
-    } else {
-      await addEmployee();
-    }
-  }
   
   async function addEmployee() {
     if (isFormFilled() && isContactDetailsValid() && currentClient) {
@@ -200,6 +188,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         phoneNumber: potentialEmployeePhoneNumber,
         companyName: currentClient?.companyName || '',
         userType: UserType.Employee,
+        password: BASE_PASSWORD
       }
       // Create user and add manager to user
       let user: IUser | undefined;
@@ -216,10 +205,10 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     }
   }
 
-  async function modifyEmployee(employee: IUser) {
-    if (isFormFilled() && isContactDetailsValid() && currentClient) {
+  async function modifyEmployee() {
+    if (isFormFilled() && isContactDetailsValid() && currentClient && selectedEmployee) {
       const modifiedEmployee: IUser = {
-        id: employee.id,
+        id: selectedEmployee.id,
         firstName: potentialEmployeeFirstName,
         lastName: potentialEmployeeLastName,
         email: potentialEmployeeEmail,
@@ -250,7 +239,7 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         displayToast(t(`errors.api.${errorMessage}`), true);
       }
 
-      resetDialog();
+      closeDialogs();
       await loadEmployees();
     }
   }
@@ -282,51 +271,98 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     );
   }
 
-  const dialogContent = () => {
+  const AddEmployeeDialog = () => {
     return (
-      <Dialog
-        title={dialogTitle}
-        description={dialogDescription}
-        onConfirm={addOrModifyEmployee}
-        isCancelAvailable={true}
-        onCancel={resetDialog}
-      >
-        <>
-          <GladisTextInput
-            value={potentialEmployeeFirstName}
-            onValueChange={setPotentialEmployeeFirstName}
-            placeholder={t('quotation.firstName')}
-          />
-          <GladisTextInput 
-            value={potentialEmployeeLastName}
-            onValueChange={setPotentialEmployeeLastName}
-            placeholder={t('quotation.lastName')}
-          />
-          <GladisTextInput 
-            value={potentialEmployeeEmail}
-            onValueChange={setPotentialEmployeeEmail}
-            placeholder={t('quotation.email')}
-          />
-          <GladisTextInput 
-            value={potentialEmployeePhoneNumber}
-            onValueChange={setPotentialEmployeePhoneNumber}
-            placeholder={t('quotation.phone')}
-          />
-        </>
-      </Dialog>
+      <>
+        {
+          showAddEmployeeDialog && (
+            <Dialog
+              title={t('components.dialog.addEmployee.title')}
+              description={dialogDescription}
+              onConfirm={addEmployee}
+              isCancelAvailable={true}
+              onCancel={closeDialogs}
+            >
+              <>
+                <GladisTextInput
+                  value={potentialEmployeeFirstName}
+                  onValueChange={setPotentialEmployeeFirstName}
+                  placeholder={t('quotation.firstName')}
+                />
+                <GladisTextInput 
+                  value={potentialEmployeeLastName}
+                  onValueChange={setPotentialEmployeeLastName}
+                  placeholder={t('quotation.lastName')}
+                />
+                <GladisTextInput 
+                  value={potentialEmployeeEmail}
+                  onValueChange={setPotentialEmployeeEmail}
+                  placeholder={t('quotation.email')}
+                />
+                <GladisTextInput 
+                  value={potentialEmployeePhoneNumber}
+                  onValueChange={setPotentialEmployeePhoneNumber}
+                  placeholder={t('quotation.phone')}
+                />
+              </>
+            </Dialog>
+          )
+        }
+      </>
     )
   }
 
-  function deleteEmployeeDialog() {
+  const ModifyEmployeeDialog = () => {
+    return (
+      <>
+        {
+          showModifyDialog && (
+            <Dialog
+              title={t('components.dialog.modifyEmployee.title')}
+              description={dialogDescription}
+              onConfirm={modifyEmployee}
+              isCancelAvailable={true}
+              onCancel={closeDialogs}
+            >
+              <>
+                <GladisTextInput
+                  value={potentialEmployeeFirstName}
+                  onValueChange={setPotentialEmployeeFirstName}
+                  placeholder={t('quotation.firstName')}
+                />
+                <GladisTextInput 
+                  value={potentialEmployeeLastName}
+                  onValueChange={setPotentialEmployeeLastName}
+                  placeholder={t('quotation.lastName')}
+                />
+                <GladisTextInput 
+                  value={potentialEmployeeEmail}
+                  onValueChange={setPotentialEmployeeEmail}
+                  placeholder={t('quotation.email')}
+                />
+                <GladisTextInput 
+                  value={potentialEmployeePhoneNumber}
+                  onValueChange={setPotentialEmployeePhoneNumber}
+                  placeholder={t('quotation.phone')}
+                />
+              </>
+            </Dialog>
+          )
+        }
+      </>
+    );
+  }
+
+  function DeleteEmployeeDialog() {
     return (
       <>
         {
           showDeleteEmployeeDialog && (
             <Dialog
-              title={dialogTitle}
-              description={dialogDescription}
+              title={`${t('components.dialog.deleteEmployee.title')} ${selectedEmployee?.username} ?`}
+              description={t('components.dialog.deleteEmployee.description')}
               onConfirm={deleteSelectedEmployee}
-              onCancel={resetDialog}
+              onCancel={closeDialogs}
               isCancelAvailable={true}
             />
           )
@@ -352,6 +388,20 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
     )
   }
 
+  const TooltipContent = () => {
+    return (
+      <TooltipAction
+        showDialog={showTooltipAction}
+        title={`${t('components.dialog.pendingUserManagement.action')} : ${selectedEmployee?.username}`}
+        isConfirmAvailable={false}
+        isCancelAvailable={true}
+        onConfirm={() => {}}
+        onCancel={closeDialogs}
+        popoverActions={popoverActions}
+      />
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -363,15 +413,11 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         navigationHistoryItems={navigationHistoryItems}
         showBackButton={true}
         navigateBack={navigateBack}
-        showDialog={showDialog}
-        setShowDialog={setShowDialog}
-        dialogIsShown={showDialog}
-        dialog={dialogContent()}
         adminButton={
           <IconButton
             title={t('components.buttons.addEmployee')}
             icon={plusIcon}
-            onPress={showAddEmployeeDialog}
+            onPress={displayAddEmployeeDialog}
           />
         }
       >
@@ -390,17 +436,11 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
           )
         }
       </AppContainer>
-      {deleteEmployeeDialog()}
-      <TooltipAction
-        showDialog={showEmployeeDialog}
-        title={dialogTitle}
-        description={dialogDescription}
-        isCancelAvailable={true}
-        onConfirm={addOrModifyEmployee}
-        onCancel={() => setShowEmployeeDialog(false)}
-        popoverActions={popoverActions}
-      />
       {ToastContent()}
+      {TooltipContent()}
+      {AddEmployeeDialog()}
+      {ModifyEmployeeDialog()}
+      {DeleteEmployeeDialog()}
     </>
   );
 }
