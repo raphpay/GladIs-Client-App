@@ -91,7 +91,7 @@ class FolderService {
     return {
       title: input.title,
       number: input.number,
-      folder: input.folder,
+      sleeve: input.sleeve,
       userID: {
         id: input.userID,
       },
