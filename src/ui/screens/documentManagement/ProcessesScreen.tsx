@@ -90,7 +90,7 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
     dispatch(setDocumentListCount(documentListCount + 1));
     const formattedPath = Utils.removeWhitespace(`${currentFolder.title}/${item.title}`);
     if (item.id === 'formsID') {
-      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: formattedPath });
+      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: formattedPath, currentFolder });
     } else if (item.id === 'recordsID') {
       navigation.navigate(NavigationRoutes.RecordsDocumentScreen, {
         currentFolder,

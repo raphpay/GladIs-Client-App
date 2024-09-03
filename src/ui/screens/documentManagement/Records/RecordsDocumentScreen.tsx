@@ -107,10 +107,41 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     }
   ];
 
+  const navigationHistoryItems: IAction[] = [
+    {
+      title: t('dashboard.title'),
+      onPress: () => navigateToDashboard(),
+    },
+    {
+      title: t('documentManagement.title'),
+      onPress: () => navigateToDocumentManagement(),
+    },
+    {
+      title: t('systemQuality.title'),
+      onPress: () => navigateToSystemQuality()
+    },
+    {
+      title: currentFolder.title,
+      onPress: () => navigateBack()
+    }
+  ];
+
   // Sync Methods
   function navigateBack() {
     // Back to subcategories
     navigation.goBack();
+  }
+
+  function navigateToDashboard() {
+    navigation.navigate(currentUser?.userType === UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+  }
+
+  function navigateToDocumentManagement() {
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen);
+  }
+
+  function navigateToSystemQuality() {
+    navigation.navigate(NavigationRoutes.SystemQualityScreen);
   }
 
   function navigateTo(item: IFolder) {
@@ -567,13 +598,14 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   return (
     <>
       <AppContainer
-        mainTitle={'Records'}
+        mainTitle={t('process.items.records')}
         searchText={searchText}
         setSearchText={setSearchText}
         showBackButton={true}
         showSearchText={true}
         navigateBack={navigateBack}
         showSettings={true}
+        navigationHistoryItems={navigationHistoryItems}
         additionalComponent={
           <Pagination
             currentPage={currentPage}
