@@ -3,7 +3,7 @@ import IToken from "../../model/IToken";
 import APIService from "../APIService";
 import DocumentService from "../DocumentService";
 
-class DocumentServiceUpdate extends DocumentService {
+class DocumentServicePut extends DocumentService {
   static baseRoute = 'documents';
 
   /**
@@ -24,4 +24,4 @@ class DocumentServiceUpdate extends DocumentService {
 }
 }
 
-export default DocumentServiceUpdate;
+export default DocumentServicePut;
