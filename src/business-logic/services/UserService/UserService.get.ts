@@ -1,4 +1,5 @@
 import CacheKeys from "../../model/enums/CacheKeys";
+import IFolder from "../../model/IFolder";
 import IModule from "../../model/IModule";
 import IPasswordResetToken from "../../model/IPasswordResetToken";
 import ITechnicalDocTab from "../../model/ITechnicalDocumentationTab";
@@ -127,6 +128,38 @@ class UserServiceGet extends UserService {
       const resetToken = await APIService.get<IPasswordResetToken>(`${this.baseRoute}/${userID}/resetToken`, token?.value as string);
       const value = resetToken.token as string;
       return value;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get the system quality folders for the user
+   * @param userID The user ID
+   * @param token The token
+   * @returns The system quality folders
+   * @throws Error
+   */
+  static async getSystemQualityFolders(userID: string, token: IToken | null): Promise<IFolder[]> {
+    try {
+      const folder = await APIService.get<IFolder[]>(`${this.baseRoute}/${userID}/folders/systemQuality`, token?.value as string);
+      return folder;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Get the records folders for the user
+   * @param userID The user ID
+   * @param token The token
+   * @returns The records folders
+   * @throws Error
+   */
+  static async getRecordsFolders(userID: string, token: IToken | null): Promise<IFolder[]> {
+    try {
+      const folder = await APIService.get<IFolder[]>(`${this.baseRoute}/${userID}/folders/records`, token?.value as string);
+      return folder;
     } catch (error) {
       throw error;
     }
