@@ -2,7 +2,7 @@ import IDocument, { IDocumentPaginatedOutput } from "../../model/IDocument";
 import IFile from "../../model/IFile";
 import IToken from "../../model/IToken";
 import APIService from "../APIService";
-import DocumentService from "../DocumentService";
+import DocumentService from "./DocumentService";
 
 class DocumentServicePost extends DocumentService {
   static baseRoute = 'documents';
