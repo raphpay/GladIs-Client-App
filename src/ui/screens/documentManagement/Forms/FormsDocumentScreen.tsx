@@ -47,7 +47,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
 
   const { navigation } = props;
-  const { documentPath } = props.route.params;
+  const { documentPath, currentFolder } = props.route.params;
   const { t } = useTranslation();
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { formsCount } = useAppSelector((state: RootState) => state.forms);
@@ -65,6 +65,38 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   // Sync Methods
   function navigateBack() {
     navigation.goBack();
+  }
+
+  const navigationHistoryItems: IAction[] = [
+    {
+      title: t('dashboard.title'),
+      onPress: () => navigateToDashboard(),
+    },
+    {
+      title: t('documentManagement.title'),
+      onPress: () => navigateToDocumentManagement(),
+    },
+    {
+      title: t('systemQuality.title'),
+      onPress: () => navigateToSystemQuality()
+    },
+    {
+      title: currentFolder.title,
+      onPress: () => navigateBack()
+    }
+  ];
+
+  // Sync Methods
+  function navigateToDashboard() {
+    navigation.navigate(currentUser?.userType === UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+  }
+
+  function navigateToDocumentManagement() {
+    navigation.navigate(NavigationRoutes.DocumentManagementScreen);
+  }
+
+  function navigateToSystemQuality() {
+    navigation.navigate(NavigationRoutes.SystemQualityScreen);
   }
 
   function addForm() {
@@ -373,6 +405,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     <>
       <AppContainer
         mainTitle={t('forms.title')}
+        navigationHistoryItems={navigationHistoryItems}
         showBackButton={true}
         showSearchText={true}
         searchText={searchText}
