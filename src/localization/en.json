@@ -482,6 +482,7 @@
       },
       "addEmployee": {
         "title": "Add employee",
+        "description": "Please fill the informations below",
         "errors": {
           "fillAll": "Please fill all informations fields.",
           "invalidPhoneAndEmail": "Please verify the email address and the phone number",

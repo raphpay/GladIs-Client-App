@@ -490,6 +490,7 @@
       },
       "addEmployee": {
         "title": "Ajouter un employé",
+        "description": "Veuillez remplir les informations ci-dessous",
         "errors": {
           "fillAll": "Veuillez remplir toutes les informations.",
           "invalidPhoneAndEmail": "Veuillez vérifier l'addresse mail et le numéro de téléphone",
