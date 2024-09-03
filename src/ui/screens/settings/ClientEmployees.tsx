@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { IClientManagementParams } from '../../../navigation/Routes';
 
 import IAction from '../../../business-logic/model/IAction';
+import IModule from '../../../business-logic/model/IModule';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
@@ -188,13 +189,15 @@ function ClientEmployees(props: ClientEmployeesProps): React.JSX.Element {
         phoneNumber: potentialEmployeePhoneNumber,
         companyName: currentClient?.companyName || '',
         userType: UserType.Employee,
-        password: BASE_PASSWORD
+        password: BASE_PASSWORD,
+        modules: currentClient.modules ?? [],
       }
       // Create user and add manager to user
       let user: IUser | undefined;
       try {
         user = await UserServicePost.createUser(newEmployee, token);
         await UserServicePut.addManagerToUser(user.id as string, currentClient.id as string, token);
+        await UserServicePut.updateModules(user.id as string, currentClient.modules as IModule[], token);
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
