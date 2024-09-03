@@ -12,9 +12,9 @@ import { ILoginTryOutput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
-import EventService from '../../../business-logic/services/EventService';
+import EventServicePost from '../../../business-logic/services/EventService/EventService.post';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
 import { setCurrentClient, setCurrentUser, setIsAdmin } from '../../../business-logic/store/slices/userReducer';
@@ -129,7 +129,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
         date: Date.now(),
         clientID: tryOutput.id ?? '0',
       }
-      await EventService.getInstance().createMaxAttemptsEvent(event);
+      await EventServicePost.createMaxAttemptsEvent(event);
     } catch (error) {
       console.log('Error sending max attempts event', error );
     }
@@ -137,7 +137,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   async function dispatchValues(token: IToken) {
     try {
-      const user = await UserService.getInstance().getUserByID(token.user.id, token);
+      const user = await UserServiceGet.getUserByID(token.user.id, token);
       dispatch(setCurrentUser(user));
       dispatch(setIsAdmin(user.userType === UserType.Admin))
       if (user.userType !== UserType.Admin) {

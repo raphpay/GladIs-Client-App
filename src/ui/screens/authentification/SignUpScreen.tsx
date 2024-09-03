@@ -20,9 +20,9 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
-import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import ModuleService from '../../../business-logic/services/ModuleService';
-import PendingUserService from '../../../business-logic/services/PendingUserService';
+import PendingUserServicePost from '../../../business-logic/services/PendingUserService/PendingUserService.post';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import Utils from '../../../business-logic/utils/Utils';
 
@@ -122,7 +122,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       status: PendingUserStatus.pending
     }
     try {
-      const createdUser = await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
+      const createdUser = await PendingUserServicePost.askForSignUp(pendingUser, selectedModules);
       await uploadLogo();
       const id = createdUser.id as string;
       await createEmployees(id);
@@ -142,7 +142,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           data: imageData,
           filename: fileName
         }
-        await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
+        await DocumentServicePost.uploadLogo(file, fileName, `${companyName}/logos/`);
       } catch (error) {
         console.log('Error uploading logo', error);
       }

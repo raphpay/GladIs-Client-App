@@ -11,8 +11,8 @@ import IForm from '../business-logic/model/IForm';
 import IPendingUser from '../business-logic/model/IPendingUser';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
-import AuthenticationService from '../business-logic/services/AuthenticationService';
-import UserService from '../business-logic/services/UserService';
+import AuthenticationServiceGet from '../business-logic/services/AuthenticationService/AuthenticationService.get';
+import UserServiceGet from '../business-logic/services/UserService/UserService.get';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
 import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser, setIsAdmin } from '../business-logic/store/slices/userReducer';
@@ -322,11 +322,11 @@ export let Routes = () => {
   async function checkAuthentication() {
     if (token == null) {
       try {
-        const token = await AuthenticationService.getInstance().checkAuthentication();
+        const token = await AuthenticationServiceGet.checkAuthentication();
         setIsLoggedIn(!!token);
         if (token != null) {
           dispatch(setToken(token));
-          const currentUser = await UserService.getInstance().getUserByID(token.user.id, token);
+          const currentUser = await UserServiceGet.getUserByID(token.user.id, token);
           dispatch(setCurrentUser(currentUser));
           dispatch(setIsAdmin(currentUser.userType === UserType.Admin));
           if (currentUser.userType !== UserType.Admin) {

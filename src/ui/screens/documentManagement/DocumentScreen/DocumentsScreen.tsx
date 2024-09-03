@@ -17,8 +17,10 @@ import UserType from '../../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
-import DocumentService from '../../../../business-logic/services/DocumentService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
+import DocumentServiceGet from '../../../../business-logic/services/DocumentService/DocumentService.get';
+import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
+import DocumentServicePut from '../../../../business-logic/services/DocumentService/DocumentService.put';
 import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
 import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
@@ -205,7 +207,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
     try {
       const file: IFile = { data, filename: filename}
-      const createdDocument = await DocumentService.getInstance().upload(file, filename, path, token);
+      const createdDocument = await DocumentServicePost.upload(file, filename, path, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Creation,
         actorIsAdmin: true,
@@ -226,7 +228,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     try {
       const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
       if (cachedData === null || cachedData == undefined) {
-        let docData = await DocumentService.getInstance().download(document.id, token);
+        let docData = await DocumentServiceGet.download(document.id, token);
         docData = Utils.changeMimeType(docData, 'application/pdf');
         await CacheService.getInstance().storeValue(document.id as string, docData);
         const logInput: IDocumentActivityLogInput = {
@@ -249,7 +251,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   async function approveDocument(document: IDocument) {
     try {
-      await DocumentService.getInstance().updateStatus(document.id, DocumentStatus.APPROVED, token);
+      await DocumentServicePut.updateStatus(document.id, DocumentStatus.APPROVED, token);
       const logInput: IDocumentActivityLogInput = {
         action: DocumentLogAction.Approbation,
         actorIsAdmin: true,
@@ -268,7 +270,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   async function loadPaginatedDocuments() {
     try {
       setIsLoading(true);
-      const paginatedOutput = await DocumentService.getInstance().getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
+      const paginatedOutput = await DocumentServicePost.getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
       setDocuments(paginatedOutput.documents);
       setTotalPages(paginatedOutput.pageCount);
       setIsLoading(false); 

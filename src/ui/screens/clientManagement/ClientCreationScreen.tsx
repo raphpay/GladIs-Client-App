@@ -14,11 +14,13 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
-import DocumentService from '../../../business-logic/services/DocumentService';
+import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
+import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import ModuleService from '../../../business-logic/services/ModuleService';
-import PendingUserService from '../../../business-logic/services/PendingUserService';
+import PendingUserServiceGet from '../../../business-logic/services/PendingUserService/PendingUserService.get';
+import PendingUserServicePost from '../../../business-logic/services/PendingUserService/PendingUserService.post';
 import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -173,7 +175,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     };
     let createdUser: IPendingUser | undefined;
     try {
-      createdUser = await PendingUserService.getInstance().askForSignUp(newPendingUser, selectedModules)
+      createdUser = await PendingUserServicePost.askForSignUp(newPendingUser, selectedModules)
     } catch (error) {
       const errorKeys: string[] = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
@@ -227,7 +229,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     let createdUser: IUser | undefined;
 
     try {
-      createdUser = await PendingUserService.getInstance().convertPendingUserToUser(id, castedToken);
+      createdUser = await PendingUserServicePost.convertPendingUserToUser(id, castedToken);
     } catch (error) {
       const errorKeys = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
@@ -236,10 +238,10 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
 
     if (createdUser) {
       try {
-        await UserService.getInstance().updateModules(createdUser.id as string, selectedModules, castedToken);
+        await UserServicePut.updateModules(createdUser.id as string, selectedModules, castedToken);
         const createdEmployees = await convertEmployeesToUser();
         for (const employee of createdEmployees) {
-          await UserService.getInstance().addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
+          await UserServicePut.addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
         }
       } catch (error) {
         const errorMessage = (error as Error).message;
@@ -272,14 +274,14 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         data: imageData,
         filename: fileName
       }
-      await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
+      await DocumentServicePost.uploadLogo(file, fileName, `${companyName}/logos/`);
     }
   }
   
   async function loadModules() {
     try {
       if (pendingUser?.id != null) {
-        const pendingUsersModules = await PendingUserService.getInstance().getPendingUsersModules(pendingUser.id);
+        const pendingUsersModules = await PendingUserServiceGet.getPendingUsersModules(pendingUser.id);
         setSelectedModules(pendingUsersModules);
       } else {
         setSelectedModules([]);
@@ -292,7 +294,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   async function loadEmployees() {
     if (pendingUser != null) {
       try {
-        const employees = await PendingUserService.getInstance().getPotentialEmployees(pendingUser?.id, token);
+        const employees = await PendingUserServiceGet.getPotentialEmployees(pendingUser?.id, token);
         setPotentialEmployees(employees);
       } catch (error) {
         console.log('Error loading employees', error);
@@ -303,10 +305,10 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   async function loadLogo() {
     const company = pendingUser?.companyName as string;
     if (company) {
-      const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+      const docs = await DocumentServicePost.getDocumentsAtPath(`${company}/logos/`, token);
       if (docs.length > 0) {
         const logo = docs[0];
-        const logoData = await DocumentService.getInstance().download(logo.id as string, token);
+        const logoData = await DocumentServiceGet.download(logo.id as string, token);
         Platform.OS === PlatformName.Mac ?
           setLogoURI(`data:image/png;base64,${logoData}`) :
           setLogoURI(logoData);

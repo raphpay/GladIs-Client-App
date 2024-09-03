@@ -2,7 +2,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { IEvent } from '../../../business-logic/model/IEvent';
-import EventService from '../../../business-logic/services/EventService';
+import EventServiceDelete from '../../../business-logic/services/EventService/EventService.delete';
+import EventServicePut from '../../../business-logic/services/EventService/EventService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -40,7 +41,7 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
   async function archiveEvent() {
     if (selectedEvent as IEvent) {
       try {
-        await EventService.getInstance().archive(selectedEvent.id, token);
+        await EventServiceDelete.archive(selectedEvent.id, token);
         setShowEventDialog(false);
         await loadAllEvents();
       } catch (error) {
@@ -53,7 +54,7 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
   async function deleteEvent() {
     if (selectedEvent as IEvent) {
       try {
-        await EventService.getInstance().remove(selectedEvent.id, token);
+        await EventServiceDelete.remove(selectedEvent.id, token);
         setShowEventDialog(false);
         await loadAllEvents();
       } catch (error) {
@@ -66,7 +67,7 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
   async function restoreEvent() {
     if (selectedEvent as IEvent) {
       try {
-        await EventService.getInstance().restore(selectedEvent.id, token);
+        await EventServicePut.restore(selectedEvent.id, token);
         setShowEventDialog(false);
         await loadAllEvents();
       } catch (error) {

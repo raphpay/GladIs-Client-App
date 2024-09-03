@@ -18,7 +18,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PlatformName, { Orientation } from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
 import FolderService from '../../../business-logic/services/FolderService';
-import UserServiceRead from '../../../business-logic/services/UserService.read';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
@@ -277,7 +277,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     async function init() {
       try {
         const userID = currentClient?.id as string;
-        const folder = await UserServiceRead.getSystemQualityFolders(userID, token);
+        const folder = await UserServiceGet.getSystemQualityFolders(userID, token);
         if (folder.length === 0) {
           await createInitialFolder();
         } else {

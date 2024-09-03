@@ -9,13 +9,15 @@ import { IClientManagementParams } from '../../../navigation/Routes';
 
 import IAction from '../../../business-logic/model/IAction';
 import IFile from '../../../business-logic/model/IFile';
+import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import FinderModule from '../../../business-logic/modules/FinderModule';
-import AuthenticationService from '../../../business-logic/services/AuthenticationService';
+import AuthenticationServiceDelete from '../../../business-logic/services/AuthenticationService/AuthenticationService.delete';
 import CacheService from '../../../business-logic/services/CacheService';
-import DocumentService from '../../../business-logic/services/DocumentService';
-import UserService from '../../../business-logic/services/UserService';
+import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { setClientListCount, setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { changeClientBlockedStatus, setCurrentClient } from '../../../business-logic/store/slices/userReducer';
@@ -23,16 +25,15 @@ import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
+import OutlinedTextButton from '../../components/Buttons/OutlinedTextButton';
 import Dialog from '../../components/Dialogs/Dialog';
 import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import Grid from '../../components/Grid/Grid';
+import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
-import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
-import OutlinedTextButton from '../../components/Buttons/OutlinedTextButton';
-import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 type ClientSettingsScreenFromAdminProps = NativeStackScreenProps<IClientManagementParams, NavigationRoutes.ClientSettingsScreenFromAdmin>;
 
@@ -174,7 +175,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
           data,
           filename
         };
-        await DocumentService.getInstance().uploadLogo(file, filename, `${currentClient.companyName}/logos/`);
+        await DocumentServicePost.uploadLogo(file, filename, `${currentClient.companyName}/logos/`);
         await CacheService.getInstance().storeValue(`${currentClient?.id}/logo`, data);
         await CacheService.getInstance().storeValue(`${currentClient?.id}/logo-lastModified`, new Date());
         displayToast(t('api.success.logoUploaded'), false);
@@ -197,13 +198,13 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   async function blockClient() {
     // Block the client and its employees
     try {
-      await UserService.getInstance().blockUser(currentClient?.id as string, token);
-      await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
-      const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+      await UserServicePut.blockUser(currentClient?.id as string, token);
+      await AuthenticationServiceDelete.removeTokenForUser(currentClient?.id as string, token);
+      const employees = await UserServiceGet.getClientEmployees(currentClient?.id as string, token);
       if (employees && employees.length !== 0) {
         for (const employee of employees) {
-          await UserService.getInstance().blockUser(employee.id as string, token);
-          await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+          await UserServicePut.blockUser(employee.id as string, token);
+          await AuthenticationServiceDelete.removeTokenForUser(currentClient?.id as string, token);
         }
       }
       dispatch(changeClientBlockedStatus(true));
@@ -217,12 +218,12 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   async function unblockClient() {
     // Unblock the client and its employees
     try {
-      await UserService.getInstance().unblockUser(currentClient?.id as string, token);
-      const employees = await UserService.getInstance().getClientEmployees(currentClient?.id as string, token);
+      await UserServicePut.unblockUser(currentClient?.id as string, token);
+      const employees = await UserServiceGet.getClientEmployees(currentClient?.id as string, token);
       if (employees && employees.length !== 0) {
         for (const employee of employees) {
-          await UserService.getInstance().blockUser(employee.id as string, token);
-          await AuthenticationService.getInstance().removeTokenForUser(currentClient?.id as string, token);
+          await UserServicePut.blockUser(employee.id as string, token);
+          await AuthenticationServiceDelete.removeTokenForUser(currentClient?.id as string, token);
         }
       }
       dispatch(changeClientBlockedStatus(false));
@@ -234,7 +235,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
   }
 
   async function loadClientIsBlocked() {
-    const client = await UserService.getInstance().getUserByID(currentClient?.id as string, token);
+    const client = await UserServiceGet.getUserByID(currentClient?.id as string, token);
     dispatch(changeClientBlockedStatus(client.isBlocked as boolean));
     reloadBlockTitle();
   }
@@ -278,7 +279,7 @@ function ClientSettingsScreenFromAdmin(props: ClientSettingsScreenFromAdminProps
 
     if (modificationCount !== 0) {
       try {
-        const updatedClient = await UserService.getInstance().updateUserInfos(currentClientID, modifiedUser, token);
+        const updatedClient = await UserServicePut.updateUserInfos(currentClientID, modifiedUser, token);
         setShowModifyClientDialog(false);
         displayToast(t('settings.clientSettings.clientModification.success'));
         dispatch(setCurrentClient(updatedClient));
