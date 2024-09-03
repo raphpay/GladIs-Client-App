@@ -143,7 +143,6 @@ class APIService {
   static async login<T>(endpoint: string, username: string, password: string): Promise<T> {
     try {
       const url = `${API_BASE_URL}/${endpoint}`;
-      console.log('url', url );
       const Buffer = require("buffer").Buffer;
       let encodedAuth = new Buffer(`${username}:${password}`).toString("base64");
 
