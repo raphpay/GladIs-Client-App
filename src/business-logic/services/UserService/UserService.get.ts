@@ -17,7 +17,7 @@ class UserServiceGet extends UserService {
    * @returns A promise that resolves to an array of users.
    * @throws If an error occurs while retrieving the users.
    */
-  async getUsers(): Promise<IUser[]> {
+  static async getUsers(): Promise<IUser[]> {
     try {
       const token = await CacheService.getInstance().retrieveValue<IToken>(CacheKeys.currentUserToken);
       const castedToken = token as IToken;
@@ -34,7 +34,7 @@ class UserServiceGet extends UserService {
    * @returns A promise that resolves to an array of clients.
    * @throws If an error occurs while retrieving the clients.
    */
-  async getClients(token: IToken | null): Promise<IUser[]> {
+  static async getClients(token: IToken | null): Promise<IUser[]> {
     try {
       const clients = await APIService.get<IUser[]>(`${this.baseRoute}/clients`, token?.value as string);
       return clients;
