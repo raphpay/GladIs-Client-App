@@ -40,6 +40,10 @@ App::App() noexcept
 
     PackageProviders().Append(make<ReactPackageProvider>()); // Includes all modules in this project
 
+    // PackageProviders().Append(winrt::progress_view::ReactPackageProvider());
+    PackageProviders().Append(winrt::RCTPdf::ReactPackageProvider());
+    PackageProviders().Append(winrt::ReactNativeBlobUtil::ReactPackageProvider());
+
     InitializeComponent();
 }
 
