@@ -23,7 +23,7 @@ function Grid<ItemT>(props: GridProps<ItemT>): React.JSX.Element {
 
   function WindowsComponent() {
     return (
-      <View>
+      <View style={styles.grid}>
         {data && renderItem && data.map((item: ItemT, index: number) => {
           const key = keyExtractor ? keyExtractor(item, index) : String(index);
           return (
