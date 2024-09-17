@@ -32,7 +32,7 @@ import Grid from '../../components/Grid/Grid';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SystemQualityScreen>;
 

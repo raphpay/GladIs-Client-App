@@ -17,7 +17,7 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Grid from '../../components/Grid/Grid';
 import Pagination from '../../components/Pagination';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/tracking/TrackingScreenStyles';

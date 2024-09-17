@@ -18,7 +18,7 @@ import Utils from '../../../business-logic/utils/Utils';
 
 import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';

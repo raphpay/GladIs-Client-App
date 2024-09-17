@@ -17,7 +17,7 @@ import TextButton from '../../../components/Buttons/TextButton';
 import SMQGeneralStepOne from './SMQGeneralStepOne';
 
 import Dialog from '../../../components/Dialogs/Dialog';
-import Toast from '../../../components/Toast';
+import Toast from '../../../components/Toast/Toast';
 
 import SMQManagementScreen from '../SMQManagement/SMQManagementScreen';
 import SMQGeneralStepThree from './SMQGeneralStepThree';

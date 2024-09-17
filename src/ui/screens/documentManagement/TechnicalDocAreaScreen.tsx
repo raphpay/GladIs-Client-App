@@ -20,7 +20,7 @@ import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid/Grid';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 import styles from '../../assets/styles/documentManagement/TechnicalDocumentationScreenStyles';
 

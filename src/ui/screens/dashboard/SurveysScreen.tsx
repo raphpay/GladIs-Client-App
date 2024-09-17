@@ -20,7 +20,7 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid/Grid';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 import TooltipAction from '../../components/TooltipAction';
 import SurveyRow from './SurveyRow';
 

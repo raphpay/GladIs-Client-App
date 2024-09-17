@@ -18,7 +18,7 @@ import AppContainer from '../../components/AppContainer/AppContainer';
 import IconButton from '../../components/Buttons/IconButton';
 import ModuleCheckBox from '../../components/CheckBox/ModuleCheckBox';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 import styles from '../../assets/styles/settings/ClientModulesStyles';
 

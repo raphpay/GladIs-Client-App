@@ -13,7 +13,7 @@ import { RootState } from '../../../business-logic/store/store';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 import Calendar from './Calendar';
 import CreateEventDialog from './CreateEventDialog';

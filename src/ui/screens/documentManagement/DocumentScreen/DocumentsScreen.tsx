@@ -30,7 +30,7 @@ import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Pagination from '../../../components/Pagination';
-import Toast from '../../../components/Toast';
+import Toast from '../../../components/Toast/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from './DocumentGrid';
 

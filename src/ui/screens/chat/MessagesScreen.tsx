@@ -19,7 +19,7 @@ import IconButton from '../../components/Buttons/IconButton';
 import Dialog from '../../components/Dialogs/Dialog';
 import ExpandingTextInput from '../../components/TextInputs/ExpandingTextInput';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 import MessageTable from './MessageTable';
 
 import styles from '../../assets/styles/chat/MessagesScreenStyles';

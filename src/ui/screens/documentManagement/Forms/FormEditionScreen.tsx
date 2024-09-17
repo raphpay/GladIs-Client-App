@@ -18,7 +18,7 @@ import Utils from '../../../../business-logic/utils/Utils';
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
-import Toast from '../../../components/Toast';
+import Toast from '../../../components/Toast/Toast';
 import FormTextInput from '../DocumentScreen/FormTextInput';
 import FormAddCellButton from './FormAddCellButton';
 import FormEditionHeaderCell from './FormEditionHeaderCell';

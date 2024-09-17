@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Animated, Text } from 'react-native';
-import { Colors } from '../assets/colors/colors';
-import styles from '../assets/styles/components/ToastStyles';
+import { Colors } from '../../assets/colors/colors';
+import styles from '../../assets/styles/components/ToastStyles';
 
 type ToastProps = {
   message: string;
@@ -43,6 +43,8 @@ const Toast = (props: ToastProps) => {
   };
 
   useEffect(() => {
+    console.log('others');
+    
     if (isVisible) {
       slideIn();
       setTimeout(() => {

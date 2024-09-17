@@ -19,7 +19,7 @@ import DashboardClientGrid from '../../components/Dashboard/DashboardClientGrid'
 import Dialog from '../../components/Dialogs/Dialog';
 import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
 

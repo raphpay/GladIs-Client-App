@@ -24,7 +24,7 @@ import SimpleTextButton from '../../components/Buttons/SimpleTextButton';
 import TextButton from '../../components/Buttons/TextButton';
 import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 

@@ -17,7 +17,7 @@ import Utils from '../../../../business-logic/utils/Utils';
 
 import TextButton from '../../../components/Buttons/TextButton';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
-import Toast from '../../../components/Toast';
+import Toast from '../../../components/Toast/Toast';
 
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 

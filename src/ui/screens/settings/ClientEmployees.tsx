@@ -25,7 +25,7 @@ import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
 import Grid from '../../components/Grid/Grid';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
-import Toast from '../../components/Toast';
+import Toast from '../../components/Toast/Toast';
 import Tooltip from '../../components/Tooltip';
 import TooltipAction from '../../components/TooltipAction';
 
