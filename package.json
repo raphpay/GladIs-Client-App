@@ -9,7 +9,8 @@
     "start": "react-native start",
     "test": "jest",
     "macos": "npx react-native run-macos",
-    "windows": "react-native run-windows"
+    "windows": "react-native run-windows",
+    "clean": "react-native-clean-project"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
@@ -23,9 +24,9 @@
     "eslint-config-prettier": "^9.1.0",
     "i18next": "^23.8.1",
     "jest-fetch-mock": "^3.0.3",
-    "react": "18.2.0",
+    "react": "18.3.1",
     "react-i18next": "^14.0.1",
-    "react-native": "0.73.2",
+    "react-native": "0.75.3",
     "react-native-blob-util": "^0.19.6",
     "react-native-document-picker": "^9.1.1",
     "react-native-dropdown-picker": "^5.4.6",
@@ -34,18 +35,18 @@
     "react-native-pdf": "^6.7.4",
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "^3.29.0",
+    "react-native-windows": "0.73.12",
     "react-redux": "^9.1.0",
-    "ts-jest": "^29.1.2",
-    "react-native-windows": "0.73.12"
+    "ts-jest": "^29.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
-    "@react-native/babel-preset": "0.73.19",
-    "@react-native/eslint-config": "0.73.2",
-    "@react-native/metro-config": "0.73.3",
-    "@react-native/typescript-config": "0.73.1",
+    "@react-native/babel-preset": "0.75.3",
+    "@react-native/eslint-config": "0.75.3",
+    "@react-native/metro-config": "0.75.3",
+    "@react-native/typescript-config": "0.75.3",
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
@@ -58,12 +59,14 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.33.2",
     "jest": "^29.7.0",
+    "metro-config": "^0.80.5",
     "prettier": "2.8.8",
-    "react-test-renderer": "18.2.0",
-    "typescript": "*",
-    "metro-config": "^0.80.5"
+    "react-native-clean-project": "^4.0.3",
+    "react-test-renderer": "18.3.1",
+    "typescript": "*"
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "packageManager": "yarn@3.6.4"
 }
