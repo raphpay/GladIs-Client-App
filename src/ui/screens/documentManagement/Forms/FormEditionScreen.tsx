@@ -395,7 +395,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   key={columnIndex}
                   value={cell.value}
                   onChangeText={(newText) => updateCell(rowIndex, columnIndex, newText)}
-                  editable={!showSaveDialog}
+                  editable={!showSaveDialog || !showQuitWithoutSavingDialog}
                   isTitle={cell.isTitle}
                   multiline={false}
                 />
