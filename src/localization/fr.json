@@ -743,6 +743,12 @@
           "yes": "Est approuvé par le client",
           "no": "N'est pas approuvé par le client"
         }
+      },
+      "quit": {
+        "title": "Voulez-vous vraiment quitter la page ?",
+        "description": "Êtes-vous sûr de vouloir quitter ? Les changements seront perdus.",
+        "confirmTitle": "Oui, quitter",
+        "cancelTitle": "Non, rester sur la page"
       }
     },
     "toast": {

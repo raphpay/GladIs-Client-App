@@ -225,6 +225,15 @@ class FormEditionManager {
     await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
+  async resetForm() {
+    this.setGrid([[]]);
+    this.setFormTitle('');
+    this.setFormCreation('');
+    this.setFormCreationActor('');
+    this.setFormUpdate('');
+    this.setFormUpdateActor('');
+  }
+
   // Private Methods
   /**
    * Loads a user by ID

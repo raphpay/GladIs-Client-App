@@ -38,7 +38,9 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const dispatch = useAppDispatch();
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
+  // Dialogs
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showQuitWithoutSavingDialog, setShowQuitWithoutSavingDialog] = useState(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
@@ -52,7 +54,18 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const isUserEmployee = currentUser?.userType === UserType.Employee;
 
   // Sync Methods
+  function tappedOnBackButton() {
+    Keyboard.dismiss();
+    if (doesFormContainsData()) {
+      setShowQuitWithoutSavingDialog(true);
+    } else {
+      navigateBack();
+    }
+  }
+
   function navigateBack() {
+    resetDialogs();
+    FormEditionManager.getInstance().resetForm();
     navigation.goBack();
   }
 
@@ -123,6 +136,13 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     return isFilled;
   }
 
+  function doesFormContainsData() {
+    let containsData = false;
+    containsData = formTitle.length > 0 ||
+      grid.length > 1;
+    return containsData;
+  }
+
   function displayToast(message: string, isError: boolean = false) {
     setShowToast(true);
     setToastIsShowingError(isError);
@@ -131,6 +151,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   function resetDialogs() {
     setShowSaveDialog(false);
+    setShowQuitWithoutSavingDialog(false);
   }
   
   // Async Methods
@@ -277,6 +298,21 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     );
   }
 
+  function QuitWithoutSavingDialog() {
+    return (
+      <Dialog
+        title={t('forms.dialog.quit.title')}
+        description={t('forms.dialog.quit.description')}
+        confirmTitle={t('forms.dialog.quit.confirmTitle')}
+        cancelTitle={t('forms.dialog.quit.cancelTitle')}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
+        onConfirm={navigateBack}
+        onCancel={() => { setShowQuitWithoutSavingDialog(false) }}
+      />
+    )
+  }
+
   return (
     <>
       <AppContainer
@@ -285,7 +321,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         showSettings={false}
         adminButton={ActionButtons()}
         showBackButton={true}
-        navigateBack={navigateBack}
+        navigateBack={tappedOnBackButton}
         additionalComponent={SaveButton()}
       >
         <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -369,6 +405,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         </ScrollView>
       </AppContainer>
       { showSaveDialog && SaveDialogContent() }
+      { showQuitWithoutSavingDialog && QuitWithoutSavingDialog() }
       { ToastContent() }
     </>
   );
