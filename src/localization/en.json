@@ -764,5 +764,10 @@
         "client": "Please come back later"
       }
     }
+  },
+  "folder": {
+    "title": {
+      "single": "Process"
+    }
   }
 }

@@ -767,5 +767,10 @@
         "client": "Veuillez réessayer plus tard"
       }
     },
+  },
+  "folder": {
+    "title": {
+      "single": "Processus"
+    }
   }
 }
