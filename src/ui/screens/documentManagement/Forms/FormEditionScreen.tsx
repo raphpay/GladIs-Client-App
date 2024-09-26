@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, ScrollView, View } from 'react-native';
+import { Keyboard, ScrollView, Text, View } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -20,8 +20,8 @@ import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
 import FormTextInput from '../DocumentScreen/FormTextInput';
-import FormAddCellButton from './FormAddCellButton';
 import FormEditionHeaderCell from './FormEditionHeaderCell';
+import ImageButton from '../../../components/Buttons/ImageButton';
 
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
@@ -36,6 +36,11 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { formsCount } = useAppSelector((state: RootState) => state.forms);
   const dispatch = useAppDispatch();
+  // Images
+  const addRowImage = require('../../../assets/images/add-row.png');
+  const addColumnImage = require('../../../assets/images/add-column.png');
+  const removeRowImage = require('../../../assets/images/remove-row.png');
+  const removeColumnImage = require('../../../assets/images/remove-column.png');
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
   // Dialogs
@@ -235,16 +240,27 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         {
           !isUserEmployee && (
             <>
-              <TextButton
-                title={t('forms.actions.removeColumn')}
-                onPress={removeColumn}
-                extraStyle={styles.actionButton}
-                disabled={!isColumnGreaterThanOne}
+            <ImageButton
+                icon={addColumnImage}
+                onPress={addColumn}
+                style={styles.actionButton}
               />
-              <TextButton
-                title={t('forms.actions.removeRow')}
+              <ImageButton
+                icon={removeColumnImage}
+                onPress={removeColumn}
+                style={styles.actionButton}
+                disabled={!isColumnGreaterThanOne}
+
+              />
+              <ImageButton
+                icon={addRowImage}
+                onPress={addRow}
+                style={styles.actionButton}
+              />
+              <ImageButton
+                icon={removeRowImage}
                 onPress={removeRow}
-                extraStyle={styles.actionButton}
+                style={styles.actionButton}
                 disabled={!isRowGreaterThanOne}
               />
             </>
@@ -283,18 +299,12 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   
   function ToastContent() {
     return (
-      <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
-      </>
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        setIsVisible={setShowToast}
+        isShowingError={toastIsShowingError}
+      />
     );
   }
 
@@ -316,69 +326,68 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   return (
     <>
       <AppContainer
-        mainTitle={t('forms.creation.title')}
-        showSearchText={false}
-        showSettings={false}
-        adminButton={ActionButtons()}
+        mainTitle='Forms'
         showBackButton={true}
         navigateBack={tappedOnBackButton}
+        adminButton={ActionButtons()}
         additionalComponent={SaveButton()}
+        showSearchText={false}
+        showSettings={false}
       >
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerCellContainer}>
-              <FormEditionHeaderCell
-                value={formTitle}
-                setValue={setFormTitle}
-                title={t('forms.headerCells.title')}
-                placeholder={t('forms.creation.formTitle')}
-                editable={!showSaveDialog}
-              />
-              <View style={styles.separator}/>
-              <View style={styles.cellRow}>
-                <FormEditionHeaderCell
-                  value={formCreation}
-                  setValue={setFormCreation}
-                  title={t('forms.headerCells.createdAt')}
-                  placeholder={t('forms.creation.creationDate')}
-                  editable={!showSaveDialog}
-                />
-                <FormEditionHeaderCell
-                  value={formCreationActor}
-                  setValue={setFormCreationActor}
-                  title={t('forms.headerCells.createdBy')}
-                  placeholder={t('forms.creation.creationActor')}
-                  editable={!showSaveDialog}
-                />
-              </View>
-              <View style={styles.cellRow}>
-                <FormEditionHeaderCell
-                  value={formUpdate}
-                  setValue={setFormUpdate}
-                  title={t('forms.headerCells.updatedAt')}
-                  placeholder={t('forms.creation.updateDate')}
-                  editable={!showSaveDialog}
-                />
-                <FormEditionHeaderCell
-                  value={formUpdateActor}
-                  setValue={setFormUpdateActor}
-                  title={t('forms.headerCells.updatedBy')}
-                  placeholder={t('forms.creation.updateActor')}
-                  editable={!showSaveDialog}
-                />
-              </View>
-            </View>
-            {
-              !isUserEmployee && (
-                <FormAddCellButton
-                  onPress={addColumn}
-                  height={'90%'}
-                  width={40}
-                />
-              )
-            }
+        <ScrollView style={{ flex : 1 }}>
+          <FormEditionHeaderCell
+              value={formTitle}
+              setValue={setFormTitle}
+              title={t('forms.headerCells.title')}
+              placeholder={t('forms.creation.formTitle')}
+              editable={!showSaveDialog}
+              width={'100%'}
+            />
+            <View style={styles.separator}/>
+
+          {/* Form Creator cells */}
+          <View style={styles.cellRow}>
+            <FormEditionHeaderCell
+              value={formCreation}
+              setValue={setFormCreation}
+              title={t('forms.headerCells.createdAt')}
+              placeholder={t('forms.creation.creationDate')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
+            <FormEditionHeaderCell
+              value={formCreationActor}
+              setValue={setFormCreationActor}
+              title={t('forms.headerCells.createdBy')}
+              placeholder={t('forms.creation.creationActor')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
+          </View>
+
+          {/* Form Updator cells */}
+          <View style={styles.cellRow}>
+            <FormEditionHeaderCell
+              value={formUpdate}
+              setValue={setFormUpdate}
+              title={t('forms.headerCells.updatedAt')}
+              placeholder={t('forms.creation.updateDate')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
+            <FormEditionHeaderCell
+              value={formUpdateActor}
+              setValue={setFormUpdateActor}
+              title={t('forms.headerCells.updatedBy')}
+              placeholder={t('forms.creation.updateActor')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
           </View>
           <View style={styles.separator}/>
+
+
+          {/* Grid */}
           {grid.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map((cell, columnIndex) => (
@@ -388,25 +397,16 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   onChangeText={(newText) => updateCell(rowIndex, columnIndex, newText)}
                   editable={!showSaveDialog}
                   isTitle={cell.isTitle}
+                  multiline={false}
                 />
               ))}
             </View>
           ))}
-          {
-            !isUserEmployee && (
-              <FormAddCellButton
-                onPress={addRow}
-                height={35}
-                width={'100%'}
-                extraStyle={styles.addRowButtonExtraStyle}
-              />
-            )
-          }
         </ScrollView>
       </AppContainer>
-      { showSaveDialog && SaveDialogContent() }
-      { showQuitWithoutSavingDialog && QuitWithoutSavingDialog() }
-      { ToastContent() }
+      {showSaveDialog && SaveDialogContent()}
+      {showQuitWithoutSavingDialog && QuitWithoutSavingDialog()}
+      {showToast && ToastContent()}
     </>
   );
 }
