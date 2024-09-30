@@ -743,7 +743,7 @@
       },
       "quit": {
         "title": "Do you want to quit without saving ?",
-        "description": "Are you sure you want to quit ? The changes will be lost.",
+        "description": "Are you sure you want to quit ? The non-saved changes will be lost.",
         "confirmTitle": "Yes, quit",
         "cancelTitle": "No, stay"
       },
