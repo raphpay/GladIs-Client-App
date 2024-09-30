@@ -746,6 +746,16 @@
         "description": "Are you sure you want to quit ? The changes will be lost.",
         "confirmTitle": "Yes, quit",
         "cancelTitle": "No, stay"
+      },
+      "confirmDelete": {
+        "column": {
+          "title":"Do you want to delete the last column?",
+          "description":"The column data will be lost"
+        },
+        "row": {
+          "title":"Do you want to delete the last row?",
+          "description":"The row data will be lost"
+        }
       }
     },
     "toast": {
