@@ -36,6 +36,9 @@ import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
+import { IEmail } from '../../../business-logic/model/IEmail';
+import { BASE_PASSWORD, FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../../business-logic/utils/envConfig';
+import EmailService from '../../../business-logic/services/EmailService';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.ClientCreationScreen>;
 
@@ -243,7 +246,13 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
         for (const employee of createdEmployees) {
           await UserServicePut.addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
           await UserServicePut.updateModules(employee.id as string, selectedModules, castedToken);
+          // Send email to employee with username and password
+          const employeeEmail = createEmail(employee.username || 'no.username', employee.email);
+          await EmailService.getInstance().sendEmail(employeeEmail, token);
         }
+        // Send email with username and password ( and employees username if existing )
+        const clientEmail = createEmail(createdUser.username || 'no.username', createdUser.email);
+        await EmailService.getInstance().sendEmail(clientEmail, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
@@ -253,6 +262,24 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     await uploadLogo();
     dispatch(setClientListCount(clientListCount + 1));
     navigateBack();
+  }
+
+  function createEmail(username: string, email: string): IEmail {
+    // Generate password
+    const generatedPassword = BASE_PASSWORD //TODO: Generate password
+    const mailContent = `Hello, and welcome. Your credentials are : ${username} and ${generatedPassword}`
+
+    const sendGridEmail: IEmail = {
+      to: [email],
+      fromMail: FROM_MAIL,
+      fromName: FROM_NAME,
+      replyTo: FROM_MAIL,
+      subject: 'Welcome to GladIs',
+      content: mailContent,
+      apiKey: SEND_GRID_API_KEY,
+    }
+
+    return sendGridEmail;
   }
 
   async function addLogo() {
