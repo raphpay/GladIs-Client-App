@@ -164,13 +164,17 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   function displayRemoveColumnConfirmationDialog() {
-    resetDialogs();
-    setShowDeleteLastColumnConfirmationDialog(true);
+    if (currentUser?.userType === UserType.Admin) {
+      resetDialogs();
+      setShowDeleteLastColumnConfirmationDialog(true);
+    }
   }
 
   function displayRemoveRowConfirmationDialog() {
-    resetDialogs();
-    setShowDeleteLastRowConfirmationDialog(true);
+    if (currentUser?.userType === UserType.Admin) {
+      resetDialogs();
+      setShowDeleteLastRowConfirmationDialog(true);
+    }
   }
 
   function deleteLastColumn() {
