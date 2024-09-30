@@ -44,8 +44,10 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
   // Dialogs
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [showQuitWithoutSavingDialog, setShowQuitWithoutSavingDialog] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState<boolean>(false);
+  const [showQuitWithoutSavingDialog, setShowQuitWithoutSavingDialog] = useState<boolean>(false);
+  const [showDeleteLastColumnConfirmationDialog, setShowDeleteLastColumnConfirmationDialog] = useState<boolean>(false);
+  const [showDeleteLastRowConfirmationDialog, setShowDeleteLastRowConfirmationDialog] = useState<boolean>(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
@@ -157,6 +159,34 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   function resetDialogs() {
     setShowSaveDialog(false);
     setShowQuitWithoutSavingDialog(false);
+    setShowDeleteLastColumnConfirmationDialog(false);
+    setShowDeleteLastRowConfirmationDialog(false);
+  }
+
+  function displayRemoveColumnConfirmationDialog() {
+    if (currentUser?.userType === UserType.Admin) {
+      resetDialogs();
+      setShowDeleteLastColumnConfirmationDialog(true);
+    }
+  }
+
+  function displayRemoveRowConfirmationDialog() {
+    if (currentUser?.userType === UserType.Admin) {
+      resetDialogs();
+      setShowDeleteLastRowConfirmationDialog(true);
+    }
+  }
+
+  function deleteLastColumn() {
+    const gridWithoutLastColumn = FormEditionManager.getInstance().deleteLastColumn();
+    setGrid(gridWithoutLastColumn);
+    setShowDeleteLastColumnConfirmationDialog(false);
+  }
+
+  function deleteLastRow() {
+    const gridWithoutLastRow = FormEditionManager.getInstance().deleteLastRow();
+    setGrid(gridWithoutLastRow);
+    setShowDeleteLastRowConfirmationDialog(false);
   }
   
   // Async Methods
@@ -250,7 +280,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                 onPress={removeColumn}
                 style={styles.actionButton}
                 disabled={!isColumnGreaterThanOne}
-
+                onLongPress={displayRemoveColumnConfirmationDialog}
               />
               <ImageButton
                 icon={addRowImage}
@@ -262,6 +292,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                 onPress={removeRow}
                 style={styles.actionButton}
                 disabled={!isRowGreaterThanOne}
+                onLongPress={displayRemoveRowConfirmationDialog}
               />
             </>
           )
@@ -319,6 +350,32 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         isCancelAvailable={true}
         onConfirm={navigateBack}
         onCancel={() => { setShowQuitWithoutSavingDialog(false) }}
+      />
+    )
+  }
+
+  function RemoveLastColumnConfirmationDialog() {
+    return (
+      <Dialog
+        title={t('forms.dialog.confirmDelete.column.title')}
+        description={t('forms.dialog.confirmDelete.column.description')}
+        onConfirm={deleteLastColumn}
+        onCancel={resetDialogs}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
+      />
+    )
+  }
+
+  function RemoveLastRowConfirmationDialog() {
+    return (
+      <Dialog
+        title={t('forms.dialog.confirmDelete.row.title')}
+        description={t('forms.dialog.confirmDelete.row.description')}
+        onConfirm={deleteLastRow}
+        onCancel={resetDialogs}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
       />
     )
   }
@@ -407,6 +464,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       {showSaveDialog && SaveDialogContent()}
       {showQuitWithoutSavingDialog && QuitWithoutSavingDialog()}
       {showToast && ToastContent()}
+      {showDeleteLastColumnConfirmationDialog && RemoveLastColumnConfirmationDialog()}
+      {showDeleteLastRowConfirmationDialog && RemoveLastRowConfirmationDialog()}
     </>
   );
 }

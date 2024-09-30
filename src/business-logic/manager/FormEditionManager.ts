@@ -97,6 +97,26 @@ class FormEditionManager {
     return csv;
   }
 
+  /**
+   * Deletes the last column from the grid.
+   * @returns The updated grid with the last column removed.
+   */
+  deleteLastColumn(): IFormCell[][] {
+    const gridWithoutLastColumn = this.grid.map(row => row.slice(0, -1));
+    this.setGrid(gridWithoutLastColumn);
+    return gridWithoutLastColumn;
+  };
+
+  /**
+   * Deletes the last row from the grid.
+   * @returns The updated grid with the last row removed.
+   */
+  deleteLastRow = (): IFormCell[][] => {
+    const gridWithoutLastRow = this.grid.slice(0, -1);
+    this.setGrid(gridWithoutLastRow);
+    return gridWithoutLastRow;
+  };
+
   // Async Methods
   /**
    * Loads and sets the grid from a form

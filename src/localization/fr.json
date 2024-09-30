@@ -746,9 +746,19 @@
       },
       "quit": {
         "title": "Voulez-vous vraiment quitter la page ?",
-        "description": "Êtes-vous sûr de vouloir quitter ? Les changements seront perdus.",
+        "description": "Êtes-vous sûr de vouloir quitter ? Les changements non-sauvegardés seront perdus.",
         "confirmTitle": "Oui, quitter",
         "cancelTitle": "Non, rester sur la page"
+      },
+      "confirmDelete": {
+        "column": {
+          "title": "Voulez-vous vraiment supprimer la dernière colonne ?",
+          "description": "Les données de la colonne seront perdues"
+        },
+        "row": {
+          "title": "Voulez-vous vraiment supprimer la dernière ligne ?",
+          "description": "Les données de la ligne seront perdues"
+        }
       }
     },
     "toast": {

@@ -16,10 +16,11 @@ type ImageButtonProps = {
   style?: StyleProp<ViewStyle>;
   backgroundColor?: string
   disabled?: boolean;
+  onLongPress?: () => void;
 };
 
 function ImageButton(props: ImageButtonProps): React.JSX.Element {
-  const { icon, onPress, style, backgroundColor, disabled } = props;
+  const { icon, onPress, style, backgroundColor, disabled, onLongPress } = props;
 
   const color = disabled ? Colors.inactive : ( backgroundColor || Colors.primary);
 
@@ -28,6 +29,7 @@ function ImageButton(props: ImageButtonProps): React.JSX.Element {
       style={[styles.container, style, { backgroundColor: color }]}
       onPress={onPress}
       disabled={disabled}
+      onLongPress={onLongPress}
     >
         <Image
             style={styles.icon}
