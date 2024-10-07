@@ -316,6 +316,37 @@ class Utils {
     // Use the split and join method to replace all occurrences
     return input.split(target).join(replacement);
   }
+
+  static generatePassword(length: number): string {
+    const lowerCaseLetters = 'abcdefghjkmnpqrstuvwxyz'; // Avoiding ambiguous letters like 'l'
+    const upperCaseLetters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Avoiding ambiguous letters like 'O'
+    const numbers = '23456789'; // Avoiding '0' and '1'
+    const specialCharacters = '!@#$%^&*';
+  
+    const getRandomChar = (set: string) => set[Math.floor(Math.random() * set.length)];
+  
+    let password = '';
+  
+    // Ensure at least one character from each required set
+    password += getRandomChar(lowerCaseLetters);
+    password += getRandomChar(upperCaseLetters);
+    password += getRandomChar(numbers);
+    password += getRandomChar(specialCharacters);
+  
+    // Fill the remaining characters
+    const allCharacters = lowerCaseLetters + upperCaseLetters + numbers + specialCharacters;
+    for (let i = password.length; i < length; i++) {
+      password += getRandomChar(allCharacters);
+    }
+  
+    // Shuffle the characters to ensure randomness
+    const shuffledPassword = password
+      .split('')
+      .sort(() => 0.5 - Math.random())
+      .join('');
+  
+    return shuffledPassword;
+  }
 }
 
 export default Utils;

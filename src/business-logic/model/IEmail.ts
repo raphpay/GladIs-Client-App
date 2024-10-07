@@ -6,4 +6,5 @@ export interface IEmail {
     subject: string;
     content: string;
     apiKey: string;
+    isHTML: boolean;
 }

@@ -36,9 +36,6 @@ import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
-import { IEmail } from '../../../business-logic/model/IEmail';
-import { BASE_PASSWORD, FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../../business-logic/utils/envConfig';
-import EmailService from '../../../business-logic/services/EmailService';
 import ClientCreationManager from '../../../business-logic/manager/clientManagement/ClientCreationManager';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.ClientCreationScreen>;
@@ -197,6 +194,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     const id = pendingUser?.id as string;
     const castedToken = token as IToken;
     let createdUser: IUser | undefined;
+    let createdEmployees: IUser[] | undefined;
 
     try {
       createdUser = await PendingUserServicePost.convertPendingUserToUser(id, castedToken);
@@ -209,15 +207,13 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     if (createdUser) {
       try {
         await UserServicePut.updateModules(createdUser.id as string, selectedModules, castedToken);
-        const createdEmployees = await convertEmployeesToUser();
+        createdEmployees = await convertEmployeesToUser();
         for (const employee of createdEmployees) {
           await UserServicePut.addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
           await UserServicePut.updateModules(employee.id as string, selectedModules, castedToken);
-          // Send email to employee with username and password
-          await ClientCreationManager.getInstance().sendEmail(employee, token);
         }
         // Send email with username and password ( and employees username if existing )
-        await ClientCreationManager.getInstance().sendEmail(createdUser, token);
+        await ClientCreationManager.getInstance().sendEmail(createdUser, createdEmployees, token);
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
