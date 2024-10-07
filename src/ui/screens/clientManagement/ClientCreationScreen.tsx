@@ -36,6 +36,7 @@ import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
+import ClientCreationManager from '../../../business-logic/manager/clientManagement/ClientCreationManager';
 
 type ClientCreationScreenProps = NativeStackScreenProps<IClientCreationStack, NavigationRoutes.ClientCreationScreen>;
 
@@ -189,6 +190,41 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
     }
   }
 
+  async function convertPendingUser() {
+    const id = pendingUser?.id as string;
+    const castedToken = token as IToken;
+    let createdUser: IUser | undefined;
+    let createdEmployees: IUser[] | undefined;
+
+    try {
+      createdUser = await PendingUserServicePost.convertPendingUserToUser(id, castedToken);
+    } catch (error) {
+      const errorKeys = error as string[];
+      const errorTitle = Utils.handleErrorKeys(errorKeys);
+      displayToast(t(errorTitle), true);
+    }
+
+    if (createdUser) {
+      try {
+        await UserServicePut.updateModules(createdUser.id as string, selectedModules, castedToken);
+        createdEmployees = await convertEmployeesToUser();
+        for (const employee of createdEmployees) {
+          await UserServicePut.addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
+          await UserServicePut.updateModules(employee.id as string, selectedModules, castedToken);
+        }
+        // Send email with username and password ( and employees username if existing )
+        await ClientCreationManager.getInstance().sendEmail(createdUser, createdEmployees, token);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+    }
+
+    await uploadLogo();
+    dispatch(setClientListCount(clientListCount + 1));
+    navigateBack();
+  }
+
   async function createEmployees(pendingUserID: string) {
     // Update all employees with pendingUserID
     const updatedPotentialEmployees = potentialEmployees.map(employee => {
@@ -221,38 +257,6 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
       }
     }
     return newUsers;
-  }
-
-  async function convertPendingUser() {
-    const id = pendingUser?.id as string;
-    const castedToken = token as IToken;
-    let createdUser: IUser | undefined;
-
-    try {
-      createdUser = await PendingUserServicePost.convertPendingUserToUser(id, castedToken);
-    } catch (error) {
-      const errorKeys = error as string[];
-      const errorTitle = Utils.handleErrorKeys(errorKeys);
-      displayToast(t(errorTitle), true);
-    }
-
-    if (createdUser) {
-      try {
-        await UserServicePut.updateModules(createdUser.id as string, selectedModules, castedToken);
-        const createdEmployees = await convertEmployeesToUser();
-        for (const employee of createdEmployees) {
-          await UserServicePut.addManagerToUser(employee.id as string, createdUser.id as string, castedToken);
-          await UserServicePut.updateModules(employee.id as string, selectedModules, castedToken);
-        }
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
-    }
-
-    await uploadLogo();
-    dispatch(setClientListCount(clientListCount + 1));
-    navigateBack();
   }
 
   async function addLogo() {
@@ -329,6 +333,90 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
   }, []);
 
   // Components
+  function ScreenContent() {
+    return (
+      <ScrollView>
+        <GladisTextInput
+          value={firstName}
+          onValueChange={setFirstName}
+          placeholder={t('quotation.firstName')} showTitle={true}
+        />
+        <GladisTextInput
+          value={lastName}
+          onValueChange={setLastName}
+          placeholder={t('quotation.lastName')} showTitle={true}
+        />
+        <GladisTextInput
+          value={phoneNumber}
+          onValueChange={setPhoneNumber}
+          placeholder={t('quotation.phone')} showTitle={true}
+        />
+        <GladisTextInput
+          value={companyName}
+          onValueChange={setCompanyName}
+          placeholder={t('quotation.companyName')} showTitle={true}
+        />
+        <GladisTextInput
+          value={email}
+          onValueChange={setEmail}
+          placeholder={t('quotation.email')} showTitle={true}
+        />
+        <GladisTextInput
+          value={products}
+          onValueChange={setProducts}
+          placeholder={t('quotation.products')} showTitle={true}
+        />
+        <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
+        {modules.map((module) => (
+          <ModuleCheckBox
+            key={module.id}
+            module={module}
+            isSelected={isModuleSelected(module)}
+            onSelectModule={() => toggleCheckbox(module)}
+          />
+        ))}
+        <GladisTextInput
+          value={employees}
+          onValueChange={setEmployees}
+          placeholder={t('quotation.employees')} showTitle={true}
+        />
+        <GladisTextInput
+          value={numberOfUsers}
+          onValueChange={setNumberOfUsers}
+          placeholder={t('quotation.users')} showTitle={true}
+        />
+        <GladisTextInput
+          value={sales}
+          onValueChange={setSales}
+          placeholder={t('quotation.capital')} showTitle={true}
+        />
+        {
+          pendingUser == null && (
+            <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
+          )
+        }
+        {
+          potentialEmployees.length > 0 && (
+            <>
+              <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
+              {potentialEmployees.map((employee, index) => (
+                PotentialEmployeeGridItem(employee, index)
+              ))}
+            </>
+          )
+        }
+        <View style={styles.logoContainer}>
+          <TextButton width={'30%'} title={t('quotation.logo.modify')} onPress={addLogo} />
+          {
+            logoURI && (
+              <Image source={{uri: logoURI}} style={styles.logo}/>
+            )
+          }
+        </View>
+      </ScrollView>
+    )
+  }
+
   function PotentialEmployeeGridItem(item: IPotentialEmployee, index: number) {
     return (
       <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
@@ -371,85 +459,7 @@ function ClientCreationScreen(props: ClientCreationScreenProps): React.JSX.Eleme
           </View>
         )}
       >
-        <ScrollView>
-          <GladisTextInput
-            value={firstName}
-            onValueChange={setFirstName}
-            placeholder={t('quotation.firstName')} showTitle={true}
-          />
-          <GladisTextInput
-            value={lastName}
-            onValueChange={setLastName}
-            placeholder={t('quotation.lastName')} showTitle={true}
-          />
-          <GladisTextInput
-            value={phoneNumber}
-            onValueChange={setPhoneNumber}
-            placeholder={t('quotation.phone')} showTitle={true}
-          />
-          <GladisTextInput
-            value={companyName}
-            onValueChange={setCompanyName}
-            placeholder={t('quotation.companyName')} showTitle={true}
-          />
-          <GladisTextInput
-            value={email}
-            onValueChange={setEmail}
-            placeholder={t('quotation.email')} showTitle={true}
-          />
-          <GladisTextInput
-            value={products}
-            onValueChange={setProducts}
-            placeholder={t('quotation.products')} showTitle={true}
-          />
-          <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
-          {modules.map((module) => (
-            <ModuleCheckBox
-              key={module.id}
-              module={module}
-              isSelected={isModuleSelected(module)}
-              onSelectModule={() => toggleCheckbox(module)}
-            />
-          ))}
-          <GladisTextInput
-            value={employees}
-            onValueChange={setEmployees}
-            placeholder={t('quotation.employees')} showTitle={true}
-          />
-          <GladisTextInput
-            value={numberOfUsers}
-            onValueChange={setNumberOfUsers}
-            placeholder={t('quotation.users')} showTitle={true}
-          />
-          <GladisTextInput
-            value={sales}
-            onValueChange={setSales}
-            placeholder={t('quotation.capital')} showTitle={true}
-          />
-          {
-            pendingUser == null && (
-              <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
-            )
-          }
-          {
-            potentialEmployees.length > 0 && (
-              <>
-                <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
-                {potentialEmployees.map((employee, index) => (
-                  PotentialEmployeeGridItem(employee, index)
-                ))}
-              </>
-            )
-          }
-          <View style={styles.logoContainer}>
-            <TextButton width={'30%'} title={t('quotation.logo.modify')} onPress={addLogo} />
-            {
-              logoURI && (
-                <Image source={{uri: logoURI}} style={styles.logo}/>
-              )
-            }
-          </View>
-        </ScrollView>
+        {ScreenContent()}
       </AppContainer>
       {
         <AddEmployeeDialog
