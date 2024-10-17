@@ -1,3 +1,4 @@
+import IDocument from "../../model/IDocument";
 import IToken from "../../model/IToken";
 import APIService from "../APIService";
 import DocumentService from "./DocumentService";
@@ -17,6 +18,15 @@ class DocumentServiceGet extends DocumentService {
       const url = `${this.baseRoute}/download/${id}`;
       const data = await APIService.download(url, token?.value as string);
       return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getAll(token: IToken | null): Promise<IDocument[]> {
+    try {
+      const docs = await APIService.get<IDocument[]>(this.baseRoute, token?.value as string)
+      return docs;
     } catch (error) {
       throw error;
     }

@@ -92,7 +92,9 @@ class DocumentServicePost extends DocumentService {
     formData.append('name', 'dummy.pdf');
     formData.append('path', 'test/path/');
 
-    const response = await APIService.postWithoutStringify<IDocument>(`${this.baseRoute}/filePart`, formData, token?.value as string);
+    const url = `${this.baseRoute}/filePart`;
+    console.log('url', url);
+    const response = await APIService.postWithoutStringify<IDocument>(url, formData, token?.value as string);
     return response as IDocument;
   }
 
