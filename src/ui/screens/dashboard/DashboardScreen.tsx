@@ -53,11 +53,10 @@ function DashboardScreen(props: DashboardScreenProps): any {
       filePath = await FinderModule.getInstance().pickPDFFilePath();
       // await uploadFileToAPI(filePath, filename);
     } else if (Platform.OS === PlatformName.Android) {
-      const file = await FilePickerModule.pickSinglePDF();
+      const file = await FilePickerModule.pickSingleFile(["application/pdf"]);
       filePath = file.uri;
     }
     await uploadFileToAPI(filePath, filename);
-    
   }
 
   const uploadFileToAPI = async (filePath: string, fileName: string) => {

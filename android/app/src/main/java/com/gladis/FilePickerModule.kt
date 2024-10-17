@@ -5,17 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
 import com.facebook.react.bridge.*
-import android.database.Cursor
 import com.facebook.react.bridge.Promise
-import java.io.File
-import java.io.FileOutputStream
-import android.util.Base64
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
 
 class FilePickerModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), ActivityEventListener {
     private var pickerPromise: Promise? = null
-    private val PICK_PDF_FILE = 1
+    private val PICK_FILE = 1
 
     init {
         reactContext.addActivityEventListener(this)
@@ -26,7 +20,7 @@ class FilePickerModule(reactContext: ReactApplicationContext) : ReactContextBase
     }
 
     @ReactMethod
-    fun pickSinglePDF(promise: Promise) {
+    fun pickSingleFile(types: ReadableArray, promise: Promise) {
         val activity = currentActivity
 
         if (activity == null) {
@@ -37,14 +31,21 @@ class FilePickerModule(reactContext: ReactApplicationContext) : ReactContextBase
         pickerPromise = promise
 
         try {
-            // Create an Intent to open the file picker and filter for PDFs
+            // Create an Intent to open the file picker with multiple MIME types
             val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/pdf" // Only PDF files
+                type = "*/*" // Default to allow any file type
+                // Prepare an array of MIME types
+                if (types.size() > 1) {
+                    val mimeTypes = Array(types.size()) { types.getString(it) }
+                    putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+                } else if (types.size() == 1) {
+                    type = types.getString(0) // Set the specific type if only one is passed
+                }
             }
 
             // Start the activity with the intent
-            activity.startActivityForResult(intent, PICK_PDF_FILE)
+            activity.startActivityForResult(intent, PICK_FILE)
         } catch (e: Exception) {
             pickerPromise?.reject("ERROR_PICKING_FILE", e.message)
             pickerPromise = null
@@ -52,7 +53,7 @@ class FilePickerModule(reactContext: ReactApplicationContext) : ReactContextBase
     }
 
     override fun onActivityResult(activity: Activity?, requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PICK_PDF_FILE) {
+        if (requestCode == PICK_FILE) {
             if (pickerPromise != null) {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val uri: Uri? = data.data
@@ -79,7 +80,7 @@ class FilePickerModule(reactContext: ReactApplicationContext) : ReactContextBase
         val contentResolver = reactApplicationContext.contentResolver
 
         try {
-            // Get file name
+            // Get file name and size
             val cursor = contentResolver.query(uri, null, null, null, null)
             cursor?.use {
                 if (it.moveToFirst()) {
