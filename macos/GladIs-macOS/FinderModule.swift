@@ -36,6 +36,23 @@ class FinderModule: NSObject {
             }
         }
     }
+    
+    @objc
+    func pickPDFFilePath(_ callback: @escaping RCTResponseSenderBlock) {
+        DispatchQueue.main.async {
+            let panel = NSOpenPanel()
+            panel.allowedFileTypes = ["pdf"]
+            panel.canChooseFiles = true
+            panel.canChooseDirectories = false
+            panel.allowsMultipleSelection = false
+            
+            if panel.runModal() == .OK, let url = panel.url {
+              callback([url.relativePath])
+            } else {
+                callback([])
+            }
+        }
+    }
 
     @objc
     func pickImage(_ callback: @escaping RCTResponseSenderBlock) {

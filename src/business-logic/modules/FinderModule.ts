@@ -33,6 +33,14 @@ class FinderModule {
     });
   }
 
+  async pickPDFFilePath(): Promise<string> {
+    return new Promise((resolve) => {
+      NativeModules.FinderModule.pickPDFFilePath((res: any) => {
+        resolve(res as string);
+      })
+    })
+  }
+
   /**
    * Picks an image using the FinderModule.
    * @returns A promise that resolves to the path of the picked image.

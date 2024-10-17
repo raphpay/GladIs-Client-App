@@ -1,5 +1,5 @@
 import IDocument, { IDocumentPaginatedOutput } from "../../model/IDocument";
-import IFile from "../../model/IFile";
+import IFile, { INewFile } from "../../model/IFile";
 import IToken from "../../model/IToken";
 import APIService from "../APIService";
 import DocumentService from "./DocumentService";
@@ -60,6 +60,40 @@ class DocumentServicePost extends DocumentService {
     } catch (error) {
       throw error;
     }
+  }
+
+  static async uploadNewFile(name: string, path: string, token: IToken | null): Promise<IDocument> {
+    // // console.log("DocumentService uploadNewFile file", file);
+    // try {
+    //   // const formData = new FormData();
+    //   // formData.append('file', file);
+    //   console.log("DocumentService uploadNewFile formData", formData);
+    //   const input = { formData, uri: path, name, path }
+    //   // formData.append('uri', path);
+    //   // formData.append('name', 'dummy.pdf');
+    //   // formData.append('path', 'test/path/');
+
+    //   console.log("DocumentService uploadNewFile input", input);
+    //   const response = await APIService.postWithoutStringify<IDocument>(`${this.baseRoute}/filePart`, input, token?.value as string);
+    //   console.log("DocumentService uploadNewFile response", response);
+    //   return response as IDocument;
+    // } catch (error) {
+    //   throw error;
+    // }
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri: path,
+      type: 'application/octet-stream', // or adjust the MIME type based on your file type
+      name,  // The file name
+    });
+
+    formData.append('uri', path);
+    formData.append('name', 'dummy.pdf');
+    formData.append('path', 'test/path/');
+
+    const response = await APIService.postWithoutStringify<IDocument>(`${this.baseRoute}/filePart`, formData, token?.value as string);
+    return response as IDocument;
   }
 
   /**

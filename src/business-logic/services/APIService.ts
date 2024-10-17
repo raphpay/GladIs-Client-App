@@ -89,6 +89,47 @@ class APIService {
     }
   }
 
+  static async postWithoutStringify<T>(endpoint: string, data: any = {}, token?: string): Promise<T> {
+    try {
+      const url = `${API_BASE_URL}/${endpoint}`;
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'multipart/form-data',
+      };
+
+      // Include token in headers if provided
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      console.log("postWithoutStringify data", data);
+      
+      const response = await fetch(url, {
+        method: HttpMethod.POST,
+        headers,
+        body: data,
+      });
+
+      console.log("postWithoutStringify response", response);
+
+      if (!response.ok) {
+        let errorMessage = `HTTP error! Status: ${response.status}`;
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const responseData = await response.json();
+            if (responseData && responseData.reason) {
+                errorMessage = responseData.reason;
+            }
+        }
+        throw new Error(errorMessage);
+      }
+
+      return await response.json() as T;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   /**
    * Sends a POST request to the specified endpoint without expecting a response.
    * @param endpoint - The API endpoint to send the request to.
