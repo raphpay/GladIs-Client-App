@@ -7,7 +7,6 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../business-logic/services/CacheService';
-import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -18,6 +17,8 @@ import Toast from '../../components/Toast';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
+
+import PDFScreenManager from './PDFScreenManager';
 
 type PDFScreenProps = NativeStackScreenProps<
   IRootStackParams,
@@ -60,31 +61,23 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   async function loadFromAPI() {
     let data: string[] = [];
     for (const doc of documentInputs) {
-      const docData = await downloadDocument(doc.id);
-      if (docData) {
+      try {
+        const docData = await PDFScreenManager.getInstance().downloadDocument(
+          doc.id,
+          token,
+        );
         data.push(docData);
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
       }
     }
-    await cacheDownloadedData(data);
-    setPDFData(data);
-    setIsLoading(false);
-  }
-
-  async function cacheDownloadedData(data: string[]) {
-    await CacheService.getInstance().storeValue(
-      originalDocument.id as string,
+    await PDFScreenManager.getInstance().cacheDownloadedData(
+      originalDocument,
       data,
     );
-  }
-
-  async function downloadDocument(id: string): Promise<string | undefined> {
-    try {
-      const data = await DocumentServiceGet.download(id, token);
-      return data;
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(t(`errors.api.${errorMessage}`), true);
-    }
+    setPDFData(data);
+    setIsLoading(false);
   }
 
   // Lifecycle Methods

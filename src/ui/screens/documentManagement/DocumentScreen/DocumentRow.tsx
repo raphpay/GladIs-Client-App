@@ -10,6 +10,7 @@ import Tooltip from '../../../components/Tooltip';
 
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
+
 import DocumentRowManager from './DocumentRowManager';
 
 type DocumentRowProps = {
