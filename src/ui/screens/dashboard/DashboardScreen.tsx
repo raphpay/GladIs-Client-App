@@ -4,25 +4,22 @@ import { useTranslation } from 'react-i18next';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import CacheKeys from '../../../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
+import CacheService from '../../../business-logic/services/CacheService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
+import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
-import { Image, Platform, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
-import PlatformName from '../../../business-logic/model/enums/PlatformName';
-import FinderModule from '../../../business-logic/modules/FinderModule';
-import IFile, { INewFile } from '../../../business-logic/model/IFile';
-import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
-import { IDocumentActivityLogInput } from '../../../business-logic/model/IDocumentActivityLog';
-import DocumentLogAction from '../../../business-logic/model/enums/DocumentLogAction';
-import DocumentActivityLogsService from '../../../business-logic/services/DocumentActivityLogsService';
-import {NativeModules} from 'react-native';
-import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
-import Utils from '../../../business-logic/utils/Utils';
-import PDFViewer from './NewPDFViewer';
-import NewPDFViewer from './NewPDFViewer';
+import AppContainer from '../../components/AppContainer/AppContainer';
+import IconButton from '../../components/Buttons/IconButton';
+import DashboardAdminGrid from '../../components/Dashboard/DashboardAdminGrid';
+import DashboardClientGrid from '../../components/Dashboard/DashboardClientGrid';
+import Dialog from '../../components/Dialogs/Dialog';
+import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
-const { FilePickerModule } = NativeModules;
+import Toast from '../../components/Toast';
 
 type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
 
@@ -43,137 +40,177 @@ function DashboardScreen(props: DashboardScreenProps): any {
   
   const { t } = useTranslation();
 
-  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, isAdmin } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
-  // Test Display PDF ( TO BE REMOVED )
-  const [documentID, setDocumentID] = useState<string>('');
-  const [imagePaths, setImagePaths] = useState<string[] | null>(null);
-  const [searchedDocumentName, setSearchedDocumentName] = useState<string>('');
-  const [documentIDs, setDocumentIDs] = useState<string[]>([]);
+  const searchTextPlaceholder = isAdmin ? t('dashboard.searchTextPlaceholder.admin') : t('dashboard.searchTextPlaceholder.client');
 
-
-  async function pickAFile() {
-    const filename = 'test.pdf';
-    let filePath: string = '';
-    if (Platform.OS === PlatformName.Mac) {
-      filePath = await FinderModule.getInstance().pickPDFFilePath();
-      // await uploadFileToAPI(filePath, filename);
-    } else if (Platform.OS === PlatformName.Android) {
-      const file = await FilePickerModule.pickSingleFile(["application/pdf"]);
-      filePath = file.uri;
-    }
-    await uploadFileToAPI(filePath, filename);
+  // Sync Methods
+  function navigateToClientList() {
+    navigation.navigate(NavigationRoutes.ClientCreationStack);
   }
 
-  const uploadFileToAPI = async (filePath: string, fileName: string) => {
-    try {
-      const createdDocument = await DocumentServicePost.uploadNewFile(fileName, filePath, token);
-      console.log("createdDocument", createdDocument);
-    } catch (error) {
-      console.error('Upload failed:', error);
-    }
-  };
-
-  async function pickAMultiplePageFile() {
-    const fileName = "multiple.pdf";
-    let filePath: string = '';
-    if (Platform.OS === PlatformName.Mac) {
-      filePath = await FinderModule.getInstance().pickPDFFilePath();
-    } else if (Platform.OS === PlatformName.Android) {
-      const file = await FilePickerModule.pickSingleFile(["application/pdf"]);
-      filePath = file.uri;
-    }
-    await uploadMultiplePageFileToAPI(filePath, fileName);
+  function displayToast(message: string, isError: boolean) {
+    setToastMessage(message);
+    setToastIsShowingError(isError);
+    setShowToast(true);
   }
 
-  async function uploadMultiplePageFileToAPI(filePath: string, fileName: string) {
-    try {
-      const createdDocuments = await DocumentServicePost.uploadMultiplePageFile(fileName, filePath, token);
-      console.log("createdDocuments", createdDocuments);
-    } catch (error) {
-      console.error('Upload failed:', error);
-    }
-  }
-
-  async function getLatestDocument() {
-    try {
-      const docs = await DocumentServiceGet.getAll(token);
-      if (docs.length > 0) {
-        setDocumentID(docs[0].id);
-      }
-    } catch (error) {
-      console.log('error');
-    }
-  }
-
-  async function getDocuments() {
-    try {
-      console.log("getDocuments");
-      const docs = await DocumentServiceGet.getAllPages(searchedDocumentName, token);
-      let ids = [];
-      if (docs.length > 0) {
-        for (const doc of docs) {
-          ids.push(doc.id);
+  // Async Methods
+  async function submitPasswordChange() {
+    if (oldPassword.length !== 0 && newPassword.length !== 0) {
+      if (oldPassword === newPassword) {
+        displayToast(t('errors.api.unauthorized.password.samePassword'), true);
+      } else {
+        if (currentUser) {
+          try {
+            const userID = currentUser.id as string; 
+            await UserServicePut.changePassword(userID, oldPassword, newPassword, token);
+            await UserServicePut.setUserFirstConnectionToFalse(userID, token);
+            setShowDialog(false);
+            displayToast(t('api.success.passwordChanged'), false);
+          } catch (error) {
+            const errorMessage = (error as Error).message as string;
+            displayToast(t(`errors.api.${errorMessage}`), true);
+          }
         }
       }
-      setDocumentIDs(ids);
-    } catch (error) {
-      console.log('error');
     }
   }
 
-  async function downloadDocument(id: string) : Promise<string> {
-    try {
-      const data = await DocumentServiceGet.download(id, token);
-      return data
-    } catch (error) {
-      throw error;
+  async function loadView() {
+    if (currentUser) {
+      setDialogDescription(t('components.dialog.firstConnection.description'))
+      setShowDialog(currentUser.firstConnection ?? false);
+    } else {
+      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
+      const user = await UserServiceGet.getUserByID(userID as string, token);
+      setDialogDescription(t('components.dialog.firstConnection.description'))
+      setShowDialog(user.firstConnection ?? false);
     }
   }
 
-  async function downloadDocuments() {
-    // try {
-    //   let data = await DocumentServiceGet.download(documentID, token);
-    //   data = Utils.changeMimeType(data, 'application/pdf');
-    //   console.log("data", data)
-    //   setImagePath(data);
-    // } catch (error) {
-      
-    // }
-    if (documentIDs.length > 0) {
-      let datas: string[] = [];
-      for (const docID of documentIDs) {
-        const data = await downloadDocument(docID);
-        datas.push(data);
-      }
-      setImagePaths(datas);
+  // Lifecycle Methods
+  useEffect(() => {
+     async function init() {
+      await loadView();
     }
+    init();
+  }, []);
+
+  // Components
+  function appContainerChildren() {
+    return (
+      <>
+        {
+            isAdmin ? (
+              <DashboardAdminGrid searchText={searchText} />
+            ) : (
+              <DashboardClientGrid searchText={searchText} setShowErrorDialog={setShowErrorDialog}/>
+            )
+          }
+      </>
+    );
+  }
+
+  function dialogContent() {
+    return (
+      <>
+        {
+          showDialog && (
+            <Dialog
+              title={t('components.dialog.firstConnection.title')}
+              description={dialogDescription}
+              confirmTitle={t('components.dialog.firstConnection.confirmButton')}
+              isConfirmDisabled={oldPassword.length === 0 || newPassword.length === 0}
+              onConfirm={submitPasswordChange}
+              onCancel={() => setShowDialog(false)}
+              isCancelAvailable={false}
+            >
+              <>
+                <GladisTextInput 
+                  value={oldPassword}
+                  placeholder={t('components.dialog.firstConnection.temporary')}
+                  onValueChange={setOldPassword}
+                  secureTextEntry={true}
+                  autoCapitalize={'none'}
+                  showVisibilityButton={true}
+                  width={'100%'}
+                />
+                <GladisTextInput 
+                  value={newPassword}
+                  placeholder={t('components.dialog.firstConnection.new')}
+                  onValueChange={setNewPassword}
+                  secureTextEntry={true}
+                  autoCapitalize={'none'}
+                  showVisibilityButton={true}
+                  width={'100%'}
+                />
+              </>
+            </Dialog>
+          )
+        }
+      </>
+    );
+  }
+
+  function errorDialogContent() {
+    return (
+      <>
+        {
+          showErrorDialog && (
+            <ErrorDialog
+              title={t('errors.modules.title')}
+              description={t('errors.modules.description')}
+              cancelTitle={t('errors.modules.cancelButton')}
+              onCancel={() => setShowErrorDialog(false)}
+            />
+          )
+        }
+      </>
+    )
+  }
+  
+  function ToastContent() {
+    return (
+      <>
+        {
+          showToast && (
+            <Toast
+              message={toastMessage}
+              isVisible={showToast}
+              setIsVisible={setShowToast}
+              isShowingError={toastIsShowingError}
+            />
+          )
+        }
+      </>
+    )
   }
 
   return (
     <>
-      <TouchableOpacity onPress={pickAFile}>
-        <Text>Pick PDF File Path</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={pickAMultiplePageFile}>
-        <Text>Pick Multiple page PDF File</Text>
-      </TouchableOpacity>
-      <GladisTextInput
-        value={searchedDocumentName}
-        onValueChange={setSearchedDocumentName}
-        placeholder='Search'
+      <AppContainer 
+        mainTitle={t('dashboard.adminTitle')}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        showSearchText={true}
+        showSettings={true}
+        searchTextPlaceholder={searchTextPlaceholder}
+        adminButton={(
+          isAdmin ? (
+            <IconButton
+              title={t('components.buttons.addUser')}
+              icon={plusIcon}
+              onPress={navigateToClientList}
+            />
+          ) : undefined
+        )}
+        children={appContainerChildren()}
       />
-      <TouchableOpacity onPress={getDocuments}>
-        <Text>Get document</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={downloadDocuments}>
-        <Text>Download docs</Text>
-      </TouchableOpacity>
-      {/* <ScrollView> */}
-        {/* { imagePath && <Image style={{width: 210, height: 297 * 3}} resizeMode='contain' source={{uri: `data:application/pdf;base64,${imagePath}`}}/> } */}
-      {/* </ScrollView> */}
-      <NewPDFViewer pdfPages={imagePaths || []}/>
+      {dialogContent()}
+      {errorDialogContent()}
+      {ToastContent()}
     </>
   )
 }
