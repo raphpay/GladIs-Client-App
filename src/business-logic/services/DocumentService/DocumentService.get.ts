@@ -10,7 +10,7 @@ class DocumentServiceGet extends DocumentService {
   /**
    * Downloads the document with the specified ID.
    * @param id - The ID of the document to download.
-   * @param token - The authentication token (optional).
+   * @param token - The authentication token.
    * @returns A promise that resolves to the downloaded document.
    * @throws If an error occurs while downloading the document.
    */
@@ -24,7 +24,12 @@ class DocumentServiceGet extends DocumentService {
     }
   }
 
-  //TODO: Add documentation
+  /**
+   * Get all documents
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the documents.
+   * @throws If an error occurs while getting the documents.
+   */
   static async getAll(token: IToken | null): Promise<IDocument[]> {
     try {
       const docs = await APIService.get<IDocument[]>(
@@ -37,24 +42,14 @@ class DocumentServiceGet extends DocumentService {
     }
   }
 
-  static async getAllPages(
-    documentName: string,
-    token: IToken | null,
-  ): Promise<IDocument[]> {
-    try {
-      const input = { name: documentName };
-      const docs = await APIService.post<IDocument[]>(
-        `${this.baseRoute}/byName`,
-        input,
-        token?.value as string,
-      );
-      console.log('getAllPages', docs);
-      return docs;
-    } catch (error) {
-      throw error;
-    }
-  }
-
+  /**
+   * Get all document pages by name and path
+   * @param name - The name of the original document
+   * @param apiPath - The path of the document
+   * @param token - The authentication token.
+   * @returns A promise that resolves to the document pages.
+   * @throws If an error occurs while getting the documents.
+   */
   static async getDocumentPagesByNameAndPath(
     name: string,
     apiPath: string,
