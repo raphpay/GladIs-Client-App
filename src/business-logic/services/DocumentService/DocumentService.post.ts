@@ -1,8 +1,8 @@
-import IDocument, { IDocumentPaginatedOutput } from "../../model/IDocument";
-import IFile, { INewFile } from "../../model/IFile";
-import IToken from "../../model/IToken";
-import APIService from "../APIService";
-import DocumentService from "./DocumentService";
+import IDocument, { IDocumentPaginatedOutput } from '../../model/IDocument';
+import IFile, { INewFile } from '../../model/IFile';
+import IToken from '../../model/IToken';
+import APIService from '../APIService';
+import DocumentService from './DocumentService';
 
 class DocumentServicePost extends DocumentService {
   static baseRoute = 'documents';
@@ -14,10 +14,17 @@ class DocumentServicePost extends DocumentService {
    * @returns A promise that resolves to an array of documents.
    * @throws If an error occurs while retrieving the documents.
    */
-  static async getDocumentsAtPath(path: string, token: IToken | null): Promise<IDocument[]> {
+  static async getDocumentsAtPath(
+    path: string,
+    token: IToken | null,
+  ): Promise<IDocument[]> {
     try {
       const url = `${this.baseRoute}/getDocumentsAtPath`;
-      const documents = await APIService.post<IDocument[]>(url, { value: path }, token?.value as string);
+      const documents = await APIService.post<IDocument[]>(
+        url,
+        { value: path },
+        token?.value as string,
+      );
       return documents;
     } catch (error) {
       console.log('Error getting documents at path:', path, error);
@@ -33,10 +40,19 @@ class DocumentServicePost extends DocumentService {
    * @returns A promise that resolves to the paginated documents.
    * @throws If an error occurs while retrieving the documents.
    */
-  static async getPaginatedDocumentsAtPath(path: string, token: IToken | null, page: number, perPage: number): Promise<IDocumentPaginatedOutput> {
+  static async getPaginatedDocumentsAtPath(
+    path: string,
+    token: IToken | null,
+    page: number,
+    perPage: number,
+  ): Promise<IDocumentPaginatedOutput> {
     try {
       const url = `${this.baseRoute}/paginated/path?page=${page}&perPage=${perPage}`;
-      const output = await APIService.post<IDocumentPaginatedOutput>(url, { value: path }, token?.value as string);
+      const output = await APIService.post<IDocumentPaginatedOutput>(
+        url,
+        { value: path },
+        token?.value as string,
+      );
       return output;
     } catch (error) {
       throw error;
@@ -52,48 +68,49 @@ class DocumentServicePost extends DocumentService {
    * @returns A promise that resolves to the uploaded document.
    * @throws If an error occurs while uploading the document.
    */
-  static async upload(file: IFile, name: string, path: string, token: IToken | null): Promise<IDocument> {
+  static async upload(
+    file: IFile,
+    name: string,
+    path: string,
+    token: IToken | null,
+  ): Promise<IDocument> {
     try {
       const params = { name, path, file };
-      const response = await APIService.post<IDocument>(this.baseRoute, params, token?.value as string);
+      const response = await APIService.post<IDocument>(
+        this.baseRoute,
+        params,
+        token?.value as string,
+      );
       return response as IDocument;
     } catch (error) {
       throw error;
     }
   }
 
-  static async uploadNewFile(name: string, path: string, token: IToken | null): Promise<IDocument> {
+  // TODO: Add documentation
+  static async uploadFormDataFile(
+    name: string,
+    originPath: string,
+    destinationPath: string,
+    token: IToken | null,
+  ): Promise<IDocument[]> {
     const formData = new FormData();
     formData.append('file', {
-      uri: path,
+      uri: originPath,
       type: 'application/octet-stream', // or adjust the MIME type based on your file type
-      name,  // The file name
+      name, // The file name
     });
 
-    formData.append('uri', path);
-    formData.append('name', 'dummy.pdf');
-    formData.append('path', 'test/path/');
+    formData.append('uri', originPath);
+    formData.append('name', name);
+    formData.append('path', destinationPath);
 
     const url = `${this.baseRoute}/filePart`;
-    console.log('url', url);
-    const response = await APIService.postWithoutStringify<IDocument>(url, formData, token?.value as string);
-    return response as IDocument;
-  }
-
-  static async uploadMultiplePageFile(name: string, path: string, token: IToken | null): Promise<IDocument[]> {
-    const formData = new FormData();
-    formData.append('file', {
-      uri: path,
-      type: 'application/octet-stream', // or adjust the MIME type based on your file type
-      name,  // The file name
-    });
-
-    formData.append('uri', path);
-    formData.append('name', 'dummy.pdf');
-    formData.append('path', 'test/path/');
-
-    const url = `${this.baseRoute}/filePart/multiple`;
-    const response = await APIService.postWithoutStringify<IDocument[]>(url, formData, token?.value as string);
+    const response = await APIService.postWithoutStringify<IDocument[]>(
+      url,
+      formData,
+      token?.value as string,
+    );
     return response as IDocument[];
   }
 
@@ -105,10 +122,17 @@ class DocumentServicePost extends DocumentService {
    * @returns A promise that resolves to the uploaded logo document.
    * @throws If an error occurs while uploading the logo.
    */
-  static async uploadLogo(file: IFile, name: string, path: string): Promise<IDocument> {
+  static async uploadLogo(
+    file: IFile,
+    name: string,
+    path: string,
+  ): Promise<IDocument> {
     try {
       const params = { name, path, file };
-      const response = await APIService.post<IDocument>(`${this.baseRoute}/logo`, params);
+      const response = await APIService.post<IDocument>(
+        `${this.baseRoute}/logo`,
+        params,
+      );
       return response as IDocument;
     } catch (error) {
       throw error;
