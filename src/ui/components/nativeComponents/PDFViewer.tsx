@@ -1,24 +1,30 @@
 import React from 'react';
-import {
-  StyleProp,
-  ViewStyle,
-  requireNativeComponent
-} from 'react-native';
+import { Image, ScrollView, View } from 'react-native';
 
-type PDFViewerProps = {
-  dataString: string;
-  style?: StyleProp<ViewStyle>;
-};
+import styles from '../../assets/styles/components/PDFViewerStyles';
 
-const NativePDFViewer = requireNativeComponent<PDFViewerProps>('PDFViewer');
+interface PDFViewerProps {
+  pdfPages: string[]; // Array of base64 encoded image strings
+}
 
 function PDFViewer(props: PDFViewerProps): React.JSX.Element {
-
-  const { dataString, style } = props;
-
+  const { pdfPages } = props;
   return (
-    <NativePDFViewer style={style} dataString={dataString} />
+    <ScrollView contentContainerStyle={styles.container}>
+      {pdfPages.map((imagePath: string, index: number) => (
+        <View key={index} style={styles.imageContainer}>
+          <Image
+            style={styles.image}
+            resizeMode="contain"
+            source={{ uri: `data:application/pdf;base64,${imagePath}` }}
+          />
+        </View>
+      ))}
+    </ScrollView>
   );
 }
+
+// Example usage
+// const pdfPages: string[] = ['base64Image1', 'base64Image2', ...]; // Replace with your base64
 
 export default PDFViewer;
