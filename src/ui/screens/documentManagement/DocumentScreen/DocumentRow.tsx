@@ -8,13 +8,9 @@ import { RootState } from '../../../../business-logic/store/store';
 
 import Tooltip from '../../../components/Tooltip';
 
-import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
-import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import UserType from '../../../../business-logic/model/enums/UserType';
-import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
-import DocumentServiceGet from '../../../../business-logic/services/DocumentService/DocumentService.get';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
+import DocumentRowManager from './DocumentRowManager';
 
 type DocumentRowProps = {
   document: IDocument;
@@ -35,45 +31,20 @@ function DocumentRow(props: DocumentRowProps): React.JSX.Element {
 
   // Async Methods
   async function navigateToDocument() {
-    const files = await loadSubDocuments();
-    await logDocumentOpening();
+    const files = await DocumentRowManager.getInstance().loadSubDocuments(
+      document,
+      token,
+    );
+    await DocumentRowManager.getInstance().logDocumentOpening(
+      currentUser,
+      currentClient,
+      document,
+      token,
+    );
     navigation.navigate(NavigationRoutes.PDFScreen, {
       documentInputs: files,
       originalDocument: document,
     });
-  }
-
-  // Private async Methods
-  async function loadSubDocuments(): Promise<IDocument[]> {
-    let files: IDocument[] = [];
-    try {
-      files = await DocumentServiceGet.getDocumentPagesByNameAndPath(
-        document.name,
-        document.path,
-        token,
-      );
-      return files;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async function logDocumentOpening() {
-    try {
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Visualisation,
-        actorIsAdmin: currentUser?.userType == UserType.Admin,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: document.id,
-      };
-      await DocumentActivityLogsService.getInstance().recordLog(
-        logInput,
-        token,
-      );
-    } catch (error) {
-      throw error;
-    }
   }
 
   return (
