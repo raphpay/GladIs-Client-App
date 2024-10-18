@@ -31,6 +31,18 @@ class DocumentServiceGet extends DocumentService {
       throw error;
     }
   }
+
+  static async getAllPages(documentName: string, token: IToken | null): Promise<IDocument[]> {
+    try {
+      console.log('getAllPages 1');
+      const input = { "name": documentName };
+      const docs = await APIService.post<IDocument[]>(`${this.baseRoute}/byName`, input, token?.value as string);
+      console.log('getAllPages', docs);
+      return docs;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default DocumentServiceGet;
