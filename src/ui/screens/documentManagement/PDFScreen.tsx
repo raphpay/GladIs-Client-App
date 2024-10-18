@@ -13,8 +13,8 @@ import { RootState } from '../../../business-logic/store/store';
 
 import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
+import PDFViewer from '../../components/nativeComponents/PDFViewer';
 import Toast from '../../components/Toast';
-import NewPDFViewer from '../dashboard/NewPDFViewer';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
@@ -27,7 +27,7 @@ type PDFScreenProps = NativeStackScreenProps<
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // General
   const [searchText, setSearchText] = useState<string>('');
-  const [pdfData, setPDFData] = useState<string>('');
+  const [pdfData, setPDFData] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -37,7 +37,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   // Props
   const { navigation } = props;
-  const { documentInput } = props.route.params;
+  const { documentInputs, originalDocument } = props.route.params;
   // Hooks
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
@@ -58,29 +58,32 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   // Async Methods
   async function loadFromAPI() {
+    let data: string[] = [];
+    for (const doc of documentInputs) {
+      const docData = await downloadDocument(doc.id);
+      if (docData) {
+        data.push(docData);
+      }
+    }
+    await cacheDownloadedData(data);
+    setPDFData(data);
+    setIsLoading(false);
+  }
+
+  async function cacheDownloadedData(data: string[]) {
+    await CacheService.getInstance().storeValue(
+      originalDocument.id as string,
+      data,
+    );
+  }
+
+  async function downloadDocument(id: string): Promise<string | undefined> {
     try {
-      const data = await DocumentServiceGet.download(
-        documentInput.id as string,
-        token,
-      );
-      await CacheService.getInstance().storeValue(
-        documentInput.id as string,
-        data,
-      );
-      setPDFData(data);
-      setIsLoading(false);
+      const data = await DocumentServiceGet.download(id, token);
+      return data;
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
-    }
-  }
-
-  async function downloadDocument(id: string) {
-    try {
-      const data = await DocumentServiceGet.download(id, token);
-      setPDFData(data);
-    } catch (error) {
-      throw error;
     }
   }
 
@@ -90,7 +93,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
       let cachedData = null;
       try {
         cachedData = await CacheService.getInstance().retrieveValue(
-          documentInput.id as string,
+          originalDocument.id as string,
         );
       } catch (error) {
         console.log('error getting cached data', error);
@@ -125,7 +128,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
     return (
       <>
         {pdfData ? (
-          <NewPDFViewer pdfPages={[pdfData]} />
+          <PDFViewer pdfPages={pdfData} />
         ) : (
           <ContentUnavailableView
             title={t('document.noDocumentFound.title')}

@@ -1,7 +1,8 @@
-import IDocument from "../../model/IDocument";
-import IToken from "../../model/IToken";
-import APIService from "../APIService";
-import DocumentService from "./DocumentService";
+import IDocument from '../../model/IDocument';
+import IToken from '../../model/IToken';
+import Utils from '../../utils/Utils';
+import APIService from '../APIService';
+import DocumentService from './DocumentService';
 
 class DocumentServiceGet extends DocumentService {
   static baseRoute = 'documents';
@@ -23,22 +24,51 @@ class DocumentServiceGet extends DocumentService {
     }
   }
 
+  //TODO: Add documentation
   static async getAll(token: IToken | null): Promise<IDocument[]> {
     try {
-      const docs = await APIService.get<IDocument[]>(this.baseRoute, token?.value as string)
+      const docs = await APIService.get<IDocument[]>(
+        this.baseRoute,
+        token?.value as string,
+      );
       return docs;
     } catch (error) {
       throw error;
     }
   }
 
-  static async getAllPages(documentName: string, token: IToken | null): Promise<IDocument[]> {
+  static async getAllPages(
+    documentName: string,
+    token: IToken | null,
+  ): Promise<IDocument[]> {
     try {
-      console.log('getAllPages 1');
-      const input = { "name": documentName };
-      const docs = await APIService.post<IDocument[]>(`${this.baseRoute}/byName`, input, token?.value as string);
+      const input = { name: documentName };
+      const docs = await APIService.post<IDocument[]>(
+        `${this.baseRoute}/byName`,
+        input,
+        token?.value as string,
+      );
       console.log('getAllPages', docs);
       return docs;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getDocumentPagesByNameAndPath(
+    name: string,
+    apiPath: string,
+    token: IToken | null,
+  ): Promise<IDocument[]> {
+    try {
+      const input = { name: Utils.removePdfExtension(name), path: apiPath };
+      const url = `${this.baseRoute}/pages/byName/andPath`;
+      const documents = await APIService.post<IDocument[]>(
+        url,
+        input,
+        token?.value as string,
+      );
+      return documents;
     } catch (error) {
       throw error;
     }
