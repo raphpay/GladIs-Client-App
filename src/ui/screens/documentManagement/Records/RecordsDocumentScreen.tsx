@@ -55,6 +55,7 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
+import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
 
@@ -231,26 +232,22 @@ function RecordsDocumentScreen(
   }
 
   // Async Methods
-  async function navigateToDocument(doc: IDocument) {
-    try {
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Visualisation,
-        actorIsAdmin: currentUser?.userType == UserType.Admin,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: doc.id,
-      };
-      await DocumentActivityLogsService.getInstance().recordLog(
-        logInput,
-        token,
-      );
-      // TODO: Correct props
-      navigation.navigate(NavigationRoutes.PDFScreen, {
-        documentInputs: [doc],
-      });
-    } catch (error) {
-      console.log('Error recording log for document:', doc.id, error);
-    }
+  async function navigateToDocument(document: IDocument) {
+    const files = await DocumentRowManager.getInstance().loadSubDocuments(
+      document,
+      token,
+    );
+    await DocumentRowManager.getInstance().logDocumentOpening(
+      currentUser,
+      currentClient,
+      document,
+      token,
+    );
+    navigation.navigate(NavigationRoutes.PDFScreen, {
+      documentInputs: files,
+      originalDocument: document,
+    });
+    closeDialogs();
   }
 
   async function download(document: IDocument) {

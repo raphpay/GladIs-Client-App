@@ -18,7 +18,6 @@ import IAction from '../../../../business-logic/model/IAction';
 import IDocument, {
   DocumentStatus,
 } from '../../../../business-logic/model/IDocument';
-import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName, {
@@ -27,7 +26,6 @@ import PlatformName, {
 import UserType from '../../../../business-logic/model/enums/UserType';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
-import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
 import DocumentServiceGet from '../../../../business-logic/services/DocumentService/DocumentService.get';
 import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
@@ -52,6 +50,7 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from './DocumentGrid';
 
+import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
 
@@ -64,7 +63,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   // General
   const [searchText, setSearchText] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isUploading, setIsUploading] = useState<boolean>(true);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
   // Dialog
   const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] =
@@ -226,25 +225,23 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDeleteConfimationDialog(true);
   }
 
-  // Async Methodss
-  async function navigateToDocument(doc: IDocument) {
-    try {
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Visualisation,
-        actorIsAdmin: currentUser?.userType == UserType.Admin,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: doc.id,
-      };
-      await DocumentActivityLogsService.getInstance().recordLog(
-        logInput,
-        token,
-      );
-      // TODO: Update this
-      navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
-    } catch (error) {
-      console.log('Error recording log for document:', doc.id, error);
-    }
+  // Async Methods
+  async function navigateToDocument(document: IDocument) {
+    const files = await DocumentRowManager.getInstance().loadSubDocuments(
+      document,
+      token,
+    );
+    await DocumentRowManager.getInstance().logDocumentOpening(
+      currentUser,
+      currentClient,
+      document,
+      token,
+    );
+    navigation.navigate(NavigationRoutes.PDFScreen, {
+      documentInputs: files,
+      originalDocument: document,
+    });
+    closeDialogs();
   }
 
   async function pickAFile() {
