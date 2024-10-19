@@ -13,12 +13,14 @@ const { FilePickerModule } = NativeModules;
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
+import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
 import DocumentScreenManager from '../../../../business-logic/manager/documentManagement/DocumentScreenManager';
 import IAction from '../../../../business-logic/model/IAction';
 import IDocument, {
   DocumentStatus,
 } from '../../../../business-logic/model/IDocument';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
+import MimeType from '../../../../business-logic/model/enums/MimeType';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import PlatformName, {
   Orientation,
@@ -50,7 +52,6 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from './DocumentGrid';
 
-import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
 
@@ -250,7 +251,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickPDFFilePath();
     } else if (Platform.OS === PlatformName.Android) {
-      const file = await FilePickerModule.pickSingleFile(['application/pdf']);
+      const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
       filePath = file.uri;
     }
     setIsUploading(true);

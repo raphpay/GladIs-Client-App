@@ -8,6 +8,7 @@ import IDocument from '../../model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
+import MimeType from '../../model/enums/MimeType';
 
 import FinderModule from '../../modules/FinderModule';
 
@@ -34,7 +35,7 @@ class RecordsDocumentScreenManager {
       if (Platform.OS === PlatformName.Mac) {
         originPath = await FinderModule.getInstance().pickPDFFilePath();
       } else if (Platform.OS === PlatformName.Android) {
-        const file = await FilePickerModule.pickSingleFile(['application/pdf']);
+        const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
         originPath = file.uri;
       }
     } catch (error) {
