@@ -5,6 +5,7 @@ import { ActivityIndicator, SafeAreaView } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
+import PDFScreenManager from '../../../business-logic/manager/documentManagement/PDFScreenManager';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import CacheService from '../../../business-logic/services/CacheService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
@@ -17,8 +18,6 @@ import Toast from '../../components/Toast';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
-
-import PDFScreenManager from './PDFScreenManager';
 
 type PDFScreenProps = NativeStackScreenProps<
   IRootStackParams,

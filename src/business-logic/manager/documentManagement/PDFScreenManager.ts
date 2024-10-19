@@ -1,8 +1,8 @@
-import IDocument from '../../../business-logic/model/IDocument';
-import IToken from '../../../business-logic/model/IToken';
+import IDocument from '../../model/IDocument';
+import IToken from '../../model/IToken';
 
-import CacheService from '../../../business-logic/services/CacheService';
-import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
+import CacheService from '../../services/CacheService';
+import DocumentServiceGet from '../../services/DocumentService/DocumentService.get';
 
 class PDFScreenManager {
   private static instance: PDFScreenManager;

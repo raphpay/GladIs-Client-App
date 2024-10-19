@@ -50,6 +50,7 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from './DocumentGrid';
 
+import DocumentScreenManager from '../../../../business-logic/manager/documentManagement/DocumentScreenManager';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
 
@@ -223,8 +224,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setShowDeleteConfimationDialog(true);
   }
 
-  // Async Methods
-  // Actions
+  // Async Methodss
   async function navigateToDocument(doc: IDocument) {
     try {
       const logInput: IDocumentActivityLogInput = {
@@ -238,6 +238,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         logInput,
         token,
       );
+      // TODO: Update this
       navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
     } catch (error) {
       console.log('Error recording log for document:', doc.id, error);
@@ -254,8 +255,21 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       filePath = file.uri;
     }
 
-    const createdDocuments = await uploadFileToAPI(filePath, fileName);
-    await logDocumentCreation(createdDocuments[0]);
+    const createdDocuments =
+      await DocumentScreenManager.getInstance().uploadFileToAPI(
+        filePath,
+        fileName,
+        documentDestinationPath,
+        token,
+      );
+    await DocumentScreenManager.getInstance().recordDocumentActivity(
+      DocumentLogAction.Creation,
+      currentUser,
+      currentClient,
+      createdDocuments[0].id,
+      token,
+      true,
+    );
     setDocumentName('');
     closeDialogs();
     await loadPaginatedDocuments();
@@ -273,16 +287,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
           document.id as string,
           docData,
         );
-        const logInput: IDocumentActivityLogInput = {
-          action: DocumentLogAction.Loaded,
-          actorIsAdmin: true,
-          actorID: currentUser?.id as string,
-          clientID: currentClient?.id as string,
-          documentID: document.id,
-        };
-        await DocumentActivityLogsService.getInstance().recordLog(
-          logInput,
+        DocumentScreenManager.getInstance().recordDocumentActivity(
+          DocumentLogAction.Loaded,
+          currentUser,
+          currentClient,
+          document.id,
           token,
+          true,
         );
         displayToast(t('documentsScreen.downloadSuccess'));
       } else {
@@ -301,16 +312,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         DocumentStatus.APPROVED,
         token,
       );
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Approbation,
-        actorIsAdmin: true,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: document.id,
-      };
-      await DocumentActivityLogsService.getInstance().recordLog(
-        logInput,
+      DocumentScreenManager.getInstance().recordDocumentActivity(
+        DocumentLogAction.Approbation,
+        currentUser,
+        currentClient,
+        document.id,
         token,
+        true,
       );
       displayToast(t('documentsScreen.approvalSuccess'));
       closeDialogs();
@@ -327,16 +335,13 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
         DocumentStatus.NONE,
         token,
       );
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Modification,
-        actorIsAdmin: true,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: document.id,
-      };
-      await DocumentActivityLogsService.getInstance().recordLog(
-        logInput,
+      DocumentScreenManager.getInstance().recordDocumentActivity(
+        DocumentLogAction.Modification,
+        currentUser,
+        currentClient,
+        document.id,
         token,
+        true,
       );
       displayToast(t('documentsScreen.approvalSuccess'));
       closeDialogs();
@@ -349,42 +354,19 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   async function deleteDocument() {
     try {
       const documentID = selectedDocument?.id as string;
-      await recordDocumentDeletionActivity(documentID);
+      await DocumentScreenManager.getInstance().recordDocumentActivity(
+        DocumentLogAction.Deletion,
+        currentUser,
+        currentClient,
+        documentID,
+        token,
+      );
       await DocumentServiceDelete.delete(documentID, token);
       closeDialogs();
       await loadPaginatedDocuments();
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
     }
-  }
-
-  // Private Methods
-  async function uploadFileToAPI(
-    originPath: string,
-    fileName: string,
-  ): Promise<IDocument[]> {
-    try {
-      const createdDocuments = await DocumentServicePost.uploadFormDataFile(
-        fileName,
-        originPath,
-        documentDestinationPath,
-        token,
-      );
-      return createdDocuments;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async function logDocumentCreation(createdDocument: IDocument) {
-    const logInput: IDocumentActivityLogInput = {
-      action: DocumentLogAction.Creation,
-      actorIsAdmin: true,
-      actorID: currentUser?.id as string,
-      clientID: currentClient?.id as string,
-      documentID: createdDocument.id,
-    };
-    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
   async function loadPaginatedDocuments() {
@@ -403,17 +385,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     } catch (error) {
       console.log('Error getting paginated documents:', error);
     }
-  }
-
-  async function recordDocumentDeletionActivity(documentID: string) {
-    const logInput: IDocumentActivityLogInput = {
-      action: DocumentLogAction.Deletion,
-      actorIsAdmin: currentUser?.userType == UserType.Admin,
-      actorID: currentUser?.id as string,
-      clientID: currentClient?.id as string,
-      documentID,
-    };
-    await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
   // Lifecycle Methods
