@@ -3,15 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
-  NativeModules,
   Text,
   TextInput,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
-const { FilePickerModule } = NativeModules;
 
+import RecordsDocumentScreenManager from '../../../../business-logic/manager/documentManagement/RecordsDocumentScreenManager';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import { Orientation } from '../../../../business-logic/model/enums/PlatformName';
@@ -58,7 +57,6 @@ import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
-import RecordsDocumentScreenManager from './RecordsDocumentScreenManager';
 
 type RecordsDocumentScreenProps = NativeStackScreenProps<
   IRootStackParams,

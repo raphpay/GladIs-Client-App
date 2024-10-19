@@ -2,16 +2,15 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
+import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
+import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import IDocument from '../../../../business-logic/model/IDocument';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 
 import Tooltip from '../../../components/Tooltip';
 
-import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
-
-import DocumentRowManager from './DocumentRowManager';
 
 type DocumentRowProps = {
   document: IDocument;

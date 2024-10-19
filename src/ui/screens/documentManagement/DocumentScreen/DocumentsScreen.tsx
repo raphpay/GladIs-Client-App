@@ -13,6 +13,7 @@ const { FilePickerModule } = NativeModules;
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
+import DocumentScreenManager from '../../../../business-logic/manager/documentManagement/DocumentScreenManager';
 import IAction from '../../../../business-logic/model/IAction';
 import IDocument, {
   DocumentStatus,
@@ -50,7 +51,6 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from './DocumentGrid';
 
-import DocumentScreenManager from '../../../../business-logic/manager/documentManagement/DocumentScreenManager';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/DocumentsScreenStyles';
 

@@ -1,12 +1,12 @@
-import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
-import UserType from '../../../../business-logic/model/enums/UserType';
-import IDocument from '../../../../business-logic/model/IDocument';
-import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
-import IToken from '../../../../business-logic/model/IToken';
-import IUser from '../../../../business-logic/model/IUser';
+import DocumentLogAction from '../../model/enums/DocumentLogAction';
+import UserType from '../../model/enums/UserType';
+import IDocument from '../../model/IDocument';
+import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
+import IToken from '../../model/IToken';
+import IUser from '../../model/IUser';
 
-import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
-import DocumentServiceGet from '../../../../business-logic/services/DocumentService/DocumentService.get';
+import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
+import DocumentServiceGet from '../../services/DocumentService/DocumentService.get';
 
 class DocumentRowManager {
   private static instance: DocumentRowManager;
