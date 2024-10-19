@@ -1,18 +1,18 @@
 import { NativeModules, Platform } from 'react-native';
 const { FilePickerModule } = NativeModules;
 
-import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
-import PlatformName from '../../../../business-logic/model/enums/PlatformName';
+import DocumentLogAction from '../../model/enums/DocumentLogAction';
+import PlatformName from '../../model/enums/PlatformName';
 
-import IDocument from '../../../../business-logic/model/IDocument';
-import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
-import IToken from '../../../../business-logic/model/IToken';
-import IUser from '../../../../business-logic/model/IUser';
+import IDocument from '../..//model/IDocument';
+import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
+import IToken from '../../model/IToken';
+import IUser from '../../model/IUser';
 
-import FinderModule from '../../../../business-logic/modules/FinderModule';
+import FinderModule from '../../modules/FinderModule';
 
-import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
-import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
+import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
+import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 
 class SMQClientRelationScreenManager {
   private static instance: SMQClientRelationScreenManager;

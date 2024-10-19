@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 import SMQManager from '../../../../business-logic/manager/SMQManager';
+import SMQClientRelationScreenManager from '../../../../business-logic/manager/smqSurvey/SMQClientRelationScreenManager';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
@@ -12,8 +13,6 @@ import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import Toast from '../../../components/Toast';
 
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
-
-import SMQClientRelationScreenManager from './SMQClientRelationScreenManager';
 
 type SMQClientRelationScreenProps = {
   clientProcessusPilotName: string;
