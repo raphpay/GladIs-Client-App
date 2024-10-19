@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
   },
   documentTextContainer: {
     flex: 1,
-    paddingLeft: 8
+    paddingLeft: 8,
   },
   // Components
   documentButton: {
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 1,
     backgroundColor: 'black',
-    margin: 4
+    margin: 4,
   },
   actionButton: {
     width: 60,
@@ -51,7 +52,17 @@ const styles = StyleSheet.create({
   smqButton: {
     marginHorizontal: 8,
     marginVertical: 4,
-  }
+  },
+  uploadActivityIndicator: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: Colors.inactive,
+    opacity: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    zIndex: 10000,
+  },
 });
 
 export default styles;

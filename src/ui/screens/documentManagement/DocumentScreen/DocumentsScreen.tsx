@@ -63,6 +63,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   // General
   const [searchText, setSearchText] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isUploading, setIsUploading] = useState<boolean>(true);
   const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
   // Dialog
   const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] =
@@ -254,6 +255,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       const file = await FilePickerModule.pickSingleFile(['application/pdf']);
       filePath = file.uri;
     }
+    setIsUploading(true);
 
     const createdDocuments =
       await DocumentScreenManager.getInstance().uploadFileToAPI(
@@ -273,6 +275,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     setDocumentName('');
     closeDialogs();
     await loadPaginatedDocuments();
+    setIsUploading(false);
   }
 
   async function download(document: IDocument) {
@@ -535,6 +538,18 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
+  function UploadingActivityIndicator() {
+    return (
+      <>
+        {isUploading && (
+          <View style={styles.uploadActivityIndicator}>
+            <ActivityIndicator size={'large'} color={Colors.primary} />
+          </View>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       <AppContainer
@@ -569,6 +584,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       {TooltipActionContent()}
       {AddDocumentDialog()}
       {DeleteConfirmationDialog()}
+      {UploadingActivityIndicator()}
     </>
   );
 }
