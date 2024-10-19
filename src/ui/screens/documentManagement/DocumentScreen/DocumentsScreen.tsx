@@ -43,6 +43,7 @@ import {
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
+import UploadingActivityIndicator from '../../../components/ActivityIndicator/UploadingActivityIndicator';
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
 import Dialog from '../../../components/Dialogs/Dialog';
@@ -538,18 +539,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     );
   }
 
-  function UploadingActivityIndicator() {
-    return (
-      <>
-        {isUploading && (
-          <View style={styles.uploadActivityIndicator}>
-            <ActivityIndicator size={'large'} color={Colors.primary} />
-          </View>
-        )}
-      </>
-    );
-  }
-
   return (
     <>
       <AppContainer
@@ -584,7 +573,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       {TooltipActionContent()}
       {AddDocumentDialog()}
       {DeleteConfirmationDialog()}
-      {UploadingActivityIndicator()}
+      <UploadingActivityIndicator isUploading={isUploading} />
     </>
   );
 }

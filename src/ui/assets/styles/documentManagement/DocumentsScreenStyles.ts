@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
@@ -52,16 +51,6 @@ const styles = StyleSheet.create({
   smqButton: {
     marginHorizontal: 8,
     marginVertical: 4,
-  },
-  uploadActivityIndicator: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: Colors.inactive,
-    opacity: 0.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    zIndex: 10000,
   },
 });
 

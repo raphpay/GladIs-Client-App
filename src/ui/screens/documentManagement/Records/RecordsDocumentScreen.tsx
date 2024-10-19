@@ -13,7 +13,6 @@ import {
 import RecordsDocumentScreenManager from '../../../../business-logic/manager/documentManagement/RecordsDocumentScreenManager';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import { Orientation } from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
 import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
@@ -45,6 +44,7 @@ import Utils from '../../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
+import UploadingActivityIndicator from '../../../components/ActivityIndicator/UploadingActivityIndicator';
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
 import Dialog from '../../../components/Dialogs/Dialog';
@@ -69,7 +69,7 @@ function RecordsDocumentScreen(
   // General
   const [searchText, setSearchText] = useState<string>('');
   const [folders, setFolders] = useState<IFolder[]>([]);
-  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   // Documents
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<IDocument>();
@@ -244,6 +244,7 @@ function RecordsDocumentScreen(
         logInput,
         token,
       );
+      // TODO: Correct props
       navigation.navigate(NavigationRoutes.PDFScreen, {
         documentInputs: [doc],
       });
@@ -327,6 +328,7 @@ function RecordsDocumentScreen(
     const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
     const originPath =
       await RecordsDocumentScreenManager.getInstance().pickFile();
+    setIsUploading(true);
     // Upload
     const createdDocuments =
       await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
@@ -346,6 +348,7 @@ function RecordsDocumentScreen(
     setDocumentName('');
     setShowAddDocumentDialog(false);
     await loadPaginatedDocuments();
+    setIsUploading(false);
   }
 
   async function createFolder() {
@@ -696,6 +699,7 @@ function RecordsDocumentScreen(
       {CreateFolderDialog()}
       {ModifyProcessNameDialog()}
       {DeleteConfirmationDialog()}
+      <UploadingActivityIndicator isUploading={isUploading} />
     </>
   );
 }
