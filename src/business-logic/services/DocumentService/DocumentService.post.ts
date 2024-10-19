@@ -1,5 +1,5 @@
 import IDocument, { IDocumentPaginatedOutput } from '../../model/IDocument';
-import IFile, { INewFile } from '../../model/IFile';
+import IFile from '../../model/IFile';
 import IToken from '../../model/IToken';
 import APIService from '../APIService';
 import DocumentService from './DocumentService';
@@ -61,34 +61,14 @@ class DocumentServicePost extends DocumentService {
 
   /**
    * Uploads a file as a document.
-   * @param file - The file to upload.
-   * @param name - The name of the document.
-   * @param path - The path to upload the document to.
+   * @param name - The file name to upload.
+   * @param originPath - The origin path ( in the computer ) of the document.
+   * @param destinationPath - The path to upload the document to ( in the database ).
    * @param token - The authentication token (optional).
    * @returns A promise that resolves to the uploaded document.
    * @throws If an error occurs while uploading the document.
    */
   static async upload(
-    file: IFile,
-    name: string,
-    path: string,
-    token: IToken | null,
-  ): Promise<IDocument> {
-    try {
-      const params = { name, path, file };
-      const response = await APIService.post<IDocument>(
-        this.baseRoute,
-        params,
-        token?.value as string,
-      );
-      return response as IDocument;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // TODO: Add documentation
-  static async uploadFormDataFile(
     name: string,
     originPath: string,
     destinationPath: string,

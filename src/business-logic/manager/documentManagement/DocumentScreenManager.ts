@@ -28,7 +28,7 @@ class DocumentScreenManager {
     token: IToken | null,
   ): Promise<IDocument[]> {
     try {
-      const createdDocuments = await DocumentServicePost.uploadFormDataFile(
+      const createdDocuments = await DocumentServicePost.upload(
         fileName,
         originPath,
         destinationPath,
