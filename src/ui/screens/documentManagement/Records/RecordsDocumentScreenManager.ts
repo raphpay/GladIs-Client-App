@@ -43,7 +43,7 @@ class RecordsDocumentScreenManager {
     return originPath;
   }
 
-  async upload(
+  async uploadFileToAPI(
     fileName: string,
     originPath: string,
     documentDestinationPath: string,

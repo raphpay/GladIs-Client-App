@@ -331,7 +331,7 @@ function RecordsDocumentScreen(
       await RecordsDocumentScreenManager.getInstance().pickFile();
     // Upload
     const createdDocuments =
-      await RecordsDocumentScreenManager.getInstance().upload(
+      await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
         fileName,
         originPath,
         documentDestinationPath,
