@@ -1,15 +1,19 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Platform, ScrollView, Text, View } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
+import {
+  Image,
+  NativeModules,
+  Platform,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+const { FilePickerModule } = NativeModules;
 
-import ClientCreationManager from '../../../business-logic/manager/clientManagement/ClientCreationManager';
-import IFile from '../../../business-logic/model/IFile';
+import ClientCreationScreenManager from '../../../business-logic/manager/clientManagement/ClientCreationScreenManager';
 import IModule from '../../../business-logic/model/IModule';
-import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
-import IToken from '../../../business-logic/model/IToken';
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
@@ -19,8 +23,6 @@ import DocumentServiceGet from '../../../business-logic/services/DocumentService
 import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserServiceGet from '../../../business-logic/services/PendingUserService/PendingUserService.get';
-import PendingUserServicePost from '../../../business-logic/services/PendingUserService/PendingUserService.post';
-import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
 import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
 import {
   useAppDispatch,
@@ -42,6 +44,8 @@ import AddEmployeeDialog from '../../components/Dialogs/AddEmployeeDialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
+import IPendingUser from '../../../business-logic/model/IPendingUser';
+import MimeType from '../../../business-logic/model/enums/MimeType';
 import styles from '../../assets/styles/clientManagement/ClientCreationScreenStyles';
 
 type ClientCreationScreenProps = NativeStackScreenProps<
@@ -174,55 +178,68 @@ function ClientCreationScreen(
   // Async Methods
   async function submit() {
     if (pendingUser == null) {
-      createPendingUser();
+      // Create pending user
+      await createPendingUser();
     } else {
-      convertPendingUser();
+      await convertPendingUser();
     }
   }
 
   async function createPendingUser() {
-    const newPendingUser: IPendingUser = {
-      firstName,
-      lastName,
-      phoneNumber,
-      companyName,
-      email,
-      products,
-      numberOfEmployees: parseInt(employees),
-      numberOfUsers: parseInt(numberOfUsers),
-      salesAmount: parseFloat(sales),
-      status: PendingUserStatus.pending,
-    };
-    let createdUser: IPendingUser | undefined;
+    let newPendingUser: IPendingUser | undefined;
     try {
-      createdUser = await PendingUserServicePost.askForSignUp(
-        newPendingUser,
-        selectedModules,
-      );
+      newPendingUser =
+        await ClientCreationScreenManager.getInstance().createPendingUser(
+          firstName,
+          lastName,
+          phoneNumber,
+          companyName,
+          email,
+          products,
+          employees,
+          numberOfUsers,
+          sales,
+          PendingUserStatus.pending,
+          selectedModules,
+        );
     } catch (error) {
       const errorKeys: string[] = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
       displayToast(t(errorTitle), true);
     }
 
-    if (createdUser) {
-      await createEmployees(createdUser.id as string);
-      await uploadLogo();
+    if (newPendingUser) {
+      // Create related employees
+      try {
+        await ClientCreationScreenManager.getInstance().createEmployees(
+          potentialEmployees,
+          newPendingUser.id as string,
+        );
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+
+      // Upload logo
+      const destinationPath = `${companyName}/logos/`;
+      await ClientCreationScreenManager.getInstance().uploadLogo(
+        destinationPath,
+        logoURI,
+      );
+
       navigateBack();
     }
   }
 
   async function convertPendingUser() {
-    const id = pendingUser?.id as string;
-    const castedToken = token as IToken;
     let createdUser: IUser | undefined;
-    let createdEmployees: IUser[] | undefined;
-
+    // Convert Pending User to User
     try {
-      createdUser = await PendingUserServicePost.convertPendingUserToUser(
-        id,
-        castedToken,
-      );
+      createdUser =
+        await ClientCreationScreenManager.getInstance().convertPendingUser(
+          pendingUser,
+          token,
+        );
     } catch (error) {
       const errorKeys = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
@@ -231,26 +248,23 @@ function ClientCreationScreen(
 
     if (createdUser) {
       try {
+        // Update modules
         await UserServicePut.updateModules(
           createdUser.id as string,
           selectedModules,
-          castedToken,
+          token,
         );
-        createdEmployees = await convertEmployeesToUser();
-        for (const employee of createdEmployees) {
-          await UserServicePut.addManagerToUser(
-            employee.id as string,
-            createdUser.id as string,
-            castedToken,
-          );
-          await UserServicePut.updateModules(
-            employee.id as string,
+
+        // Convert employees to users
+        const createdEmployees =
+          await ClientCreationScreenManager.getInstance().convertEmployeesToUser(
+            potentialEmployees,
+            createdUser,
             selectedModules,
-            castedToken,
+            token,
           );
-        }
         // Send email with username and password ( and employees username if existing )
-        await ClientCreationManager.getInstance().sendEmail(
+        await ClientCreationScreenManager.getInstance().sendEmail(
           createdUser,
           createdEmployees,
           token,
@@ -261,77 +275,24 @@ function ClientCreationScreen(
       }
     }
 
-    await uploadLogo();
+    const destinationPath = `${companyName}/logos/`;
+    await ClientCreationScreenManager.getInstance().uploadLogo(
+      destinationPath,
+      logoURI,
+    );
     dispatch(setClientListCount(clientListCount + 1));
     navigateBack();
   }
 
-  async function createEmployees(pendingUserID: string) {
-    // Update all employees with pendingUserID
-    const updatedPotentialEmployees = potentialEmployees.map(employee => {
-      return {
-        ...employee,
-        pendingUserID,
-      };
-    });
-    for (const employee of updatedPotentialEmployees) {
-      if (employee.pendingUserID !== null) {
-        try {
-          await PotentialEmployeeService.getInstance().create(employee);
-        } catch (error) {
-          const errorMessage = (error as Error).message;
-          displayToast(t(`errors.api.${errorMessage}`), true);
-        }
-      }
-    }
-  }
-
-  async function convertEmployeesToUser(): Promise<IUser[]> {
-    const newUsers: IUser[] = [];
-    for (const employee of potentialEmployees) {
-      try {
-        const newUserEmployee =
-          await PotentialEmployeeService.getInstance().convertToUser(
-            employee.id as string,
-            token,
-          );
-        newUsers.push(newUserEmployee);
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
-    }
-    return newUsers;
-  }
-
   async function addLogo() {
+    let filePath: string = '';
+    // TODO: Do for the other platforms
     if (Platform.OS === PlatformName.Mac) {
-      const data = await FinderModule.getInstance().pickImage();
-      setImageData(data);
-      setLogoURI(`data:image/png;base64,${data}`);
-    } else {
-      const doc = await DocumentPicker.pickSingle({
-        type: DocumentPicker.types.images,
-      });
-      const data = (await Utils.getFileBase64FromURI(doc.uri)) as string;
-      setImageData(data);
-      setLogoURI(doc.uri);
+      filePath = await FinderModule.getInstance().pickImageFilePath();
+    } else if (Platform.OS === PlatformName.Android) {
+      filePath = FilePickerModule.pickSingleFile([MimeType.jpeg, MimeType.png]);
     }
-  }
-
-  async function uploadLogo() {
-    if (imageData) {
-      const fileName = 'logo.png';
-      const file: IFile = {
-        data: imageData,
-        filename: fileName,
-      };
-      await DocumentServicePost.uploadLogo(
-        file,
-        fileName,
-        `${companyName}/logos/`,
-      );
-    }
+    setLogoURI(filePath);
   }
 
   async function loadModules() {
@@ -497,6 +458,7 @@ function ClientCreationScreen(
     );
   }
 
+  // TODO: Find a way to refactor the Toast
   function ToastContent() {
     return (
       <>

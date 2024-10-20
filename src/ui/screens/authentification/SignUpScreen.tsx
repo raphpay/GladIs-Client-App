@@ -58,7 +58,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     IPotentialEmployee[]
   >([]);
   // Logo
-  const [imageData, setImageData] = useState<string>('');
   const [logoURI, setLogoURI] = useState<string>('');
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -158,6 +157,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   async function addLogo() {
     let filePath: string = '';
+    // TODO: Do for the other platforms
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
     } else if (Platform.OS === PlatformName.Android) {
