@@ -1,4 +1,5 @@
-import { Platform } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
+const { FilePickerModule } = NativeModules;
 // Enums
 import MimeType from '../../model/enums/MimeType';
 import PlatformName from '../../model/enums/PlatformName';
@@ -33,6 +34,8 @@ class ClientSettingsScreenFromAdminManager {
     // TODO: Do this for the other platforms
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
+    } else if (Platform.OS === PlatformName.Android) {
+      filePath = await FilePickerModule.pickSingleFile([MimeType.csv]);
     }
 
     return filePath;

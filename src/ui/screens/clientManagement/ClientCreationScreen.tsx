@@ -290,7 +290,20 @@ function ClientCreationScreen(
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
     } else if (Platform.OS === PlatformName.Android) {
-      filePath = FilePickerModule.pickSingleFile([MimeType.jpeg, MimeType.png]);
+      const granted =
+        await ClientCreationScreenManager.getInstance().askAndroidPermission(
+          t('permission.title'),
+          t('permission.message'),
+          t('permission.buttonNuetral'),
+          t('permission.buttonNegative'),
+          t('permission.buttonPositive'),
+        );
+      if (granted) {
+        filePath = FilePickerModule.pickSingleFile([
+          MimeType.jpeg,
+          MimeType.png,
+        ]);
+      }
     }
     setLogoURI(filePath);
   }

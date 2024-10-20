@@ -1,17 +1,17 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, PermissionsAndroid, Platform } from 'react-native';
 const { FilePickerModule } = NativeModules;
-
+// Enums
 import DocumentLogAction from '../../model/enums/DocumentLogAction';
 import PlatformName from '../../model/enums/PlatformName';
-
+// Model
 import IDocument from '../../model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
 import MimeType from '../../model/enums/MimeType';
-
+// Modules
 import FinderModule from '../../modules/FinderModule';
-
+// Services
 import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 
@@ -27,6 +27,30 @@ class RecordsDocumentScreenManager {
         new RecordsDocumentScreenManager();
     }
     return RecordsDocumentScreenManager.instance;
+  }
+
+  async askAndroidPermission(
+    title: string,
+    message: string,
+    buttonNeutral: string,
+    buttonNegative: string,
+    buttonPositive: string,
+  ): Promise<boolean | undefined> {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title,
+          message,
+          buttonNeutral,
+          buttonNegative,
+          buttonPositive,
+        },
+      );
+      return granted === 'granted' ? true : false;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async pickFile(): Promise<string> {

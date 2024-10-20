@@ -161,7 +161,20 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
     } else if (Platform.OS === PlatformName.Android) {
-      filePath = FilePickerModule.pickSingleFile([MimeType.jpeg, MimeType.png]);
+      const granted =
+        await SignUpScreenManager.getInstance().askAndroidPermission(
+          t('permission.title'),
+          t('permission.message'),
+          t('permission.buttonNuetral'),
+          t('permission.buttonNegative'),
+          t('permission.buttonPositive'),
+        );
+      if (granted) {
+        filePath = FilePickerModule.pickSingleFile([
+          MimeType.jpeg,
+          MimeType.png,
+        ]);
+      }
     }
     setLogoURI(filePath);
   }

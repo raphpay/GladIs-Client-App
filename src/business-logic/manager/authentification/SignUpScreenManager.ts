@@ -1,6 +1,10 @@
+import { PermissionsAndroid } from 'react-native';
+// Enums
 import MimeType from '../../model/enums/MimeType';
+// Model
 import IDocument from '../../model/IDocument';
 import IPotentialEmployee from '../../model/IPotentialEmployee';
+// Services
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 import PotentialEmployeeService from '../../services/PotentialEmployeeService';
 
@@ -18,6 +22,30 @@ class SignUpScreenManager {
       SignUpScreenManager.instance = new SignUpScreenManager();
     }
     return SignUpScreenManager.instance;
+  }
+
+  async askAndroidPermission(
+    title: string,
+    message: string,
+    buttonNeutral: string,
+    buttonNegative: string,
+    buttonPositive: string,
+  ): Promise<boolean | undefined> {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title,
+          message,
+          buttonNeutral,
+          buttonNegative,
+          buttonPositive,
+        },
+      );
+      return granted === 'granted' ? true : false;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async uploadLogo(

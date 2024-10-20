@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  Platform,
   Text,
   TextInput,
   TouchableOpacity,
@@ -10,9 +11,11 @@ import {
   View,
 } from 'react-native';
 
+import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
 import RecordsDocumentScreenManager from '../../../../business-logic/manager/documentManagement/RecordsDocumentScreenManager';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
+import PlatformName from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
 import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
@@ -55,7 +58,6 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import DocumentGrid from '../DocumentScreen/DocumentGrid';
 
-import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
 
@@ -321,31 +323,45 @@ function RecordsDocumentScreen(
   }
 
   async function pickAFile() {
-    // Pick file
-    const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
-    const originPath =
-      await RecordsDocumentScreenManager.getInstance().pickFile();
-    setIsUploading(true);
-    // Upload
-    const createdDocuments =
-      await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
-        fileName,
-        originPath,
-        documentDestinationPath,
+    // Ask Permission
+    let granted: boolean | undefined = true;
+    if (Platform.OS === PlatformName.Android) {
+      granted =
+        await RecordsDocumentScreenManager.getInstance().askAndroidPermission(
+          t('permission.title'),
+          t('permission.message'),
+          t('permission.buttonNuetral'),
+          t('permission.buttonNegative'),
+          t('permission.buttonPositive'),
+        );
+    }
+    if (granted) {
+      // Pick file
+      const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
+      const originPath =
+        await RecordsDocumentScreenManager.getInstance().pickFile();
+      setIsUploading(true);
+      // Upload
+      const createdDocuments =
+        await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
+          fileName,
+          originPath,
+          documentDestinationPath,
+          token,
+        );
+      // Record log
+      await RecordsDocumentScreenManager.getInstance().recordLog(
+        currentUser,
+        currentClient,
+        createdDocuments[0],
         token,
-      );
-    // Record log
-    await RecordsDocumentScreenManager.getInstance().recordLog(
-      currentUser,
-      currentClient,
-      createdDocuments[0],
-      token,
-    ); // TODO: Should be the original document
-    // Update states
-    setDocumentName('');
-    setShowAddDocumentDialog(false);
-    await loadPaginatedDocuments();
-    setIsUploading(false);
+      ); // TODO: Should be the original document
+      // Update states
+      setDocumentName('');
+      setShowAddDocumentDialog(false);
+      await loadPaginatedDocuments();
+      setIsUploading(false);
+    }
   }
 
   async function createFolder() {

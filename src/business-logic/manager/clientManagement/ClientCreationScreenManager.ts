@@ -1,6 +1,9 @@
 // Model
+import { PermissionsAndroid } from 'react-native';
+// Enums
 import MimeType from '../../model/enums/MimeType';
 import PendingUserStatus from '../../model/enums/PendingUserStatus';
+// Model
 import IDocument from '../../model/IDocument';
 import { IEmail } from '../../model/IEmail';
 import IModule from '../../model/IModule';
@@ -8,8 +11,8 @@ import IPendingUser from '../../model/IPendingUser';
 import IPotentialEmployee from '../../model/IPotentialEmployee';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
-import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 // Services
+import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 import EmailService from '../../services/EmailService';
 import PendingUserServicePost from '../../services/PendingUserService/PendingUserService.post';
 import PotentialEmployeeService from '../../services/PotentialEmployeeService';
@@ -184,6 +187,30 @@ class ClientCreationScreenManager {
       } catch (error) {
         throw error;
       }
+    }
+  }
+
+  async askAndroidPermission(
+    title: string,
+    message: string,
+    buttonNeutral: string,
+    buttonNegative: string,
+    buttonPositive: string,
+  ): Promise<boolean> {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title,
+          message,
+          buttonNeutral,
+          buttonNegative,
+          buttonPositive,
+        },
+      );
+      return granted === 'granted' ? true : false;
+    } catch (error) {
+      throw error;
     }
   }
 
