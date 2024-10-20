@@ -1,6 +1,8 @@
+import MimeType from '../../model/enums/MimeType';
 import IDocument, { IDocumentPaginatedOutput } from '../../model/IDocument';
 import IFile from '../../model/IFile';
 import IToken from '../../model/IToken';
+
 import APIService from '../APIService';
 import DocumentService from './DocumentService';
 
@@ -74,16 +76,7 @@ class DocumentServicePost extends DocumentService {
     destinationPath: string,
     token: IToken | null,
   ): Promise<IDocument[]> {
-    const formData = new FormData();
-    formData.append('file', {
-      uri: originPath,
-      type: 'application/octet-stream', // or adjust the MIME type based on your file type
-      name, // The file name
-    });
-
-    formData.append('uri', originPath);
-    formData.append('name', name);
-    formData.append('path', destinationPath);
+    const formData = this.createFormData(originPath, name, destinationPath);
 
     const response = await APIService.postWithoutStringify<IDocument[]>(
       this.baseRoute,
@@ -116,6 +109,50 @@ class DocumentServicePost extends DocumentService {
     } catch (error) {
       throw error;
     }
+  }
+
+  static async uploadLogoFormData(
+    name: string,
+    originPath: string,
+    destinationPath: string,
+    type: MimeType,
+  ): Promise<IDocument> {
+    try {
+      const formData = this.createFormData(
+        originPath,
+        name,
+        destinationPath,
+        type,
+      );
+      const url = `${this.baseRoute}/image`;
+      const doc = await APIService.postWithoutStringify<IDocument>(
+        url,
+        formData,
+      );
+      return doc;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private static createFormData(
+    originPath: string,
+    name: string,
+    destinationPath: string,
+    type?: MimeType | null,
+  ): FormData {
+    const formData = new FormData();
+    formData.append('file', {
+      uri: originPath,
+      type: type || 'application/octet-stream',
+      name,
+    });
+
+    formData.append('uri', originPath);
+    formData.append('name', name);
+    formData.append('path', destinationPath);
+
+    return formData;
   }
 }
 
