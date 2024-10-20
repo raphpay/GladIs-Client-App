@@ -113,15 +113,11 @@ class APIService {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      console.log('postWithoutStringify data', data);
-
       const response = await fetch(url, {
         method: HttpMethod.POST,
         headers,
         body: data,
       });
-
-      console.log('postWithoutStringify response', response);
 
       if (!response.ok) {
         let errorMessage = `HTTP error! Status: ${response.status}`;

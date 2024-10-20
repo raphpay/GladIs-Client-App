@@ -3946,7 +3946,6 @@ __metadata:
     react-native: 0.75.3
     react-native-blob-util: ^0.19.6
     react-native-clean-project: ^4.0.3
-    react-native-document-picker: ^9.1.1
     react-native-dropdown-picker: ^5.4.6
     react-native-gesture-handler: ^2.15.0
     react-native-macos: ^0.73.11
@@ -10004,22 +10003,6 @@ __metadata:
   bin:
     react-native-clean-project: source/index.js
   checksum: 7cf9dc6d80b2b0d6d22b66570c4dd1159c293474d0ba247c7d249cd9875b0fa3dc6b8bec21254162d08f9dcb80fdf5a699d77a8b0580ca0eb6f792d08f2b8a3b
-  languageName: node
-  linkType: hard
-
-"react-native-document-picker@npm:^9.1.1":
-  version: 9.3.1
-  resolution: "react-native-document-picker@npm:9.3.1"
-  dependencies:
-    invariant: ^2.2.4
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-    react-native-windows: "*"
-  peerDependenciesMeta:
-    react-native-windows:
-      optional: true
-  checksum: 5979e4b93f15e0568ae70b70cc2304cd727f20939a58412d483517942df6d3cf3821319b3b7934bcaa2866ed1918ef9e8de9933ce6953209340abe3455403e0d
   languageName: node
   linkType: hard
 
