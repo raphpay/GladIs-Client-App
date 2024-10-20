@@ -1,8 +1,8 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform, Text, View } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
+import { NativeModules, Platform, Text, View } from 'react-native';
+const { FilePickerModule } = NativeModules;
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -30,6 +30,7 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
 
+import MimeType from '../../../../business-logic/model/enums/MimeType';
 import styles from '../../../assets/styles/forms/FormsDocumentScreenStyles';
 
 type FormsDocumentScreenProps = NativeStackScreenProps<
@@ -300,14 +301,12 @@ function FormsDocumentScreen(
 
   async function pickAFile() {
     let data: string = '';
-    if (Platform.OS !== PlatformName.Mac) {
-      const doc = await DocumentPicker.pickSingle({
-        type: DocumentPicker.types.csv,
-      });
-      data = (await Utils.getCSVFromFile(doc.uri)) as string;
-    } else {
+    if (Platform.OS === PlatformName.Mac) {
       data = await FinderModule.getInstance().pickCSV();
       data = Utils.replaceAllOccurrences(data, ';', ',');
+    } else if (Platform.OS === PlatformName.Android) {
+      const filePath = await FilePickerModule.pickSingleFile([MimeType.csv]);
+      data = (await Utils.getCSVFromFile(filePath)) as string;
     }
     const form: IForm = {
       title: '',
