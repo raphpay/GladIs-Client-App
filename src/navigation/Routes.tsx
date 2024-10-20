@@ -1,7 +1,7 @@
 // src/Routes.tsx
 
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 
 import IArea from '../business-logic/model/IArea';
@@ -14,8 +14,17 @@ import UserType from '../business-logic/model/enums/UserType';
 import AuthenticationServiceGet from '../business-logic/services/AuthenticationService/AuthenticationService.get';
 import UserServiceGet from '../business-logic/services/UserService/UserService.get';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
-import { removeToken, setToken } from '../business-logic/store/slices/tokenReducer';
-import { removeCurrentClient, removeCurrentUser, setCurrentClient, setCurrentUser, setIsAdmin } from '../business-logic/store/slices/userReducer';
+import {
+  removeToken,
+  setToken,
+} from '../business-logic/store/slices/tokenReducer';
+import {
+  removeCurrentClient,
+  removeCurrentUser,
+  setCurrentClient,
+  setCurrentUser,
+  setIsAdmin,
+} from '../business-logic/store/slices/userReducer';
 import { RootState } from '../business-logic/store/store';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
@@ -61,47 +70,47 @@ import RecordsDocumentScreen from '../ui/screens/documentManagement/Records/Reco
 
 export type IRootStackParams = {
   // Login Stack
-  LoginScreen: undefined
-  SignUpScreen: undefined,
+  LoginScreen: undefined;
+  SignUpScreen: undefined;
   // Dashboard Stack
-  DashboardScreen: undefined,
-  ClientDashboardScreenFromAdmin: undefined,
+  DashboardScreen: undefined;
+  ClientDashboardScreenFromAdmin: undefined;
   // Document Management
-  DocumentManagementScreen: undefined,
-  SystemQualityScreen: undefined,
-  TechnicalDocumentationScreen: undefined,
-  TechnicalDocAreaScreen: { area: IArea },
-  ProcessesScreen: { currentFolder: IFolder },
+  DocumentManagementScreen: undefined;
+  SystemQualityScreen: undefined;
+  TechnicalDocumentationScreen: undefined;
+  TechnicalDocAreaScreen: { area: IArea };
+  ProcessesScreen: { currentFolder: IFolder };
   DocumentsScreen: {
-    previousScreen: string,
-    currentScreen: string,
-    documentsPath: string,
-    processNumber: number | undefined,
-    showGenerateSMQButton?: boolean,
-  },
-  PDFScreen: { documentInput: IDocument },
+    previousScreen: string;
+    currentScreen: string;
+    documentsPath: string;
+    processNumber: number | undefined;
+    showGenerateSMQButton?: boolean;
+  };
+  PDFScreen: { documentInputs: IDocument[]; originalDocument: IDocument };
   // Tracking
-  TrackingScreen: undefined,
+  TrackingScreen: undefined;
   // Settings
-  SettingsScreen: undefined,
+  SettingsScreen: undefined;
   // Reminders
-  RemindersScreen: undefined,
+  RemindersScreen: undefined;
   // Password Reset
-  PasswordResetScreen: undefined,
+  PasswordResetScreen: undefined;
   // Chat
-  MessagesScreen: undefined,
+  MessagesScreen: undefined;
   // SMQ Surveys
-  SurveysScreen: undefined,
+  SurveysScreen: undefined;
   // Forms
-  FormsDocumentScreen: { documentPath: string, currentFolder: IFolder },
-  FormEditionScreen: { form? : IForm, documentPath: string },
+  FormsDocumentScreen: { documentPath: string; currentFolder: IFolder };
+  FormEditionScreen: { form?: IForm; documentPath: string };
   // Records
   RecordsDocumentScreen: {
-    currentFolder: IFolder,
-    documentsPath: string,
-    currentScreen: string,
-  },
-}
+    currentFolder: IFolder;
+    documentsPath: string;
+    currentScreen: string;
+  };
+};
 
 export type IClientCreationStack = {
   // Client Creation
@@ -109,19 +118,19 @@ export type IClientCreationStack = {
   PendingClientListScreen: undefined;
   ClientCreationScreen: { pendingUser?: IPendingUser | null };
   AdminCreationScreen: undefined;
-}
+};
 
 export type IClientManagementParams = {
-  ClientManagementStack: undefined,
-  ClientSettingsScreenFromAdmin: undefined,
-  ClientEmployees: undefined,
-  ClientModules: undefined,
-}
+  ClientManagementStack: undefined;
+  ClientSettingsScreenFromAdmin: undefined;
+  ClientEmployees: undefined;
+  ClientModules: undefined;
+};
 
 export type ISMQSurveyParams = {
-  SMQGeneralScreen: undefined,
-  SMQRegulatoryAffairsScreen: undefined,
-}
+  SMQGeneralScreen: undefined;
+  SMQRegulatoryAffairsScreen: undefined;
+};
 
 let RootStack = createStackNavigator<IRootStackParams>();
 let ClientCreationStack = createStackNavigator<IClientCreationStack>();
@@ -131,18 +140,18 @@ let SMQSurveyStack = createStackNavigator<ISMQSurveyParams>();
 function LoginStack() {
   return (
     <>
-      <RootStack.Screen 
+      <RootStack.Screen
         name={NavigationRoutes.LoginScreen}
         component={LoginScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
-      <RootStack.Screen 
+      <RootStack.Screen
         name={NavigationRoutes.SignUpScreen}
         component={SignUpScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </>
-  )
+  );
 }
 
 function ClientCreation() {
@@ -151,17 +160,17 @@ function ClientCreation() {
       <ClientCreationStack.Screen
         name={NavigationRoutes.PendingClientListScreen}
         component={PendingClientListScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationScreen}
         component={ClientCreationScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <ClientCreationStack.Screen
         name={NavigationRoutes.AdminCreationScreen}
         component={AdminCreationScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </ClientCreationStack.Navigator>
   );
@@ -173,17 +182,17 @@ function ClientManagement() {
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientSettingsScreenFromAdmin}
         component={ClientSettingsScreenFromAdmin}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientEmployees}
         component={ClientEmployees}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientModules}
         component={ClientModules}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </ClientManagementStack.Navigator>
   );
@@ -195,11 +204,10 @@ function SMQSurvey() {
       <SMQSurveyStack.Screen
         name={NavigationRoutes.SMQGeneralScreen}
         component={SMQGeneralScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </SMQSurveyStack.Navigator>
   );
-
 }
 
 function DashboardStack() {
@@ -208,110 +216,110 @@ function DashboardStack() {
       <RootStack.Screen
         name={NavigationRoutes.DashboardScreen}
         component={DashboardScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.ClientDashboardScreenFromAdmin}
         component={ClientDashboardScreenFromAdmin}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.DocumentManagementScreen}
         component={DocumentManagementScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.SystemQualityScreen}
         component={SystemQualityScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.TechnicalDocumentationScreen}
         component={TechnicalDocumentationScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.TechnicalDocAreaScreen}
         component={TechnicalDocAreaScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.ProcessesScreen}
         component={ProcessesScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.DocumentsScreen}
         component={DocumentsScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.PDFScreen}
         component={PDFScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.TrackingScreen}
         component={TrackingScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.SettingsScreen}
         component={SettingsScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.RemindersScreen}
         component={RemindersScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.PasswordResetScreen}
         component={PasswordResetScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.MessagesScreen}
         component={MessagesScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.SurveysScreen}
         component={SurveysScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.FormsDocumentScreen}
         component={FormsDocumentScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.FormEditionScreen}
         component={FormEditionScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <RootStack.Screen
         name={NavigationRoutes.RecordsDocumentScreen}
         component={RecordsDocumentScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <ClientCreationStack.Screen
         name={NavigationRoutes.ClientCreationStack}
         component={ClientCreation}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <ClientManagementStack.Screen
         name={NavigationRoutes.ClientManagementStack}
         component={ClientManagement}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       <SMQSurveyStack.Screen
         name={NavigationRoutes.SMQSurveyStack}
         component={SMQSurvey}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
     </>
-  )
+  );
 }
 
 export let Routes = () => {
@@ -326,7 +334,10 @@ export let Routes = () => {
         setIsLoggedIn(!!token);
         if (token != null) {
           dispatch(setToken(token));
-          const currentUser = await UserServiceGet.getUserByID(token.user.id, token);
+          const currentUser = await UserServiceGet.getUserByID(
+            token.user.id,
+            token,
+          );
           dispatch(setCurrentUser(currentUser));
           dispatch(setIsAdmin(currentUser.userType === UserType.Admin));
           if (currentUser.userType !== UserType.Admin) {
@@ -349,7 +360,7 @@ export let Routes = () => {
 
   useEffect(() => {
     async function init() {
-      await checkAuthentication(); 
+      await checkAuthentication();
     }
     init();
   }, []);
@@ -357,14 +368,8 @@ export let Routes = () => {
   return (
     <NavigationContainer>
       <RootStack.Navigator>
-        {
-          isLoggedIn ? (
-            DashboardStack()
-          ) : (
-            LoginStack()
-          )
-        }
+        {isLoggedIn ? DashboardStack() : LoginStack()}
       </RootStack.Navigator>
     </NavigationContainer>
   );
-}
+};

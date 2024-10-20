@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -25,6 +25,8 @@ import TextButton from '../../components/Buttons/TextButton';
 import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
+
+import FileOpenPicker from '../../../business-logic/modules/FileOpenPicker'
 
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
@@ -267,43 +269,21 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     )
   }
 
+  async function openPicker() {
+    console.log("testFileOpenPicker")
+    const filePath = await FileOpenPicker?.pickPDFFile();
+    console.log("testFileOpenPicker", filePath)
+  }
+
+  async function testImageOpenPicker() {
+    const filePath = await FileOpenPicker?.pickImageFile();
+    console.log("testImageOpenPicker", filePath)
+  }
+
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        <AppIcon style={styles.appIcon} />
-        <Text style={styles.title} >{t('login.title')}</Text>
-        <GladisTextInput
-          value={identifier}
-          onValueChange={onIdentifierChange}
-          placeholder={t('login.identifier')}
-          autoCapitalize={'none'}
-          width={'70%'}
-          editable={inputIsEditable}
-        />
-        <GladisTextInput
-          value={password}
-          onValueChange={onPasswordChange}
-          placeholder={t('login.password')}
-          secureTextEntry={true}
-          onSubmitEditing={submitLogin}
-          showVisibilityButton={true}
-          autoCapitalize={'none'}
-          width={'70%'}
-          editable={inputIsEditable}
-        />
-        <TextButton
-          title={t('login.login')}
-          onPress={login}
-          width={'40%'}
-          disabled={isButtonDisabled}
-        />
-        <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
-        <SimpleTextButton title={t('login.forgottenPassword')} onPress={goToPasswordReset} />
-      </SafeAreaView>
-      {ResetDialogContent()}
-      {ResetPasswordWithTokenDialogContent()}
-      {ToastContent()}
-    </>
+    <TouchableOpacity onPress={openPicker}>
+      <Text>Open picker</Text>
+    </TouchableOpacity>
   );
 }
 

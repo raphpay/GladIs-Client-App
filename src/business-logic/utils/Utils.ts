@@ -1,6 +1,6 @@
-import { Platform } from "react-native";
-import { IFormCell } from "../model/IForm";
-import PlatformName from "../model/enums/PlatformName";
+import { Platform } from 'react-native';
+import { IFormCell } from '../model/IForm';
+import PlatformName from '../model/enums/PlatformName';
 
 /**
  * Utility class containing various helper functions.
@@ -16,7 +16,7 @@ class Utils {
     const isValid: boolean = regex.test(input);
     return isValid;
   }
-  
+
   /**
    * Checks if an email address is valid.
    * @param input - The email address to validate.
@@ -36,35 +36,34 @@ class Utils {
   private static async uriToBlob(uri: string): Promise<Blob> {
     try {
       const xhr = new XMLHttpRequest();
-      
+
       return new Promise((resolve, reject) => {
         // If successful -> return with blob
         xhr.onload = function () {
           resolve(xhr.response);
         };
-        
+
         // reject on error
         xhr.onerror = function () {
           reject(new Error('uriToBlob failed'));
         };
-        
-        // Set the response type to 'blob' - this means the server's response 
+
+        // Set the response type to 'blob' - this means the server's response
         // will be accessed as a binary object
         xhr.responseType = 'blob';
-        
-        // Initialize the request. The third argument set to 'true' denotes 
+
+        // Initialize the request. The third argument set to 'true' denotes
         // that the request is asynchronous
         xhr.open('GET', uri, true);
-        
+
         // Send the request. The 'null' argument means that no body content is given for the request
         xhr.send(null);
       });
     } catch (error) {
       throw new Error('uriToBlob failed');
     }
-  };
+  }
 
-  
   /**
    * Converts a Blob object to a base64 string.
    * @param blob - The Blob object to convert.
@@ -86,7 +85,7 @@ class Utils {
       throw new Error('blobToData failed');
     }
   }
-  
+
   /**
    * Converts a file URI to a base64 string.
    * @param uri - The URI of the file to convert.
@@ -134,7 +133,6 @@ class Utils {
     return base64String;
   }
 
-  
   /**
    * Checks if a given value is a valid number.
    * @param value - The value to check.
@@ -143,12 +141,12 @@ class Utils {
   static isANumber(value: string) {
     return !isNaN(Number(value));
   }
-  
+
   /**
-  * Formats a number with a leading zero if it is less than 10.
-  * @param number - The number to format.
-  * @returns A string representation of the number with a leading zero if it is less than 10.
-  */
+   * Formats a number with a leading zero if it is less than 10.
+   * @param number - The number to format.
+   * @returns A string representation of the number with a leading zero if it is less than 10.
+   */
   static formatWithLeadingZero(number: number): string {
     let stringNumber = number.toString();
     if (number < 10) {
@@ -177,21 +175,30 @@ class Utils {
     // Months are zero-indexed, so add 1 for correct month number
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-  
+
     return `${year}-${month}-${day}`;
-  };
+  }
 
   /**
    * Formats a date to a string in the format 'DD/MM/YYYY'.
    * @param date - The date to format.
    * @returns A string representation of the date in the format 'DD/MM/YYYY'.
    */
-  static formatStringDate(date: Date, monthFormat: 'numeric' | 'long' = 'long'): string {
-    return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: monthFormat, year: 'numeric', }).format(date);
+  static formatStringDate(
+    date: Date,
+    monthFormat: 'numeric' | 'long' = 'long',
+  ): string {
+    return new Intl.DateTimeFormat('fr-FR', {
+      day: 'numeric',
+      month: monthFormat,
+      year: 'numeric',
+    }).format(date);
   }
 
   static formatDateForComparison(date: Date): Date {
-    return new Date(`${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`);
+    return new Date(
+      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
+    );
   }
 
   /**
@@ -203,7 +210,9 @@ class Utils {
     const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
     const dayDate = new Date(baseDate);
     dayDate.setDate(dayDate.getDate() + day - 1);
-    const dayName = new Intl.DateTimeFormat('fr-FR', { weekday: 'short' }).format(dayDate);
+    const dayName = new Intl.DateTimeFormat('fr-FR', {
+      weekday: 'short',
+    }).format(dayDate);
     return dayName;
   }
 
@@ -258,7 +267,7 @@ class Utils {
     if (!Array.isArray(items)) {
       items = [items];
     }
-  
+
     // Rest of the method remains the same
     const header = Object.keys(items[0]);
     const headerString = header.join(',');
@@ -266,8 +275,8 @@ class Utils {
     const replacer = (key: string, value: string) => value ?? '';
     const rowItems = items.map((row: any) =>
       header
-        .map((fieldName) => JSON.stringify(row[fieldName], replacer))
-        .join(',')
+        .map(fieldName => JSON.stringify(row[fieldName], replacer))
+        .join(','),
     );
     // join header and body, and break into separate lines
     const csv = [headerString, ...rowItems].join('\r\n');
@@ -280,18 +289,22 @@ class Utils {
    * @returns The date in the format 'YYYY-MM-DD'.
    */
   static getJSFormatDate(date: Date): string {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
-  
+
   /**
    * Generates a UUID.
    * @returns A UUID.
    */
-  static generateUUID(): string{
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+  static generateUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      },
+    );
   }
 
   /**
@@ -303,7 +316,11 @@ class Utils {
     const rows = value.split('\n');
     const grid = rows.map((row, rowIndex) => {
       const cells = row.split(',');
-      return cells.map(cellValue => ({ id: Utils.generateUUID(), value: cellValue, isTitle: rowIndex === 0}));
+      return cells.map(cellValue => ({
+        id: Utils.generateUUID(),
+        value: cellValue,
+        isTitle: rowIndex === 0,
+      }));
     });
     return grid;
   }
@@ -312,7 +329,11 @@ class Utils {
     return input.replace(/\s+/g, '');
   }
 
-  static replaceAllOccurrences(input: string, target: string, replacement: string): string {
+  static replaceAllOccurrences(
+    input: string,
+    target: string,
+    replacement: string,
+  ): string {
     // Use the split and join method to replace all occurrences
     return input.split(target).join(replacement);
   }
@@ -322,30 +343,43 @@ class Utils {
     const upperCaseLetters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Avoiding ambiguous letters like 'O'
     const numbers = '23456789'; // Avoiding '0' and '1'
     const specialCharacters = '!@#$%^&*';
-  
-    const getRandomChar = (set: string) => set[Math.floor(Math.random() * set.length)];
-  
+
+    const getRandomChar = (set: string) =>
+      set[Math.floor(Math.random() * set.length)];
+
     let password = '';
-  
+
     // Ensure at least one character from each required set
     password += getRandomChar(lowerCaseLetters);
     password += getRandomChar(upperCaseLetters);
     password += getRandomChar(numbers);
     password += getRandomChar(specialCharacters);
-  
+
     // Fill the remaining characters
-    const allCharacters = lowerCaseLetters + upperCaseLetters + numbers + specialCharacters;
+    const allCharacters =
+      lowerCaseLetters + upperCaseLetters + numbers + specialCharacters;
     for (let i = password.length; i < length; i++) {
       password += getRandomChar(allCharacters);
     }
-  
+
     // Shuffle the characters to ensure randomness
     const shuffledPassword = password
       .split('')
       .sort(() => 0.5 - Math.random())
       .join('');
-  
+
     return shuffledPassword;
+  }
+
+  static removePdfExtension(fileName: string): string {
+    // Check if the string ends with ".pdf" (case-insensitive)
+    if (fileName.toLowerCase().endsWith('.pdf')) {
+      // Remove the ".pdf" extension
+      return fileName.slice(0, -4);
+    }
+
+    // If ".pdf" is not found, return the original string
+    return fileName;
   }
 }
 

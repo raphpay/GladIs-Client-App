@@ -13,5 +13,7 @@
 RCT_EXTERN_METHOD(pickPDFFile: (RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(pickImage: (RCTResponseSenderBlock)callback)
 RCT_EXTERN_METHOD(pickCSVFile: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(pickPDFFilePath: (RCTResponseSenderBlock)callback)
+RCT_EXTERN_METHOD(pickImageFilePath: (RCTResponseSenderBlock)callback)
 
 @end
