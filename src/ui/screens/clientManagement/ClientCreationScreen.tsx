@@ -18,6 +18,7 @@ import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
+import FileOpenPicker from '../../../business-logic/modules/FileOpenPicker';
 import FinderModule from '../../../business-logic/modules/FinderModule';
 import DocumentServiceGet from '../../../business-logic/services/DocumentService/DocumentService.get';
 import DocumentServicePost from '../../../business-logic/services/DocumentService/DocumentService.post';
@@ -286,7 +287,6 @@ function ClientCreationScreen(
 
   async function addLogo() {
     let filePath: string = '';
-    // TODO: Do for the other platforms
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
     } else if (Platform.OS === PlatformName.Android) {
@@ -303,6 +303,11 @@ function ClientCreationScreen(
           MimeType.jpeg,
           MimeType.png,
         ]);
+      }
+    } else if (Platform.OS === PlatformName.Windows) {
+      const originPath = await FileOpenPicker?.pickPDFFile();
+      if (originPath) {
+        filePath = originPath;
       }
     }
     setLogoURI(filePath);

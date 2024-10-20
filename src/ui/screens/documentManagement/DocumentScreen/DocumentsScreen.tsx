@@ -26,6 +26,7 @@ import PlatformName, {
   Orientation,
 } from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
+import FileOpenPicker from '../../../../business-logic/modules/FileOpenPicker';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
@@ -253,6 +254,11 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     } else if (Platform.OS === PlatformName.Android) {
       const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
       filePath = file.uri;
+    } else if (Platform.OS === PlatformName.Windows) {
+      const originPath = await FileOpenPicker?.pickPDFFile();
+      if (originPath) {
+        filePath = originPath;
+      }
     }
     setIsUploading(true);
 

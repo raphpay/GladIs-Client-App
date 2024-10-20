@@ -31,6 +31,7 @@ import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
 
 import MimeType from '../../../../business-logic/model/enums/MimeType';
+import FileOpenPicker from '../../../../business-logic/modules/FileOpenPicker';
 import styles from '../../../assets/styles/forms/FormsDocumentScreenStyles';
 
 type FormsDocumentScreenProps = NativeStackScreenProps<
@@ -307,6 +308,11 @@ function FormsDocumentScreen(
     } else if (Platform.OS === PlatformName.Android) {
       const filePath = await FilePickerModule.pickSingleFile([MimeType.csv]);
       data = (await Utils.getCSVFromFile(filePath)) as string;
+    } else if (Platform.OS === PlatformName.Windows) {
+      const filePath = await FileOpenPicker?.pickCSVFile();
+      if (filePath) {
+        data = (await Utils.getCSVFromFile(filePath)) as string;
+      }
     }
     const form: IForm = {
       title: '',

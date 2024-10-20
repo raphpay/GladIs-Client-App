@@ -1,17 +1,18 @@
 import { NativeModules, Platform } from 'react-native';
-const { FilePickerModule } = NativeModules;
-
+// Enums
 import DocumentLogAction from '../../model/enums/DocumentLogAction';
 import PlatformName from '../../model/enums/PlatformName';
-
+// Models
 import IDocument from '../..//model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
 import MimeType from '../../model/enums/MimeType';
-
+import FileOpenPicker from '../../modules/FileOpenPicker';
 import FinderModule from '../../modules/FinderModule';
-
+// Modules
+const { FilePickerModule } = NativeModules;
+// Services
 import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 
@@ -36,6 +37,11 @@ class SMQClientRelationScreenManager {
     } else if (Platform.OS === PlatformName.Android) {
       const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
       originPath = file.uri;
+    } else if (Platform.OS === PlatformName.Windows) {
+      const filePath = await FileOpenPicker?.pickPDFFile();
+      if (filePath) {
+        originPath = filePath;
+      }
     }
     return originPath;
   }

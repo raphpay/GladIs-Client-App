@@ -1,13 +1,14 @@
 import { NativeModules, Platform } from 'react-native';
-const { FilePickerModule } = NativeModules;
 // Enums
 import MimeType from '../../model/enums/MimeType';
 import PlatformName from '../../model/enums/PlatformName';
 // Models
 import IDocument from '../../model/IDocument';
 import IUser from '../../model/IUser';
-// Modules
+import FileOpenPicker from '../../modules/FileOpenPicker';
 import FinderModule from '../../modules/FinderModule';
+// Modules
+const { FilePickerModule } = NativeModules;
 // Services
 import CacheService from '../../services/CacheService';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
@@ -31,11 +32,15 @@ class ClientSettingsScreenFromAdminManager {
 
   async pickLogo(): Promise<string> {
     let filePath: string = '';
-    // TODO: Do this for the other platforms
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
     } else if (Platform.OS === PlatformName.Android) {
       filePath = await FilePickerModule.pickSingleFile([MimeType.csv]);
+    } else if (Platform.OS === PlatformName.Windows) {
+      const originPath = await FileOpenPicker?.pickPDFFile();
+      if (originPath) {
+        filePath = originPath;
+      }
     }
 
     return filePath;

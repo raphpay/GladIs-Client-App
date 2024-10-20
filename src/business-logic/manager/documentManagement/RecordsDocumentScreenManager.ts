@@ -1,5 +1,4 @@
 import { NativeModules, PermissionsAndroid, Platform } from 'react-native';
-const { FilePickerModule } = NativeModules;
 // Enums
 import DocumentLogAction from '../../model/enums/DocumentLogAction';
 import PlatformName from '../../model/enums/PlatformName';
@@ -10,7 +9,9 @@ import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
 import MimeType from '../../model/enums/MimeType';
 // Modules
+import FileOpenPicker from '../../modules/FileOpenPicker';
 import FinderModule from '../../modules/FinderModule';
+const { FilePickerModule } = NativeModules;
 // Services
 import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
@@ -61,6 +62,11 @@ class RecordsDocumentScreenManager {
       } else if (Platform.OS === PlatformName.Android) {
         const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
         originPath = file.uri;
+      } else if (Platform.OS === PlatformName.Windows) {
+        const filePath = await FileOpenPicker?.pickPDFFile();
+        if (filePath) {
+          originPath = filePath;
+        }
       }
     } catch (error) {
       throw error;

@@ -21,6 +21,7 @@ import MimeType from '../../../business-logic/model/enums/MimeType';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
+import FileOpenPicker from '../../../business-logic/modules/FileOpenPicker';
 import FinderModule from '../../../business-logic/modules/FinderModule';
 import ModuleService from '../../../business-logic/services/ModuleService';
 import PendingUserServicePost from '../../../business-logic/services/PendingUserService/PendingUserService.post';
@@ -157,7 +158,6 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   async function addLogo() {
     let filePath: string = '';
-    // TODO: Do for the other platforms
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
     } else if (Platform.OS === PlatformName.Android) {
@@ -174,6 +174,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           MimeType.jpeg,
           MimeType.png,
         ]);
+      }
+    } else if (Platform.OS === PlatformName.Windows) {
+      const originPath = await FileOpenPicker?.pickImageFile();
+      if (originPath) {
+        filePath = originPath;
       }
     }
     setLogoURI(filePath);
