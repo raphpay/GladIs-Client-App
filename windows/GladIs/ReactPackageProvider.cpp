@@ -2,8 +2,6 @@
 #include "ReactPackageProvider.h"
 #include "NativeModules.h"
 
-#include "Modules\FileOpenPicker.h"
-
 using namespace winrt::Microsoft::ReactNative;
 
 namespace winrt::GladIs::implementation

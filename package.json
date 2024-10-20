@@ -10,6 +10,7 @@
     "test": "jest",
     "macos": "npx react-native run-macos",
     "windows": "react-native run-windows",
+    "update-windows": "npx react-native init-windows --overwrite",
     "clean": "react-native-clean-project"
   },
   "dependencies": {
@@ -27,12 +28,12 @@
     "react": "18.3.1",
     "react-i18next": "^14.0.1",
     "react-native": "0.75.3",
-    "react-native-dropdown-picker": "^5.4.6",
+    "react-native-dropdown-picker": "^5.4.6", 
     "react-native-gesture-handler": "^2.15.0",
     "react-native-macos": "^0.73.11",
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "^3.29.0",
-    "react-native-windows": "0.73.12",
+    "react-native-windows": "^0.75.3",
     "react-redux": "^9.1.0",
     "ts-jest": "^29.1.2"
   },
