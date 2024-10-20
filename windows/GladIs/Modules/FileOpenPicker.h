@@ -57,37 +57,70 @@ namespace FileOpenPickerModule
 
     REACT_METHOD(PickImageFile, L"pickImageFile");
     void PickImageFile(winrt::Microsoft::ReactNative::ReactPromise<winrt::Microsoft::ReactNative::JSValue> promise) noexcept {
-    // Run the operation on the UI thread
-    m_reactContext.UIDispatcher().Post([promise, this]() {
-        try {
-            // Create a FileOpenPicker
-            winrt::Windows::Storage::Pickers::FileOpenPicker picker;
-            picker.SuggestedStartLocation(winrt::Windows::Storage::Pickers::PickerLocationId::DocumentsLibrary);
-            picker.FileTypeFilter().Append(L".png");
-            picker.FileTypeFilter().Append(L".jpg");
-            picker.FileTypeFilter().Append(L".jpeg");
+        // Run the operation on the UI thread
+        m_reactContext.UIDispatcher().Post([promise, this]() {
+            try {
+                // Create a FileOpenPicker
+                winrt::Windows::Storage::Pickers::FileOpenPicker picker;
+                picker.SuggestedStartLocation(winrt::Windows::Storage::Pickers::PickerLocationId::DocumentsLibrary);
+                picker.FileTypeFilter().Append(L".png");
+                picker.FileTypeFilter().Append(L".jpg");
+                picker.FileTypeFilter().Append(L".jpeg");
 
-            // Launch the picker (this is asynchronous)
-            picker.PickSingleFileAsync().Completed([promise](winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::StorageFile> const& operation, winrt::Windows::Foundation::AsyncStatus const status) {
-                if (status == winrt::Windows::Foundation::AsyncStatus::Completed) {
-                    winrt::Windows::Storage::StorageFile file = operation.GetResults();
-                    if (file) {
-                        // Resolve the promise with the file path if a file is selected
-                        promise.Resolve(winrt::to_string(file.Path().c_str()));
+                // Launch the picker (this is asynchronous)
+                picker.PickSingleFileAsync().Completed([promise](winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::StorageFile> const& operation, winrt::Windows::Foundation::AsyncStatus const status) {
+                    if (status == winrt::Windows::Foundation::AsyncStatus::Completed) {
+                        winrt::Windows::Storage::StorageFile file = operation.GetResults();
+                        if (file) {
+                            // Resolve the promise with the file path if a file is selected
+                            promise.Resolve(winrt::to_string(file.Path().c_str()));
+                        } else {
+                            // Resolve with a message if no file was selected
+                            promise.Resolve("No image selected");
+                        }
                     } else {
-                        // Resolve with a message if no file was selected
-                        promise.Resolve("No image selected");
+                        // Reject the promise if the operation was not completed successfully
+                        promise.Reject("Error opening file dialog");
                     }
-                } else {
-                    // Reject the promise if the operation was not completed successfully
-                    promise.Reject("Error opening file dialog");
-                }
-            });
-        } catch (const std::exception& e) {
-            // Reject the promise in case of exceptions
-            promise.Reject(e.what());
-        }
-    });
-}
+                });
+            } catch (const std::exception& e) {
+                // Reject the promise in case of exceptions
+                promise.Reject(e.what());
+            }
+        });
+    }
+
+    REACT_METHOD(PickCSVFile, L"pickCSVFile");
+    void PickCSVFile(winrt::Microsoft::ReactNative::ReactPromise<winrt::Microsoft::ReactNative::JSValue> promise) noexcept {
+        // Run the operation on the UI thread
+        m_reactContext.UIDispatcher().Post([promise, this]() {
+            try {
+                // Create a FileOpenPicker
+                winrt::Windows::Storage::Pickers::FileOpenPicker picker;
+                picker.SuggestedStartLocation(winrt::Windows::Storage::Pickers::PickerLocationId::DocumentsLibrary);
+                picker.FileTypeFilter().Append(L".csv"); // Set file type filter to CSV
+
+                // Launch the picker (this is asynchronous)
+                picker.PickSingleFileAsync().Completed([promise](winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Storage::StorageFile> const& operation, winrt::Windows::Foundation::AsyncStatus const status) {
+                    if (status == winrt::Windows::Foundation::AsyncStatus::Completed) {
+                        winrt::Windows::Storage::StorageFile file = operation.GetResults();
+                        if (file) {
+                            // Resolve the promise with the file path if a file is selected
+                            promise.Resolve(winrt::to_string(file.Path().c_str()));
+                        } else {
+                            // Resolve with a message if no file was selected
+                            promise.Resolve("No file selected");
+                        }
+                    } else {
+                        // Reject the promise if the operation was not completed successfully
+                        promise.Reject("Error opening file dialog");
+                    }
+                });
+            } catch (const std::exception& e) {
+                // Reject the promise in case of exceptions
+                promise.Reject(e.what());
+            }
+        });
+    }
   };
 }
