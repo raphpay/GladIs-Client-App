@@ -8,7 +8,9 @@ import { IRootStackParams } from '../../../../navigation/Routes';
 
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 
-import FormManager, { IResult } from '../../../../business-logic/manager/FormManager';
+import FormManager, {
+  IResult,
+} from '../../../../business-logic/manager/FormManager';
 import IAction from '../../../../business-logic/model/IAction';
 import IForm from '../../../../business-logic/model/IForm';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
@@ -30,9 +32,14 @@ import FormRow from './FormRow';
 
 import styles from '../../../assets/styles/forms/FormsDocumentScreenStyles';
 
-type FormsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormsDocumentScreen>;
+type FormsDocumentScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.FormsDocumentScreen
+>;
 
-function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element {
+function FormsDocumentScreen(
+  props: FormsDocumentScreenProps,
+): React.JSX.Element {
   // General
   const [searchText, setSearchText] = useState<string>('');
   // Form
@@ -40,16 +47,20 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   const [selectedForm, setSelectedForm] = useState<IForm>({} as IForm);
   // Dialogs
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [showRemoveConfirmationDialog, setShowRemoveConfirmationDialog] = useState<boolean>(false);
+  const [showRemoveConfirmationDialog, setShowRemoveConfirmationDialog] =
+    useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
 
   const { navigation } = props;
   const { documentPath, currentFolder } = props.route.params;
   const { t } = useTranslation();
-  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, currentClient } = useAppSelector(
+    (state: RootState) => state.users,
+  );
   const { formsCount } = useAppSelector((state: RootState) => state.forms);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
@@ -78,17 +89,21 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     },
     {
       title: t('systemQuality.title'),
-      onPress: () => navigateToSystemQuality()
+      onPress: () => navigateToSystemQuality(),
     },
     {
       title: currentFolder.title,
-      onPress: () => navigateBack()
-    }
+      onPress: () => navigateBack(),
+    },
   ];
 
   // Sync Methods
   function navigateToDashboard() {
-    navigation.navigate(currentUser?.userType === UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+    navigation.navigate(
+      currentUser?.userType === UserType.Admin
+        ? NavigationRoutes.ClientDashboardScreenFromAdmin
+        : NavigationRoutes.DashboardScreen,
+    );
   }
 
   function navigateToDocumentManagement() {
@@ -100,7 +115,10 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   }
 
   function addForm() {
-    navigation.navigate(NavigationRoutes.FormEditionScreen, { form: undefined, documentPath });
+    navigation.navigate(NavigationRoutes.FormEditionScreen, {
+      form: undefined,
+      documentPath,
+    });
   }
 
   function loadActions(form: IForm) {
@@ -113,14 +131,18 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         title: t('forms.actions.tooltip.remove'),
         onPress: () => displayRemoveConfirmationDialog(),
         isDestructive: true,
-      }
+      },
     ];
 
     let approveTitle = '';
     if (currentUser?.userType === UserType.Client) {
-      approveTitle = form.approvedByClient ? t('forms.actions.tooltip.deapprove') : t('forms.actions.tooltip.approve');
+      approveTitle = form.approvedByClient
+        ? t('forms.actions.tooltip.deapprove')
+        : t('forms.actions.tooltip.approve');
     } else if (currentUser?.userType === UserType.Admin) {
-      approveTitle = form.approvedByAdmin ? t('forms.actions.tooltip.deapprove') : t('forms.actions.tooltip.approve');
+      approveTitle = form.approvedByAdmin
+        ? t('forms.actions.tooltip.deapprove')
+        : t('forms.actions.tooltip.approve');
     }
 
     const approveAction: IAction = {
@@ -129,14 +151,16 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
     };
 
     const newActions = [...basicActions];
-    const openActionIndex = newActions.findIndex(action => action.title === t('forms.actions.tooltip.open'));
+    const openActionIndex = newActions.findIndex(
+      action => action.title === t('forms.actions.tooltip.open'),
+    );
     if (openActionIndex !== -1) {
       newActions.splice(openActionIndex + 1, 0, approveAction);
       if (currentUser?.userType === UserType.Admin) {
         const exportAction: IAction = {
           title: t('forms.actions.exportToCSV'),
           onPress: () => exportToCSV(form),
-        }
+        };
         newActions.splice(openActionIndex + 2, 0, exportAction);
       }
     }
@@ -152,7 +176,10 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   function openForm(form: IForm) {
     setShowDialog(false);
     setShowRemoveConfirmationDialog(false);
-    navigation.navigate(NavigationRoutes.FormEditionScreen, { form, documentPath });
+    navigation.navigate(NavigationRoutes.FormEditionScreen, {
+      form,
+      documentPath,
+    });
   }
 
   function displayRemoveConfirmationDialog() {
@@ -180,7 +207,11 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   // Async Methods
   async function loadForms() {
     try {
-      const forms = await FormManager.getInstance().loadForms(currentClient?.id as string, documentPath, token)
+      const forms = await FormManager.getInstance().loadForms(
+        currentClient?.id as string,
+        documentPath,
+        token,
+      );
       setForms(forms);
     } catch (error) {
       console.log('Error loading forms', error);
@@ -190,38 +221,50 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   async function approveForm(form: IForm) {
     let approvalResult: IResult = {
       success: false,
-      message: "",
+      message: '',
     };
     if (currentUser?.userType === UserType.Admin) {
       if (form.approvedByAdmin) {
         // Deapprove form
-        approvalResult = await FormManager.getInstance().adminDeapprove(form, token);
+        approvalResult = await FormManager.getInstance().adminDeapprove(
+          form,
+          token,
+        );
       } else {
         // Approve form
-        approvalResult = await FormManager.getInstance().adminApprove(form, token);
+        approvalResult = await FormManager.getInstance().adminApprove(
+          form,
+          token,
+        );
         await FormManager.getInstance().recordLog(
           DocumentLogAction.Approbation,
           UserType.Admin,
           currentUser?.id as string,
           currentClient?.id as string,
           form,
-          token
+          token,
         );
       }
     } else if (currentUser?.userType === UserType.Client) {
       if (form.approvedByClient) {
         // Deapprove form
-        approvalResult = await FormManager.getInstance().clientDeapprove(form, token);
+        approvalResult = await FormManager.getInstance().clientDeapprove(
+          form,
+          token,
+        );
       } else {
         // Approve form
-        approvalResult = await FormManager.getInstance().clientApprove(form, token);
+        approvalResult = await FormManager.getInstance().clientApprove(
+          form,
+          token,
+        );
         await FormManager.getInstance().recordLog(
           DocumentLogAction.Approbation,
           UserType.Client,
           currentUser?.id as string,
           currentClient?.id as string,
           form,
-          token
+          token,
         );
       }
     }
@@ -236,14 +279,17 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
 
   async function deleteForm() {
     // Delete form
-    const result: IResult = await FormManager.getInstance().deleteForm(selectedForm, token);
+    const result: IResult = await FormManager.getInstance().deleteForm(
+      selectedForm,
+      token,
+    );
     await FormManager.getInstance().recordLog(
       DocumentLogAction.Deletion,
       currentUser?.userType as UserType,
       currentUser?.id as string,
       currentClient?.id as string,
       selectedForm,
-      token
+      token,
     );
     displayToast(t(`${result.message}`), !result.success);
     // Load forms
@@ -255,20 +301,22 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   async function pickAFile() {
     let data: string = '';
     if (Platform.OS !== PlatformName.Mac) {
-      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.csv })
-      data = await Utils.getCSVFromFile(doc.uri) as string;
+      const doc = await DocumentPicker.pickSingle({
+        type: DocumentPicker.types.csv,
+      });
+      data = (await Utils.getCSVFromFile(doc.uri)) as string;
     } else {
       data = await FinderModule.getInstance().pickCSV();
-      data = Utils.replaceAllOccurrences(data, ";", ",");
+      data = Utils.replaceAllOccurrences(data, ';', ',');
     }
     const form: IForm = {
-      title: "",
+      title: '',
       createdBy: currentUser?.id as string,
       value: data,
       approvedByAdmin: false,
       approvedByClient: false,
       clientID: currentClient?.id as string as string,
-    }
+    };
     openForm(form);
     return data;
   }
@@ -292,16 +340,14 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   function AddFormButton() {
     return (
       <>
-        {
-          currentUser?.userType == UserType.Admin && (
-            <IconButton
-              title={t('forms.buttons.add')}
-              icon={plusIcon}
-              onPress={addForm}
-              style={styles.adminButton}
-            />
-          )
-        }
+        {currentUser?.userType == UserType.Admin && (
+          <IconButton
+            title={t('forms.buttons.add')}
+            icon={plusIcon}
+            onPress={addForm}
+            style={styles.adminButton}
+          />
+        )}
       </>
     );
   }
@@ -309,16 +355,14 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
   function ImportButton() {
     return (
       <>
-        {
-          currentUser?.userType == UserType.Admin && (
-            <IconButton
-              title={t('forms.buttons.importCSV')}
-              icon={plusIcon}
-              onPress={pickAFile}
-              style={styles.adminButton}
-            />
-          )
-        }
+        {currentUser?.userType == UserType.Admin && (
+          <IconButton
+            title={t('forms.buttons.importCSV')}
+            icon={plusIcon}
+            onPress={pickAFile}
+            style={styles.adminButton}
+          />
+        )}
       </>
     );
   }
@@ -338,11 +382,13 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
           setShowRemoveConfirmationDialog(false);
         }}
       />
-    )
+    );
   }
 
   function TooltipActionContent() {
-    const tooltipTitle = `${t('forms.actions.tooltip.title')}: ${selectedForm.title}`;
+    const tooltipTitle = `${t('forms.actions.tooltip.title')}: ${
+      selectedForm.title
+    }`;
 
     return (
       <TooltipAction
@@ -351,45 +397,46 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         isConfirmAvailable={true}
         onConfirm={() => setShowDialog(false)}
         onCancel={() => {}}
-        popoverActions={popoverActions}
-      >
+        popoverActions={popoverActions}>
         <View style={styles.dialogChildren}>
           <>
-            {
-              selectedForm?.approvedByAdmin ? (
-                <Text style={styles.approvedText}>{t('forms.dialog.approve.admin.yes')}</Text>
-              ) : (
-                <Text style={styles.approvedText}>{t('forms.dialog.approve.admin.no')}</Text>
-              )
-            }
-            {
-              selectedForm?.approvedByClient ? (
-                <Text style={styles.approvedText}>{t('forms.dialog.approve.client.yes')}</Text>
-              ) : (
-                <Text style={styles.approvedText}>{t('forms.dialog.approve.client.no')}</Text>
-              )
-            }
+            {selectedForm?.approvedByAdmin ? (
+              <Text style={styles.approvedText}>
+                {t('forms.dialog.approve.admin.yes')}
+              </Text>
+            ) : (
+              <Text style={styles.approvedText}>
+                {t('forms.dialog.approve.admin.no')}
+              </Text>
+            )}
+            {selectedForm?.approvedByClient ? (
+              <Text style={styles.approvedText}>
+                {t('forms.dialog.approve.client.yes')}
+              </Text>
+            ) : (
+              <Text style={styles.approvedText}>
+                {t('forms.dialog.approve.client.no')}
+              </Text>
+            )}
           </>
         </View>
       </TooltipAction>
-    )
+    );
   }
 
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
-    )
+    );
   }
 
   function AdminButtons() {
@@ -398,7 +445,7 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         {AddFormButton()}
         {ImportButton()}
       </>
-    )
+    );
   }
 
   return (
@@ -412,28 +459,32 @@ function FormsDocumentScreen(props: FormsDocumentScreenProps): React.JSX.Element
         setSearchText={setSearchText}
         showSettings={true}
         adminButton={AdminButtons()}
-        navigateBack={navigateBack}
-      >
-        {
-          formsFiltered.length !== 0 ? (
-            <Grid
-              data={formsFiltered}
-              renderItem={({ item }) =>
-                <FormRow form={item} showActionDialog={(form) => displayActionDialog(form)}/>
-              }
-            />
-          ) : (
-            <ContentUnavailableView
-              title={t('forms.noDocs.title')}
-              message={currentUser?.userType === UserType.Admin ? t('forms.noDocs.message.admin') : t('forms.noDocs.message.client')}
-              image={docIcon}
-            />
-          )
-        }
+        navigateBack={navigateBack}>
+        {formsFiltered.length !== 0 ? (
+          <Grid
+            data={formsFiltered}
+            renderItem={({ item }) => (
+              <FormRow
+                form={item}
+                showActionDialog={form => displayActionDialog(form)}
+              />
+            )}
+          />
+        ) : (
+          <ContentUnavailableView
+            title={t('forms.noDocs.title')}
+            message={
+              currentUser?.userType === UserType.Admin
+                ? t('forms.noDocs.message.admin')
+                : t('forms.noDocs.message.client')
+            }
+            image={docIcon}
+          />
+        )}
       </AppContainer>
-      { TooltipActionContent() }
-      { showRemoveConfirmationDialog && RemoveDialogContent() }
-      { ToastContent() }
+      {TooltipActionContent()}
+      {showRemoveConfirmationDialog && RemoveDialogContent()}
+      {ToastContent()}
     </>
   );
 }
