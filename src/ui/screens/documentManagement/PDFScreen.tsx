@@ -10,6 +10,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import CacheService from '../../../business-logic/services/CacheService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -59,18 +60,14 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // Async Methods
   async function loadFromAPI() {
     let data: string[] = [];
-    for (const doc of documentInputs) {
-      try {
-        const docData = await PDFScreenManager.getInstance().downloadDocument(
-          doc.id,
-          token,
-        );
-        data.push(docData);
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
-    }
+    try {
+      const docData = await PDFScreenManager.getInstance().downloadDocument(
+        originalDocument.id,
+        token,
+      );
+      const sanitizedData = Utils.removeBase64Prefix(docData);
+      data = await PDFScreenManager.getInstance().splitPDF(sanitizedData);
+    } catch (error) {}
     await PDFScreenManager.getInstance().cacheDownloadedData(
       originalDocument,
       data,
@@ -93,7 +90,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
       if (cachedData === null || cachedData === undefined) {
         await loadFromAPI();
       } else {
-        setPDFData(cachedData as string);
+        setPDFData(cachedData as string[]);
         setIsLoading(false);
       }
     }

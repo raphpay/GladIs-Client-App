@@ -75,15 +75,15 @@ class DocumentServicePost extends DocumentService {
     originPath: string,
     destinationPath: string,
     token: IToken | null,
-  ): Promise<IDocument[]> {
+  ): Promise<IDocument> {
     const formData = this.createFormData(originPath, name, destinationPath);
 
-    const response = await APIService.postWithoutStringify<IDocument[]>(
+    const response = await APIService.postWithoutStringify<IDocument>(
       this.baseRoute,
       formData,
       token?.value as string,
     );
-    return response as IDocument[];
+    return response as IDocument;
   }
 
   /**

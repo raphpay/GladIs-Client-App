@@ -42,8 +42,7 @@ function DocumentRow(props: DocumentRowProps): React.JSX.Element {
       token,
     );
     navigation.navigate(NavigationRoutes.PDFScreen, {
-      documentInputs: files,
-      originalDocument: document,
+      documentInput: document,
     });
   }
 

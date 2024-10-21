@@ -381,6 +381,23 @@ class Utils {
     // If ".pdf" is not found, return the original string
     return fileName;
   }
+
+  static convertUIntArrayToString(uint8Array: Uint8Array) {
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(uint8Array);
+  }
+
+  static removeBase64Prefix(base64String: string) {
+    const prefix = 'data:application/octet-stream;base64,';
+
+    // Check if the base64 string starts with the prefix and remove it
+    if (base64String.startsWith(prefix)) {
+      return base64String.replace(prefix, '');
+    }
+
+    // Return the original string if the prefix is not found
+    return base64String;
+  }
 }
 
 export default Utils;

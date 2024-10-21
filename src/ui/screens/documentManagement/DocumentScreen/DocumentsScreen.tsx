@@ -262,7 +262,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     }
     setIsUploading(true);
 
-    const createdDocuments =
+    const createdDocument =
       await DocumentScreenManager.getInstance().uploadFileToAPI(
         filePath,
         fileName,
@@ -273,7 +273,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       DocumentLogAction.Creation,
       currentUser,
       currentClient,
-      createdDocuments[0].id,
+      createdDocument.id,
       token,
       true,
     );

@@ -26,15 +26,15 @@ class DocumentScreenManager {
     fileName: string,
     destinationPath: string,
     token: IToken | null,
-  ): Promise<IDocument[]> {
+  ): Promise<IDocument> {
     try {
-      const createdDocuments = await DocumentServicePost.upload(
+      const createdDocument = await DocumentServicePost.upload(
         fileName,
         originPath,
         destinationPath,
         token,
       );
-      return createdDocuments;
+      return createdDocument;
     } catch (error) {
       throw error;
     }
