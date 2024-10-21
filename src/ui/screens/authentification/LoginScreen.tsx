@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -17,7 +17,11 @@ import PasswordResetService from '../../../business-logic/services/PasswordReset
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
-import { setCurrentClient, setCurrentUser, setIsAdmin } from '../../../business-logic/store/slices/userReducer';
+import {
+  setCurrentClient,
+  setCurrentUser,
+  setIsAdmin,
+} from '../../../business-logic/store/slices/userReducer';
 
 import AppIcon from '../../components/AppIcon';
 import SimpleTextButton from '../../components/Buttons/SimpleTextButton';
@@ -26,19 +30,21 @@ import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
-import FileOpenPicker from '../../../business-logic/modules/FileOpenPicker'
-
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
-type LoginScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.LoginScreen>;
+type LoginScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.LoginScreen
+>;
 
 function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const { navigation } = props;
-  
+
   const [identifier, onIdentifierChange] = useState<string>('');
   const [password, onPasswordChange] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [showResetTokenDialog, setShowResetTokenDialog] = useState<boolean>(false);
+  const [showResetTokenDialog, setShowResetTokenDialog] =
+    useState<boolean>(false);
   const [dialogDescription, setDialogDescription] = useState<string>('');
   const [resetEmail, setResetEmail] = useState<string>('');
   const [token, onTokenChange] = useState<string>('');
@@ -46,11 +52,12 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
 
   const inputIsEditable = !showDialog && !showResetTokenDialog;
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
-  
+
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -93,7 +100,10 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   async function login() {
     try {
-      const token = await LoginScreenManager.getInstance().login(identifier, password);
+      const token = await LoginScreenManager.getInstance().login(
+        identifier,
+        password,
+      );
       await dispatchValues(token);
     } catch (error) {
       const errorMessage = (error as Error).message;
@@ -107,19 +117,25 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   async function handleFailedLogin() {
     try {
-      const output = await LoginScreenManager.getInstance().updateUserConnectionAttempts(identifier);
+      const output =
+        await LoginScreenManager.getInstance().updateUserConnectionAttempts(
+          identifier,
+        );
       const count = output.connectionFailedAttempts || 0;
       if (count >= 5) {
         if (count === 5) {
           sendMaxLoginEvent(output);
         }
-        displayToast(t('errors.api.unauthorized.login.connectionBlocked'), true);
+        displayToast(
+          t('errors.api.unauthorized.login.connectionBlocked'),
+          true,
+        );
       } else {
         displayToast(t('errors.api.unauthorized.login'), true);
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
-      console.log('handleFailedLogin error', errorMessage );
+      console.log('handleFailedLogin error', errorMessage);
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
@@ -127,13 +143,15 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   async function sendMaxLoginEvent(tryOutput: ILoginTryOutput) {
     try {
       const event: IEventInput = {
-        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${tryOutput.email}`,
+        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${
+          tryOutput.email
+        }`,
         date: Date.now(),
         clientID: tryOutput.id ?? '0',
-      }
+      };
       await EventServicePost.createMaxAttemptsEvent(event);
     } catch (error) {
-      console.log('Error sending max attempts event', error );
+      console.log('Error sending max attempts event', error);
     }
   }
 
@@ -141,7 +159,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     try {
       const user = await UserServiceGet.getUserByID(token.user.id, token);
       dispatch(setCurrentUser(user));
-      dispatch(setIsAdmin(user.userType === UserType.Admin))
+      dispatch(setIsAdmin(user.userType === UserType.Admin));
       if (user.userType !== UserType.Admin) {
         dispatch(setCurrentClient(user));
       }
@@ -155,7 +173,9 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   async function sendPasswordResetRequest() {
     if (resetEmail.length > 0) {
       try {
-        await PasswordResetService.getInstance().requestPasswordReset(resetEmail);
+        await PasswordResetService.getInstance().requestPasswordReset(
+          resetEmail,
+        );
         setShowDialog(false);
         setResetEmail('');
         displayToast(t('components.toast.passwordReset.requestSent'));
@@ -171,7 +191,10 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   async function resetPasswordWithToken() {
     if (token.length > 0 && newPassword.length > 0) {
       try {
-        await PasswordResetService.getInstance().resetPassword(token, newPassword);
+        await PasswordResetService.getInstance().resetPassword(
+          token,
+          newPassword,
+        );
         resetDialogs();
         await CacheService.getInstance().clearStorage();
         displayToast(t('components.toast.passwordReset.success'));
@@ -188,102 +211,119 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   function ResetDialogContent() {
     return (
       <>
-        {
-          showDialog && (
-            <Dialog
-              title={t('components.dialog.passwordReset.title')}
-              description={dialogDescription}
-              confirmTitle={t('components.dialog.passwordReset.confirmButton')}
-              isConfirmDisabled={resetEmail.length == 0}
-              onConfirm={sendPasswordResetRequest}
-              isCancelAvailable={true}
-              onCancel={() => setShowDialog(false)}
-              extraConfirmButtonTitle={t('components.dialog.passwordReset.token')}
-              extraConfirmButtonAction={displayResetPasswordDialog}
-            >
-              <GladisTextInput 
-                value={resetEmail}
-                placeholder={t('components.dialog.passwordReset.placeholder')}
-                onValueChange={setResetEmail}
-                autoCapitalize={'characters'}
-                width={'100%'}
-              />
-            </Dialog>
-          )
-        }
+        {showDialog && (
+          <Dialog
+            title={t('components.dialog.passwordReset.title')}
+            description={dialogDescription}
+            confirmTitle={t('components.dialog.passwordReset.confirmButton')}
+            isConfirmDisabled={resetEmail.length == 0}
+            onConfirm={sendPasswordResetRequest}
+            isCancelAvailable={true}
+            onCancel={() => setShowDialog(false)}
+            extraConfirmButtonTitle={t('components.dialog.passwordReset.token')}
+            extraConfirmButtonAction={displayResetPasswordDialog}>
+            <GladisTextInput
+              value={resetEmail}
+              placeholder={t('components.dialog.passwordReset.placeholder')}
+              onValueChange={setResetEmail}
+              autoCapitalize={'characters'}
+              width={'100%'}
+            />
+          </Dialog>
+        )}
       </>
-    )
+    );
   }
 
   function ResetPasswordWithTokenDialogContent() {
     return (
       <>
-        {
-          showResetTokenDialog && (
-            <Dialog
-              title={t('components.dialog.passwordReset.title')}
-              description={dialogDescription}
-              onConfirm={resetPasswordWithToken}
-              isCancelAvailable={true}
-              onCancel={resetDialogs}
-            >
-              <>
-                <GladisTextInput 
-                  value={token}
-                  placeholder={t('components.dialog.passwordReset.tokenInput')}
-                  onValueChange={onTokenChange}
-                  autoCapitalize={'characters'}
-                  width={'100%'}
-                />
-                <GladisTextInput 
-                  value={newPassword}
-                  placeholder={t('components.dialog.passwordReset.newPassword')}
-                  onValueChange={onNewPasswordChange}
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
-                  showVisibilityButton={true}
-                  width={'100%'}
-                />
-              </>
-            </Dialog>
-          )
-        }
+        {showResetTokenDialog && (
+          <Dialog
+            title={t('components.dialog.passwordReset.title')}
+            description={dialogDescription}
+            onConfirm={resetPasswordWithToken}
+            isCancelAvailable={true}
+            onCancel={resetDialogs}>
+            <>
+              <GladisTextInput
+                value={token}
+                placeholder={t('components.dialog.passwordReset.tokenInput')}
+                onValueChange={onTokenChange}
+                autoCapitalize={'characters'}
+                width={'100%'}
+              />
+              <GladisTextInput
+                value={newPassword}
+                placeholder={t('components.dialog.passwordReset.newPassword')}
+                onValueChange={onNewPasswordChange}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                showVisibilityButton={true}
+                width={'100%'}
+              />
+            </>
+          </Dialog>
+        )}
       </>
-    )
+    );
   }
 
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
-    )
-  }
-
-  async function openPicker() {
-    console.log("testFileOpenPicker")
-    const filePath = await FileOpenPicker?.pickPDFFile();
-    console.log("testFileOpenPicker", filePath)
-  }
-
-  async function testImageOpenPicker() {
-    const filePath = await FileOpenPicker?.pickImageFile();
-    console.log("testImageOpenPicker", filePath)
+    );
   }
 
   return (
-    <TouchableOpacity onPress={openPicker}>
-      <Text>Open picker</Text>
-    </TouchableOpacity>
+    <>
+      <SafeAreaView style={styles.container}>
+        <AppIcon style={styles.appIcon} />
+        <Text style={styles.title}>{t('login.title')}</Text>
+        <GladisTextInput
+          value={identifier}
+          onValueChange={onIdentifierChange}
+          placeholder={t('login.identifier')}
+          autoCapitalize={'none'}
+          width={'70%'}
+          editable={inputIsEditable}
+        />
+        <GladisTextInput
+          value={password}
+          onValueChange={onPasswordChange}
+          placeholder={t('login.password')}
+          secureTextEntry={true}
+          onSubmitEditing={submitLogin}
+          showVisibilityButton={true}
+          autoCapitalize={'none'}
+          width={'70%'}
+          editable={inputIsEditable}
+        />
+        <TextButton
+          title={t('login.login')}
+          onPress={login}
+          width={'40%'}
+          disabled={isButtonDisabled}
+        />
+        <SimpleTextButton title={t('login.signUp')} onPress={goToSignUp} />
+        <SimpleTextButton
+          title={t('login.forgottenPassword')}
+          onPress={goToPasswordReset}
+        />
+      </SafeAreaView>
+      {ResetDialogContent()}
+      {ResetPasswordWithTokenDialogContent()}
+      {ToastContent()}
+    </>
   );
 }
 
