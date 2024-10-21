@@ -7,6 +7,7 @@ interface PDFViewerProps {
   pdfPages: string[]; // Array of base64 encoded image strings
 }
 
+// TODO: Find why it doesn't display on Windows ( works with dummy image from the web )
 function PDFViewer(props: PDFViewerProps): React.JSX.Element {
   const { pdfPages } = props;
   return (

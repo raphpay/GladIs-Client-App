@@ -92,6 +92,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
       //   setPDFData(cachedData as string[]);
       //   setIsLoading(false);
       // }
+      // TODO: Correct this
       await loadFromAPI();
     }
     init();
