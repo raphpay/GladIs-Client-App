@@ -325,23 +325,42 @@ class Utils {
     return grid;
   }
 
+  /**
+   * Removes all whitespace characters (spaces, tabs, newlines) from the input string.
+   * @param input - The string from which to remove whitespace.
+   * @returns A new string without any whitespace.
+   */
   static removeWhitespace(input: string): string {
     return input.replace(/\s+/g, '');
   }
 
+  /**
+   * Replaces all occurrences of a target string with a replacement string within the input string.
+   * @param input - The string to perform the replacement on.
+   * @param target - The substring to replace.
+   * @param replacement - The string to replace the target with.
+   * @returns A new string with all occurrences of the target string replaced by the replacement.
+   */
   static replaceAllOccurrences(
     input: string,
     target: string,
     replacement: string,
   ): string {
-    // Use the split and join method to replace all occurrences
     return input.split(target).join(replacement);
   }
 
+  /**
+   * Generates a random password of the specified length, ensuring at least one lowercase letter,
+   * one uppercase letter, one number, and one special character.
+   * Avoids ambiguous characters like '0', '1', 'l', and 'O'.
+   *
+   * @param length - The desired length of the generated password.
+   * @returns A randomly generated password string.
+   */
   static generatePassword(length: number): string {
-    const lowerCaseLetters = 'abcdefghjkmnpqrstuvwxyz'; // Avoiding ambiguous letters like 'l'
-    const upperCaseLetters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'; // Avoiding ambiguous letters like 'O'
-    const numbers = '23456789'; // Avoiding '0' and '1'
+    const lowerCaseLetters = 'abcdefghjkmnpqrstuvwxyz';
+    const upperCaseLetters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const numbers = '23456789';
     const specialCharacters = '!@#$%^&*';
 
     const getRandomChar = (set: string) =>
@@ -371,15 +390,39 @@ class Utils {
     return shuffledPassword;
   }
 
+  /**
+   * Removes the ".pdf" file extension from a file name if it exists (case-insensitive).
+   * @param fileName - The name of the file to remove the ".pdf" extension from.
+   * @returns The file name without the ".pdf" extension, or the original file name if no extension is found.
+   */
   static removePdfExtension(fileName: string): string {
-    // Check if the string ends with ".pdf" (case-insensitive)
     if (fileName.toLowerCase().endsWith('.pdf')) {
-      // Remove the ".pdf" extension
       return fileName.slice(0, -4);
     }
-
-    // If ".pdf" is not found, return the original string
     return fileName;
+  }
+
+  /**
+   * Converts a Uint8Array into a string using the 'utf-8' encoding.
+   * @param uint8Array - The Uint8Array to convert to a string.
+   * @returns The decoded string representation of the Uint8Array.
+   */
+  static convertUIntArrayToString(uint8Array: Uint8Array): string {
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(uint8Array);
+  }
+
+  /**
+   * Removes the 'data:application/octet-stream;base64,' prefix from a base64 string if present.
+   * @param base64String - The base64 string from which to remove the prefix.
+   * @returns The base64 string without the prefix, or the original string if the prefix is not found.
+   */
+  static removeBase64Prefix(base64String: string): string {
+    const prefix = 'data:application/octet-stream;base64,';
+    if (base64String.startsWith(prefix)) {
+      return base64String.replace(prefix, '');
+    }
+    return base64String;
   }
 }
 

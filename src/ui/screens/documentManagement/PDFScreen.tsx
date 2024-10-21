@@ -7,9 +7,9 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import PDFScreenManager from '../../../business-logic/manager/documentManagement/PDFScreenManager';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import CacheService from '../../../business-logic/services/CacheService';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
+import Utils from '../../../business-logic/utils/Utils';
 
 import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
@@ -37,7 +37,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
 
   // Props
   const { navigation } = props;
-  const { documentInputs, originalDocument } = props.route.params;
+  const { documentInput } = props.route.params;
   // Hooks
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
@@ -59,20 +59,16 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // Async Methods
   async function loadFromAPI() {
     let data: string[] = [];
-    for (const doc of documentInputs) {
-      try {
-        const docData = await PDFScreenManager.getInstance().downloadDocument(
-          doc.id,
-          token,
-        );
-        data.push(docData);
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
-    }
+    try {
+      const docData = await PDFScreenManager.getInstance().downloadDocument(
+        documentInput.id,
+        token,
+      );
+      const sanitizedData = Utils.removeBase64Prefix(docData);
+      data = await PDFScreenManager.getInstance().splitPDF(sanitizedData);
+    } catch (error) {}
     await PDFScreenManager.getInstance().cacheDownloadedData(
-      originalDocument,
+      documentInput,
       data,
     );
     setPDFData(data);
@@ -82,20 +78,22 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      let cachedData = null;
-      try {
-        cachedData = await CacheService.getInstance().retrieveValue(
-          originalDocument.id as string,
-        );
-      } catch (error) {
-        console.log('error getting cached data', error);
-      }
-      if (cachedData === null || cachedData === undefined) {
-        await loadFromAPI();
-      } else {
-        setPDFData(cachedData as string);
-        setIsLoading(false);
-      }
+      // let cachedData = null;
+      // try {
+      //   cachedData = await CacheService.getInstance().retrieveValue(
+      //     documentInput.id as string,
+      //   );
+      // } catch (error) {
+      //   console.log('error getting cached data', error);
+      // }
+      // if (cachedData === null || cachedData === undefined) {
+      //   await loadFromAPI();
+      // } else {
+      //   setPDFData(cachedData as string[]);
+      //   setIsLoading(false);
+      // }
+      // TODO: Correct this
+      await loadFromAPI();
     }
     init();
   }, []);

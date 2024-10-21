@@ -88,7 +88,7 @@ export type IRootStackParams = {
     processNumber: number | undefined;
     showGenerateSMQButton?: boolean;
   };
-  PDFScreen: { documentInputs: IDocument[]; originalDocument: IDocument };
+  PDFScreen: { documentInput: IDocument };
   // Tracking
   TrackingScreen: undefined;
   // Settings
