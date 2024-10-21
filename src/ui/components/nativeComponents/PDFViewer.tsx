@@ -11,12 +11,12 @@ function PDFViewer(props: PDFViewerProps): React.JSX.Element {
   const { pdfPages } = props;
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {pdfPages.map((imagePath: string, index: number) => (
+      {pdfPages.map((imageData: string, index: number) => (
         <View key={index} style={styles.imageContainer}>
           <Image
             style={styles.image}
             resizeMode="contain"
-            source={{ uri: `data:application/pdf;base64,${imagePath}` }}
+            source={{ uri: `data:image/png;base64,${imageData}` }}
           />
         </View>
       ))}
