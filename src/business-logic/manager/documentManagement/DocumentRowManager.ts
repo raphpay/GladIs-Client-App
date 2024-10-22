@@ -1,5 +1,7 @@
+// Enums
 import DocumentLogAction from '../../model/enums/DocumentLogAction';
 import UserType from '../../model/enums/UserType';
+// Models
 import IDocument from '../../model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
 import IToken from '../../model/IToken';
@@ -20,7 +22,15 @@ class DocumentRowManager {
     return DocumentRowManager.instance;
   }
 
-  // TODO: Add documentation
+  /**
+   * Logs the activity of opening a document by the current user.
+   * @param currentUser - The user who is opening the document (optional).
+   * @param currentClient - The client on behalf of whom the document is being opened (optional).
+   * @param document - The document being opened.
+   * @param token - The authentication token (optional).
+   * @returns A promise that resolves when the log entry is successfully recorded.
+   * @throws If an error occurs while logging the document opening activity.
+   */
   async logDocumentOpening(
     currentUser: IUser | undefined,
     currentClient: IUser | undefined,

@@ -40,26 +40,6 @@ class DocumentServiceGet extends DocumentService {
       throw error;
     }
   }
-
-  // TODO: Remove from API
-  // static async getDocumentPagesByNameAndPath(
-  //   name: string,
-  //   apiPath: string,
-  //   token: IToken | null,
-  // ): Promise<IDocument[]> {
-  //   try {
-  //     const input = { name: Utils.removePdfExtension(name), path: apiPath };
-  //     const url = `${this.baseRoute}/pages/byName/andPath`;
-  //     const documents = await APIService.post<IDocument[]>(
-  //       url,
-  //       input,
-  //       token?.value as string,
-  //     );
-  //     return documents;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
 }
 
 export default DocumentServiceGet;
