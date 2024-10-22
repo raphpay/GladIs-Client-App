@@ -88,6 +88,10 @@ function RecordsDocumentScreen(
     useState<boolean>(false);
   const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] =
     useState<boolean>(false);
+  const [
+    showDeleteFolderConfimationDialog,
+    setShowDeleteFolderConfimationDialog,
+  ] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastIsShowingError, setToastIsShowingError] =
@@ -101,6 +105,7 @@ function RecordsDocumentScreen(
   const [folderNewName, setFolderNewName] = useState<string>('');
   const [folderNumber, setFolderNumber] = useState<number>(0);
   const [folderID, setFolderID] = useState<string>('');
+  const [selectedFolder, setSelectedFolder] = useState<IFolder | null>(null);
 
   const { navigation } = props;
   const { currentFolder, currentScreen, documentsPath } = props.route.params;
@@ -186,7 +191,7 @@ function RecordsDocumentScreen(
   function navigateTo(item: IFolder) {
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: 'Records',
-      processNumber: currentFolder.number,
+      folderNumber: currentFolder.number,
       currentScreen: item.title,
       documentsPath: `${currentFolder.title}/records/${item.title}`,
     });
@@ -210,12 +215,13 @@ function RecordsDocumentScreen(
     setToastMessage(message);
   }
 
-  function displayModificationProcessDialog(item: IFolder) {
-    if (currentUser?.userType === UserType.Admin) {
+  function displayModificationProcessDialog(item: IFolder | null) {
+    if (currentUser?.userType === UserType.Admin && item) {
       setShowFolderModificationDialog(true);
       setFolderNewName(item.title);
       setFolderNumber(item.number ?? 1);
       setFolderID(item.id as string);
+      setSelectedFolder(item);
     }
   }
 
@@ -225,6 +231,7 @@ function RecordsDocumentScreen(
     setShowCreateFolderDialog(false);
     setShowDocumentActionDialog(false);
     setShowDeleteConfimationDialog(false);
+    setShowDeleteFolderConfimationDialog(false);
     setFolderNewName('');
   }
 
@@ -233,12 +240,18 @@ function RecordsDocumentScreen(
     setShowDeleteConfimationDialog(true);
   }
 
+  function openDeleteFolderDialog() {
+    closeDialogs();
+    setShowDeleteFolderConfimationDialog(true);
+  }
+
+  function hideDeleteFolderDialog() {
+    closeDialogs();
+    displayModificationProcessDialog(selectedFolder);
+  }
+
   // Async Methods
   async function navigateToDocument(document: IDocument) {
-    const files = await DocumentRowManager.getInstance().loadSubDocuments(
-      document,
-      token,
-    );
     await DocumentRowManager.getInstance().logDocumentOpening(
       currentUser,
       currentClient,
@@ -246,8 +259,7 @@ function RecordsDocumentScreen(
       token,
     );
     navigation.navigate(NavigationRoutes.PDFScreen, {
-      documentInputs: files,
-      originalDocument: document,
+      documentInput: document,
     });
     closeDialogs();
   }
@@ -556,13 +568,13 @@ function RecordsDocumentScreen(
     );
   }
 
-  function ModifyProcessNameDialog() {
+  function ModifyFolderNameDialog() {
     return (
       <>
         {showFolderModificationDialog && (
           <Dialog
-            title={t('systemQuality.modifyProcess.title')}
-            description={t('systemQuality.modifyProcess.description')}
+            title={t('systemQuality.modifyFolder.title')}
+            description={t('systemQuality.modifyFolder.description')}
             confirmTitle={t('components.buttons.save')}
             cancelTitle={t('components.dialog.cancel')}
             extraConfirmButtonTitle={t('components.buttons.delete')}
@@ -570,11 +582,11 @@ function RecordsDocumentScreen(
             isCancelAvailable={true}
             onConfirm={modifyFolderName}
             onCancel={closeDialogs}
-            extraConfirmButtonAction={deleteFolder}>
+            extraConfirmButtonAction={openDeleteFolderDialog}>
             <GladisTextInput
               value={folderNewName}
               onValueChange={setFolderNewName}
-              placeholder={t('systemQuality.modifyProcess.placeholder')}
+              placeholder={t('systemQuality.modifyFolder.placeholder')}
               autoCapitalize="words"
             />
           </Dialog>
@@ -597,6 +609,25 @@ function RecordsDocumentScreen(
             onCancel={closeDialogs}
             isConfirmAvailable={true}
             isCancelAvailable={true}
+          />
+        )}
+      </>
+    );
+  }
+
+  function DeleteFolderConfirmationDialog() {
+    return (
+      <>
+        {showDeleteFolderConfimationDialog && (
+          <Dialog
+            title={t('systemQuality.deleteFolder.title')}
+            description={t('systemQuality.deleteFolder.description')}
+            confirmTitle={t('systemQuality.deleteFolder.confirmTitle')}
+            cancelTitle={t('systemQuality.deleteFolder.cancelTitle')}
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+            onConfirm={deleteFolder}
+            onCancel={hideDeleteFolderDialog}
           />
         )}
       </>
@@ -710,8 +741,9 @@ function RecordsDocumentScreen(
       {ToastContent()}
       {AddDocumentDialog()}
       {CreateFolderDialog()}
-      {ModifyProcessNameDialog()}
+      {ModifyFolderNameDialog()}
       {DeleteConfirmationDialog()}
+      {DeleteFolderConfirmationDialog()}
       <UploadingActivityIndicator isUploading={isUploading} />
     </>
   );

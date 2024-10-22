@@ -85,7 +85,7 @@ export type IRootStackParams = {
     previousScreen: string;
     currentScreen: string;
     documentsPath: string;
-    processNumber: number | undefined;
+    folderNumber: number | undefined;
     showGenerateSMQButton?: boolean;
   };
   PDFScreen: { documentInput: IDocument };

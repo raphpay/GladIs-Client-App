@@ -1,6 +1,5 @@
 import IDocument from '../../model/IDocument';
 import IToken from '../../model/IToken';
-import Utils from '../../utils/Utils';
 import APIService from '../APIService';
 import DocumentService from './DocumentService';
 
@@ -37,33 +36,6 @@ class DocumentServiceGet extends DocumentService {
         token?.value as string,
       );
       return docs;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * Get all document pages by name and path
-   * @param name - The name of the original document
-   * @param apiPath - The path of the document
-   * @param token - The authentication token.
-   * @returns A promise that resolves to the document pages.
-   * @throws If an error occurs while getting the documents.
-   */
-  static async getDocumentPagesByNameAndPath(
-    name: string,
-    apiPath: string,
-    token: IToken | null,
-  ): Promise<IDocument[]> {
-    try {
-      const input = { name: Utils.removePdfExtension(name), path: apiPath };
-      const url = `${this.baseRoute}/pages/byName/andPath`;
-      const documents = await APIService.post<IDocument[]>(
-        url,
-        input,
-        token?.value as string,
-      );
-      return documents;
     } catch (error) {
       throw error;
     }
