@@ -19,6 +19,7 @@ enum NavigationRoutes {
   ClientCreationStack = 'ClientCreationStack',
   PendingClientListScreen = 'PendingClientListScreen',
   ClientCreationScreen = 'ClientCreationScreen',
+  AdminCreationScreen = 'AdminCreationScreen',
   // Settings
   SettingsScreen = 'SettingsScreen',
   // Client Management
@@ -47,6 +48,8 @@ enum NavigationRoutes {
   // Forms
   FormsDocumentScreen = 'FormsDocumentScreen',
   FormEditionScreen = 'FormEditionScreen',
+  // Records
+  RecordsDocumentScreen = 'RecordsDocumentScreen',
 }
 
 export default NavigationRoutes;

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
-  },
+  }
 });
 
 export default styles;

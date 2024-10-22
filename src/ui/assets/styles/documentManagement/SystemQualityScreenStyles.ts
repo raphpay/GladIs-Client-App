@@ -4,7 +4,7 @@ import { Fonts } from '../../fonts/fonts';
 
 const styles = StyleSheet.create({
   // Containers
-  processusContainer: {
+  folderContainer: {
     backgroundColor: Colors.inactive,
     padding: 4,
     justifyContent: 'center',
@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: Fonts.poppinsSemiBold
   },
+  adminButton: {
+    marginHorizontal: 3,
+  }
 });
 
 export default styles;

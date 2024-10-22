@@ -3,27 +3,28 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Image,
+  NativeModules,
   Platform,
   ScrollView,
   Text,
-  View
+  View,
 } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
+const { FilePickerModule } = NativeModules;
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
-import IFile from '../../../business-logic/model/IFile';
+import SignUpScreenManager from '../../../business-logic/manager/authentification/SignUpScreenManager';
 import IModule from '../../../business-logic/model/IModule';
 import IPendingUser from '../../../business-logic/model/IPendingUser';
 import IPotentialEmployee from '../../../business-logic/model/IPotentialEmployee';
+import MimeType from '../../../business-logic/model/enums/MimeType';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PendingUserStatus from '../../../business-logic/model/enums/PendingUserStatus';
 import PlatformName from '../../../business-logic/model/enums/PlatformName';
+import FileOpenPicker from '../../../business-logic/modules/FileOpenPicker';
 import FinderModule from '../../../business-logic/modules/FinderModule';
-import DocumentService from '../../../business-logic/services/DocumentService';
 import ModuleService from '../../../business-logic/services/ModuleService';
-import PendingUserService from '../../../business-logic/services/PendingUserService';
-import PotentialEmployeeService from '../../../business-logic/services/PotentialEmployeeService';
+import PendingUserServicePost from '../../../business-logic/services/PendingUserService/PendingUserService.post';
 import Utils from '../../../business-logic/utils/Utils';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
@@ -35,7 +36,10 @@ import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/authentification/SignUpScreenStyles';
 
-type SignUpScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SignUpScreen>;
+type SignUpScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.SignUpScreen
+>;
 
 function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   const [firstName, setFirstName] = useState<string>('');
@@ -51,14 +55,16 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
   // Dialog
   const [showDialog, setShowDialog] = useState<boolean>(false);
   // Potential employee
-  const [potentialEmployees, setPotentialEmployees] = useState<IPotentialEmployee[]>([]);
+  const [potentialEmployees, setPotentialEmployees] = useState<
+    IPotentialEmployee[]
+  >([]);
   // Logo
-  const [imageData, setImageData] = useState<string>('');
   const [logoURI, setLogoURI] = useState<string>('');
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
 
   const { navigation } = props;
   const { t } = useTranslation();
@@ -67,9 +73,11 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   // Sync Methods
   function toggleCheckbox(module: IModule) {
-    setSelectedModules((prevSelectedObjects) => {
+    setSelectedModules(prevSelectedObjects => {
       if (prevSelectedObjects.includes(module)) {
-        return prevSelectedObjects.filter((objectModule) => objectModule.id !== module.id);
+        return prevSelectedObjects.filter(
+          objectModule => objectModule.id !== module.id,
+        );
       } else {
         return [...prevSelectedObjects, module];
       }
@@ -86,18 +94,19 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
 
   function isFormFilled(): boolean {
     let isFilled = false;
-    isFilled = firstName.length > 0 &&
-    lastName.length > 0 &&
-    phoneNumber.length > 0 &&
-    companyName.length > 0 &&
-    email.length > 0 &&
-    products.length > 0 &&
-    numberOfEmployees.length > 0 &&
-    Utils.isANumber(numberOfEmployees) &&
-    numberOfUsers.length > 0 &&
-    Utils.isANumber(numberOfUsers) &&
-    sales.length > 0 &&
-    Utils.isANumber(sales);
+    isFilled =
+      firstName.length > 0 &&
+      lastName.length > 0 &&
+      phoneNumber.length > 0 &&
+      companyName.length > 0 &&
+      email.length > 0 &&
+      products.length > 0 &&
+      numberOfEmployees.length > 0 &&
+      Utils.isANumber(numberOfEmployees) &&
+      numberOfUsers.length > 0 &&
+      Utils.isANumber(numberOfUsers) &&
+      sales.length > 0 &&
+      Utils.isANumber(sales);
     return isFilled;
   }
 
@@ -119,13 +128,26 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       numberOfEmployees: parseInt(numberOfEmployees),
       numberOfUsers: parseInt(numberOfUsers),
       salesAmount: parseFloat(sales),
-      status: PendingUserStatus.pending
-    }
+      status: PendingUserStatus.pending,
+    };
     try {
-      const createdUser = await PendingUserService.getInstance().askForSignUp(pendingUser, selectedModules);
-      await uploadLogo();
+      // Create pending user/client
+      const createdUser = await PendingUserServicePost.askForSignUp(
+        pendingUser,
+        selectedModules,
+      );
+      // Upload logo if needed
+      const destinationPath = `${companyName}/logos/`;
+      await SignUpScreenManager.getInstance().uploadLogo(
+        destinationPath,
+        logoURI,
+      );
+      // Create employees
       const id = createdUser.id as string;
-      await createEmployees(id);
+      await SignUpScreenManager.getInstance().createEmployees(
+        potentialEmployees,
+        id,
+      );
       navigateBack();
     } catch (error) {
       const errorKeys: string[] = error as string[];
@@ -134,75 +156,56 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     }
   }
 
-  async function uploadLogo() {
-    if (imageData) {
-      try {
-        const fileName = 'logo.png';
-        const file: IFile = {
-          data: imageData,
-          filename: fileName
-        }
-        await DocumentService.getInstance().uploadLogo(file, fileName, `${companyName}/logos/`);
-      } catch (error) {
-        console.log('Error uploading logo', error);
-      }
-    }
-  }
-
-  async function createEmployees(pendingUserID: string) {
-    // Update all employees with pendingUserID
-    const updatedPotentialEmployees = potentialEmployees.map(employee => {
-      return {
-        ...employee,
-        pendingUserID,
-      };
-    });
-    for (const employee of updatedPotentialEmployees) {
-      if (employee.pendingUserID !== null) {
-        try {
-          await PotentialEmployeeService.getInstance().create(employee)
-        } catch (error) {
-          console.log('Error creating potential employee:', employee, error);
-        }
-      }
-    }
-  }
-
   async function addLogo() {
+    let filePath: string = '';
     if (Platform.OS === PlatformName.Mac) {
-      const data = await FinderModule.getInstance().pickImage();
-      setImageData(data);
-      setLogoURI(`data:image/png;base64,${data}`);
-    } else {
-      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.images });
-      const data = await Utils.getFileBase64FromURI(doc.uri);
-      setImageData(data);
-      setLogoURI(doc.uri);
+      filePath = await FinderModule.getInstance().pickImageFilePath();
+    } else if (Platform.OS === PlatformName.Android) {
+      const granted =
+        await SignUpScreenManager.getInstance().askAndroidPermission(
+          t('permission.title'),
+          t('permission.message'),
+          t('permission.buttonNuetral'),
+          t('permission.buttonNegative'),
+          t('permission.buttonPositive'),
+        );
+      if (granted) {
+        filePath = FilePickerModule.pickSingleFile([
+          MimeType.jpeg,
+          MimeType.png,
+        ]);
+      }
+    } else if (Platform.OS === PlatformName.Windows) {
+      const originPath = await FileOpenPicker?.pickImageFile();
+      if (originPath) {
+        filePath = originPath;
+      }
     }
+    setLogoURI(filePath);
   }
 
   // Components
   function PotentialEmployeeGridItem(item: IPotentialEmployee, index: number) {
     return (
-      <Text key={index} style={styles.employeeText}>{item.firstName} {item.lastName}</Text>
-    )
+      <Text key={index} style={styles.employeeText}>
+        {item.firstName} {item.lastName}
+      </Text>
+    );
   }
 
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
-    )
+    );
   }
 
   function ScreenContent() {
@@ -211,41 +214,47 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         <GladisTextInput
           value={firstName}
           onValueChange={setFirstName}
-          placeholder={t('quotation.firstName')} showTitle={true}
+          placeholder={t('quotation.firstName')}
+          showTitle={true}
           editable={!showDialog}
         />
         <GladisTextInput
           value={lastName}
           onValueChange={setLastName}
-          placeholder={t('quotation.lastName')} showTitle={true}
+          placeholder={t('quotation.lastName')}
+          showTitle={true}
           editable={!showDialog}
-          />
+        />
         <GladisTextInput
           value={phoneNumber}
           onValueChange={setPhoneNumber}
-          placeholder={t('quotation.phone')} showTitle={true}
+          placeholder={t('quotation.phone')}
+          showTitle={true}
           editable={!showDialog}
         />
         <GladisTextInput
           value={companyName}
           onValueChange={setCompanyName}
-          placeholder={t('quotation.companyName')} showTitle={true}
+          placeholder={t('quotation.companyName')}
+          showTitle={true}
           editable={!showDialog}
         />
         <GladisTextInput
           value={email}
           onValueChange={setEmail}
-          placeholder={t('quotation.email')} showTitle={true}
+          placeholder={t('quotation.email')}
+          showTitle={true}
           editable={!showDialog}
         />
         <GladisTextInput
           value={products}
           onValueChange={setProducts}
-          placeholder={t('quotation.products')} showTitle={true}
+          placeholder={t('quotation.products')}
+          showTitle={true}
           editable={!showDialog}
         />
         <Text style={styles.subtitle}>{t('quotation.modulesTitle')}</Text>
-        {modules.map((module) => (
+        {modules.map(module => (
           <ModuleCheckBox
             key={module.id}
             module={module}
@@ -256,42 +265,49 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         <GladisTextInput
           value={numberOfEmployees}
           onValueChange={setNumberOfEmployees}
-          placeholder={t('quotation.employees')} showTitle={true}
+          placeholder={t('quotation.employees')}
+          showTitle={true}
           editable={!showDialog}
         />
         <GladisTextInput
           value={numberOfUsers}
           onValueChange={setNumberOfUsers}
-          placeholder={t('quotation.users')} showTitle={true}
+          placeholder={t('quotation.users')}
+          showTitle={true}
           editable={!showDialog}
         />
         <GladisTextInput
           value={sales}
           onValueChange={setSales}
-          placeholder={t('quotation.capital')} showTitle={true}
+          placeholder={t('quotation.capital')}
+          showTitle={true}
           editable={!showDialog}
         />
-        <TextButton width={'30%'} title={t('quotation.employee.create')} onPress={() => setShowDialog(true)} />
-        {
-          potentialEmployees.length > 0 && (
-            <>
-              <Text style={styles.employeesTitle}>{t('quotation.employee.title')}</Text>
-              {potentialEmployees.map((employee, index) => (
-                PotentialEmployeeGridItem(employee, index)
-              ))}
-            </>
-          )
-        }
+        <TextButton
+          width={'30%'}
+          title={t('quotation.employee.create')}
+          onPress={() => setShowDialog(true)}
+        />
+        {potentialEmployees.length > 0 && (
+          <>
+            <Text style={styles.employeesTitle}>
+              {t('quotation.employee.title')}
+            </Text>
+            {potentialEmployees.map((employee, index) =>
+              PotentialEmployeeGridItem(employee, index),
+            )}
+          </>
+        )}
         <View style={styles.logoContainer}>
-          <TextButton width={'30%'} title={t('quotation.logo.add')} onPress={addLogo} />
-          {
-            logoURI && (
-              <Image source={{uri: logoURI}} style={styles.logo}/>
-            )
-          }
+          <TextButton
+            width={'30%'}
+            title={t('quotation.logo.add')}
+            onPress={addLogo}
+          />
+          {logoURI && <Image source={{ uri: logoURI }} style={styles.logo} />}
         </View>
       </ScrollView>
-    )
+    );
   }
 
   return (
@@ -303,7 +319,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
         showSearchText={false}
         showSettings={false}
         dialogIsShown={showDialog}
-        additionalComponent={(
+        additionalComponent={
           <View style={styles.sendButtonContainer}>
             <TextButton
               width={'100%'}
@@ -312,8 +328,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
               disabled={!isFormFilled()}
             />
           </View>
-        )}
-      >
+        }>
         {ScreenContent()}
       </AppContainer>
       {

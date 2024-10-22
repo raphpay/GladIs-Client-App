@@ -46,6 +46,16 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
+  usernameButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10
+  },
+  usernameQuestion: {
+    fontSize: 14,
+    fontFamily: Fonts.poppinsLight,
+  }
 });
 
 export default styles;

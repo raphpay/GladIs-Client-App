@@ -33,17 +33,24 @@ type SMQGeneralStepTwoProps = {
 };
 
 function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
-
   const {
-    activity, setActivity,
-    qualityGoals, setQualityGoals,
-    hasOrganizationalChart, setHasOrganizationalChart,
-    headquartersAddress, setHeadquartersAddress,
-    phoneNumber, setPhoneNumber,
-    email, setEmail,
+    activity,
+    setActivity,
+    qualityGoals,
+    setQualityGoals,
+    hasOrganizationalChart,
+    setHasOrganizationalChart,
+    headquartersAddress,
+    setHeadquartersAddress,
+    phoneNumber,
+    setPhoneNumber,
+    email,
+    setEmail,
     setShowDialog,
-    hasUploadedFile, selectedFilename, setFileID,
-    editable
+    hasUploadedFile,
+    selectedFilename,
+    setFileID,
+    editable,
   } = props;
   const { t } = useTranslation();
 
@@ -60,7 +67,7 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
       id: '2',
       name: t('smqSurvey.generalInfo.stepTwo.option.no'),
       value: false,
-    }
+    },
   ];
 
   // Sync Methods
@@ -116,34 +123,34 @@ function SMQGeneralStepTwo(props: SMQGeneralStepTwoProps): React.JSX.Element {
         placeholder={t('smqSurvey.generalInfo.stepTwo.qualityGoals')}
         editable={editable}
       />
-      <Text style={styles.subtitle}>{t('smqSurvey.generalInfo.stepTwo.selectOrgOption')}</Text>
-      {
-        organizationOptions.map((option) => {
-          return (
-            <CheckBox
-              key={option.id}
-              option={option}
-              isSelected={isOptionSelected(option)}
-              onSelectOption={() => toggleCheckbox(option)}
-            />
-          );
-        })
-      }
-      {
-        hasOrganizationalChart && (
-          <View style={styles.selectFileRow}>
-            <TextButton width={'30%'} title={t('smqSurvey.generalInfo.stepTwo.uploadOrgChart')} onPress={() => setShowDialog(true)} />
-            {
-              hasUploadedFile && selectedFilename && (
-                <>
-                  <Text style={styles.selectedFileText}>Selected File:</Text>
-                  <Text style={styles.selectedFileText}>{selectedFilename}</Text>
-                </>
-              )
-            }
-          </View>
-        )
-      }
+      <Text style={styles.subtitle}>
+        {t('smqSurvey.generalInfo.stepTwo.selectOrgOption')}
+      </Text>
+      {organizationOptions.map(option => {
+        return (
+          <CheckBox
+            key={option.id}
+            option={option}
+            isSelected={isOptionSelected(option)}
+            onSelectOption={() => toggleCheckbox(option)}
+          />
+        );
+      })}
+      {hasOrganizationalChart && (
+        <View style={styles.selectFileRow}>
+          <TextButton
+            width={'30%'}
+            title={t('smqSurvey.generalInfo.stepTwo.uploadOrgChart')}
+            onPress={() => setShowDialog(true)}
+          />
+          {hasUploadedFile && selectedFilename && (
+            <>
+              <Text style={styles.selectedFileText}>Selected File:</Text>
+              <Text style={styles.selectedFileText}>{selectedFilename}</Text>
+            </>
+          )}
+        </View>
+      )}
       <GladisTextInput
         value={headquartersAddress}
         onValueChange={setHeadquartersAddress}

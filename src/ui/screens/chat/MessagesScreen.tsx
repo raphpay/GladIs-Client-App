@@ -9,7 +9,7 @@ import { IMessage, IMessageInput, IUserID } from '../../../business-logic/model/
 import IUser from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import MessageService from '../../../business-logic/services/MessageService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -144,35 +144,39 @@ function MessagesScreen(props: MessagesScreenProps): React.JSX.Element {
     // Get user by mail
     let receiver: IUser | undefined;
     try {
-      receiver = await UserService.getInstance().getUserByEmail(messageReceiver, token);
+      receiver = await UserServicePost.getUserByEmail(messageReceiver, token);
     } catch (error) {
       const errorKeys: string[] = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
       displayToast(t(`${errorTitle}`), true);
     }
 
-    if (receiver && currentUser) {
-      // Create message
-      const senderID: IUserID = { id: currentUser.id as string };
-      const receiverID: IUserID = { id: receiver.id as string };
-      const message: IMessageInput = {
-        title: messageTitle,
-        content: messageContent,
-        senderID: senderID.id,
-        senderMail: currentUser.email,
-        receiverID: receiverID.id,
-        receiverMail: receiver.email
-      }
+    if (receiver) {
+      if (currentUser) {
+        // Create message
+        const senderID: IUserID = { id: currentUser.id as string };
+        const receiverID: IUserID = { id: receiver.id as string };
+        const message: IMessageInput = {
+          title: messageTitle,
+          content: messageContent,
+          senderID: senderID.id,
+          senderMail: currentUser.email,
+          receiverID: receiverID.id,
+          receiverMail: receiver.email
+        }
 
-      // Send message
-      try {
-        const newMessage = await MessageService.getInstance().sendMessage(message, token);
-        setMessages([...messages, newMessage]);
-        resetDialogs();
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        displayToast(t(`errors.api.${errorMessage}`), true);
+        // Send message
+        try {
+          const newMessage = await MessageService.getInstance().sendMessage(message, token);
+          setMessages([...messages, newMessage]);
+          resetDialogs();
+        } catch (error) {
+          const errorMessage = (error as Error).message;
+          displayToast(t(`errors.api.${errorMessage}`), true);
+        }
       }
+    } else {
+      displayToast(t('errors.api.notFound.user'), true);
     }
   }
 

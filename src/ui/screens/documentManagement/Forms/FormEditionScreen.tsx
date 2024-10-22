@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, ScrollView, View } from 'react-native';
+import { Keyboard, ScrollView, Text, View } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -20,8 +20,8 @@ import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
 import FormTextInput from '../DocumentScreen/FormTextInput';
-import FormAddCellButton from './FormAddCellButton';
 import FormEditionHeaderCell from './FormEditionHeaderCell';
+import ImageButton from '../../../components/Buttons/ImageButton';
 
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
@@ -36,9 +36,18 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
   const { formsCount } = useAppSelector((state: RootState) => state.forms);
   const dispatch = useAppDispatch();
+  // Images
+  const addRowImage = require('../../../assets/images/add-row.png');
+  const addColumnImage = require('../../../assets/images/add-column.png');
+  const removeRowImage = require('../../../assets/images/remove-row.png');
+  const removeColumnImage = require('../../../assets/images/remove-column.png');
   // States
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  // Dialogs
+  const [showSaveDialog, setShowSaveDialog] = useState<boolean>(false);
+  const [showQuitWithoutSavingDialog, setShowQuitWithoutSavingDialog] = useState<boolean>(false);
+  const [showDeleteLastColumnConfirmationDialog, setShowDeleteLastColumnConfirmationDialog] = useState<boolean>(false);
+  const [showDeleteLastRowConfirmationDialog, setShowDeleteLastRowConfirmationDialog] = useState<boolean>(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
@@ -52,7 +61,18 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const isUserEmployee = currentUser?.userType === UserType.Employee;
 
   // Sync Methods
+  function tappedOnBackButton() {
+    Keyboard.dismiss();
+    if (doesFormContainsData()) {
+      setShowQuitWithoutSavingDialog(true);
+    } else {
+      navigateBack();
+    }
+  }
+
   function navigateBack() {
+    resetDialogs();
+    FormEditionManager.getInstance().resetForm();
     navigation.goBack();
   }
 
@@ -123,10 +143,50 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     return isFilled;
   }
 
+  function doesFormContainsData() {
+    let containsData = false;
+    containsData = formTitle.length > 0 ||
+      grid.length > 1;
+    return containsData;
+  }
+
   function displayToast(message: string, isError: boolean = false) {
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
+  }
+
+  function resetDialogs() {
+    setShowSaveDialog(false);
+    setShowQuitWithoutSavingDialog(false);
+    setShowDeleteLastColumnConfirmationDialog(false);
+    setShowDeleteLastRowConfirmationDialog(false);
+  }
+
+  function displayRemoveColumnConfirmationDialog() {
+    if (currentUser?.userType === UserType.Admin) {
+      resetDialogs();
+      setShowDeleteLastColumnConfirmationDialog(true);
+    }
+  }
+
+  function displayRemoveRowConfirmationDialog() {
+    if (currentUser?.userType === UserType.Admin) {
+      resetDialogs();
+      setShowDeleteLastRowConfirmationDialog(true);
+    }
+  }
+
+  function deleteLastColumn() {
+    const gridWithoutLastColumn = FormEditionManager.getInstance().deleteLastColumn();
+    setGrid(gridWithoutLastColumn);
+    setShowDeleteLastColumnConfirmationDialog(false);
+  }
+
+  function deleteLastRow() {
+    const gridWithoutLastRow = FormEditionManager.getInstance().deleteLastRow();
+    setGrid(gridWithoutLastRow);
+    setShowDeleteLastRowConfirmationDialog(false);
   }
   
   // Async Methods
@@ -210,27 +270,35 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         {
           !isUserEmployee && (
             <>
-              <TextButton
-                title={t('forms.actions.removeColumn')}
-                onPress={removeColumn}
-                extraStyle={styles.actionButton}
-                disabled={!isColumnGreaterThanOne}
+            <ImageButton
+                icon={addColumnImage}
+                onPress={addColumn}
+                style={styles.actionButton}
               />
-              <TextButton
-                title={t('forms.actions.removeRow')}
+              <ImageButton
+                icon={removeColumnImage}
+                onPress={removeColumn}
+                style={styles.actionButton}
+                disabled={!isColumnGreaterThanOne}
+                onLongPress={displayRemoveColumnConfirmationDialog}
+              />
+              <ImageButton
+                icon={addRowImage}
+                onPress={addRow}
+                style={styles.actionButton}
+              />
+              <ImageButton
+                icon={removeRowImage}
                 onPress={removeRow}
-                extraStyle={styles.actionButton}
+                style={styles.actionButton}
                 disabled={!isRowGreaterThanOne}
+                onLongPress={displayRemoveRowConfirmationDialog}
               />
             </>
           )
         }
       </View>
     );
-  }
-
-  function resetDialogs() {
-    setShowSaveDialog(false);
   }
 
   function SaveButton() {
@@ -262,87 +330,121 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   
   function ToastContent() {
     return (
-      <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
-      </>
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        setIsVisible={setShowToast}
+        isShowingError={toastIsShowingError}
+      />
     );
+  }
+
+  function QuitWithoutSavingDialog() {
+    return (
+      <Dialog
+        title={t('forms.dialog.quit.title')}
+        description={t('forms.dialog.quit.description')}
+        confirmTitle={t('forms.dialog.quit.confirmTitle')}
+        cancelTitle={t('forms.dialog.quit.cancelTitle')}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
+        onConfirm={navigateBack}
+        onCancel={() => { setShowQuitWithoutSavingDialog(false) }}
+      />
+    )
+  }
+
+  function RemoveLastColumnConfirmationDialog() {
+    return (
+      <Dialog
+        title={t('forms.dialog.confirmDelete.column.title')}
+        description={t('forms.dialog.confirmDelete.column.description')}
+        onConfirm={deleteLastColumn}
+        onCancel={resetDialogs}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
+      />
+    )
+  }
+
+  function RemoveLastRowConfirmationDialog() {
+    return (
+      <Dialog
+        title={t('forms.dialog.confirmDelete.row.title')}
+        description={t('forms.dialog.confirmDelete.row.description')}
+        onConfirm={deleteLastRow}
+        onCancel={resetDialogs}
+        isConfirmAvailable={true}
+        isCancelAvailable={true}
+      />
+    )
   }
 
   return (
     <>
       <AppContainer
-        mainTitle={t('forms.creation.title')}
+        mainTitle='Forms'
+        showBackButton={true}
+        navigateBack={tappedOnBackButton}
+        adminButton={ActionButtons()}
+        additionalComponent={SaveButton()}
         showSearchText={false}
         showSettings={false}
-        adminButton={ActionButtons()}
-        showBackButton={true}
-        navigateBack={navigateBack}
-        additionalComponent={SaveButton()}
       >
-        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerCellContainer}>
-              <FormEditionHeaderCell
-                value={formTitle}
-                setValue={setFormTitle}
-                title={t('forms.headerCells.title')}
-                placeholder={t('forms.creation.formTitle')}
-                editable={!showSaveDialog}
-              />
-              <View style={styles.separator}/>
-              <View style={styles.cellRow}>
-                <FormEditionHeaderCell
-                  value={formCreation}
-                  setValue={setFormCreation}
-                  title={t('forms.headerCells.createdAt')}
-                  placeholder={t('forms.creation.creationDate')}
-                  editable={!showSaveDialog}
-                />
-                <FormEditionHeaderCell
-                  value={formCreationActor}
-                  setValue={setFormCreationActor}
-                  title={t('forms.headerCells.createdBy')}
-                  placeholder={t('forms.creation.creationActor')}
-                  editable={!showSaveDialog}
-                />
-              </View>
-              <View style={styles.cellRow}>
-                <FormEditionHeaderCell
-                  value={formUpdate}
-                  setValue={setFormUpdate}
-                  title={t('forms.headerCells.updatedAt')}
-                  placeholder={t('forms.creation.updateDate')}
-                  editable={!showSaveDialog}
-                />
-                <FormEditionHeaderCell
-                  value={formUpdateActor}
-                  setValue={setFormUpdateActor}
-                  title={t('forms.headerCells.updatedBy')}
-                  placeholder={t('forms.creation.updateActor')}
-                  editable={!showSaveDialog}
-                />
-              </View>
-            </View>
-            {
-              !isUserEmployee && (
-                <FormAddCellButton
-                  onPress={addColumn}
-                  height={'90%'}
-                  width={40}
-                />
-              )
-            }
+        <ScrollView style={{ flex : 1 }}>
+          <FormEditionHeaderCell
+              value={formTitle}
+              setValue={setFormTitle}
+              title={t('forms.headerCells.title')}
+              placeholder={t('forms.creation.formTitle')}
+              editable={!showSaveDialog}
+              width={'100%'}
+            />
+            <View style={styles.separator}/>
+
+          {/* Form Creator cells */}
+          <View style={styles.cellRow}>
+            <FormEditionHeaderCell
+              value={formCreation}
+              setValue={setFormCreation}
+              title={t('forms.headerCells.createdAt')}
+              placeholder={t('forms.creation.creationDate')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
+            <FormEditionHeaderCell
+              value={formCreationActor}
+              setValue={setFormCreationActor}
+              title={t('forms.headerCells.createdBy')}
+              placeholder={t('forms.creation.creationActor')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
+          </View>
+
+          {/* Form Updator cells */}
+          <View style={styles.cellRow}>
+            <FormEditionHeaderCell
+              value={formUpdate}
+              setValue={setFormUpdate}
+              title={t('forms.headerCells.updatedAt')}
+              placeholder={t('forms.creation.updateDate')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
+            <FormEditionHeaderCell
+              value={formUpdateActor}
+              setValue={setFormUpdateActor}
+              title={t('forms.headerCells.updatedBy')}
+              placeholder={t('forms.creation.updateActor')}
+              editable={!showSaveDialog}
+              width={'50%'}
+            />
           </View>
           <View style={styles.separator}/>
+
+
+          {/* Grid */}
           {grid.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
               {row.map((cell, columnIndex) => (
@@ -350,26 +452,20 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                   key={columnIndex}
                   value={cell.value}
                   onChangeText={(newText) => updateCell(rowIndex, columnIndex, newText)}
-                  editable={!showSaveDialog}
+                  editable={!showSaveDialog || !showQuitWithoutSavingDialog}
                   isTitle={cell.isTitle}
+                  multiline={false}
                 />
               ))}
             </View>
           ))}
-          {
-            !isUserEmployee && (
-              <FormAddCellButton
-                onPress={addRow}
-                height={35}
-                width={'100%'}
-                extraStyle={styles.addRowButtonExtraStyle}
-              />
-            )
-          }
         </ScrollView>
       </AppContainer>
-      { showSaveDialog && SaveDialogContent() }
-      { ToastContent() }
+      {showSaveDialog && SaveDialogContent()}
+      {showQuitWithoutSavingDialog && QuitWithoutSavingDialog()}
+      {showToast && ToastContent()}
+      {showDeleteLastColumnConfirmationDialog && RemoveLastColumnConfirmationDialog()}
+      {showDeleteLastRowConfirmationDialog && RemoveLastRowConfirmationDialog()}
     </>
   );
 }

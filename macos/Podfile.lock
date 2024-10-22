@@ -1015,11 +1015,11 @@ PODS:
     - React-jsi (= 0.73.11)
     - React-logger (= 0.73.11)
     - React-perflogger (= 0.73.11)
-  - RNCAsyncStorage (1.21.0):
+  - RNCAsyncStorage (1.24.0):
     - React-Core
-  - RNCClipboard (1.13.2):
+  - RNCClipboard (1.14.2):
     - React-Core
-  - RNGestureHandler (2.15.0):
+  - RNGestureHandler (2.20.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1236,12 +1236,12 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 8ebbff4ecefc82c7c75439240ee177832a2e9403
   React-utils: b360b43f6554167a3d030d18d439e62872ee7eb1
   ReactCommon: 4a9c46cbe8803df27da190b48f5c64cee33a483a
-  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
-  RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
-  RNGestureHandler: deda62b8339496ba721a45e0f3e2d7a319932cee
+  RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
+  RNCClipboard: 5e503962f0719ace8f7fdfe9c60282b526305c85
+  RNGestureHandler: 385c90cb0aeffa2d572d6c0e85e60b2af4ad531b
   SocketRocket: f6c6249082c011e6de2de60ed641ef8bbe0cfac9
   Yoga: 3725908fb0d6c8d45b7e133940f5d603e588b7ce
 
 PODFILE CHECKSUM: 916809b30b0313118749260e72fd0f7a012b98b8
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

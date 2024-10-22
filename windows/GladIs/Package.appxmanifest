@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="84a2ebd7-e87e-47c0-9c19-f9d92577e5fd"
+    Name="c2d2c10f-256e-4b5f-b5ab-03ad6cb84fe7"
     Publisher="CN=raphaelpayet"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="84a2ebd7-e87e-47c0-9c19-f9d92577e5fd" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="c2d2c10f-256e-4b5f-b5ab-03ad6cb84fe7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>GladIs</DisplayName>

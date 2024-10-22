@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import IModule from '../../../business-logic/model/IModule';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import ModuleService from '../../../business-logic/services/ModuleService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setModule } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -60,7 +60,7 @@ function DashboardClientGrid(props: DashboardClientGridProps): React.JSX.Element
   async function loadModules() {
     if (currentClient) {
       try {
-        const usersModules = await UserService.getInstance().getUsersModules(currentClient?.id, token);
+        const usersModules = await UserServiceGet.getUsersModules(currentClient?.id, token);
         const usersModulesIndexes: string[] = usersModules.map(mod => mod.index.toString());
         setClientModulesIndexes(usersModulesIndexes);
       } catch (error) {

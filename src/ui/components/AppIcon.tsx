@@ -11,7 +11,8 @@ import {
 import IDocument from '../../business-logic/model/IDocument';
 import PlatformName from '../../business-logic/model/enums/PlatformName';
 import CacheService from '../../business-logic/services/CacheService';
-import DocumentService from '../../business-logic/services/DocumentService';
+import DocumentServiceGet from '../../business-logic/services/DocumentService/DocumentService.get';
+import DocumentServicePost from '../../business-logic/services/DocumentService/DocumentService.post';
 import { useAppSelector } from '../../business-logic/store/hooks';
 import { RootState } from '../../business-logic/store/store';
 
@@ -26,8 +27,9 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   const { style } = props;
 
   const [logoURI, setLogoURI] = useState<string>('');
+  const [showClientName, setShowClientName] = useState<boolean>(false);
 
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentClient, currentUser } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
   const gladisLogo = require('../assets/images/Logo-Gladis_Vertical-Couleur1-Fond-Transparent_Square.png')
@@ -37,7 +39,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   async function getLogoDocument(): Promise<IDocument | undefined> {
     if (currentClient) {
       const company = currentClient.companyName;
-      const docs = await DocumentService.getInstance().getDocumentsAtPath(`${company}/logos/`, token);
+      const docs = await DocumentServicePost.getDocumentsAtPath(`${company}/logos/`, token);
       const logo = docs[0];
       return logo;
     }
@@ -46,7 +48,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   async function loadLogoFromAPI() {
     const logoDoc = await getLogoDocument();
     if (logoDoc) {
-      const logoData = await DocumentService.getInstance().download(logoDoc.id, token);
+      const logoData = await DocumentServiceGet.download(logoDoc.id, token);
       await CacheService.getInstance().storeValue(`${currentClient?.id}/logo`, logoData)
       await CacheService.getInstance().storeValue(`${currentClient?.id}/logo-lastModified`, logoDoc.lastModified);
       displayLogo(logoData);
@@ -86,6 +88,7 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
   useEffect(() => {
     async function init() {
       await loadLogo();
+      setShowClientName(currentClient !== currentUser);
     }
     init();
   }, [currentClient]);
@@ -109,8 +112,11 @@ function AppIcon(props: AppIconProps): React.JSX.Element {
         }
       </View>
       {
-        currentClient && (
-          <Text style={styles.clientName}>{currentClient.username}</Text>
+        currentClient && showClientName && (
+          <>
+            <Text style={[styles.clientName, { paddingTop: 4 }]}>{currentClient.firstName}</Text>
+            <Text style={styles.clientName}>{currentClient.lastName}</Text>
+          </>
         )
       }
     </View>

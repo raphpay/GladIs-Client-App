@@ -13,7 +13,8 @@ import IAction from '../../../business-logic/model/IAction';
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
+import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setPasswordResetTokenCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -137,7 +138,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   async function getTokenValueForClient(clientID: string): Promise<string> {
     let resetToken = '';
     try {
-      resetToken = await UserService.getInstance().getResetTokenValue(clientID, token);
+      resetToken = await UserServiceGet.getResetTokenValue(clientID, token);
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
@@ -148,7 +149,7 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   async function onConfirmAdminPassword() {
     if (currentUser) {
       try {
-        const check = await UserService.getInstance().verifyPassword(currentUser.id as string, adminPassword, token);
+        const check = await UserServicePost.verifyPassword(currentUser.id as string, adminPassword, token);
         if (check) {
           const resetToken = await getTokenValueForClient(selectedUserID);
           setShowTokenDialog(true);

@@ -5,14 +5,17 @@ import {
   Text,
   View
 } from 'react-native';
+
 import IUser from '../../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import { useAppDispatch } from '../../../../business-logic/store/hooks';
 import { setCurrentClient } from '../../../../business-logic/store/slices/userReducer';
-import styles from '../../../assets/styles/components/DashboardAdminGridStyles';
+
 import ContentUnavailableView from '../../ContentUnavailableView';
 import Grid from '../../Grid/Grid';
 import GridClientItem from '../../Grid/GridClientItem';
+
+import styles from '../../../assets/styles/components/DashboardAdminGridStyles';
 
 type ClientSectionProps = {
   clientsFiltered: IUser[];

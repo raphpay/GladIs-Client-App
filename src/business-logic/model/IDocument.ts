@@ -3,6 +3,7 @@ export default interface IDocument {
   name: string,
   path: string,
   lastModified: Date,
+  status: DocumentStatus
 }
 
 export interface IDocumentPaginatedOutput {

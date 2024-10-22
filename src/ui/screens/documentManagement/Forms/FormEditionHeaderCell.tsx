@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { DimensionValue, Text, View } from 'react-native';
 
 import FormTextInput from '../DocumentScreen/FormTextInput';
 
@@ -11,6 +11,7 @@ type FormEditionHeaderCellProps = {
   title: string;
   placeholder: string;
   editable: boolean;
+  width: DimensionValue;
 };
 
 function FormEditionHeaderCell(props: FormEditionHeaderCellProps): React.JSX.Element {
@@ -18,11 +19,11 @@ function FormEditionHeaderCell(props: FormEditionHeaderCellProps): React.JSX.Ele
   const {
     value, setValue,
     title, placeholder,
-    editable,
+    editable, width
   } = props;
 
   return (
-    <View style={styles.headerCell}>
+    <View style={[styles.headerCell, { width }]}>
       <Text style={styles.headerCellTitle}>{title}</Text>
       <FormTextInput
         value={value}

@@ -2,7 +2,7 @@ import fetchMock from 'jest-fetch-mock';
 
 import IToken from '../../../src/business-logic/model/IToken';
 import APIService from '../../../src/business-logic/services/APIService';
-import AuthenticationService from '../../../src/business-logic/services/AuthenticationService';
+import AuthenticationService from '../../../src/business-logic/services/AuthenticationService/AuthenticationService';
 
 fetchMock.enableMocks();
 

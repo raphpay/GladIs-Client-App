@@ -8,7 +8,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import MessageService from '../../../business-logic/services/MessageService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import SurveyService from '../../../business-logic/services/SurveyService';
-import UserService from '../../../business-logic/services/UserService';
+import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
 import { setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -45,7 +45,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   // Asynchronous Methods
   async function loadClients() {
     try {
-      const apiClients = await UserService.getInstance().getClients(token);
+      const apiClients = await UserServiceGet.getClients(token);
       setClients(apiClients); 
     } catch (error) {
       console.log('Error loading clients', error);

@@ -6,7 +6,7 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 
 import IAction from '../../../business-logic/model/IAction';
 import { IEvent } from '../../../business-logic/model/IEvent';
-import EventService from '../../../business-logic/services/EventService';
+import EventServiceGet from '../../../business-logic/services/EventService/EventService.get';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -77,14 +77,14 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     let events: IEvent[] = [];
     if (currentClient) {
       try {
-        events = await EventService.getInstance().getAllForClient(currentClient?.id as string, token);
+        events = await EventServiceGet.getAllForClient(currentClient?.id as string, token);
       } catch (error) {
         console.log("Error loading events", error);
       }
     } else {
       if (isAdmin) {
         try {
-          events = await EventService.getInstance().getAll(token);
+          events = await EventServiceGet.getAll(token);
         } catch (error) {
           console.log("Error loading events", error);
         }
@@ -97,14 +97,14 @@ function RemindersScreen(props: RemindersScreenProps): React.JSX.Element {
     let archivedEvents: IEvent[] = [];
     if (currentClient) {
       try {
-        archivedEvents = await EventService.getInstance().getArchivedForClient(currentClient?.id as string, token);
+        archivedEvents = await EventServiceGet.getArchivedForClient(currentClient?.id as string, token);
       } catch (error) {
         console.log("Error loading events", error);
       }
     } else {
       if (isAdmin) {
         try {
-          archivedEvents = await EventService.getInstance().getArchivedEvents(token);
+          archivedEvents = await EventServiceGet.getArchivedEvents(token);
         } catch (error) {
           console.log("Error loading events", error);
         }

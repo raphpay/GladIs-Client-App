@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
     paddingLeft: 8,
     fontSize: 20,
     fontWeight: Fonts.semiBold,
-    fontFamily: Fonts.bikoBold
+    fontFamily: Fonts.bikoBold,
+    paddingBottom: 32,
   },
   navigationHistoryContainer: {
     flexDirection: 'row',

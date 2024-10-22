@@ -3,7 +3,7 @@ import IUser from "../../../src/business-logic/model/IUser";
 import UserType from "../../../src/business-logic/model/enums/UserType";
 import APIService from "../../../src/business-logic/services/APIService";
 import CacheService from "../../../src/business-logic/services/CacheService";
-import UserService from "../../../src/business-logic/services/UserService";
+import UserService from "../../../src/business-logic/services/UserService/UserService";
 
 
 // Mock the ApiService class
