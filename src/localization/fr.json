@@ -93,11 +93,17 @@
     "createSMQDoc": {
       "button": "Générer la documentation SMQ"
     },
-    "modifyProcess": {
+    "modifyFolder": {
       "title": "Modifier le nom du processus",
       "description": "Entrez le nouveau nom du processus",
       "placeholder": "Nouveau nom du processus",
       "success": "Nom du processus modifié avec succès"
+    },
+    "deleteFolder": {
+      "title": "Êtes-vous sûr de vouloir supprimer ce dossier ?",
+      "description": "Vous n'aurez plus accès aux documents contenus",
+      "cancelTitle": "Non, garder",
+      "confirmTitle": "Oui"
     },
     "create": {
       "button": "Créer un nouveau dossier",
