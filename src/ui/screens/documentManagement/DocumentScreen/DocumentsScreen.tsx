@@ -229,10 +229,6 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
 
   // Async Methods
   async function navigateToDocument(document: IDocument) {
-    const files = await DocumentRowManager.getInstance().loadSubDocuments(
-      document,
-      token,
-    );
     await DocumentRowManager.getInstance().logDocumentOpening(
       currentUser,
       currentClient,
@@ -240,8 +236,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       token,
     );
     navigation.navigate(NavigationRoutes.PDFScreen, {
-      documentInputs: files,
-      originalDocument: document,
+      documentInput: document,
     });
     closeDialogs();
   }

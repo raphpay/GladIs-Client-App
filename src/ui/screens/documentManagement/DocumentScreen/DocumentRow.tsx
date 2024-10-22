@@ -31,10 +31,6 @@ function DocumentRow(props: DocumentRowProps): React.JSX.Element {
 
   // Async Methods
   async function navigateToDocument() {
-    const files = await DocumentRowManager.getInstance().loadSubDocuments(
-      document,
-      token,
-    );
     await DocumentRowManager.getInstance().logDocumentOpening(
       currentUser,
       currentClient,

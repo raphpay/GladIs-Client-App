@@ -6,7 +6,6 @@ import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
 
 import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
-import DocumentServiceGet from '../../services/DocumentService/DocumentService.get';
 
 class DocumentRowManager {
   private static instance: DocumentRowManager;
@@ -21,23 +20,7 @@ class DocumentRowManager {
     return DocumentRowManager.instance;
   }
 
-  async loadSubDocuments(
-    document: IDocument,
-    token: IToken | null,
-  ): Promise<IDocument[]> {
-    let files: IDocument[] = [];
-    try {
-      files = await DocumentServiceGet.getDocumentPagesByNameAndPath(
-        document.name,
-        document.path,
-        token,
-      );
-      return files;
-    } catch (error) {
-      throw error;
-    }
-  }
-
+  // TODO: Add documentation
   async logDocumentOpening(
     currentUser: IUser | undefined,
     currentClient: IUser | undefined,
