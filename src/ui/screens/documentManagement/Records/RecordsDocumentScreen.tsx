@@ -186,7 +186,7 @@ function RecordsDocumentScreen(
   function navigateTo(item: IFolder) {
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: 'Records',
-      processNumber: currentFolder.number,
+      folderNumber: currentFolder.number,
       currentScreen: item.title,
       documentsPath: `${currentFolder.title}/records/${item.title}`,
     });

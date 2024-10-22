@@ -232,6 +232,11 @@ function SystemQualityScreen(
     displayModificationFolderDialog(selectedFolder);
   }
 
+  function askToDeleteFolder() {
+    closeDialogs();
+    setShowDeleteConfirmationDialog(true);
+  }
+
   // Async Methods
   async function navigateToSMQGeneral() {
     dispatch(setSMQScreenSource(NavigationRoutes.SystemQualityScreen));
@@ -305,11 +310,6 @@ function SystemQualityScreen(
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
-  }
-
-  async function askToDeleteFolder() {
-    closeDialogs();
-    setShowDeleteConfirmationDialog(true);
   }
 
   async function deleteFolder() {
