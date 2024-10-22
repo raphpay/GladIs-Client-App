@@ -6,20 +6,30 @@ import {
   Platform,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
-import IFolder, { IFolderInput, IFolderMultipleInput, IFolderUpdateInput, Sleeve } from '../../../business-logic/model/IFolder';
+import IFolder, {
+  IFolderInput,
+  IFolderMultipleInput,
+  IFolderUpdateInput,
+  Sleeve,
+} from '../../../business-logic/model/IFolder';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
-import PlatformName, { Orientation } from '../../../business-logic/model/enums/PlatformName';
+import PlatformName, {
+  Orientation,
+} from '../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../business-logic/model/enums/UserType';
 import FolderService from '../../../business-logic/services/FolderService';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
-import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
@@ -34,34 +44,49 @@ import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import styles from '../../assets/styles/documentManagement/SystemQualityScreenStyles';
 import Toast from '../../components/Toast';
 
-type SystemQualityScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SystemQualityScreen>;
+type SystemQualityScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.SystemQualityScreen
+>;
 
-function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element {
+function SystemQualityScreen(
+  props: SystemQualityScreenProps,
+): React.JSX.Element {
   // General
   const [searchText, setSearchText] = useState<string>('');
   const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
   // Dialogs
-  const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
+  const [showModifyFolderDialog, setShowModifyFolderDialog] =
+    useState<boolean>(false);
+  const [showCreateFolderDialog, setShowCreateFolderDialog] =
+    useState<boolean>(false);
+  const [showDeleteConfirmationDialog, setShowDeleteConfirmationDialog] =
+    useState<boolean>(false);
   // Folder
   const [folderNewName, setFolderNewName] = useState<string>('');
   const [folderNumber, setFolderNumber] = useState<number>(0);
   const [folderID, setFolderID] = useState<string>('');
+  const [selectedFolder, setSelectedFolder] = useState<IFolder | null>(null);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const plusIcon = require('../../assets/images/plus.png');
-  
+
   const { t } = useTranslation();
-  
+
   const { navigation } = props;
 
-  const { isAdmin, currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { isAdmin, currentUser, currentClient } = useAppSelector(
+    (state: RootState) => state.users,
+  );
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const { documentListCount } = useAppSelector(
+    (state: RootState) => state.appState,
+  );
   const dispatch = useAppDispatch();
 
   const baseFolderItems: IFolder[] = [
@@ -120,7 +145,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       number: 7,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
-    }
+    },
   ];
   const [folderItems, setFolderItems] = useState<IFolder[]>([]);
 
@@ -145,7 +170,11 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   function navigateToDashboard() {
-    navigation.navigate(isAdmin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+    navigation.navigate(
+      isAdmin
+        ? NavigationRoutes.ClientDashboardScreenFromAdmin
+        : NavigationRoutes.DashboardScreen,
+    );
   }
 
   function navigateTo(item: IFolder) {
@@ -158,16 +187,19 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         folderNumber: undefined,
       });
     } else {
-      navigation.navigate(NavigationRoutes.ProcessesScreen, { currentFolder: item})
+      navigation.navigate(NavigationRoutes.ProcessesScreen, {
+        currentFolder: item,
+      });
     }
   }
 
-  function displayModificationFolderDialog(item: IFolder) {
-    if (currentUser?.userType === UserType.Admin) {
-      setShowDialog(true);
+  function displayModificationFolderDialog(item: IFolder | null) {
+    if (currentUser?.userType === UserType.Admin && item) {
+      setShowModifyFolderDialog(true);
       setFolderNewName(item.title);
       setFolderNumber(item.number ?? 1);
       setFolderID(item.id as string);
+      setSelectedFolder(item);
     }
   }
 
@@ -190,10 +222,16 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
 
   function closeDialogs() {
     setShowCreateFolderDialog(false);
-    setShowDialog(false);
+    setShowModifyFolderDialog(false);
+    setShowDeleteConfirmationDialog(false);
     setFolderNewName('');
   }
-  
+
+  function hideDeleteConfirmationDialog() {
+    setShowDeleteConfirmationDialog(false);
+    displayModificationFolderDialog(selectedFolder);
+  }
+
   // Async Methods
   async function navigateToSMQGeneral() {
     dispatch(setSMQScreenSource(NavigationRoutes.SystemQualityScreen));
@@ -232,11 +270,17 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         title: folderNewName,
         number: folderNumber,
       };
-      const updatedFolder = await FolderService.getInstance().update(updateInput, folderID, token);
+      const updatedFolder = await FolderService.getInstance().update(
+        updateInput,
+        folderID,
+        token,
+      );
       setFolderItems(prevItems =>
         prevItems.map(item =>
-          item.number === updatedFolder.number ? { ...item, title: updatedFolder.title } : item
-        )
+          item.number === updatedFolder.number
+            ? { ...item, title: updatedFolder.title }
+            : item,
+        ),
       );
       closeDialogs();
       displayToast(t('systemQuality.modifyFolder.success'));
@@ -247,23 +291,33 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   }
 
   async function createInitialFolder() {
-    setFolderItems(baseFolderItems);
     try {
       const input: IFolderMultipleInput = {
         inputs: baseFolderItems,
         userID: currentClient?.id as string,
       };
-      await FolderService.getInstance().createMultiple(input, token);
+      const createdFolders = await FolderService.getInstance().createMultiple(
+        input,
+        token,
+      );
+      setFolderItems(createdFolders);
     } catch (error) {
       const errorMessage = (error as Error).message;
       displayToast(t(`errors.api.${errorMessage}`), true);
     }
   }
 
+  async function askToDeleteFolder() {
+    closeDialogs();
+    setShowDeleteConfirmationDialog(true);
+  }
+
   async function deleteFolder() {
     try {
       await FolderService.getInstance().delete(folderID, token);
-      setFolderItems(prevItems => prevItems.filter(item => item.id !== folderID));
+      setFolderItems(prevItems =>
+        prevItems.filter(item => item.id !== folderID),
+      );
       closeDialogs();
       displayToast(t('systemQuality.delete.success'));
     } catch (error) {
@@ -277,7 +331,10 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
     async function init() {
       try {
         const userID = currentClient?.id as string;
-        const folder = await UserServiceGet.getSystemQualityFolders(userID, token);
+        const folder = await UserServiceGet.getSystemQualityFolders(
+          userID,
+          token,
+        );
         if (folder.length === 0) {
           await createInitialFolder();
         } else {
@@ -293,7 +350,7 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
   useEffect(() => {
     determineAndSetOrientation();
     Dimensions.addEventListener('change', determineAndSetOrientation);
-    return () => {}
+    return () => {};
   }, []);
 
   // Components
@@ -302,19 +359,18 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
       <TouchableOpacity
         key={item.id}
         onPress={() => navigateTo(item)}
-        onLongPress={() => displayModificationFolderDialog(item)}
-        >
+        onLongPress={() => displayModificationFolderDialog(item)}>
         <View style={styles.folderContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
       </TouchableOpacity>
-    )
+    );
   }
 
   function ModifyFolderNameDialog() {
     return (
-      <>{
-        showDialog && (
+      <>
+        {showModifyFolderDialog && (
           <Dialog
             title={t('systemQuality.modifyFolder.title')}
             description={t('systemQuality.modifyFolder.description')}
@@ -325,25 +381,42 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             isCancelAvailable={true}
             onConfirm={modifyFolderName}
             onCancel={closeDialogs}
-            extraConfirmButtonAction={deleteFolder}
-          >
+            extraConfirmButtonAction={askToDeleteFolder}>
             <GladisTextInput
               value={folderNewName}
               onValueChange={setFolderNewName}
               placeholder={t('systemQuality.modifyFolder.placeholder')}
-              autoCapitalize='words'
+              autoCapitalize="words"
             />
           </Dialog>
-        )
-      }
+        )}
       </>
-    )
+    );
+  }
+
+  function DeleteConfirmationDialog() {
+    return (
+      <>
+        {showDeleteConfirmationDialog && (
+          <Dialog
+            title={t('systemQuality.deleteFolder.title')}
+            description={t('systemQuality.deleteFolder.description')}
+            confirmTitle={t('systemQuality.deleteFolder.confirmTitle')}
+            cancelTitle={t('systemQuality.deleteFolder.cancelTitle')}
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+            onConfirm={deleteFolder}
+            onCancel={hideDeleteConfirmationDialog}
+          />
+        )}
+      </>
+    );
   }
 
   function CreateFolderDialog() {
     return (
-      <>{
-        showCreateFolderDialog && (
+      <>
+        {showCreateFolderDialog && (
           <Dialog
             title={t('systemQuality.create.title')}
             description={t('systemQuality.create.description')}
@@ -352,68 +425,60 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
             isConfirmAvailable={true}
             isCancelAvailable={true}
             onConfirm={createFolder}
-            onCancel={closeDialogs}
-          >
+            onCancel={closeDialogs}>
             <GladisTextInput
               value={folderNewName}
               onValueChange={setFolderNewName}
               placeholder={t('systemQuality.create.placeholder')}
-              autoCapitalize='words'
+              autoCapitalize="words"
             />
           </Dialog>
-        )
-      }
+        )}
       </>
-    )
+    );
   }
 
   function AdminButtons() {
-    const shouldHaveColumn = (
-        Platform.OS === PlatformName.Android ||
-        Platform.OS === PlatformName.IOS
-      ) && orientation === Orientation.Portrait;
-    
+    const shouldHaveColumn =
+      (Platform.OS === PlatformName.Android ||
+        Platform.OS === PlatformName.IOS) &&
+      orientation === Orientation.Portrait;
+
     return (
       <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
-        {
-          currentUser?.userType !== UserType.Employee && (
-            <IconButton 
-              title={t('systemQuality.createSMQDoc.button')}
-              onPress={navigateToSMQGeneral}
-              icon={plusIcon}
-              style={styles.adminButton}
-            />
-          )
-        }
-        {
-          currentUser?.userType === UserType.Admin && (
-            <IconButton 
-              title={t('systemQuality.create.button')}
-              onPress={() => setShowCreateFolderDialog(true)}
-              icon={plusIcon}
-              style={styles.adminButton}
-            />
-          )
-        }
+        {currentUser?.userType !== UserType.Employee && (
+          <IconButton
+            title={t('systemQuality.createSMQDoc.button')}
+            onPress={navigateToSMQGeneral}
+            icon={plusIcon}
+            style={styles.adminButton}
+          />
+        )}
+        {currentUser?.userType === UserType.Admin && (
+          <IconButton
+            title={t('systemQuality.create.button')}
+            onPress={() => setShowCreateFolderDialog(true)}
+            icon={plusIcon}
+            style={styles.adminButton}
+          />
+        )}
       </View>
-    )
+    );
   }
 
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
-    )
+    );
   }
 
   return (
@@ -427,25 +492,23 @@ function SystemQualityScreen(props: SystemQualityScreenProps): React.JSX.Element
         showSearchText={true}
         showSettings={true}
         navigateBack={navigateBack}
-        adminButton={AdminButtons()}
-      >
-        {
-          folderItemsFiltered && folderItemsFiltered.length === 0 ? (
-            <ContentUnavailableView
-              title={t('systemQuality.noItems.title')}
-              message={t('systemQuality.noItems.message')}
-              image={clipboardIcon}
-            />
-          ) : (
-            <Grid
-              data={folderItemsFiltered}
-              renderItem={({ item }) => FolderGridItem(item)}
-            />
-          )
-        }
+        adminButton={AdminButtons()}>
+        {folderItemsFiltered && folderItemsFiltered.length === 0 ? (
+          <ContentUnavailableView
+            title={t('systemQuality.noItems.title')}
+            message={t('systemQuality.noItems.message')}
+            image={clipboardIcon}
+          />
+        ) : (
+          <Grid
+            data={folderItemsFiltered}
+            renderItem={({ item }) => FolderGridItem(item)}
+          />
+        )}
       </AppContainer>
       {ModifyFolderNameDialog()}
       {CreateFolderDialog()}
+      {DeleteConfirmationDialog()}
       {ToastContent()}
     </>
   );
