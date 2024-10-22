@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   image: {
-    width: '100%', // Image takes full width of the screen
+    width: '75%', // Image takes full width of the screen
     height: undefined, // Maintain aspect ratio
     aspectRatio: 210 / 297, // Set aspect ratio for A4 size
   },

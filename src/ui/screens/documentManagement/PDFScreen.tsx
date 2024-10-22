@@ -9,12 +9,10 @@ import PDFScreenManager from '../../../business-logic/manager/documentManagement
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
 
 import IconButton from '../../components/Buttons/IconButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
-import Toast from '../../components/Toast';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
@@ -26,15 +24,8 @@ type PDFScreenProps = NativeStackScreenProps<
 
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // General
-  const [searchText, setSearchText] = useState<string>('');
   const [pdfData, setPDFData] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // Toast
-  const [showToast, setShowToast] = useState<boolean>(false);
-  const [toastIsShowingError, setToastIsShowingError] =
-    useState<boolean>(false);
-  const [toastMessage, setToastMessage] = useState<string>('');
-
   // Props
   const { navigation } = props;
   const { documentInput } = props.route.params;
@@ -50,70 +41,21 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
-  function displayToast(message: string, isError: boolean = false) {
-    setShowToast(true);
-    setToastIsShowingError(isError);
-    setToastMessage(message);
-  }
-
-  // Async Methods
-  async function loadFromAPI() {
-    let data: string[] = [];
-    try {
-      const docData = await PDFScreenManager.getInstance().downloadDocument(
-        documentInput.id,
-        token,
-      );
-      const sanitizedData = Utils.removeBase64Prefix(docData);
-      data = await PDFScreenManager.getInstance().splitPDF(sanitizedData);
-    } catch (error) {}
-    await PDFScreenManager.getInstance().cacheDownloadedData(
-      documentInput,
-      data,
-    );
-    setPDFData(data);
-    setIsLoading(false);
-  }
-
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      // let cachedData = null;
-      // try {
-      //   cachedData = await CacheService.getInstance().retrieveValue(
-      //     documentInput.id as string,
-      //   );
-      // } catch (error) {
-      //   console.log('error getting cached data', error);
-      // }
-      // if (cachedData === null || cachedData === undefined) {
-      //   await loadFromAPI();
-      // } else {
-      //   setPDFData(cachedData as string[]);
-      //   setIsLoading(false);
-      // }
-      // TODO: Correct this
-      await loadFromAPI();
+      setIsLoading(true);
+      const data = await PDFScreenManager.getInstance().loadData(
+        documentInput,
+        token,
+      );
+      setPDFData(data);
+      setIsLoading(false);
     }
     init();
   }, []);
 
   // Components
-  function ToastContent() {
-    return (
-      <>
-        {showToast && (
-          <Toast
-            message={toastMessage}
-            isVisible={showToast}
-            setIsVisible={setShowToast}
-            isShowingError={toastIsShowingError}
-          />
-        )}
-      </>
-    );
-  }
-
   function PDFView() {
     return (
       <>
@@ -143,7 +85,6 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
         onPress={navigateBack}
         style={styles.backButton}
       />
-      {ToastContent()}
     </SafeAreaView>
   );
 }
