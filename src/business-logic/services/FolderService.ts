@@ -1,6 +1,10 @@
-import IFolder, { IFolderInput, IFolderMultipleInput, IFolderUpdateInput } from "../model/IFolder";
-import IToken from "../model/IToken";
-import APIService from "./APIService";
+import IFolder, {
+  IFolderInput,
+  IFolderMultipleInput,
+  IFolderUpdateInput,
+} from '../model/IFolder';
+import IToken from '../model/IToken';
+import APIService from './APIService';
 
 /**
  * Represents a service for managing documents.
@@ -32,7 +36,11 @@ class FolderService {
    */
   async create(input: IFolderInput, token: IToken | null): Promise<IFolder> {
     try {
-      const newFolder = await APIService.post<IFolderInput>(this.baseRoute, input, token?.value as string);
+      const newFolder = await APIService.post<IFolderInput>(
+        this.baseRoute,
+        input,
+        token?.value as string,
+      );
       const folder = this.convertInputToFolder(newFolder);
       return folder;
     } catch (error) {
@@ -46,9 +54,17 @@ class FolderService {
    * @param token The token to use for authentication.
    * @throws An error if the processes could not be created.
    */
-  async createMultiple(input: IFolderMultipleInput, token: IToken | null): Promise<void> {
+  async createMultiple(
+    input: IFolderMultipleInput,
+    token: IToken | null,
+  ): Promise<IFolder[]> {
     try {
-      await APIService.post<IFolderMultipleInput>(`${this.baseRoute}/multiple`, input, token?.value as string);
+      const createdFolders = await APIService.post<IFolder[]>(
+        `${this.baseRoute}/multiple`,
+        input,
+        token?.value as string,
+      );
+      return createdFolders;
     } catch (error) {
       throw error;
     }
@@ -63,9 +79,17 @@ class FolderService {
    * @returns The updated process.
    * @throws An error if the process could not be updated.
    */
-  async update(input: IFolderUpdateInput, processID: string, token: IToken | null): Promise<IFolder> {
+  async update(
+    input: IFolderUpdateInput,
+    processID: string,
+    token: IToken | null,
+  ): Promise<IFolder> {
     try {
-      const updatedProcess = await APIService.put(`${this.baseRoute}/${processID}`, input, token?.value as string) as IFolder;
+      const updatedProcess = (await APIService.put(
+        `${this.baseRoute}/${processID}`,
+        input,
+        token?.value as string,
+      )) as IFolder;
       return updatedProcess;
     } catch (error) {
       throw error;
@@ -81,7 +105,10 @@ class FolderService {
    */
   async delete(processID: string, token: IToken | null): Promise<void> {
     try {
-      await APIService.delete(`${this.baseRoute}/${processID}`, token?.value as string);
+      await APIService.delete(
+        `${this.baseRoute}/${processID}`,
+        token?.value as string,
+      );
     } catch (error) {
       throw error;
     }
