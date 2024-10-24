@@ -7,7 +7,7 @@
     "signUp": "Pas de compte ? Demandez un devis.",
     "forgottenPassword": "Mot de passe oublié ?",
     "tooManyAttempts": {
-      "eventName": "Trop de tentatives pour",
+      "eventName": "Trop de tentatives pour"
     },
     "errors": {
       "fillForm": "Veuillez remplir tous les champs"
@@ -30,7 +30,7 @@
     "submit": "Envoyer",
     "employee": {
       "title": "Employés enregistrés",
-      "create": "Créer un employé",
+      "create": "Créer un employé"
     },
     "logo": {
       "add": "Ajouter un logo",
@@ -93,11 +93,17 @@
     "createSMQDoc": {
       "button": "Générer la documentation SMQ"
     },
-    "modifyProcess": {
+    "modifyFolder": {
       "title": "Modifier le nom du processus",
       "description": "Entrez le nouveau nom du processus",
       "placeholder": "Nouveau nom du processus",
       "success": "Nom du processus modifié avec succès"
+    },
+    "deleteFolder": {
+      "title": "Êtes-vous sûr de vouloir supprimer ce dossier ?",
+      "description": "Vous n'aurez plus accès aux documents contenus",
+      "cancelTitle": "Non, garder",
+      "confirmTitle": "Oui"
     },
     "create": {
       "button": "Créer un nouveau dossier",
@@ -151,7 +157,7 @@
       "title": "Pas de suivi de documents pour le moment",
       "message": "Revenez plus tard"
     },
-    "at": "à",
+    "at": "à"
   },
   "process": {
     "title": {
@@ -423,7 +429,7 @@
       "updatedOn": "Modifié le"
     },
     "buttons": {
-      "send": "Envoyer",
+      "send": "Envoyer"
     }
   },
   "components": {
@@ -615,7 +621,7 @@
         "module": "Module non trouvé",
         "event": "Evénement non trouvé",
         "document": "Document non trouvé",
-        "survey": "Formulaire SMQ non trouvé",
+        "survey": "Formulaire SMQ non trouvé"
       },
       "forbidden": {
         "userShouldBeAdmin": "Vous devez être administrateur pour accéder à cette page",
@@ -651,10 +657,10 @@
         "tokenExpired": "La clé de réinitialisation a expiré. Veuillez en demander une nouvelle.",
         "phoneAndEmail": "Veuillez vérifier le format de votre email et de numéro de téléphone. Il doit s'agir d'un numéro français.",
         "email": {
-          "invalid": "Veuillez vérifier le format de votre email",
+          "invalid": "Veuillez vérifier le format de votre email"
         },
         "phoneNumber": {
-          "invalid": "Veuillez vérifier le format de votre numéro de téléphone. Il doit s'agir d'un numéro français.",
+          "invalid": "Veuillez vérifier le format de votre numéro de téléphone. Il doit s'agir d'un numéro français."
         },
         "default": "Une erreur est survenue. Veuillez vérifier les informations saisies.",
         "message": {
@@ -667,7 +673,7 @@
         "managerAlreadySet": "Un manager est déjà défini pour cet employé",
         "company": "Un nom d'entreprise est requis",
         "password": "Le mot de passe ne doit pas être vide",
-        "uuid": "L'identifiant est invalide",
+        "uuid": "L'identifiant est invalide"
       },
       "internalServerError": {
         "failedToCreateDirectory": "Echec de la création du dossier"
@@ -679,7 +685,7 @@
       "passwordChanged": "Mot de passe modifié avec succès",
       "logoUploaded": "Logo téléchargé avec succès",
       "clientBlocked": "Client bloqué avec succès",
-      "clientUnblocked": "Client débloqué avec succès",
+      "clientUnblocked": "Client débloqué avec succès"
     }
   },
   "legal": {
@@ -782,11 +788,18 @@
         "admin": "Ajoutez un formulaire maintenant",
         "client": "Veuillez réessayer plus tard"
       }
-    },
+    }
   },
   "folder": {
     "title": {
       "single": "Processus"
     }
+  },
+  "permission": {
+    "title": "GladIs permission d'accès au stockage externe",
+    "message": "GladIs a besoin d'accéder à vos fichiers",
+    "buttonNeutral": "Demander plus tard",
+    "buttonNegative": "Annuler",
+    "buttonPositive": "OK"
   }
 }

@@ -1,19 +1,31 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import DocumentPicker from 'react-native-document-picker';
+import {
+  ActivityIndicator,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
+import DocumentRowManager from '../../../../business-logic/manager/documentManagement/DocumentRowManager';
+import RecordsDocumentScreenManager from '../../../../business-logic/manager/documentManagement/RecordsDocumentScreenManager';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
-import PlatformName, { Orientation } from '../../../../business-logic/model/enums/PlatformName';
+import PlatformName from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
 import IAction from '../../../../business-logic/model/IAction';
 import IDocument from '../../../../business-logic/model/IDocument';
 import { IDocumentActivityLogInput } from '../../../../business-logic/model/IDocumentActivityLog';
-import IFile from '../../../../business-logic/model/IFile';
-import IFolder, { IFolderInput, IFolderUpdateInput, IFolderUserRecordInput, Sleeve } from '../../../../business-logic/model/IFolder';
-import FinderModule from '../../../../business-logic/modules/FinderModule';
+import IFolder, {
+  IFolderInput,
+  IFolderUpdateInput,
+  IFolderUserRecordInput,
+  Sleeve,
+} from '../../../../business-logic/model/IFolder';
 import CacheService from '../../../../business-logic/services/CacheService';
 import DocumentActivityLogsService from '../../../../business-logic/services/DocumentActivityLogsService';
 import DocumentServiceDelete from '../../../../business-logic/services/DocumentService/DocumentService.delete';
@@ -21,14 +33,21 @@ import DocumentServiceGet from '../../../../business-logic/services/DocumentServ
 import DocumentServicePost from '../../../../business-logic/services/DocumentService/DocumentService.post';
 import FolderService from '../../../../business-logic/services/FolderService';
 import UserServicePost from '../../../../business-logic/services/UserService/UserService.post';
-import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../../business-logic/store/slices/appStateReducer';
-import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../../business-logic/store/slices/smqReducer';
+import {
+  setIsUpdatingSurvey,
+  setSMQScreenSource,
+} from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
+import UploadingActivityIndicator from '../../../components/ActivityIndicator/UploadingActivityIndicator';
 import AppContainer from '../../../components/AppContainer/AppContainer';
 import IconButton from '../../../components/Buttons/IconButton';
 import Dialog from '../../../components/Dialogs/Dialog';
@@ -42,27 +61,41 @@ import DocumentGrid from '../DocumentScreen/DocumentGrid';
 import { Colors } from '../../../assets/colors/colors';
 import styles from '../../../assets/styles/documentManagement/Records/RecordsDocumentScreenStyles';
 
-type RecordsDocumentScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.RecordsDocumentScreen>;
+type RecordsDocumentScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.RecordsDocumentScreen
+>;
 
-function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Element {
-
+function RecordsDocumentScreen(
+  props: RecordsDocumentScreenProps,
+): React.JSX.Element {
   // General
   const [searchText, setSearchText] = useState<string>('');
   const [folders, setFolders] = useState<IFolder[]>([]);
-  const [orientation, setOrientation] = useState<string>(Orientation.Landscape);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   // Documents
   const [documents, setDocuments] = useState<IDocument[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<IDocument>();
   const [documentName, setDocumentName] = useState<string>('');
   // Dialog
-  const [showAddDocumentDialog, setShowAddDocumentDialog] = useState<boolean>(false);
-  const [showFolderModificationDialog, setShowFolderModificationDialog] = useState<boolean>(false);
-  const [showCreateFolderDialog, setShowCreateFolderDialog] = useState<boolean>(false);
-  const [showDocumentActionDialog, setShowDocumentActionDialog] = useState<boolean>(false);
-  const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] = useState<boolean>(false);
+  const [showAddDocumentDialog, setShowAddDocumentDialog] =
+    useState<boolean>(false);
+  const [showFolderModificationDialog, setShowFolderModificationDialog] =
+    useState<boolean>(false);
+  const [showCreateFolderDialog, setShowCreateFolderDialog] =
+    useState<boolean>(false);
+  const [showDocumentActionDialog, setShowDocumentActionDialog] =
+    useState<boolean>(false);
+  const [showDeleteConfimationDialog, setShowDeleteConfimationDialog] =
+    useState<boolean>(false);
+  const [
+    showDeleteFolderConfimationDialog,
+    setShowDeleteFolderConfimationDialog,
+  ] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   // Pagination
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -72,12 +105,17 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const [folderNewName, setFolderNewName] = useState<string>('');
   const [folderNumber, setFolderNumber] = useState<number>(0);
   const [folderID, setFolderID] = useState<string>('');
+  const [selectedFolder, setSelectedFolder] = useState<IFolder | null>(null);
 
   const { navigation } = props;
   const { currentFolder, currentScreen, documentsPath } = props.route.params;
 
-  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
-  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const { currentUser, currentClient } = useAppSelector(
+    (state: RootState) => state.users,
+  );
+  const { documentListCount } = useAppSelector(
+    (state: RootState) => state.appState,
+  );
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -86,7 +124,9 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   const documentsFiltered = documents.filter(doc =>
     doc.name.toLowerCase().includes(searchText.toLowerCase()),
   );
-  const path = Utils.removeWhitespace(`${currentClient?.companyName ?? "noCompany"}/${documentsPath}/`);
+  const documentDestinationPath = Utils.removeWhitespace(
+    `${currentClient?.companyName ?? 'noCompany'}/${documentsPath}/`,
+  );
   const docsPerPage = 8;
   const plusIcon = require('../../../assets/images/plus.png');
 
@@ -104,7 +144,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       onPress: () => openDeleteDialog(),
       isDisabled: currentUser?.userType !== UserType.Admin,
       isDestructive: true,
-    }
+    },
   ];
 
   const navigationHistoryItems: IAction[] = [
@@ -118,12 +158,12 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     },
     {
       title: t('systemQuality.title'),
-      onPress: () => navigateToSystemQuality()
+      onPress: () => navigateToSystemQuality(),
     },
     {
       title: currentFolder.title,
-      onPress: () => navigateBack()
-    }
+      onPress: () => navigateBack(),
+    },
   ];
 
   // Sync Methods
@@ -133,7 +173,11 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   }
 
   function navigateToDashboard() {
-    navigation.navigate(currentUser?.userType === UserType.Admin ? NavigationRoutes.ClientDashboardScreenFromAdmin : NavigationRoutes.DashboardScreen);
+    navigation.navigate(
+      currentUser?.userType === UserType.Admin
+        ? NavigationRoutes.ClientDashboardScreenFromAdmin
+        : NavigationRoutes.DashboardScreen,
+    );
   }
 
   function navigateToDocumentManagement() {
@@ -147,9 +191,9 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   function navigateTo(item: IFolder) {
     navigation.navigate(NavigationRoutes.DocumentsScreen, {
       previousScreen: 'Records',
-      processNumber: currentFolder.number,
+      folderNumber: currentFolder.number,
       currentScreen: item.title,
-      documentsPath: `${currentFolder.title}/records/${item.title}`
+      documentsPath: `${currentFolder.title}/records/${item.title}`,
     });
     dispatch(setDocumentListCount(documentListCount + 1));
   }
@@ -171,12 +215,13 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setToastMessage(message);
   }
 
-  function displayModificationProcessDialog(item: IFolder) {
-    if (currentUser?.userType === UserType.Admin) {
+  function displayModificationProcessDialog(item: IFolder | null) {
+    if (currentUser?.userType === UserType.Admin && item) {
       setShowFolderModificationDialog(true);
       setFolderNewName(item.title);
       setFolderNumber(item.number ?? 1);
       setFolderID(item.id as string);
+      setSelectedFolder(item);
     }
   }
 
@@ -186,6 +231,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setShowCreateFolderDialog(false);
     setShowDocumentActionDialog(false);
     setShowDeleteConfimationDialog(false);
+    setShowDeleteFolderConfimationDialog(false);
     setFolderNewName('');
   }
 
@@ -194,38 +240,53 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     setShowDeleteConfimationDialog(true);
   }
 
+  function openDeleteFolderDialog() {
+    closeDialogs();
+    setShowDeleteFolderConfimationDialog(true);
+  }
+
+  function hideDeleteFolderDialog() {
+    closeDialogs();
+    displayModificationProcessDialog(selectedFolder);
+  }
+
   // Async Methods
-  async function navigateToDocument(doc: IDocument) {
-    try {
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Visualisation,
-        actorIsAdmin: currentUser?.userType == UserType.Admin,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: doc.id,
-      }
-      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
-      navigation.navigate(NavigationRoutes.PDFScreen, { documentInput: doc });
-    } catch (error) {
-      console.log('Error recording log for document:', doc.id, error);
-    }
+  async function navigateToDocument(document: IDocument) {
+    await DocumentRowManager.getInstance().logDocumentOpening(
+      currentUser,
+      currentClient,
+      document,
+      token,
+    );
+    navigation.navigate(NavigationRoutes.PDFScreen, {
+      documentInput: document,
+    });
+    closeDialogs();
   }
 
   async function download(document: IDocument) {
     try {
-      const cachedData = await CacheService.getInstance().retrieveValue<string>(document.id as string);
+      const cachedData = await CacheService.getInstance().retrieveValue<string>(
+        document.id as string,
+      );
       if (cachedData === null || cachedData == undefined) {
         let docData = await DocumentServiceGet.download(document.id, token);
         docData = Utils.changeMimeType(docData, 'application/pdf');
-        await CacheService.getInstance().storeValue(document.id as string, docData);
+        await CacheService.getInstance().storeValue(
+          document.id as string,
+          docData,
+        );
         const logInput: IDocumentActivityLogInput = {
           action: DocumentLogAction.Loaded,
           actorIsAdmin: true,
           actorID: currentUser?.id as string,
           clientID: currentClient?.id as string,
           documentID: document.id,
-        }
-        await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+        };
+        await DocumentActivityLogsService.getInstance().recordLog(
+          logInput,
+          token,
+        );
         displayToast(t('documentsScreen.downloadSuccess'));
       } else {
         displayToast(t('documentsScreen.alreadyDownloaded'));
@@ -239,10 +300,16 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadPaginatedDocuments() {
     try {
       setIsLoading(true);
-      const paginatedOutput = await DocumentServicePost.getPaginatedDocumentsAtPath(path, token, currentPage, docsPerPage);
+      const paginatedOutput =
+        await DocumentServicePost.getPaginatedDocumentsAtPath(
+          documentDestinationPath,
+          token,
+          currentPage,
+          docsPerPage,
+        );
       setDocuments(paginatedOutput.documents);
       setTotalPages(paginatedOutput.pageCount);
-      setIsLoading(false); 
+      setIsLoading(false);
     } catch (error) {
       console.log('Error getting paginated documents:', error);
     }
@@ -251,8 +318,14 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   async function loadFolders() {
     try {
       const userID = currentClient?.id as string;
-      const pathInput: IFolderUserRecordInput = { path }
-      const folders = await UserServicePost.getRecordsFolders(userID, token, pathInput );
+      const pathInput: IFolderUserRecordInput = {
+        path: documentDestinationPath,
+      };
+      const folders = await UserServicePost.getRecordsFolders(
+        userID,
+        token,
+        pathInput,
+      );
       if (folders.length !== 0) {
         setFolders(folders);
       }
@@ -262,30 +335,44 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   }
 
   async function pickAFile() {
-    const filename = `${documentName.replace(/\s/g, "_")}.pdf`;
-    let data: string = '';
-    if (Platform.OS !== PlatformName.Mac) {
-      const doc = await DocumentPicker.pickSingle({ type: DocumentPicker.types.pdf })
-      data = await Utils.getFileBase64FromURI(doc.uri) as string;
-    } else {
-      data = await FinderModule.getInstance().pickPDF();
+    // Ask Permission
+    let granted: boolean | undefined = true;
+    if (Platform.OS === PlatformName.Android) {
+      granted =
+        await RecordsDocumentScreenManager.getInstance().askAndroidPermission(
+          t('permission.title'),
+          t('permission.message'),
+          t('permission.buttonNuetral'),
+          t('permission.buttonNegative'),
+          t('permission.buttonPositive'),
+        );
     }
-    try {
-      const file: IFile = { data, filename: filename}
-      const createdDocument = await DocumentServicePost.upload(file, filename, path, token);
-      const logInput: IDocumentActivityLogInput = {
-        action: DocumentLogAction.Creation,
-        actorIsAdmin: true,
-        actorID: currentUser?.id as string,
-        clientID: currentClient?.id as string,
-        documentID: createdDocument.id,
-      }
-      await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
+    if (granted) {
+      // Pick file
+      const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
+      const originPath =
+        await RecordsDocumentScreenManager.getInstance().pickFile();
+      setIsUploading(true);
+      // Upload
+      const createdDocuments =
+        await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
+          fileName,
+          originPath,
+          documentDestinationPath,
+          token,
+        );
+      // Record log
+      await RecordsDocumentScreenManager.getInstance().recordLog(
+        currentUser,
+        currentClient,
+        createdDocuments[0],
+        token,
+      ); // TODO: Should be the original document
+      // Update states
       setDocumentName('');
       setShowAddDocumentDialog(false);
       await loadPaginatedDocuments();
-    } catch (error) {
-      displayToast(t(`errors.api.${error}`), true);
+      setIsUploading(false);
     }
   }
 
@@ -296,10 +383,10 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       try {
         const input: IFolderInput = {
           title: folderNewName,
-          number: folderNumber, 
+          number: folderNumber,
           sleeve: Sleeve.Record,
           userID: currentClient?.id as string,
-          path,
+          path: documentDestinationPath,
         };
         const folder = await FolderService.getInstance().create(input, token);
         setFolders(prevItems => {
@@ -321,11 +408,17 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
         title: folderNewName,
         number: folderNumber,
       };
-      const updatedFolder = await FolderService.getInstance().update(updateInput, folderID, token);
+      const updatedFolder = await FolderService.getInstance().update(
+        updateInput,
+        folderID,
+        token,
+      );
       setFolders(prevItems =>
         prevItems.map(item =>
-          item.number === updatedFolder.number ? { ...item, title: updatedFolder.title } : item
-        )
+          item.number === updatedFolder.number
+            ? { ...item, title: updatedFolder.title }
+            : item,
+        ),
       );
       closeDialogs();
       displayToast(t('systemQuality.modifyProcess.success'));
@@ -366,7 +459,7 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       actorID: currentUser?.id as string,
       clientID: currentClient?.id as string,
       documentID,
-    }
+    };
     await DocumentActivityLogsService.getInstance().recordLog(logInput, token);
   }
 
@@ -403,16 +496,14 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
     );
   }
@@ -421,19 +512,18 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
     return (
       <TouchableOpacity
         onPress={() => navigateTo(item)}
-        onLongPress={() => displayModificationProcessDialog(item)}
-      >
+        onLongPress={() => displayModificationProcessDialog(item)}>
         <View style={styles.folderContainer}>
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
       </TouchableOpacity>
-    )
+    );
   }
 
   function CreateFolderDialog() {
     return (
-      <>{
-        showCreateFolderDialog && (
+      <>
+        {showCreateFolderDialog && (
           <Dialog
             title={t('systemQuality.create.title')}
             description={t('systemQuality.create.description')}
@@ -442,54 +532,49 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
             isConfirmAvailable={true}
             isCancelAvailable={true}
             onConfirm={createFolder}
-            onCancel={closeDialogs}
-          >
+            onCancel={closeDialogs}>
             <GladisTextInput
               value={folderNewName}
               onValueChange={setFolderNewName}
               placeholder={t('systemQuality.create.placeholder')}
-              autoCapitalize='words'
+              autoCapitalize="words"
             />
           </Dialog>
-        )
-      }
+        )}
       </>
-    )
+    );
   }
 
   function AddDocumentDialog() {
     return (
       <>
-        {
-          showAddDocumentDialog && (
-            <Dialog
-              title={t('components.dialog.addDocument.title')}
-              confirmTitle={t('components.dialog.addDocument.confirmButton')}
-              onConfirm={pickAFile}
-              isCancelAvailable={true}
-              onCancel={() => setShowAddDocumentDialog(false)}
-              isConfirmDisabled={documentName.length === 0}
-            >
-              <TextInput
-                value={documentName}
-                onChangeText={setDocumentName}
-                placeholder={t('components.dialog.addDocument.placeholder')}
-                style={styles.dialogInput}
-              />
-            </Dialog>
-          )
-        }
+        {showAddDocumentDialog && (
+          <Dialog
+            title={t('components.dialog.addDocument.title')}
+            confirmTitle={t('components.dialog.addDocument.confirmButton')}
+            onConfirm={pickAFile}
+            isCancelAvailable={true}
+            onCancel={() => setShowAddDocumentDialog(false)}
+            isConfirmDisabled={documentName.length === 0}>
+            <TextInput
+              value={documentName}
+              onChangeText={setDocumentName}
+              placeholder={t('components.dialog.addDocument.placeholder')}
+              style={styles.dialogInput}
+            />
+          </Dialog>
+        )}
       </>
     );
   }
 
-  function ModifyProcessNameDialog() {
+  function ModifyFolderNameDialog() {
     return (
-      <>{
-        showFolderModificationDialog && (
+      <>
+        {showFolderModificationDialog && (
           <Dialog
-            title={t('systemQuality.modifyProcess.title')}
-            description={t('systemQuality.modifyProcess.description')}
+            title={t('systemQuality.modifyFolder.title')}
+            description={t('systemQuality.modifyFolder.description')}
             confirmTitle={t('components.buttons.save')}
             cancelTitle={t('components.dialog.cancel')}
             extraConfirmButtonTitle={t('components.buttons.delete')}
@@ -497,71 +582,84 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
             isCancelAvailable={true}
             onConfirm={modifyFolderName}
             onCancel={closeDialogs}
-            extraConfirmButtonAction={deleteFolder}
-          >
+            extraConfirmButtonAction={openDeleteFolderDialog}>
             <GladisTextInput
               value={folderNewName}
               onValueChange={setFolderNewName}
-              placeholder={t('systemQuality.modifyProcess.placeholder')}
-              autoCapitalize='words'
+              placeholder={t('systemQuality.modifyFolder.placeholder')}
+              autoCapitalize="words"
             />
           </Dialog>
-        )
-      }
+        )}
       </>
-    )
+    );
   }
 
   function DeleteConfirmationDialog() {
     return (
       <>
-        {
-          showDeleteConfimationDialog && (
-            <Dialog
-              title={`${t('components.dialog.deleteDocument.title')} ${selectedDocument?.name}`}
-              description={t('components.dialog.deleteDocument.description')}
-              confirmTitle={t('components.dialog.deleteDocument.confirmButton')}
-              onConfirm={deleteDocument}
-              onCancel={closeDialogs}
-              isConfirmAvailable={true}
-              isCancelAvailable={true}
-            />
-          )
-        }
+        {showDeleteConfimationDialog && (
+          <Dialog
+            title={`${t('components.dialog.deleteDocument.title')} ${
+              selectedDocument?.name
+            }`}
+            description={t('components.dialog.deleteDocument.description')}
+            confirmTitle={t('components.dialog.deleteDocument.confirmButton')}
+            onConfirm={deleteDocument}
+            onCancel={closeDialogs}
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+          />
+        )}
       </>
-    )
+    );
+  }
+
+  function DeleteFolderConfirmationDialog() {
+    return (
+      <>
+        {showDeleteFolderConfimationDialog && (
+          <Dialog
+            title={t('systemQuality.deleteFolder.title')}
+            description={t('systemQuality.deleteFolder.description')}
+            confirmTitle={t('systemQuality.deleteFolder.confirmTitle')}
+            cancelTitle={t('systemQuality.deleteFolder.cancelTitle')}
+            isConfirmAvailable={true}
+            isCancelAvailable={true}
+            onConfirm={deleteFolder}
+            onCancel={hideDeleteFolderDialog}
+          />
+        )}
+      </>
+    );
   }
 
   function CreateSMQDocButton() {
     return (
       <>
-        {
-          currentUser?.userType !== UserType.Employee && (
-            <IconButton
-              title={t('systemQuality.createSMQDoc.button')}
-              onPress={navigateToSMQSurvey}
-              icon={plusIcon}
-              style={styles.adminButton}
-            />
-          )
-        }
+        {currentUser?.userType !== UserType.Employee && (
+          <IconButton
+            title={t('systemQuality.createSMQDoc.button')}
+            onPress={navigateToSMQSurvey}
+            icon={plusIcon}
+            style={styles.adminButton}
+          />
+        )}
       </>
-    )
+    );
   }
 
   function AddDocumentButton() {
     return (
       <>
-        {
-          currentUser?.userType == UserType.Admin && (
-            <IconButton
-              title={t('components.buttons.addDocument')}
-              icon={plusIcon}
-              onPress={() => setShowAddDocumentDialog(true)}
-              style={styles.adminButton}
-            />
-          )
-        }
+        {currentUser?.userType == UserType.Admin && (
+          <IconButton
+            title={t('components.buttons.addDocument')}
+            icon={plusIcon}
+            onPress={() => setShowAddDocumentDialog(true)}
+            style={styles.adminButton}
+          />
+        )}
       </>
     );
   }
@@ -569,30 +667,28 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
   function AddFolderButton() {
     return (
       <>
-      {
-          currentUser?.userType === UserType.Admin && (
-            <IconButton 
-              title={t('systemQuality.create.button')}
-              onPress={() => setShowCreateFolderDialog(true)}
-              icon={plusIcon}
-              style={styles.adminButton}
-            />
-          )
-        }
+        {currentUser?.userType === UserType.Admin && (
+          <IconButton
+            title={t('systemQuality.create.button')}
+            onPress={() => setShowCreateFolderDialog(true)}
+            icon={plusIcon}
+            style={styles.adminButton}
+          />
+        )}
       </>
-    )
+    );
   }
 
   function AdminButtons() {
     const shouldHaveColumn = width < 1100;
-    
+
     return (
       <View style={{ flexDirection: shouldHaveColumn ? 'column' : 'row' }}>
         {CreateSMQDocButton()}
         {AddDocumentButton()}
         {AddFolderButton()}
       </View>
-    )
+    );
   }
 
   return (
@@ -613,29 +709,29 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
             onPageChange={(page: number) => setCurrentPage(page)}
           />
         }
-        adminButton={AdminButtons()}
-      >
+        adminButton={AdminButtons()}>
         <>
-          {
-            folders && folders.length !== 0 && (
-              <Grid
-                data={folders}
-                renderItem={(renderItem) => FolderGridItem(renderItem.item)}
-              />
-            )
-          }
-          {
-            isLoading ? (
-              <ActivityIndicator size="large" color={Colors.primary} />
-            ) : (
-              <DocumentGrid documentsFiltered={documentsFiltered} showDocumentDialog={showDocumentDialog} />
-            )
-          }
+          {folders && folders.length !== 0 && (
+            <Grid
+              data={folders}
+              renderItem={renderItem => FolderGridItem(renderItem.item)}
+            />
+          )}
+          {isLoading ? (
+            <ActivityIndicator size="large" color={Colors.primary} />
+          ) : (
+            <DocumentGrid
+              documentsFiltered={documentsFiltered}
+              showDocumentDialog={showDocumentDialog}
+            />
+          )}
         </>
       </AppContainer>
       <TooltipAction
         showDialog={showDocumentActionDialog}
-        title={`${t('components.dialog.documentActions.title')} ${selectedDocument?.name}`}
+        title={`${t('components.dialog.documentActions.title')} ${
+          selectedDocument?.name
+        }`}
         isConfirmAvailable={false}
         isCancelAvailable={true}
         onConfirm={() => {}}
@@ -645,8 +741,10 @@ function RecordsDocumentScreen(props: RecordsDocumentScreenProps): React.JSX.Ele
       {ToastContent()}
       {AddDocumentDialog()}
       {CreateFolderDialog()}
-      {ModifyProcessNameDialog()}
+      {ModifyFolderNameDialog()}
       {DeleteConfirmationDialog()}
+      {DeleteFolderConfirmationDialog()}
+      <UploadingActivityIndicator isUploading={isUploading} />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { NativeModules } from "react-native";
+import { NativeModules } from 'react-native';
 
 /**
  * Represents the FinderModule class.
@@ -26,7 +26,7 @@ class FinderModule {
    * @returns A promise that resolves to the path of the picked PDF file.
    */
   async pickPDF(): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       NativeModules.FinderModule.pickPDFFile((res: any) => {
         resolve(res as string);
       });
@@ -34,11 +34,11 @@ class FinderModule {
   }
 
   async pickPDFFilePath(): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       NativeModules.FinderModule.pickPDFFilePath((res: any) => {
         resolve(res as string);
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -46,15 +46,23 @@ class FinderModule {
    * @returns A promise that resolves to the path of the picked image.
    */
   async pickImage(): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       NativeModules.FinderModule.pickImage((res: any) => {
         resolve(res as string);
       });
     });
   }
 
+  async pickImageFilePath(): Promise<string> {
+    return new Promise(resolve => {
+      NativeModules.FinderModule.pickImageFilePath((res: any) => {
+        resolve(res as string);
+      });
+    });
+  }
+
   async pickCSV(): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       NativeModules.FinderModule.pickCSVFile((res: any) => {
         resolve(res as string);
       });

@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
   documentTextContainer: {
     flex: 1,
-    paddingLeft: 8
+    paddingLeft: 8,
   },
   // Components
   documentButton: {
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 1,
     backgroundColor: 'black',
-    margin: 4
+    margin: 4,
   },
   actionButton: {
     width: 60,
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   smqButton: {
     marginHorizontal: 8,
     marginVertical: 4,
-  }
+  },
 });
 
 export default styles;
