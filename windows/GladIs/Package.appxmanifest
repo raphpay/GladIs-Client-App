@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="c2d2c10f-256e-4b5f-b5ab-03ad6cb84fe7"
-    Publisher="CN=raphaelpayet"
-    Version="1.0.0.0" />
+    Name="MDConsulting.Glad-Is"
+    Publisher="CN=GladIs"
+    Version="1.0.7.0" />
 
-  <mp:PhoneIdentity PhoneProductId="c2d2c10f-256e-4b5f-b5ab-03ad6cb84fe7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="570f48f3-6705-43a9-93d6-8c4e942ab7d8" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>GladIs</DisplayName>
-    <PublisherDisplayName>raphaelpayet</PublisherDisplayName>
+    <DisplayName>Glad-Is</DisplayName>
+    <PublisherDisplayName>MDConsulting</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -31,16 +31,37 @@
     <Application
       Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="GladIs.App">
+      EntryPoint="Glad-Is.App">
       <uap:VisualElements
-        DisplayName="GladIs"
+        DisplayName="Glad-Is"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="GladIs"
+        Description="With Glad-Is, easily access all your documents and forms."
         BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png" ShortName="Glad-Is">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo"/>
+            <uap:ShowOn Tile="wide310x150Logo"/>
+            <uap:ShowOn Tile="square310x310Logo"/>
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile >
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/></uap:InitialRotationPreference>
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileOpenPicker">
+          <uap:FileOpenPicker>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.pdf</uap:FileType>
+              <uap:FileType>.csv</uap:FileType>
+              <uap:FileType>.jpg</uap:FileType>
+              <uap:FileType>.jpeg</uap:FileType>
+              <uap:FileType>.png</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileOpenPicker>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 
