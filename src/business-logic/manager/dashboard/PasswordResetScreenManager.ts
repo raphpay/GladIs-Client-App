@@ -5,7 +5,6 @@ import EmailService from '../../services/EmailService';
 // Constants
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 
-// TODO: - Add documentation
 /**
  * A class to handle the password reset screen logic
  */
@@ -22,6 +21,14 @@ class PasswordResetScreenManager {
     return PasswordResetScreenManager.instance;
   }
 
+  /**
+   * Sends a password reset email with the specified reset token to the user.
+   * @param toEmail - The recipient’s email address.
+   * @param resetToken - The password reset token to include in the email content.
+   * @param locale - The language locale for the email content, default is French ('fr').
+   * @returns A promise that resolves when the email is successfully sent.
+   * @throws If an error occurs while sending the email.
+   */
   async sendEmail(toEmail: string, resetToken: string, locale: string = 'fr') {
     const mailContent = this.generateMailContent(resetToken, locale);
     const email = this.createEmail(mailContent, toEmail, locale);
@@ -33,6 +40,13 @@ class PasswordResetScreenManager {
   }
 
   // Private sync methods
+  /**
+   * Generates an HTML-formatted email content for a password reset request, localized based on the specified language.
+   * The email includes the reset token and styled message content.
+   * @param resetToken - The unique reset token for the user to enter in the application.
+   * @param locale - The language locale for the email content, default is French ('fr'). Supported values are 'fr' for French and 'en' for English.
+   * @returns A string containing the HTML-formatted email content.
+   */
   private generateMailContent(resetToken: string, locale: string = 'fr') {
     let mailContent = '';
     if (locale == 'fr') {
@@ -149,6 +163,14 @@ class PasswordResetScreenManager {
     return mailContent;
   }
 
+  /**
+   * Creates an email object configured for sending a password reset request.
+   * The email content and subject are localized based on the specified locale.
+   * @param mailContent - The content of the email.
+   * @param email - The recipient's email address.
+   * @param locale - The language locale for the email subject, defaults to French ('fr').
+   * @returns An `IEmail` object configured with the specified recipient, subject, and content.
+   */
   private createEmail(
     mailContent: string,
     email: string,
