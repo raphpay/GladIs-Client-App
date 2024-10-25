@@ -277,7 +277,8 @@
     "noTokens": {
       "title": "Aucun mot de passe à réinitialiser pour le moment",
       "message": "Revenez plus tard"
-    }
+    },
+    "expirationDate": "Date d'expiration"
   },
   "chat": {
     "title": "Chat",
@@ -549,7 +550,8 @@
         "title": "Actions pour:",
         "copyEmail": "Copier l'email",
         "showToken": "Afficher la clé de réinitialisation",
-        "delete": "Supprimer"
+        "delete": "Supprimer",
+        "reloadToken": "Recharger la clé"
       },
       "download": "Télécharger",
       "request": "Faire une demande",
@@ -558,7 +560,8 @@
     },
     "toast": {
       "passwordReset": {
-        "requestSent": "Vous allez recevoir un email avec un lien de réinitialisation",
+        "requestSent": "Vous allez recevoir un email avec une clé de réinitialisation",
+        "requestSentFromAdmin": "L'utilisateur va recevoir un email avec la clé de réinitialisation",
         "success": "Mot de passe modifié avec succès"
       },
       "passwordsToReset": {

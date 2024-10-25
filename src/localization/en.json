@@ -277,7 +277,8 @@
     "noTokens": {
       "title": "No passwords to reset",
       "message": "Come back later"
-    }
+    },
+    "expirationDate": "Expiration Date"
   },
   "chat": {
     "title": "Chat",
@@ -549,7 +550,8 @@
         "title": "Actions for:",
         "copyEmail": "Copy email",
         "showToken": "Show reset token",
-        "delete": "Delete"
+        "delete": "Delete",
+        "reloadToken": "Reload token"
       },
       "download": "Download",
       "request": "Make a request",
@@ -559,6 +561,7 @@
     "toast": {
       "passwordReset": {
         "requestSent": "You will receive an email with a reset token.",
+        "requestSentFromAdmin": "The user will receive an email with a reset token",
         "success": "Password successfully reset"
       },
       "passwordsToReset": {
