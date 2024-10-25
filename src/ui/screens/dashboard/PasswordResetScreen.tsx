@@ -2,12 +2,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 import IAction from '../../../business-logic/model/IAction';
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
@@ -15,7 +10,10 @@ import NavigationRoutes from '../../../business-logic/model/enums/NavigationRout
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
-import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../business-logic/store/hooks';
 import { setPasswordResetTokenCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -33,29 +31,37 @@ import TooltipAction from '../../components/TooltipAction';
 
 import styles from '../../assets/styles/dashboard/PasswordResetScreenStyles';
 
-type PasswordResetScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.PasswordResetScreen>;
+type PasswordResetScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.PasswordResetScreen
+>;
 
-function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element {
-
+function PasswordResetScreen(
+  props: PasswordResetScreenProps,
+): React.JSX.Element {
   const { navigation } = props;
 
   const { t } = useTranslation();
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
-  const { passwordResetTokenCount } = useAppSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
 
-  const [passwordsToReset, setPasswordsToReset] = useState<IPasswordResetToken[]>([]);
-  const [showAdminPasswordDialog, setShowAdminPasswordDialog] = useState<boolean>(false);
+  const [passwordsToReset, setPasswordsToReset] = useState<
+    IPasswordResetToken[]
+  >([]);
+  const [showAdminPasswordDialog, setShowAdminPasswordDialog] =
+    useState<boolean>(false);
   const [showTokenDialog, setShowTokenDialog] = useState<boolean>(false);
   const [showTooltipDialog, setShowTooltipDialog] = useState<boolean>(false);
   const [adminPassword, onAdminPasswordChange] = useState<string>('');
   const [selectedUserID, setSelectedUserID] = useState<string>('');
-  const [selectedUserResetToken, setSelectedUserResetToken] = useState<string>('');
+  const [selectedUserResetToken, setSelectedUserResetToken] =
+    useState<string>('');
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<IPasswordResetToken>();
 
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
@@ -64,17 +70,17 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   const popoverActions: IAction[] = [
     {
       title: t('components.tooltip.passwordsToReset.copyEmail'),
-      onPress: () => copyMail()
+      onPress: () => copyMail(),
     },
     {
       title: t('components.tooltip.passwordsToReset.showToken'),
-      onPress: () => openAdminPasswordDialog(selectedUserID)
+      onPress: () => openAdminPasswordDialog(selectedUserID),
     },
     {
       title: t('components.tooltip.passwordsToReset.delete'),
       onPress: () => deleteResetToken(),
-      isDestructive: true
-    }
+      isDestructive: true,
+    },
   ];
 
   // Synchronous Methods
@@ -149,7 +155,11 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   async function onConfirmAdminPassword() {
     if (currentUser) {
       try {
-        const check = await UserServicePost.verifyPassword(currentUser.id as string, adminPassword, token);
+        const check = await UserServicePost.verifyPassword(
+          currentUser.id as string,
+          adminPassword,
+          token,
+        );
         if (check) {
           const resetToken = await getTokenValueForClient(selectedUserID);
           setShowTokenDialog(true);
@@ -167,8 +177,14 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
   async function deleteResetToken() {
     if (selectedItem) {
       try {
-        await PasswordResetService.getInstance().delete(selectedItem.id as string, token);
-        displayToast(t('components.toast.passwordsToReset.tokenDeleted'), false);
+        await PasswordResetService.getInstance().delete(
+          selectedItem.id as string,
+          token,
+        );
+        displayToast(
+          t('components.toast.passwordsToReset.tokenDeleted'),
+          false,
+        );
         resetDialogs();
         await loadPasswordsToReset();
       } catch (error) {
@@ -200,113 +216,109 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
     const isExpired = expirationDate < new Date();
     const dateString = Utils.formatDate(expirationDate);
     const timeString = Utils.formatTime(expirationDate);
-    const dateTimeString = `${dateString} ${t('tracking.at')} ${timeString}`
+    const dateTimeString = `${dateString} ${t('tracking.at')} ${timeString}`;
     const userID = item.userID.id || item.userID;
 
     return (
       <View style={styles.lineContainer}>
         <View style={styles.lineRow}>
-          <TouchableOpacity style={styles.lineRow} onPress={() => openAdminPasswordDialog(userID as string)}>
+          <TouchableOpacity
+            style={styles.lineRow}
+            onPress={() => openAdminPasswordDialog(userID as string)}>
             <Text style={styles.mailText}>{item.userEmail}</Text>
             <View style={styles.dateContainer}>
               <Text style={styles.dateText}>Expiration Date:</Text>
               <Text style={styles.dateText}>{dateTimeString}</Text>
             </View>
           </TouchableOpacity>
-          {
-            isExpired && (
-              <Image source={expiredClockIcon} style={styles.clockIcon} />
-            )
-          }
-          <Tooltip action={() => displayTooltipDialog(userID as string, item)}/>
+          {isExpired && (
+            <Image source={expiredClockIcon} style={styles.clockIcon} />
+          )}
+          <Tooltip
+            action={() => displayTooltipDialog(userID as string, item)}
+          />
         </View>
         <View style={styles.separator} />
       </View>
-    )
+    );
   }
 
   function AdminPasswordDialog() {
     return (
       <>
-        {
-          showAdminPasswordDialog && (
-            <Dialog
-              title={t('passwordsToReset.dialog.checkPassword')}
-              isConfirmAvailable={true}
-              onConfirm={onConfirmAdminPassword}
-              confirmTitle={t('passwordsToReset.dialog.confirmButton')}
-              isCancelAvailable={true}
-              onCancel={resetDialogs}
-            >
-              <GladisTextInput
-                placeholder={t('login.password')}
-                value={adminPassword}
-                onValueChange={onAdminPasswordChange}
-                secureTextEntry={true}
-                showVisibilityButton={true}
-              />
-            </Dialog>
-          )
-        }
+        {showAdminPasswordDialog && (
+          <Dialog
+            title={t('passwordsToReset.dialog.checkPassword')}
+            isConfirmAvailable={true}
+            onConfirm={onConfirmAdminPassword}
+            confirmTitle={t('passwordsToReset.dialog.confirmButton')}
+            isCancelAvailable={true}
+            onCancel={resetDialogs}>
+            <GladisTextInput
+              placeholder={t('login.password')}
+              value={adminPassword}
+              onValueChange={onAdminPasswordChange}
+              secureTextEntry={true}
+              showVisibilityButton={true}
+            />
+          </Dialog>
+        )}
       </>
-    )
+    );
   }
 
   function ResetTokenDialog() {
     return (
       <>
-        {
-          showTokenDialog && (
-            <Dialog
-              title={t('passwordsToReset.dialog.tokenGenerated')}
-              isConfirmAvailable={true}
-              onConfirm={resetDialogs}
-              isCancelAvailable={false}
-              onCancel={() => {}}
-            >
-              <View style={styles.tokenContainer}>
-                <TouchableOpacity onPress={copyResetToken}>
-                  <Text style={styles.tokenText}>{selectedUserResetToken}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={copyResetToken}>
-                  <Image source={clipboardIcon} style={styles.copyIcon} />
-                </TouchableOpacity>
-              </View>
-            </Dialog>
-          )
-        }
+        {showTokenDialog && (
+          <Dialog
+            title={t('passwordsToReset.dialog.tokenGenerated')}
+            isConfirmAvailable={true}
+            onConfirm={resetDialogs}
+            isCancelAvailable={false}
+            onCancel={() => {}}>
+            <View style={styles.tokenContainer}>
+              <TouchableOpacity onPress={copyResetToken}>
+                <Text style={styles.tokenText}>{selectedUserResetToken}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={copyResetToken}>
+                <Image source={clipboardIcon} style={styles.copyIcon} />
+              </TouchableOpacity>
+            </View>
+          </Dialog>
+        )}
       </>
-    )
+    );
   }
 
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
-    )
+    );
   }
 
   function TooltipActionContent() {
     return (
       <TooltipAction
         showDialog={showTooltipDialog}
-        title={`${t('components.tooltip.passwordsToReset.title')} ${selectedItem?.userEmail}`}
+        title={`${t('components.tooltip.passwordsToReset.title')} ${
+          selectedItem?.userEmail
+        }`}
         isCancelAvailable={true}
         onConfirm={resetDialogs}
         onCancel={resetDialogs}
         popoverActions={popoverActions}
       />
-    )
+    );
   }
 
   return (
@@ -316,22 +328,19 @@ function PasswordResetScreen(props: PasswordResetScreenProps): React.JSX.Element
         showBackButton={true}
         showSearchText={false}
         showSettings={true}
-        navigateBack={navigateBack}
-      >
-        {
-          passwordsToReset.length === 0 ? (
-            <ContentUnavailableView
-              title={t('passwordsToReset.noTokens.title')}
-              message={t('passwordsToReset.noTokens.message')}
-              image={clipboardIcon}
-            />
-          ) : (
-            <Grid
-              data={passwordsToReset}
-              renderItem={(renderItem) => PasswordRow(renderItem.item)}
-            />
-          )
-        }
+        navigateBack={navigateBack}>
+        {passwordsToReset.length === 0 ? (
+          <ContentUnavailableView
+            title={t('passwordsToReset.noTokens.title')}
+            message={t('passwordsToReset.noTokens.message')}
+            image={clipboardIcon}
+          />
+        ) : (
+          <Grid
+            data={passwordsToReset}
+            renderItem={renderItem => PasswordRow(renderItem.item)}
+          />
+        )}
       </AppContainer>
       {AdminPasswordDialog()}
       {ResetTokenDialog()}
