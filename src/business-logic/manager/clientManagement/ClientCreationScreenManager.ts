@@ -115,7 +115,6 @@ class ClientCreationScreenManager {
     }
   }
 
-  // TODO: Change parameter type to silence error on screen
   async convertPendingUser(
     pendingUser: IPendingUser | null | undefined,
     token: IToken | null,

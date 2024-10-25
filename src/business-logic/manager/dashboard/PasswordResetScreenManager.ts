@@ -1,7 +1,11 @@
 // Models
 import { IEmail } from '../../model/IEmail';
+import IPasswordResetToken from '../../model/IPasswordResetToken';
+import IToken from '../../model/IToken';
 // Services
 import EmailService from '../../services/EmailService';
+import PasswordResetService from '../../services/PasswordResetService';
+import UserServiceGet from '../../services/UserService/UserService.get';
 // Constants
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 
@@ -37,6 +41,30 @@ class PasswordResetScreenManager {
     } catch (error) {
       throw error;
     }
+  }
+
+  async loadPasswordsToReset(
+    token: IToken | null,
+  ): Promise<IPasswordResetToken[]> {
+    try {
+      const apiTokens = await PasswordResetService.getInstance().getAll(token);
+      return apiTokens;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getTokenValueForClient(
+    clientID: string,
+    token: IToken | null,
+  ): Promise<string> {
+    let resetToken = '';
+    try {
+      resetToken = await UserServiceGet.getResetTokenValue(clientID, token);
+    } catch (error) {
+      throw error;
+    }
+    return resetToken;
   }
 
   // Private sync methods

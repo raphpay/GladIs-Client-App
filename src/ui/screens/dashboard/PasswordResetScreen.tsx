@@ -9,7 +9,6 @@ import IAction from '../../../business-logic/model/IAction';
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
-import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
 import {
   useAppDispatch,
@@ -148,7 +147,11 @@ function PasswordResetScreen(
           token,
         );
         if (check) {
-          const resetToken = await getTokenValueForClient(selectedUserID);
+          const resetToken =
+            await PasswordResetScreenManager.getInstance().getTokenValueForClient(
+              selectedUserID,
+              token,
+            );
           setShowTokenDialog(true);
           setShowAdminPasswordDialog(false);
           onAdminPasswordChange('');
@@ -173,7 +176,9 @@ function PasswordResetScreen(
           false,
         );
         resetDialogs();
-        await loadPasswordsToReset();
+        await PasswordResetScreenManager.getInstance().loadPasswordsToReset(
+          token,
+        );
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
@@ -189,15 +194,17 @@ function PasswordResetScreen(
           await PasswordResetService.getInstance().requestPasswordReset(
             resetEmail,
           );
-        const token = resetPasswordToken.token;
-        if (token) {
+        const resetToken = resetPasswordToken.token;
+        if (resetToken) {
           await PasswordResetScreenManager.getInstance().sendEmail(
             resetEmail,
-            token,
+            resetToken,
             i18n.language,
           );
         }
-        await loadPasswordsToReset();
+        await PasswordResetScreenManager.getInstance().loadPasswordsToReset(
+          token,
+        );
         resetDialogs();
         displayToast(t('components.toast.passwordReset.requestSentFromAdmin'));
       } catch (error) {
@@ -207,32 +214,19 @@ function PasswordResetScreen(
     }
   }
 
-  // Private Async Methods
-  async function loadPasswordsToReset() {
-    try {
-      const apiTokens = await PasswordResetService.getInstance().getAll(token);
-      setPasswordsToReset(apiTokens);
-      dispatch(setPasswordResetTokenCount(apiTokens.length));
-    } catch (error) {
-      console.log('Error loading password reset tokens', error);
-    }
-  }
-
-  async function getTokenValueForClient(clientID: string): Promise<string> {
-    let resetToken = '';
-    try {
-      resetToken = await UserServiceGet.getResetTokenValue(clientID, token);
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(t(`errors.api.${errorMessage}`), true);
-    }
-    return resetToken;
-  }
-
   // Effects
   useEffect(() => {
     async function init() {
-      await loadPasswordsToReset();
+      try {
+        const resetTokens =
+          await PasswordResetScreenManager.getInstance().loadPasswordsToReset(
+            token,
+          );
+        setPasswordsToReset(resetTokens);
+        dispatch(setPasswordResetTokenCount(resetTokens.length));
+      } catch (error) {
+        console.log('Error loading password reset tokens', error);
+      }
     }
     init();
   }, []);
