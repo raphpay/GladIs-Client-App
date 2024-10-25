@@ -1,98 +1,28 @@
 // Models
 import { IEmail } from '../../model/IEmail';
-import { IEventInput } from '../../model/IEvent';
 import IPasswordResetToken from '../../model/IPasswordResetToken';
 import IToken from '../../model/IToken';
-import { ILoginTryOutput } from '../../model/IUser';
 // Services
-import AuthenticationService from '../../services/AuthenticationService/AuthenticationService';
 import EmailService from '../../services/EmailService';
-import EventServicePost from '../../services/EventService/EventService.post';
 import PasswordResetService from '../../services/PasswordResetService';
-import UserServicePost from '../../services/UserService/UserService.post';
-import UserServicePut from '../../services/UserService/UserService.put';
+import UserServiceGet from '../../services/UserService/UserService.get';
 // Constants
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 
 /**
- * A class to handle login screen logic
+ * A class to handle the password reset screen logic
  */
-class LoginScreenManager {
-  private static instance: LoginScreenManager;
+class PasswordResetScreenManager {
+  private static instance: PasswordResetScreenManager;
 
   private constructor() {}
 
   // Singleton
-  static getInstance(): LoginScreenManager {
-    if (!LoginScreenManager.instance) {
-      LoginScreenManager.instance = new LoginScreenManager();
+  static getInstance(): PasswordResetScreenManager {
+    if (!PasswordResetScreenManager.instance) {
+      PasswordResetScreenManager.instance = new PasswordResetScreenManager();
     }
-    return LoginScreenManager.instance;
-  }
-
-  async login(identifier: string, password: string): Promise<IToken> {
-    try {
-      const token = await AuthenticationService.getInstance().login(
-        identifier,
-        password,
-      );
-      return token;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * Updates and retrieves the user's connection attempts, incrementing the count if necessary.
-   * @param identifier - The unique identifier for the user.
-   * @returns A promise that resolves to an `ILoginTryOutput` object containing updated connection attempt information.
-   * @throws If an error occurs while retrieving or updating connection attempts.
-   */
-  async updateUserConnectionAttempts(
-    identifier: string,
-  ): Promise<ILoginTryOutput> {
-    try {
-      const output = await UserServicePost.getUserLoginTryOutput(identifier);
-      const tryAttemptsCount = await UserServicePut.blockUserConnection(
-        output.id as string,
-      );
-      output.connectionFailedAttempts = tryAttemptsCount;
-      return output;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  /**
-   * Sends an event recording the user’s maximum login attempts.
-   * @param tryOutput - An `ILoginTryOutput` object containing user details for the event.
-   * @returns A promise that resolves when the max attempts event is created.
-   * @throws Logs an error if sending the max attempts event fails.
-   */
-  async sendMaxLoginEvent(event: IEventInput, tryOutput: ILoginTryOutput) {
-    try {
-      await EventServicePost.createMaxAttemptsEvent(event);
-    } catch (error) {
-      console.log('Error sending max attempts event', error);
-    }
-  }
-
-  /**
-   * Requests a password reset token for the specified email.
-   * @param resetEmail - The email address of the user requesting a password reset.
-   * @returns A promise that resolves to an `IPasswordResetToken` containing the reset token details.
-   * @throws If an error occurs during the password reset token request.
-   */
-  async requestPasswordReset(resetEmail: string): Promise<IPasswordResetToken> {
-    try {
-      const resetPasswordToken =
-        await PasswordResetService.getInstance().requestPasswordReset(
-          resetEmail,
-        );
-      return resetPasswordToken;
-    } catch (error) {
-      throw error;
-    }
+    return PasswordResetScreenManager.instance;
   }
 
   /**
@@ -103,18 +33,38 @@ class LoginScreenManager {
    * @returns A promise that resolves when the email is successfully sent.
    * @throws If an error occurs while sending the email.
    */
-  async sendEmailWithPasswordResetToken(
-    toEmail: string,
-    resetToken: string,
-    locale: string = 'fr',
-  ) {
+  async sendEmail(toEmail: string, resetToken: string, locale: string = 'fr') {
     const mailContent = this.generateMailContent(resetToken, locale);
-    const email = this.createEmail(mailContent, toEmail);
+    const email = this.createEmail(mailContent, toEmail, locale);
     try {
       await EmailService.getInstance().sendEmail(email);
     } catch (error) {
       throw error;
     }
+  }
+
+  async loadPasswordsToReset(
+    token: IToken | null,
+  ): Promise<IPasswordResetToken[]> {
+    try {
+      const apiTokens = await PasswordResetService.getInstance().getAll(token);
+      return apiTokens;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getTokenValueForClient(
+    clientID: string,
+    token: IToken | null,
+  ): Promise<string> {
+    let resetToken = '';
+    try {
+      resetToken = await UserServiceGet.getResetTokenValue(clientID, token);
+    } catch (error) {
+      throw error;
+    }
+    return resetToken;
   }
 
   // Private sync methods
@@ -153,14 +103,18 @@ class LoginScreenManager {
               color: #555;
               margin-top: 10px;
             }
-            .token {
+            .reset-token {
               font-weight: bold;
-              color: #2a7ae2;
+              color: transparent;
               background-color: #f0f0f0;
               padding: 5px 10px;
               border-radius: 5px;
               display: inline-block;
               margin-top: 15px;
+              user-select: none;
+            }
+            .reset-token:hover {
+              color: #2a7ae2;
             }
           </style>
         </head>
@@ -168,10 +122,10 @@ class LoginScreenManager {
           <div class="container">
             <p class="title">Bonjour,</p>
             <p class="message">
-              Vous avez demandé un changement de mot de passe.<br />
-              Veuillez entrer la clé suivante dans l'application :
+              Votre fournisseur a réalisé une demande de changement de mot de passe pour vous.<br />
+              Veuillez entrer la clé suivante dans l'application :
             </p>
-            <div class="token" style="color: transparent; user-select: none;" onmouseover="this.style.color='#2a7ae2'">
+            <div class="reset-token" onmouseover="this.style.color='#2a7ae2'">
               ${resetToken}
             </div>
           </div>
@@ -204,25 +158,29 @@ class LoginScreenManager {
               color: #555;
               margin-top: 10px;
             }
-            .token {
+            .reset-token {
               font-weight: bold;
-              color: #2a7ae2;
+              color: transparent;
               background-color: #f0f0f0;
               padding: 5px 10px;
               border-radius: 5px;
               display: inline-block;
               margin-top: 15px;
+              user-select: none;
+            }
+            .reset-token:hover {
+              color: #2a7ae2;
             }
           </style>
         </head>
         <body>
           <div class="container">
-            <p class="title">Bonjour,</p>
+            <p class="title">Hello,</p>
             <p class="message">
-              You asked for a password change.<br />
-              Please enter the following key in the application :
+              Your provider realised a request for a password change.<br />
+              Please enter the following key in the application:
             </p>
-            <div class="token" style="color: transparent; user-select: none;" onmouseover="this.style.color='#2a7ae2'">
+            <div class="reset-token" onmouseover="this.style.color='#2a7ae2'">
               ${resetToken}
             </div>
           </div>
@@ -247,12 +205,11 @@ class LoginScreenManager {
     locale: string = 'fr',
   ): IEmail {
     let subject = '';
-    if (locale == 'fr') {
+    if (locale === 'fr') {
       subject = 'Glad-Is - Demande de changement de mot de passe';
     } else {
       subject = 'Glad-Is - Reset password request';
     }
-
     const sendGridEmail: IEmail = {
       to: [email],
       fromMail: FROM_MAIL,
@@ -268,4 +225,4 @@ class LoginScreenManager {
   }
 }
 
-export default LoginScreenManager;
+export default PasswordResetScreenManager;

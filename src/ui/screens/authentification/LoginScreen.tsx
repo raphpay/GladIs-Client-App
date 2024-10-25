@@ -6,13 +6,10 @@ import { SafeAreaView, Text } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import LoginScreenManager from '../../../business-logic/manager/authentification/LoginScreenManager';
-import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
-import { ILoginTryOutput } from '../../../business-logic/model/IUser';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
-import EventServicePost from '../../../business-logic/services/EventService/EventService.post';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppDispatch } from '../../../business-logic/store/hooks';
@@ -30,6 +27,7 @@ import Dialog from '../../components/Dialogs/Dialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
+import { IEventInput } from '../../../business-logic/model/IEvent';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<
@@ -58,7 +56,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const inputIsEditable = !showDialog && !showResetTokenDialog;
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
 
   // Sync Methods
@@ -124,7 +122,17 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const count = output.connectionFailedAttempts || 0;
       if (count >= 5) {
         if (count === 5) {
-          sendMaxLoginEvent(output);
+          const event: IEventInput = {
+            name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${
+              output.email
+            }`,
+            date: Date.now(),
+            clientID: output.id ?? '0',
+          };
+          await LoginScreenManager.getInstance().sendMaxLoginEvent(
+            event,
+            output,
+          );
         }
         displayToast(
           t('errors.api.unauthorized.login.connectionBlocked'),
@@ -137,21 +145,6 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       const errorMessage = (error as Error).message;
       console.log('handleFailedLogin error', errorMessage);
       displayToast(t(`errors.api.${errorMessage}`), true);
-    }
-  }
-
-  async function sendMaxLoginEvent(tryOutput: ILoginTryOutput) {
-    try {
-      const event: IEventInput = {
-        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${
-          tryOutput.email
-        }`,
-        date: Date.now(),
-        clientID: tryOutput.id ?? '0',
-      };
-      await EventServicePost.createMaxAttemptsEvent(event);
-    } catch (error) {
-      console.log('Error sending max attempts event', error);
     }
   }
 
@@ -170,12 +163,21 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     }
   }
 
-  async function sendPasswordResetRequest() {
+  async function actionSendPasswordResetRequest() {
     if (resetEmail.length > 0) {
       try {
-        await PasswordResetService.getInstance().requestPasswordReset(
-          resetEmail,
-        );
+        const resetPasswordToken =
+          await LoginScreenManager.getInstance().requestPasswordReset(
+            resetEmail,
+          );
+        const token = resetPasswordToken.token;
+        if (token) {
+          await LoginScreenManager.getInstance().sendEmailWithPasswordResetToken(
+            resetEmail,
+            token,
+            i18n.language,
+          );
+        }
         setShowDialog(false);
         setResetEmail('');
         displayToast(t('components.toast.passwordReset.requestSent'));
@@ -217,7 +219,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
             description={dialogDescription}
             confirmTitle={t('components.dialog.passwordReset.confirmButton')}
             isConfirmDisabled={resetEmail.length == 0}
-            onConfirm={sendPasswordResetRequest}
+            onConfirm={actionSendPasswordResetRequest}
             isCancelAvailable={true}
             onCancel={() => setShowDialog(false)}
             extraConfirmButtonTitle={t('components.dialog.passwordReset.token')}

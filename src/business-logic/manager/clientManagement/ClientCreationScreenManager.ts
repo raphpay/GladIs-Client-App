@@ -41,7 +41,7 @@ class ClientCreationScreenManager {
   async sendEmail(
     user: IUser,
     employees: IUser[] | undefined,
-    token: IToken | null,
+    locale: string = 'fr',
   ) {
     const generatedPassword = Utils.generatePassword(8);
     const mailContent =
@@ -49,10 +49,11 @@ class ClientCreationScreenManager {
         user.username,
         employees,
         generatedPassword,
+        locale,
       );
 
-    const employeeEmail = this.createEmail(mailContent, user.email);
-    await EmailService.getInstance().sendEmail(employeeEmail, token);
+    const employeeEmail = this.createEmail(mailContent, user.email, locale);
+    await EmailService.getInstance().sendEmail(employeeEmail);
   }
 
   async createPendingUser(
@@ -115,7 +116,7 @@ class ClientCreationScreenManager {
   }
 
   async convertPendingUser(
-    pendingUser: IPendingUser,
+    pendingUser: IPendingUser | null | undefined,
     token: IToken | null,
   ): Promise<IUser> {
     const id = pendingUser?.id as string;
@@ -222,16 +223,219 @@ class ClientCreationScreenManager {
     locale: string = 'fr',
   ) {
     let mailContent = '';
-    // TODO: Make sure the content is in HTML.
     if (username) {
-      mailContent = `Hello, and welcome.\n Your credentials are : ${username} and ${generatedPassword}`;
+      if (locale === 'fr') {
+        mailContent = `
+          <html>
+            <head>
+              <style>
+                body {
+                  font-family: Arial, sans-serif;
+                }
+                .container {
+                  padding: 20px;
+                  border: 1px solid #ddd;
+                  border-radius: 5px;
+                  background-color: #f9f9f9;
+                  max-width: 600px;
+                  margin: 0 auto;
+                }
+                .title {
+                  font-size: 18px;
+                  font-weight: bold;
+                  color: #333;
+                }
+                .message {
+                  font-size: 16px;
+                  color: #555;
+                  margin-top: 10px;
+                }
+                .credentials {
+                  margin-top: 15px;
+                }
+                .credential-item {
+                  margin-top: 10px;
+                  font-weight: bold;
+                  color: #333;
+                }
+                .password {
+                  color: transparent;
+                  background-color: #f0f0f0;
+                  padding: 5px 10px;
+                  border-radius: 5px;
+                  display: inline-block;
+                  user-select: none;
+                }
+                .password:hover {
+                  color: #e63946;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <p class="title">Bonjour, et bienvenue!</p>
+                <p class="message">
+                  Vos identifiants sont:
+                </p>
+                <div class="credentials">
+                  <div class="credential-item">
+                    <strong>Nom d'utilisateur:</strong> ${username}
+                  </div>
+                  <div class="credential-item">
+                    <strong>Mot de passe provisoire:</strong> 
+                    <span class="password" onmouseover="this.style.color='#e63946'">
+                      ${generatedPassword}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </body>
+          </html>
+        `;
+      } else {
+        mailContent = `
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+              }
+              .container {
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                background-color: #f9f9f9;
+                max-width: 600px;
+                margin: 0 auto;
+              }
+              .title {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333;
+              }
+              .message {
+                font-size: 16px;
+                color: #555;
+                margin-top: 10px;
+              }
+              .credentials {
+                margin-top: 15px;
+              }
+              .credential-item {
+                margin-top: 10px;
+                font-weight: bold;
+                color: #333;
+              }
+              .password {
+                color: transparent;
+                background-color: #f0f0f0;
+                padding: 5px 10px;
+                border-radius: 5px;
+                display: inline-block;
+                user-select: none;
+              }
+              .password:hover {
+                color: #e63946;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <p class="title">Hello, and welcome!</p>
+              <p class="message">
+                Your credentials are as follows:
+              </p>
+              <div class="credentials">
+                <div class="credential-item">
+                  <strong>Username:</strong> ${username}
+                </div>
+                <div class="credential-item">
+                  <strong>Temporary password:</strong> 
+                  <span class="password" onmouseover="this.style.color='#e63946'">
+                    ${generatedPassword}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+      }
       if (employeeUsernames) {
         for (const index in employeeUsernames) {
           const generatedPassword = Utils.generatePassword(8);
+          mailContent += `
+            <html>
+              <head>
+                <style>
+                  body {
+                    font-family: Arial, sans-serif;
+                  }
+                  .container {
+                    padding: 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    background-color: #f9f9f9;
+                    max-width: 600px;
+                    margin: 0 auto;
+                  }
+                  .title {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #333;
+                  }
+                  .employee-list {
+                    margin-top: 20px;
+                  }
+                  .employee-item {
+                    margin-top: 15px;
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    background-color: #fff;
+                  }
+                  .employee-item strong {
+                    display: block;
+                    margin-bottom: 5px;
+                    font-weight: bold;
+                  }
+                  .password {
+                    color: transparent;
+                    background-color: #f0f0f0;
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                    display: inline-block;
+                    user-select: none;
+                  }
+                  .password:hover {
+                    color: #e63946;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <p class="title">Bonjour,</p>
+                  <p>Voici les informations des employés :</p>
+                  <div class="employee-list">
+          `;
           if (locale == 'fr') {
-            mailContent += `\nEmployé ${index}: ${employeeUsernames[index].username}\nSon mot de passe provisoire est: ${generatedPassword}`;
+            mailContent += `
+            <div class="employee-item">
+              <strong>Employé ${index + 1}:</strong> ${
+              employeeUsernames[index].username
+            }<br />
+              <strong>Mot de passe provisoire:</strong> 
+              <span class="password" onmouseover="this.style.color='#e63946'">${generatedPassword}</span>
+            </div>`;
           } else {
-            mailContent += `\nEmployee ${index}: ${employeeUsernames[index].username}\nIts temporary password is ${generatedPassword}`;
+            mailContent += `
+            <div class="employee-item">
+              <strong>Employee ${index + 1}:</strong> ${
+              employeeUsernames[index].username
+            }<br />
+              <strong>Temporary password:</strong> 
+              <span class="password" onmouseover="this.style.color='#e63946'">${generatedPassword}</span>
+            </div>`;
           }
         }
       }
@@ -247,13 +451,23 @@ class ClientCreationScreenManager {
     return mailContent;
   }
 
-  private createEmail(mailContent: string, email: string): IEmail {
+  private createEmail(
+    mailContent: string,
+    email: string,
+    locale: string = 'fr',
+  ): IEmail {
+    let subject = '';
+    if (locale === 'fr') {
+      subject = 'Bienvenue à Glad-Is';
+    } else {
+      subject = 'Welcome to Glad-Is';
+    }
     const sendGridEmail: IEmail = {
       to: [email],
       fromMail: FROM_MAIL,
       fromName: FROM_NAME,
       replyTo: FROM_MAIL,
-      subject: 'Welcome to GladIs',
+      subject,
       content: mailContent,
       apiKey: SEND_GRID_API_KEY,
       isHTML: true,

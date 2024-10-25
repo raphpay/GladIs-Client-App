@@ -4,11 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
+import PasswordResetScreenManager from '../../../business-logic/manager/dashboard/PasswordResetScreenManager';
 import IAction from '../../../business-logic/model/IAction';
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
-import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import UserServicePost from '../../../business-logic/services/UserService/UserService.post';
 import {
   useAppDispatch,
@@ -62,7 +62,7 @@ function PasswordResetScreen(
   const [toastIsShowingError, setToastIsShowingError] =
     useState<boolean>(false);
   // Hooks
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
@@ -81,7 +81,7 @@ function PasswordResetScreen(
     },
     {
       title: t('components.tooltip.passwordsToReset.reloadToken'),
-      onPress: () => resetPasswordResetRequest(),
+      onPress: () => actionResetPasswordResetRequest(),
     },
     {
       title: t('components.tooltip.passwordsToReset.delete'),
@@ -147,7 +147,11 @@ function PasswordResetScreen(
           token,
         );
         if (check) {
-          const resetToken = await getTokenValueForClient(selectedUserID);
+          const resetToken =
+            await PasswordResetScreenManager.getInstance().getTokenValueForClient(
+              selectedUserID,
+              token,
+            );
           setShowTokenDialog(true);
           setShowAdminPasswordDialog(false);
           onAdminPasswordChange('');
@@ -172,7 +176,9 @@ function PasswordResetScreen(
           false,
         );
         resetDialogs();
-        await loadPasswordsToReset();
+        await PasswordResetScreenManager.getInstance().loadPasswordsToReset(
+          token,
+        );
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
@@ -180,14 +186,25 @@ function PasswordResetScreen(
     }
   }
 
-  async function resetPasswordResetRequest() {
+  async function actionResetPasswordResetRequest() {
     if (selectedItem) {
       const resetEmail = selectedItem?.userEmail;
       try {
-        await PasswordResetService.getInstance().requestPasswordReset(
-          resetEmail,
+        const resetPasswordToken =
+          await PasswordResetService.getInstance().requestPasswordReset(
+            resetEmail,
+          );
+        const resetToken = resetPasswordToken.token;
+        if (resetToken) {
+          await PasswordResetScreenManager.getInstance().sendEmail(
+            resetEmail,
+            resetToken,
+            i18n.language,
+          );
+        }
+        await PasswordResetScreenManager.getInstance().loadPasswordsToReset(
+          token,
         );
-        await loadPasswordsToReset();
         resetDialogs();
         displayToast(t('components.toast.passwordReset.requestSentFromAdmin'));
       } catch (error) {
@@ -197,32 +214,19 @@ function PasswordResetScreen(
     }
   }
 
-  // Private Async Methods
-  async function loadPasswordsToReset() {
-    try {
-      const apiTokens = await PasswordResetService.getInstance().getAll(token);
-      setPasswordsToReset(apiTokens);
-      dispatch(setPasswordResetTokenCount(apiTokens.length));
-    } catch (error) {
-      console.log('Error loading password reset tokens', error);
-    }
-  }
-
-  async function getTokenValueForClient(clientID: string): Promise<string> {
-    let resetToken = '';
-    try {
-      resetToken = await UserServiceGet.getResetTokenValue(clientID, token);
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(t(`errors.api.${errorMessage}`), true);
-    }
-    return resetToken;
-  }
-
   // Effects
   useEffect(() => {
     async function init() {
-      await loadPasswordsToReset();
+      try {
+        const resetTokens =
+          await PasswordResetScreenManager.getInstance().loadPasswordsToReset(
+            token,
+          );
+        setPasswordsToReset(resetTokens);
+        dispatch(setPasswordResetTokenCount(resetTokens.length));
+      } catch (error) {
+        console.log('Error loading password reset tokens', error);
+      }
     }
     init();
   }, []);
