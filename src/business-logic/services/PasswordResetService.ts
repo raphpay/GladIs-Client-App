@@ -1,7 +1,9 @@
-import IPasswordResetToken from "../model/IPasswordResetToken";
-import IToken from "../model/IToken";
-import { EmailInput } from "../model/IUser";
-import APIService from "./APIService";
+// Models
+import IPasswordResetToken from '../model/IPasswordResetToken';
+import IToken from '../model/IToken';
+import { EmailInput } from '../model/IUser';
+// Services
+import APIService from './APIService';
 
 /**
  * Service class for handling password reset requests.
@@ -30,12 +32,19 @@ class PasswordResetService {
    * @returns A promise that resolves when the request is complete.
    * @throws An error if the request fails.
    */
-  async requestPasswordReset(toEmail: string): Promise<void> {
+  async requestPasswordReset(toEmail: string): Promise<IPasswordResetToken> {
     try {
       const input: EmailInput = {
-        email: toEmail
+        email: toEmail,
       };
-      await APIService.postWithoutResponse(`${this.baseRoute}/request`, input);
+      const url = `${this.baseRoute}/request`;
+      console.log('service', url);
+
+      const passwordResetToken = await APIService.post<IPasswordResetToken>(
+        url,
+        input,
+      );
+      return passwordResetToken;
     } catch (error) {
       throw error;
     }
@@ -50,7 +59,10 @@ class PasswordResetService {
    */
   async resetPassword(token: string, newPassword: string): Promise<void> {
     try {
-      await APIService.postWithoutResponse(`${this.baseRoute}/reset`, { token, newPassword });
+      await APIService.postWithoutResponse(`${this.baseRoute}/reset`, {
+        token,
+        newPassword,
+      });
     } catch (error) {
       throw error;
     }
@@ -65,7 +77,10 @@ class PasswordResetService {
    */
   async getAll(token: IToken | null): Promise<IPasswordResetToken[]> {
     try {
-      const resetTokens = await APIService.get<IPasswordResetToken[]>(this.baseRoute, token?.value as string);
+      const resetTokens = await APIService.get<IPasswordResetToken[]>(
+        this.baseRoute,
+        token?.value as string,
+      );
       return resetTokens;
     } catch (error) {
       throw error;
@@ -82,7 +97,10 @@ class PasswordResetService {
    */
   async delete(id: string, token: IToken | null): Promise<void> {
     try {
-      await APIService.delete(`${this.baseRoute}/${id}`, token?.value as string);
+      await APIService.delete(
+        `${this.baseRoute}/${id}`,
+        token?.value as string,
+      );
     } catch (error) {
       throw error;
     }

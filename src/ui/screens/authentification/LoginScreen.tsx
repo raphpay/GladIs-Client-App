@@ -170,12 +170,20 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     }
   }
 
-  async function sendPasswordResetRequest() {
+  async function actionSendPasswordResetRequest() {
     if (resetEmail.length > 0) {
       try {
-        await PasswordResetService.getInstance().requestPasswordReset(
-          resetEmail,
-        );
+        const resetPasswordToken =
+          await LoginScreenManager.getInstance().requestPasswordReset(
+            resetEmail,
+          );
+        const token = resetPasswordToken.token;
+        if (token) {
+          await LoginScreenManager.getInstance().sendEmailWithPasswordResetToken(
+            resetEmail,
+            token,
+          );
+        }
         setShowDialog(false);
         setResetEmail('');
         displayToast(t('components.toast.passwordReset.requestSent'));
@@ -217,7 +225,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
             description={dialogDescription}
             confirmTitle={t('components.dialog.passwordReset.confirmButton')}
             isConfirmDisabled={resetEmail.length == 0}
-            onConfirm={sendPasswordResetRequest}
+            onConfirm={actionSendPasswordResetRequest}
             isCancelAvailable={true}
             onCancel={() => setShowDialog(false)}
             extraConfirmButtonTitle={t('components.dialog.passwordReset.token')}
