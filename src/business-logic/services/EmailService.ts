@@ -31,7 +31,6 @@ class EmailService {
    * @returns A promise that resolves to the sent message.
    * @throws An error if the request fails.
    */
-  // TODO: Remove token
   async sendEmail(email: IEmail): Promise<void> {
     try {
       await APIService.postWithoutResponse(this.baseRoute, email);

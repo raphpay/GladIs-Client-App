@@ -41,7 +41,7 @@ class ClientCreationScreenManager {
   async sendEmail(
     user: IUser,
     employees: IUser[] | undefined,
-    token: IToken | null,
+    locale: string = 'fr',
   ) {
     const generatedPassword = Utils.generatePassword(8);
     const mailContent =
@@ -49,10 +49,11 @@ class ClientCreationScreenManager {
         user.username,
         employees,
         generatedPassword,
+        locale,
       );
 
-    const employeeEmail = this.createEmail(mailContent, user.email);
-    await EmailService.getInstance().sendEmail(employeeEmail, token);
+    const employeeEmail = this.createEmail(mailContent, user.email, locale);
+    await EmailService.getInstance().sendEmail(employeeEmail);
   }
 
   async createPendingUser(
@@ -114,6 +115,7 @@ class ClientCreationScreenManager {
     }
   }
 
+  // TODO: Change parameter type to silence error on screen
   async convertPendingUser(
     pendingUser: IPendingUser,
     token: IToken | null,
@@ -247,13 +249,23 @@ class ClientCreationScreenManager {
     return mailContent;
   }
 
-  private createEmail(mailContent: string, email: string): IEmail {
+  private createEmail(
+    mailContent: string,
+    email: string,
+    locale: string = 'fr',
+  ): IEmail {
+    let subject = '';
+    if (locale === 'fr') {
+      subject = 'Bienvenue à Glad-Is';
+    } else {
+      subject = 'Welcome to Glad-Is';
+    }
     const sendGridEmail: IEmail = {
       to: [email],
       fromMail: FROM_MAIL,
       fromName: FROM_NAME,
       replyTo: FROM_MAIL,
-      subject: 'Welcome to GladIs',
+      subject,
       content: mailContent,
       apiKey: SEND_GRID_API_KEY,
       isHTML: true,

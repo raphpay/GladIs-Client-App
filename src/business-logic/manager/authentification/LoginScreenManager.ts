@@ -98,8 +98,12 @@ class LoginScreenManager {
     }
   }
 
-  async sendEmailWithPasswordResetToken(toEmail: string, resetToken: string) {
-    const mailContent = this.generateMailContent(resetToken);
+  async sendEmailWithPasswordResetToken(
+    toEmail: string,
+    resetToken: string,
+    locale: string = 'fr',
+  ) {
+    const mailContent = this.generateMailContent(resetToken, locale);
     const email = this.createEmail(mailContent, toEmail);
     try {
       await EmailService.getInstance().sendEmail(email);
@@ -120,13 +124,24 @@ class LoginScreenManager {
     return mailContent;
   }
 
-  private createEmail(mailContent: string, email: string): IEmail {
+  private createEmail(
+    mailContent: string,
+    email: string,
+    locale: string = 'fr',
+  ): IEmail {
+    let subject = '';
+    if (locale == 'fr') {
+      subject = 'Glad-Is - Demande de changement de mot de passe';
+    } else {
+      subject = 'Glad-Is - Reset password request';
+    }
+
     const sendGridEmail: IEmail = {
       to: [email],
       fromMail: FROM_MAIL,
       fromName: FROM_NAME,
       replyTo: FROM_MAIL,
-      subject: 'Glad-Is - Demande de changement de mot de passe',
+      subject,
       content: mailContent,
       apiKey: SEND_GRID_API_KEY,
       isHTML: true,

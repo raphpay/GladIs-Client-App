@@ -58,7 +58,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const inputIsEditable = !showDialog && !showResetTokenDialog;
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
 
   // Sync Methods
@@ -182,6 +182,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
           await LoginScreenManager.getInstance().sendEmailWithPasswordResetToken(
             resetEmail,
             token,
+            i18n.language,
           );
         }
         setShowDialog(false);

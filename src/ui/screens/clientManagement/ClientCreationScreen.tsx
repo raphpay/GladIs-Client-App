@@ -74,7 +74,6 @@ function ClientCreationScreen(
     IPotentialEmployee[]
   >([]);
   // Logo
-  const [imageData, setImageData] = useState<string>('');
   const [logoURI, setLogoURI] = useState<string>('');
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
@@ -90,7 +89,7 @@ function ClientCreationScreen(
     (state: RootState) => state.appState,
   );
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const modules = ModuleService.getInstance().getModules();
 
@@ -268,7 +267,7 @@ function ClientCreationScreen(
         await ClientCreationScreenManager.getInstance().sendEmail(
           createdUser,
           createdEmployees,
-          token,
+          i18n.language,
         );
       } catch (error) {
         const errorMessage = (error as Error).message;

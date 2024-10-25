@@ -63,7 +63,7 @@ function PasswordResetScreen(
   const [toastIsShowingError, setToastIsShowingError] =
     useState<boolean>(false);
   // Hooks
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
   const dispatch = useAppDispatch();
@@ -194,6 +194,7 @@ function PasswordResetScreen(
           await PasswordResetScreenManager.getInstance().sendEmail(
             resetEmail,
             token,
+            i18n.language,
           );
         }
         await loadPasswordsToReset();
