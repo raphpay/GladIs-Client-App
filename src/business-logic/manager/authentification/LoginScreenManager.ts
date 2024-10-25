@@ -15,7 +15,6 @@ import UserServicePut from '../../services/UserService/UserService.put';
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 
 // TODO: - Correct this screen errors
-// TODO: - Add documentation
 /**
  * A class to handle login screen logic
  */
@@ -44,26 +43,37 @@ class LoginScreenManager {
     }
   }
 
+  /**
+   * Updates and retrieves the user's connection attempts, incrementing the count if necessary.
+   * @param identifier - The unique identifier for the user.
+   * @returns A promise that resolves to an `ILoginTryOutput` object containing updated connection attempt information.
+   * @throws If an error occurs while retrieving or updating connection attempts.
+   */
   async updateUserConnectionAttempts(
     identifier: string,
   ): Promise<ILoginTryOutput> {
     try {
       const output = await UserServicePost.getUserLoginTryOutput(identifier);
-      const tryAttempsCount = await UserServicePut.blockUserConnection(
+      const tryAttemptsCount = await UserServicePut.blockUserConnection(
         output.id as string,
       );
-      output.connectionFailedAttempts = tryAttempsCount;
+      output.connectionFailedAttempts = tryAttemptsCount;
       return output;
     } catch (error) {
       throw error;
     }
   }
 
+  /**
+   * Handles the user's login attempt count, displaying a warning if attempts are below the limit or blocking the connection if attempts exceed the limit.
+   * If the count reaches 5, triggers an event for maximum login attempts.
+   * @param tryOutput - An `ILoginTryOutput` object containing the current connection attempt count and user information.
+   */
   async handleTryAttemptCount(tryOutput: ILoginTryOutput) {
     const count = tryOutput.connectionFailedAttempts || 0;
     if (count >= 5) {
       if (count === 5) {
-        sendMaxLoginEvent(tryOutput);
+        this.sendMaxLoginEvent(tryOutput);
       }
       displayToast(t('errors.api.unauthorized.login.connectionBlocked'), true);
     } else {
@@ -71,6 +81,12 @@ class LoginScreenManager {
     }
   }
 
+  /**
+   * Sends an event recording the user’s maximum login attempts.
+   * @param tryOutput - An `ILoginTryOutput` object containing user details for the event.
+   * @returns A promise that resolves when the max attempts event is created.
+   * @throws Logs an error if sending the max attempts event fails.
+   */
   async sendMaxLoginEvent(tryOutput: ILoginTryOutput) {
     try {
       const event: IEventInput = {
@@ -86,6 +102,12 @@ class LoginScreenManager {
     }
   }
 
+  /**
+   * Requests a password reset token for the specified email.
+   * @param resetEmail - The email address of the user requesting a password reset.
+   * @returns A promise that resolves to an `IPasswordResetToken` containing the reset token details.
+   * @throws If an error occurs during the password reset token request.
+   */
   async requestPasswordReset(resetEmail: string): Promise<IPasswordResetToken> {
     try {
       const resetPasswordToken =
@@ -98,6 +120,14 @@ class LoginScreenManager {
     }
   }
 
+  /**
+   * Sends a password reset email with the specified reset token to the user.
+   * @param toEmail - The recipient’s email address.
+   * @param resetToken - The password reset token to include in the email content.
+   * @param locale - The language locale for the email content, default is French ('fr').
+   * @returns A promise that resolves when the email is successfully sent.
+   * @throws If an error occurs while sending the email.
+   */
   async sendEmailWithPasswordResetToken(
     toEmail: string,
     resetToken: string,
@@ -113,6 +143,13 @@ class LoginScreenManager {
   }
 
   // Private sync methods
+  /**
+   * Generates an HTML-formatted email content for a password reset request, localized based on the specified language.
+   * The email includes the reset token and styled message content.
+   * @param resetToken - The unique reset token for the user to enter in the application.
+   * @param locale - The language locale for the email content, default is French ('fr'). Supported values are 'fr' for French and 'en' for English.
+   * @returns A string containing the HTML-formatted email content.
+   */
   private generateMailContent(resetToken: string, locale: string = 'fr') {
     let mailContent = '';
     if (locale == 'fr') {
@@ -221,6 +258,14 @@ class LoginScreenManager {
     return mailContent;
   }
 
+  /**
+   * Creates an email object configured for sending a password reset request.
+   * The email content and subject are localized based on the specified locale.
+   * @param mailContent - The content of the email.
+   * @param email - The recipient's email address.
+   * @param locale - The language locale for the email subject, defaults to French ('fr').
+   * @returns An `IEmail` object configured with the specified recipient, subject, and content.
+   */
   private createEmail(
     mailContent: string,
     email: string,
