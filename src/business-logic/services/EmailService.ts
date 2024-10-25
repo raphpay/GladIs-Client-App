@@ -34,7 +34,7 @@ class EmailService {
   // TODO: Remove token
   async sendEmail(email: IEmail): Promise<void> {
     try {
-      await APIService.post<IEmail>(this.baseRoute, email);
+      await APIService.postWithoutResponse(this.baseRoute, email);
     } catch (error) {
       throw error;
     }

@@ -29,7 +29,7 @@ class PasswordResetService {
   /**
    * Sends a password reset request to the server.
    * @param toEmail The email address to send the password reset request to.
-   * @returns A promise that resolves when the request is complete.
+   * @returns A promise that resolves with a password reset token object.
    * @throws An error if the request fails.
    */
   async requestPasswordReset(toEmail: string): Promise<IPasswordResetToken> {
@@ -38,8 +38,6 @@ class PasswordResetService {
         email: toEmail,
       };
       const url = `${this.baseRoute}/request`;
-      console.log('service', url);
-
       const passwordResetToken = await APIService.post<IPasswordResetToken>(
         url,
         input,

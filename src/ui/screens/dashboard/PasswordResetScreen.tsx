@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 
+import PasswordResetScreenManager from '../../../business-logic/manager/dashboard/PasswordResetScreenManager';
 import IAction from '../../../business-logic/model/IAction';
 import IPasswordResetToken from '../../../business-logic/model/IPasswordResetToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
@@ -81,7 +82,7 @@ function PasswordResetScreen(
     },
     {
       title: t('components.tooltip.passwordsToReset.reloadToken'),
-      onPress: () => resetPasswordResetRequest(),
+      onPress: () => actionResetPasswordResetRequest(),
     },
     {
       title: t('components.tooltip.passwordsToReset.delete'),
@@ -180,13 +181,21 @@ function PasswordResetScreen(
     }
   }
 
-  async function resetPasswordResetRequest() {
+  async function actionResetPasswordResetRequest() {
     if (selectedItem) {
       const resetEmail = selectedItem?.userEmail;
       try {
-        await PasswordResetService.getInstance().requestPasswordReset(
-          resetEmail,
-        );
+        const resetPasswordToken =
+          await PasswordResetService.getInstance().requestPasswordReset(
+            resetEmail,
+          );
+        const token = resetPasswordToken.token;
+        if (token) {
+          await PasswordResetScreenManager.getInstance().sendEmail(
+            resetEmail,
+            token,
+          );
+        }
         await loadPasswordsToReset();
         resetDialogs();
         displayToast(t('components.toast.passwordReset.requestSentFromAdmin'));
