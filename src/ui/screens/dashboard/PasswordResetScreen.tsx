@@ -41,29 +41,32 @@ function PasswordResetScreen(
 ): React.JSX.Element {
   const { navigation } = props;
 
-  const { t } = useTranslation();
-
-  const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentUser } = useAppSelector((state: RootState) => state.users);
-  const dispatch = useAppDispatch();
-
+  // Password Reset Tokens
   const [passwordsToReset, setPasswordsToReset] = useState<
     IPasswordResetToken[]
   >([]);
+  const [selectedItem, setSelectedItem] = useState<IPasswordResetToken>();
+  // Dialogs
   const [showAdminPasswordDialog, setShowAdminPasswordDialog] =
     useState<boolean>(false);
   const [showTokenDialog, setShowTokenDialog] = useState<boolean>(false);
   const [showTooltipDialog, setShowTooltipDialog] = useState<boolean>(false);
+  // General
   const [adminPassword, onAdminPasswordChange] = useState<string>('');
   const [selectedUserID, setSelectedUserID] = useState<string>('');
   const [selectedUserResetToken, setSelectedUserResetToken] =
     useState<string>('');
+  // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] =
     useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<IPasswordResetToken>();
-
+  // Hooks
+  const { t } = useTranslation();
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+  const { currentUser } = useAppSelector((state: RootState) => state.users);
+  const dispatch = useAppDispatch();
+  // Images
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
   const expiredClockIcon = require('../../assets/images/clock.badge.exclamationmark.png');
 
@@ -77,6 +80,10 @@ function PasswordResetScreen(
       onPress: () => openAdminPasswordDialog(selectedUserID),
     },
     {
+      title: t('components.tooltip.passwordsToReset.reloadToken'),
+      onPress: () => resetPasswordResetRequest(),
+    },
+    {
       title: t('components.tooltip.passwordsToReset.delete'),
       onPress: () => deleteResetToken(),
       isDestructive: true,
@@ -88,9 +95,9 @@ function PasswordResetScreen(
     navigation.goBack();
   }
 
-  function displayToast(message: string, isError: boolean) {
+  function displayToast(message: string, isError?: boolean) {
     setShowToast(true);
-    setToastIsShowingError(isError);
+    setToastIsShowingError(isError || false);
     setToastMessage(message);
   }
 
@@ -166,6 +173,23 @@ function PasswordResetScreen(
         );
         resetDialogs();
         await loadPasswordsToReset();
+      } catch (error) {
+        const errorMessage = (error as Error).message;
+        displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+    }
+  }
+
+  async function resetPasswordResetRequest() {
+    if (selectedItem) {
+      const resetEmail = selectedItem?.userEmail;
+      try {
+        await PasswordResetService.getInstance().requestPasswordReset(
+          resetEmail,
+        );
+        await loadPasswordsToReset();
+        resetDialogs();
+        displayToast(t('components.toast.passwordReset.requestSentFromAdmin'));
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
