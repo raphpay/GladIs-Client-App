@@ -277,7 +277,8 @@
     "noTokens": {
       "title": "Aucun mot de passe à réinitialiser pour le moment",
       "message": "Revenez plus tard"
-    }
+    },
+    "expirationDate": "Date d'expiration"
   },
   "chat": {
     "title": "Chat",

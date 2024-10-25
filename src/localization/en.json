@@ -277,7 +277,8 @@
     "noTokens": {
       "title": "No passwords to reset",
       "message": "Come back later"
-    }
+    },
+    "expirationDate": "Expiration Date"
   },
   "chat": {
     "title": "Chat",

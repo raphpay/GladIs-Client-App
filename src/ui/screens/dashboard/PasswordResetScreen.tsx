@@ -131,27 +131,6 @@ function PasswordResetScreen(
   }
 
   // Asynchronous Methods
-  async function loadPasswordsToReset() {
-    try {
-      const apiTokens = await PasswordResetService.getInstance().getAll(token);
-      setPasswordsToReset(apiTokens);
-      dispatch(setPasswordResetTokenCount(apiTokens.length));
-    } catch (error) {
-      console.log('Error loading password reset tokens', error);
-    }
-  }
-
-  async function getTokenValueForClient(clientID: string): Promise<string> {
-    let resetToken = '';
-    try {
-      resetToken = await UserServiceGet.getResetTokenValue(clientID, token);
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      displayToast(t(`errors.api.${errorMessage}`), true);
-    }
-    return resetToken;
-  }
-
   async function onConfirmAdminPassword() {
     if (currentUser) {
       try {
@@ -194,6 +173,28 @@ function PasswordResetScreen(
     }
   }
 
+  // Private Async Methods
+  async function loadPasswordsToReset() {
+    try {
+      const apiTokens = await PasswordResetService.getInstance().getAll(token);
+      setPasswordsToReset(apiTokens);
+      dispatch(setPasswordResetTokenCount(apiTokens.length));
+    } catch (error) {
+      console.log('Error loading password reset tokens', error);
+    }
+  }
+
+  async function getTokenValueForClient(clientID: string): Promise<string> {
+    let resetToken = '';
+    try {
+      resetToken = await UserServiceGet.getResetTokenValue(clientID, token);
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+    return resetToken;
+  }
+
   // Effects
   useEffect(() => {
     async function init() {
@@ -227,7 +228,9 @@ function PasswordResetScreen(
             onPress={() => openAdminPasswordDialog(userID as string)}>
             <Text style={styles.mailText}>{item.userEmail}</Text>
             <View style={styles.dateContainer}>
-              <Text style={styles.dateText}>Expiration Date:</Text>
+              <Text style={styles.dateText}>
+                {t('passwordsToReset.expirationDate')} :
+              </Text>
               <Text style={styles.dateText}>{dateTimeString}</Text>
             </View>
           </TouchableOpacity>
