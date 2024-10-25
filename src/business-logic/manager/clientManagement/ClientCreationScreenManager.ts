@@ -117,7 +117,7 @@ class ClientCreationScreenManager {
 
   // TODO: Change parameter type to silence error on screen
   async convertPendingUser(
-    pendingUser: IPendingUser,
+    pendingUser: IPendingUser | null | undefined,
     token: IToken | null,
   ): Promise<IUser> {
     const id = pendingUser?.id as string;

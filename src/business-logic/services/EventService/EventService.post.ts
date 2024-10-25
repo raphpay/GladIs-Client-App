@@ -1,7 +1,7 @@
-import { IEvent, IEventInput } from "../../model/IEvent";
-import IToken from "../../model/IToken";
-import APIService from "../APIService";
-import EventService from "./EventService";
+import { IEvent, IEventInput } from '../../model/IEvent';
+import IToken from '../../model/IToken';
+import APIService from '../APIService';
+import EventService from './EventService';
 
 class EventServicePost extends EventService {
   static baseRoute = 'events';
@@ -13,9 +13,16 @@ class EventServicePost extends EventService {
    * @returns A promise that resolves to the created event.
    * @throws If an error occurs while creating the event.
    */
-  static async create(event: IEventInput, token: IToken | null): Promise<IEvent> {
+  static async create(
+    event: IEventInput,
+    token: IToken | null,
+  ): Promise<IEvent> {
     try {
-      const newEvent = await APIService.post<IEvent>(this.baseRoute, event, token?.value as string);
+      const newEvent = await APIService.post<IEvent>(
+        this.baseRoute,
+        event,
+        token?.value as string,
+      );
       return newEvent;
     } catch (error) {
       throw error;
@@ -28,9 +35,12 @@ class EventServicePost extends EventService {
    * @returns A promise that resolves to the created event.
    * @throws If an error occurs while creating the event.
    */
-  async createMaxAttemptsEvent(event: IEventInput): Promise<IEvent> {
+  static async createMaxAttemptsEvent(event: IEventInput): Promise<IEvent> {
     try {
-      const newEvent = await APIService.post<IEvent>(`${this.baseRoute}/maxLogin`, event);
+      const newEvent = await APIService.post<IEvent>(
+        `${this.baseRoute}/maxLogin`,
+        event,
+      );
       return newEvent;
     } catch (error) {
       throw error;

@@ -14,7 +14,6 @@ import UserServicePut from '../../services/UserService/UserService.put';
 // Constants
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 
-// TODO: - Correct this screen errors
 /**
  * A class to handle login screen logic
  */
@@ -65,37 +64,13 @@ class LoginScreenManager {
   }
 
   /**
-   * Handles the user's login attempt count, displaying a warning if attempts are below the limit or blocking the connection if attempts exceed the limit.
-   * If the count reaches 5, triggers an event for maximum login attempts.
-   * @param tryOutput - An `ILoginTryOutput` object containing the current connection attempt count and user information.
-   */
-  async handleTryAttemptCount(tryOutput: ILoginTryOutput) {
-    const count = tryOutput.connectionFailedAttempts || 0;
-    if (count >= 5) {
-      if (count === 5) {
-        this.sendMaxLoginEvent(tryOutput);
-      }
-      displayToast(t('errors.api.unauthorized.login.connectionBlocked'), true);
-    } else {
-      displayToast(t('errors.api.unauthorized.login'), true);
-    }
-  }
-
-  /**
    * Sends an event recording the user’s maximum login attempts.
    * @param tryOutput - An `ILoginTryOutput` object containing user details for the event.
    * @returns A promise that resolves when the max attempts event is created.
    * @throws Logs an error if sending the max attempts event fails.
    */
-  async sendMaxLoginEvent(tryOutput: ILoginTryOutput) {
+  async sendMaxLoginEvent(event: IEventInput, tryOutput: ILoginTryOutput) {
     try {
-      const event: IEventInput = {
-        name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${
-          tryOutput.email
-        }`,
-        date: Date.now(),
-        clientID: tryOutput.id ?? '0',
-      };
       await EventServicePost.createMaxAttemptsEvent(event);
     } catch (error) {
       console.log('Error sending max attempts event', error);
