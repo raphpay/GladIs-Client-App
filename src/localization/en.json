@@ -776,6 +776,10 @@
         "addColumnFirst": "Please add a column first",
         "cleanRowFirst": "Please clean the row first",
         "cleanColumnFirst": "Please clean the column first"
+      },
+      "csv": {
+        "copied": "CSV copied to clipboard",
+        "created": "CSV file successfully saved to Downloads"
       }
     },
     "buttons": {
