@@ -18,6 +18,7 @@ import PendingUserServicePost from '../../services/PendingUserService/PendingUse
 import PotentialEmployeeService from '../../services/PotentialEmployeeService';
 import UserServicePut from '../../services/UserService/UserService.put';
 // Utils
+import IFile from '../../model/IFile';
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 import Utils from '../../utils/Utils';
 
@@ -186,6 +187,25 @@ class ClientCreationScreenManager {
           MimeType.png,
         );
         return doc;
+      } catch (error) {
+        throw error;
+      }
+    }
+  }
+
+  async uploadLogoData(data: string | null, destinationPath: string) {
+    if (data) {
+      try {
+        const fileName = 'logo.png';
+        const file: IFile = {
+          data,
+          filename: fileName,
+        };
+        await DocumentServicePost.uploadImageViaBase64Data(
+          file,
+          fileName,
+          destinationPath,
+        );
       } catch (error) {
         throw error;
       }

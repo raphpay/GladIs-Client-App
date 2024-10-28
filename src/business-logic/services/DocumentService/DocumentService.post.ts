@@ -164,6 +164,23 @@ class DocumentServicePost extends DocumentService {
     }
   }
 
+  static async uploadImageViaBase64Data(
+    file: IFile,
+    name: string,
+    path: string,
+  ): Promise<IDocument> {
+    try {
+      const params = { name, path, file };
+      const response = await APIService.post<IDocument>(
+        `${this.baseRoute}/image/data`,
+        params,
+      );
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   private static createFormData(
     originPath: string,
     name: string,
