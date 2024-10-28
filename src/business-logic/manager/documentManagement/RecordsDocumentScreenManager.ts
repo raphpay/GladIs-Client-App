@@ -1,13 +1,14 @@
 import { NativeModules, PermissionsAndroid, Platform } from 'react-native';
 // Enums
 import DocumentLogAction from '../../model/enums/DocumentLogAction';
+import MimeType from '../../model/enums/MimeType';
 import PlatformName from '../../model/enums/PlatformName';
 // Model
 import IDocument from '../../model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
+import IFile from '../../model/IFile';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
-import MimeType from '../../model/enums/MimeType';
 // Modules
 import FileOpenPicker from '../../modules/FileOpenPicker';
 import FinderModule from '../../modules/FinderModule';
@@ -16,6 +17,7 @@ const { FilePickerModule } = NativeModules;
 import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 
+// TODO: Add documentation
 class RecordsDocumentScreenManager {
   private static instance: RecordsDocumentScreenManager;
 
@@ -63,7 +65,7 @@ class RecordsDocumentScreenManager {
         const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
         originPath = file.uri;
       } else if (Platform.OS === PlatformName.Windows) {
-        const filePath = await FileOpenPicker?.pickPDFFile();
+        const filePath = await FileOpenPicker?.readPDFFileData();
         if (filePath) {
           originPath = filePath;
         }
@@ -74,22 +76,50 @@ class RecordsDocumentScreenManager {
     return originPath;
   }
 
+  async pickWindowsFile(): Promise<string | undefined> {
+    let data: string | undefined;
+    data = await FileOpenPicker?.readPDFFileData();
+    return data;
+  }
+
   async uploadFileToAPI(
     fileName: string,
     originPath: string,
     documentDestinationPath: string,
     token: IToken | null,
-  ): Promise<IDocument[]> {
+  ): Promise<IDocument> {
     try {
-      const createdDocuments = await DocumentServicePost.upload(
+      const createdDocument = await DocumentServicePost.upload(
         fileName,
         originPath,
         documentDestinationPath,
         token,
       );
-      return createdDocuments;
+      return createdDocument;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async uploadFileDataToAPI(
+    data: string | undefined,
+    fileName: string,
+    destinationPath: string,
+    token: IToken | null,
+  ) {
+    if (data) {
+      try {
+        const file: IFile = {
+          data,
+          filename: fileName,
+        };
+        await DocumentServicePost.uploadViaBase64Data(
+          file,
+          fileName,
+          destinationPath,
+          token,
+        );
+      } catch (error) {}
     }
   }
 
