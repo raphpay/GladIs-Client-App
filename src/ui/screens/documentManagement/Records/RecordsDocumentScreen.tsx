@@ -350,24 +350,46 @@ function RecordsDocumentScreen(
     if (granted) {
       // Pick file
       const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
-      const originPath =
-        await RecordsDocumentScreenManager.getInstance().pickFile();
+      let originPath: string = '';
+      let fileData: string | undefined;
+      let createdDocument: IDocument | undefined;
+      if (Platform.OS === PlatformName.Windows) {
+        fileData =
+          await RecordsDocumentScreenManager.getInstance().pickWindowsFile();
+      } else {
+        originPath =
+          await RecordsDocumentScreenManager.getInstance().pickFile();
+      }
       setIsUploading(true);
       // Upload
-      const createdDocuments =
-        await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
-          fileName,
-          originPath,
-          documentDestinationPath,
+      if (Platform.OS === PlatformName.Windows) {
+        createdDocument =
+          await RecordsDocumentScreenManager.getInstance().uploadFileDataToAPI(
+            fileData,
+            fileName,
+            documentDestinationPath,
+            token,
+          );
+      } else {
+        createdDocument =
+          await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
+            fileName,
+            originPath,
+            documentDestinationPath,
+            token,
+          );
+      }
+
+      // Record log
+      if (createdDocument) {
+        await RecordsDocumentScreenManager.getInstance().recordLog(
+          currentUser,
+          currentClient,
+          createdDocument,
           token,
         );
-      // Record log
-      await RecordsDocumentScreenManager.getInstance().recordLog(
-        currentUser,
-        currentClient,
-        createdDocuments[0],
-        token,
-      ); // TODO: Should be the original document
+      }
+
       // Update states
       setDocumentName('');
       setShowAddDocumentDialog(false);

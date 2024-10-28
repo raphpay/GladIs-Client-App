@@ -242,36 +242,44 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
   }
 
   async function pickAFile() {
-    const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
-    let filePath: string = '';
-    if (Platform.OS === PlatformName.Mac) {
-      filePath = await FinderModule.getInstance().pickPDFFilePath();
-    } else if (Platform.OS === PlatformName.Android) {
-      const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
-      filePath = file.uri;
-    } else if (Platform.OS === PlatformName.Windows) {
-      const originPath = await FileOpenPicker?.pickPDFFile();
-      if (originPath) {
-        filePath = originPath;
+    try {
+      const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
+      let originPath: string = '';
+      if (Platform.OS === PlatformName.Mac) {
+        originPath = await FinderModule.getInstance().pickPDFFilePath();
+      } else if (Platform.OS === PlatformName.Android) {
+        const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
+        originPath = file.uri;
+      } else if (Platform.OS === PlatformName.Windows) {
+        const data = await FileOpenPicker?.readPDFFileData();
+        if (data) {
+          await DocumentScreenManager.getInstance().uploadViaBase64Data(
+            data,
+            fileName,
+            documentDestinationPath,
+            token,
+          );
+        } else {
+          throw new Error('Error decoding data from Windows file library');
+        }
       }
-    }
-    setIsUploading(true);
 
-    const createdDocument =
-      await DocumentScreenManager.getInstance().uploadFileToAPI(
-        filePath,
-        fileName,
-        documentDestinationPath,
-        token,
-      );
-    await DocumentScreenManager.getInstance().recordDocumentActivity(
-      DocumentLogAction.Creation,
-      currentUser,
-      currentClient,
-      createdDocument.id,
-      token,
-      true,
-    );
+      if (Platform.OS !== PlatformName.Windows) {
+        await DocumentScreenManager.getInstance().uploadFormData(
+          originPath,
+          fileName,
+          documentDestinationPath,
+          token,
+          currentUser,
+          currentClient,
+        );
+      }
+    } catch (error) {
+      const errorMessage = (error as Error).message;
+      displayToast(t(`errors.api.${errorMessage}`), true);
+    }
+
+    setIsUploading(true);
     setDocumentName('');
     closeDialogs();
     await loadPaginatedDocuments();

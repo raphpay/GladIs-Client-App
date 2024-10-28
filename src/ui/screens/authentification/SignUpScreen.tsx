@@ -42,6 +42,7 @@ type SignUpScreenProps = NativeStackScreenProps<
 >;
 
 function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
+  // Form
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -59,7 +60,8 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     IPotentialEmployee[]
   >([]);
   // Logo
-  const [logoURI, setLogoURI] = useState<string>('');
+  const [logoURI, setLogoURI] = useState<string | null>(null);
+  const [logoData, setLogoData] = useState<string | null>(null);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -138,10 +140,17 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
       );
       // Upload logo if needed
       const destinationPath = `${companyName}/logos/`;
-      await SignUpScreenManager.getInstance().uploadLogo(
-        destinationPath,
-        logoURI,
-      );
+      if (Platform.OS === PlatformName.Windows) {
+        await SignUpScreenManager.getInstance().uploadLogoData(
+          logoData,
+          destinationPath,
+        );
+      } else {
+        await SignUpScreenManager.getInstance().uploadLogo(
+          destinationPath,
+          logoURI,
+        );
+      }
       // Create employees
       const id = createdUser.id as string;
       await SignUpScreenManager.getInstance().createEmployees(
@@ -160,6 +169,7 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
     let filePath: string = '';
     if (Platform.OS === PlatformName.Mac) {
       filePath = await FinderModule.getInstance().pickImageFilePath();
+      setLogoURI(filePath);
     } else if (Platform.OS === PlatformName.Android) {
       const granted =
         await SignUpScreenManager.getInstance().askAndroidPermission(
@@ -175,13 +185,13 @@ function SignUpScreen(props: SignUpScreenProps): React.JSX.Element {
           MimeType.png,
         ]);
       }
+      setLogoURI(filePath);
     } else if (Platform.OS === PlatformName.Windows) {
-      const originPath = await FileOpenPicker?.pickImageFile();
-      if (originPath) {
-        filePath = originPath;
+      const data = await FileOpenPicker?.readImageFileData();
+      if (data) {
+        setLogoData(data);
       }
     }
-    setLogoURI(filePath);
   }
 
   // Components
