@@ -4,6 +4,7 @@ import MimeType from '../../model/enums/MimeType';
 import PlatformName from '../../model/enums/PlatformName';
 // Models
 import IDocument from '../../model/IDocument';
+import IFile from '../../model/IFile';
 import IUser from '../../model/IUser';
 import FileOpenPicker from '../../modules/FileOpenPicker';
 import FinderModule from '../../modules/FinderModule';
@@ -13,6 +14,7 @@ const { FilePickerModule } = NativeModules;
 import CacheService from '../../services/CacheService';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 
+// TODO: Add documentation
 /**
  * A class to handle client settings screen from admin logic
  */
@@ -36,14 +38,14 @@ class ClientSettingsScreenFromAdminManager {
       filePath = await FinderModule.getInstance().pickImageFilePath();
     } else if (Platform.OS === PlatformName.Android) {
       filePath = await FilePickerModule.pickSingleFile([MimeType.csv]);
-    } else if (Platform.OS === PlatformName.Windows) {
-      const originPath = await FileOpenPicker?.pickPDFFile();
-      if (originPath) {
-        filePath = originPath;
-      }
     }
-
     return filePath;
+  }
+
+  async pickLogoForWindows(): Promise<string | undefined> {
+    let data: string | undefined;
+    data = await FileOpenPicker?.readImageFileData();
+    return data;
   }
 
   async uploadToAPI(
@@ -61,6 +63,29 @@ class ClientSettingsScreenFromAdminManager {
       return doc;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async uploadDataToAPI(
+    data: string | undefined,
+    fileName: string,
+    destinationPath: string,
+  ): Promise<IDocument | undefined> {
+    if (data) {
+      try {
+        const file: IFile = {
+          data,
+          filename: fileName,
+        };
+        const doc = await DocumentServicePost.uploadImageViaBase64Data(
+          file,
+          fileName,
+          destinationPath,
+        );
+        return doc;
+      } catch (error) {
+        throw error;
+      }
     }
   }
 
