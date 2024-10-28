@@ -1,12 +1,12 @@
+// Models
 import MimeType from '../../model/enums/MimeType';
 import IDocument, { IDocumentPaginatedOutput } from '../../model/IDocument';
 import IFile from '../../model/IFile';
 import IToken from '../../model/IToken';
-
+// Services
 import APIService from '../APIService';
 import DocumentService from './DocumentService';
 
-// TODO: Add documentation
 class DocumentServicePost extends DocumentService {
   static baseRoute = 'documents';
 
@@ -164,6 +164,14 @@ class DocumentServicePost extends DocumentService {
     }
   }
 
+  /**
+   * Uploads an image to a specified path using base64-encoded data.
+   * @param file - An `IFile` object containing base64 image data and the filename.
+   * @param name - The name of the image to be saved.
+   * @param path - The destination path where the image should be uploaded.
+   * @returns A promise that resolves to an `IDocument` object representing the uploaded document.
+   * @throws If an error occurs during the upload process.
+   */
   static async uploadImageViaBase64Data(
     file: IFile,
     name: string,
@@ -181,6 +189,14 @@ class DocumentServicePost extends DocumentService {
     }
   }
 
+  /**
+   * Creates a `FormData` object containing image information for uploading as a file.
+   * @param originPath - The file's original URI or path.
+   * @param name - The name to assign to the file during upload.
+   * @param destinationPath - The path where the file should be uploaded.
+   * @param type - Optional MIME type for the file, defaults to `application/octet-stream`.
+   * @returns A `FormData` object ready for uploading.
+   */
   private static createFormData(
     originPath: string,
     name: string,

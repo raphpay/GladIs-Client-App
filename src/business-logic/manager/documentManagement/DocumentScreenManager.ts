@@ -52,7 +52,17 @@ class DocumentScreenManager {
     }
   }
 
-  // TODO: Add documentation
+  /**
+   * Uploads a file using form data to a specified path and records the document activity.
+   * @param originPath - The original path or URI of the file to upload.
+   * @param fileName - The name to assign to the uploaded file.
+   * @param destinationPath - The path where the file should be uploaded.
+   * @param token - An optional authentication token for the upload request.
+   * @param currentUser - The user who is performing the upload action.
+   * @param currentClient - The client associated with the upload action.
+   * @returns A promise that resolves to an `IDocument` object representing the uploaded document.
+   * @throws If an error occurs during the upload or activity logging process.
+   */
   async uploadFormData(
     originPath: string,
     fileName: string,
@@ -83,6 +93,15 @@ class DocumentScreenManager {
     }
   }
 
+  /**
+   * Uploads a file using base64 data to a specified path.
+   * @param data - The base64-encoded string representing the file data.
+   * @param fileName - The name to assign to the uploaded file.
+   * @param destinationPath - The path where the file should be uploaded.
+   * @param token - An optional authentication token for the upload request.
+   * @returns A promise that resolves to an `IDocument` object representing the uploaded document.
+   * @throws If an error occurs during the upload process.
+   */
   async uploadViaBase64Data(
     data: string,
     fileName: string,

@@ -22,7 +22,6 @@ import IFile from '../../model/IFile';
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 import Utils from '../../utils/Utils';
 
-// TODO: Add documentation
 /**
  * A class to handle client creation screen logic
  */
@@ -40,6 +39,14 @@ class ClientCreationScreenManager {
   }
 
   // Async Methods
+  /**
+   * Sends a welcome or onboarding email with a generated password to the specified user.
+   * @param user - The user to whom the email will be sent.
+   * @param employees - An optional list of employees associated with the user, used to personalize the email content.
+   * @param locale - The language locale for the email content, default is French ('fr').
+   * @returns A promise that resolves when the email is successfully sent.
+   * @throws If an error occurs while generating or sending the email.
+   */
   async sendEmail(
     user: IUser,
     employees: IUser[] | undefined,
@@ -58,6 +65,22 @@ class ClientCreationScreenManager {
     await EmailService.getInstance().sendEmail(employeeEmail);
   }
 
+  /**
+   * Creates a new pending user with the provided details and initiates the sign-up process.
+   * @param firstName - The first name of the pending user.
+   * @param lastName - The last name of the pending user.
+   * @param phoneNumber - The phone number of the pending user.
+   * @param companyName - The company name associated with the pending user.
+   * @param email - The email address of the pending user.
+   * @param products - The products associated with the pending user.
+   * @param employees - The number of employees associated with the pending user's organization.
+   * @param numberOfUsers - The number of users to be created.
+   * @param sales - The sales amount associated with the pending user.
+   * @param status - The current status of the pending user, typically set to `PendingUserStatus.pending`.
+   * @param selectedModules - The list of modules selected by the user.
+   * @returns A promise that resolves to the created `IPendingUser` object.
+   * @throws If an error occurs during the creation of the pending user.
+   */
   async createPendingUser(
     firstName: string,
     lastName: string,
@@ -95,6 +118,13 @@ class ClientCreationScreenManager {
     }
   }
 
+  /**
+   * Creates employee records for each potential employee associated with a pending user ID.
+   * @param potentialEmployees - An array of potential employees to be created.
+   * @param pendingUserID - The ID of the pending user associated with these employees.
+   * @returns A promise that resolves when all employees are successfully created.
+   * @throws If an error occurs while creating any employee record.
+   */
   async createEmployees(
     potentialEmployees: IPotentialEmployee[],
     pendingUserID: string,
@@ -117,6 +147,13 @@ class ClientCreationScreenManager {
     }
   }
 
+  /**
+   * Converts a pending user to an active user, generating a new user record.
+   * @param pendingUser - The pending user to be converted, or null/undefined if not available.
+   * @param token - The authentication token required for authorization.
+   * @returns A promise that resolves to the newly created `IUser` object.
+   * @throws If an error occurs during the conversion of the pending user.
+   */
   async convertPendingUser(
     pendingUser: IPendingUser | null | undefined,
     token: IToken | null,
@@ -137,6 +174,15 @@ class ClientCreationScreenManager {
     return createdUser;
   }
 
+  /**
+   * Converts potential employees to active users, assigns a manager to each, and updates each with the specified modules.
+   * @param potentialEmployees - An array of potential employees to be converted to users.
+   * @param manager - The manager user to assign to each newly created user.
+   * @param selectedModules - The modules to assign to each converted employee.
+   * @param token - The authentication token required for authorization.
+   * @returns A promise that resolves to an array of newly created `IUser` objects.
+   * @throws If an error occurs during the conversion of any employee or while updating user details.
+   */
   async convertEmployeesToUser(
     potentialEmployees: IPotentialEmployee[],
     manager: IUser,
@@ -173,6 +219,13 @@ class ClientCreationScreenManager {
     return newUsers;
   }
 
+  /**
+   * Uploads a logo image to the specified destination path.
+   * @param destinationPath - The path where the logo should be uploaded.
+   * @param imageOriginPath - The local path of the image file to upload.
+   * @returns A promise that resolves to the uploaded `IDocument` object, or undefined if no image path is provided.
+   * @throws If an error occurs during the logo upload process.
+   */
   async uploadLogo(
     destinationPath: string,
     imageOriginPath: string | null,
@@ -193,6 +246,12 @@ class ClientCreationScreenManager {
     }
   }
 
+  /**
+   * Uploads a logo image to the specified destination path using Base64-encoded data.
+   * @param data - The Base64-encoded string representing the image data to upload.
+   * @param destinationPath - The path where the logo should be uploaded.
+   * @throws If an error occurs during the upload process.
+   */
   async uploadLogoData(data: string | null, destinationPath: string) {
     if (data) {
       try {
@@ -212,6 +271,16 @@ class ClientCreationScreenManager {
     }
   }
 
+  /**
+   * Requests camera permission from the user on an Android device.
+   * @param title - The title of the permission dialog.
+   * @param message - The message displayed in the permission dialog.
+   * @param buttonNeutral - Text for the neutral button in the dialog.
+   * @param buttonNegative - Text for the negative button in the dialog.
+   * @param buttonPositive - Text for the positive button in the dialog.
+   * @returns A promise that resolves to a boolean indicating if the permission was granted.
+   * @throws If an error occurs while requesting the permission.
+   */
   async askAndroidPermission(
     title: string,
     message: string,

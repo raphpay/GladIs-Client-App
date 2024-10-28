@@ -17,7 +17,6 @@ const { FilePickerModule } = NativeModules;
 import DocumentActivityLogsService from '../../services/DocumentActivityLogsService';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 
-// TODO: Add documentation
 class RecordsDocumentScreenManager {
   private static instance: RecordsDocumentScreenManager;
 
@@ -32,6 +31,16 @@ class RecordsDocumentScreenManager {
     return RecordsDocumentScreenManager.instance;
   }
 
+  /**
+   * Requests camera permission from the user on an Android device.
+   * @param title - The title of the permission dialog.
+   * @param message - The message displayed in the permission dialog.
+   * @param buttonNeutral - Text for the neutral button in the dialog.
+   * @param buttonNegative - Text for the negative button in the dialog.
+   * @param buttonPositive - Text for the positive button in the dialog.
+   * @returns A promise that resolves to a boolean indicating if the permission was granted.
+   * @throws If an error occurs while requesting the permission.
+   */
   async askAndroidPermission(
     title: string,
     message: string,
@@ -56,6 +65,12 @@ class RecordsDocumentScreenManager {
     }
   }
 
+  /**
+   * Prompts the user to pick a PDF file from their device and returns the file's path.
+   * The implementation varies depending on the platform (Mac, Android, or Windows).
+   * @returns A promise that resolves to a string representing the path of the selected file.
+   * @throws If an error occurs during the file selection process.
+   */
   async pickFile(): Promise<string> {
     let originPath: string = '';
     try {
@@ -76,12 +91,27 @@ class RecordsDocumentScreenManager {
     return originPath;
   }
 
+  /**
+   * Prompts the user to pick a PDF file specifically for Windows and returns the file's data.
+   * @returns A promise that resolves to a string representing the path of the selected file, or undefined if no file is selected.
+   */
   async pickWindowsFile(): Promise<string | undefined> {
     let data: string | undefined;
     data = await FileOpenPicker?.readPDFFileData();
     return data;
   }
 
+  /**
+   * Uploads a file to the API using the specified parameters.
+   *
+   * @param fileName - The name of the file to be uploaded.
+   * @param originPath - The local path of the file to be uploaded.
+   * @param documentDestinationPath - The destination path on the server where the document will be stored.
+   * @param token - An optional token for authentication.
+   *
+   * @returns A promise that resolves to an IDocument object representing the created document.
+   * @throws If an error occurs during the upload process.
+   */
   async uploadFileToAPI(
     fileName: string,
     originPath: string,
@@ -101,6 +131,16 @@ class RecordsDocumentScreenManager {
     }
   }
 
+  /**
+   * Uploads file data in Base64 format to the API.
+   *
+   * @param data - The Base64 encoded file data to be uploaded. Can be undefined.
+   * @param fileName - The name of the file to be uploaded.
+   * @param destinationPath - The destination path on the server where the document will be stored.
+   * @param token - An optional token for authentication.
+   *
+   * @returns A promise that resolves to an IDocument object representing the uploaded document, or undefined if no data was provided.
+   */
   async uploadFileDataToAPI(
     data: string | undefined,
     fileName: string,
@@ -120,10 +160,23 @@ class RecordsDocumentScreenManager {
           token,
         );
         return doc;
-      } catch (error) {}
+      } catch (error) {
+        throw error;
+      }
     }
   }
 
+  /**
+   * Records a log entry for a document activity.
+   *
+   * @param currentUser - The user performing the action. This parameter can be undefined.
+   * @param currentClient - The client associated with the action. This parameter can be undefined.
+   * @param createdDocument - The document that is the subject of the log entry.
+   * @param token - An optional authentication token for the request.
+   *
+   * @returns A promise that resolves when the log entry is successfully recorded.
+   * @throws If an error occurs while attempting to record the log.
+   */
   async recordLog(
     currentUser: IUser | undefined,
     currentClient: IUser | undefined,
