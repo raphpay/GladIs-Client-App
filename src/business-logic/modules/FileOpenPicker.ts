@@ -6,6 +6,8 @@ export interface Spec extends TurboModule {
   pickImageFile(): Promise<string>;
   pickCSVFile(): Promise<string>;
   readPDFFileData(): Promise<string>
+  readImageFileData(): Promise<string>;
+  readCSVFileData(): Promise<string>
 }
 
 // Lier le module natif appelé "Estudies" (le nom défini dans le module C++)
