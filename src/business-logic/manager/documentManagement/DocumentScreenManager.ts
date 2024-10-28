@@ -2,6 +2,7 @@ import DocumentLogAction from '../../model/enums/DocumentLogAction';
 import UserType from '../../model/enums/UserType';
 import IDocument from '../../model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
+import IFile from '../../model/IFile';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
 
@@ -46,6 +47,79 @@ class DocumentScreenManager {
         token,
       );
       return createdDocument;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Uploads a file using form data to a specified path and records the document activity.
+   * @param originPath - The original path or URI of the file to upload.
+   * @param fileName - The name to assign to the uploaded file.
+   * @param destinationPath - The path where the file should be uploaded.
+   * @param token - An optional authentication token for the upload request.
+   * @param currentUser - The user who is performing the upload action.
+   * @param currentClient - The client associated with the upload action.
+   * @returns A promise that resolves to an `IDocument` object representing the uploaded document.
+   * @throws If an error occurs during the upload or activity logging process.
+   */
+  async uploadFormData(
+    originPath: string,
+    fileName: string,
+    destinationPath: string,
+    token: IToken | null,
+    currentUser: IUser | undefined,
+    currentClient: IUser | undefined,
+  ): Promise<IDocument> {
+    try {
+      const createdDocument =
+        await DocumentScreenManager.getInstance().uploadFileToAPI(
+          originPath,
+          fileName,
+          destinationPath,
+          token,
+        );
+      await DocumentScreenManager.getInstance().recordDocumentActivity(
+        DocumentLogAction.Creation,
+        currentUser,
+        currentClient,
+        createdDocument.id,
+        token,
+        true,
+      );
+      return createdDocument;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Uploads a file using base64 data to a specified path.
+   * @param data - The base64-encoded string representing the file data.
+   * @param fileName - The name to assign to the uploaded file.
+   * @param destinationPath - The path where the file should be uploaded.
+   * @param token - An optional authentication token for the upload request.
+   * @returns A promise that resolves to an `IDocument` object representing the uploaded document.
+   * @throws If an error occurs during the upload process.
+   */
+  async uploadViaBase64Data(
+    data: string,
+    fileName: string,
+    destinationPath: string,
+    token: IToken | null,
+  ): Promise<IDocument> {
+    try {
+      const file: IFile = {
+        data,
+        filename: fileName,
+      };
+      const doc = await DocumentServicePost.uploadViaBase64Data(
+        file,
+        fileName,
+        destinationPath,
+        token,
+      );
+      return doc;
     } catch (error) {
       throw error;
     }

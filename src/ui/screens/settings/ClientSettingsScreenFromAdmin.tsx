@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Platform, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 
 import { IClientManagementParams } from '../../../navigation/Routes';
@@ -32,6 +32,8 @@ import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
 import ClientSettingsScreenFromAdminManager from '../../../business-logic/manager/settings/ClientSettingsScreenFromAdminManager';
+import IDocument from '../../../business-logic/model/IDocument';
+import PlatformName from '../../../business-logic/model/enums/PlatformName';
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
@@ -182,21 +184,42 @@ function ClientSettingsScreenFromAdmin(
   async function modifyLogo() {
     if (currentClient) {
       try {
-        const originPath =
-          await ClientSettingsScreenFromAdminManager.getInstance().pickLogo();
+        let originPath: string = '';
+        let fileData: string | undefined;
+        if (Platform.OS === PlatformName.Windows) {
+          fileData =
+            await ClientSettingsScreenFromAdminManager.getInstance().pickLogoForWindows();
+        } else {
+          originPath =
+            await ClientSettingsScreenFromAdminManager.getInstance().pickLogo();
+        }
 
         const fileName = 'logo.png';
         const destinationPath = `${currentClient.companyName}/logos/`;
-        const createdDocument =
-          await ClientSettingsScreenFromAdminManager.getInstance().uploadToAPI(
-            fileName,
-            originPath,
-            destinationPath,
+        let createdDocument: IDocument | undefined;
+
+        if (Platform.OS === PlatformName.Windows) {
+          createdDocument =
+            await ClientSettingsScreenFromAdminManager.getInstance().uploadDataToAPI(
+              fileData,
+              fileName,
+              destinationPath,
+            );
+        } else {
+          createdDocument =
+            await ClientSettingsScreenFromAdminManager.getInstance().uploadToAPI(
+              fileName,
+              originPath,
+              destinationPath,
+            );
+        }
+
+        if (createdDocument) {
+          await ClientSettingsScreenFromAdminManager.getInstance().storeCachedValues(
+            currentClient,
+            createdDocument.id,
           );
-        await ClientSettingsScreenFromAdminManager.getInstance().storeCachedValues(
-          currentClient,
-          createdDocument.id,
-        );
+        }
       } catch (error) {
         displayToast(t('errors.api.uploadLogo'), true);
       }

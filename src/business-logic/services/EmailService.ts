@@ -1,5 +1,6 @@
+// Models
 import { IEmail } from '../model/IEmail';
-import IToken from '../model/IToken';
+// Services
 import APIService from './APIService';
 
 /**
@@ -30,9 +31,9 @@ class EmailService {
    * @returns A promise that resolves to the sent message.
    * @throws An error if the request fails.
    */
-  async sendEmail(email: IEmail, token: IToken | null): Promise<void> {
+  async sendEmail(email: IEmail): Promise<void> {
     try {
-      await APIService.post<IEmail>(this.baseRoute, email, token?.value as string);
+      await APIService.postWithoutResponse(this.baseRoute, email);
     } catch (error) {
       throw error;
     }

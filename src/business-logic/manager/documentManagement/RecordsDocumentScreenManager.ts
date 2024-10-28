@@ -1,13 +1,14 @@
 import { NativeModules, PermissionsAndroid, Platform } from 'react-native';
 // Enums
 import DocumentLogAction from '../../model/enums/DocumentLogAction';
+import MimeType from '../../model/enums/MimeType';
 import PlatformName from '../../model/enums/PlatformName';
 // Model
 import IDocument from '../../model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
+import IFile from '../../model/IFile';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
-import MimeType from '../../model/enums/MimeType';
 // Modules
 import FileOpenPicker from '../../modules/FileOpenPicker';
 import FinderModule from '../../modules/FinderModule';
@@ -30,6 +31,16 @@ class RecordsDocumentScreenManager {
     return RecordsDocumentScreenManager.instance;
   }
 
+  /**
+   * Requests camera permission from the user on an Android device.
+   * @param title - The title of the permission dialog.
+   * @param message - The message displayed in the permission dialog.
+   * @param buttonNeutral - Text for the neutral button in the dialog.
+   * @param buttonNegative - Text for the negative button in the dialog.
+   * @param buttonPositive - Text for the positive button in the dialog.
+   * @returns A promise that resolves to a boolean indicating if the permission was granted.
+   * @throws If an error occurs while requesting the permission.
+   */
   async askAndroidPermission(
     title: string,
     message: string,
@@ -54,6 +65,12 @@ class RecordsDocumentScreenManager {
     }
   }
 
+  /**
+   * Prompts the user to pick a PDF file from their device and returns the file's path.
+   * The implementation varies depending on the platform (Mac, Android, or Windows).
+   * @returns A promise that resolves to a string representing the path of the selected file.
+   * @throws If an error occurs during the file selection process.
+   */
   async pickFile(): Promise<string> {
     let originPath: string = '';
     try {
@@ -63,7 +80,7 @@ class RecordsDocumentScreenManager {
         const file = await FilePickerModule.pickSingleFile([MimeType.pdf]);
         originPath = file.uri;
       } else if (Platform.OS === PlatformName.Windows) {
-        const filePath = await FileOpenPicker?.pickPDFFile();
+        const filePath = await FileOpenPicker?.readPDFFileData();
         if (filePath) {
           originPath = filePath;
         }
@@ -74,25 +91,92 @@ class RecordsDocumentScreenManager {
     return originPath;
   }
 
+  /**
+   * Prompts the user to pick a PDF file specifically for Windows and returns the file's data.
+   * @returns A promise that resolves to a string representing the path of the selected file, or undefined if no file is selected.
+   */
+  async pickWindowsFile(): Promise<string | undefined> {
+    let data: string | undefined;
+    data = await FileOpenPicker?.readPDFFileData();
+    return data;
+  }
+
+  /**
+   * Uploads a file to the API using the specified parameters.
+   *
+   * @param fileName - The name of the file to be uploaded.
+   * @param originPath - The local path of the file to be uploaded.
+   * @param documentDestinationPath - The destination path on the server where the document will be stored.
+   * @param token - An optional token for authentication.
+   *
+   * @returns A promise that resolves to an IDocument object representing the created document.
+   * @throws If an error occurs during the upload process.
+   */
   async uploadFileToAPI(
     fileName: string,
     originPath: string,
     documentDestinationPath: string,
     token: IToken | null,
-  ): Promise<IDocument[]> {
+  ): Promise<IDocument> {
     try {
-      const createdDocuments = await DocumentServicePost.upload(
+      const createdDocument = await DocumentServicePost.upload(
         fileName,
         originPath,
         documentDestinationPath,
         token,
       );
-      return createdDocuments;
+      return createdDocument;
     } catch (error) {
       throw error;
     }
   }
 
+  /**
+   * Uploads file data in Base64 format to the API.
+   *
+   * @param data - The Base64 encoded file data to be uploaded. Can be undefined.
+   * @param fileName - The name of the file to be uploaded.
+   * @param destinationPath - The destination path on the server where the document will be stored.
+   * @param token - An optional token for authentication.
+   *
+   * @returns A promise that resolves to an IDocument object representing the uploaded document, or undefined if no data was provided.
+   */
+  async uploadFileDataToAPI(
+    data: string | undefined,
+    fileName: string,
+    destinationPath: string,
+    token: IToken | null,
+  ): Promise<IDocument | undefined> {
+    if (data) {
+      try {
+        const file: IFile = {
+          data,
+          filename: fileName,
+        };
+        const doc = await DocumentServicePost.uploadViaBase64Data(
+          file,
+          fileName,
+          destinationPath,
+          token,
+        );
+        return doc;
+      } catch (error) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Records a log entry for a document activity.
+   *
+   * @param currentUser - The user performing the action. This parameter can be undefined.
+   * @param currentClient - The client associated with the action. This parameter can be undefined.
+   * @param createdDocument - The document that is the subject of the log entry.
+   * @param token - An optional authentication token for the request.
+   *
+   * @returns A promise that resolves when the log entry is successfully recorded.
+   * @throws If an error occurs while attempting to record the log.
+   */
   async recordLog(
     currentUser: IUser | undefined,
     currentClient: IUser | undefined,
