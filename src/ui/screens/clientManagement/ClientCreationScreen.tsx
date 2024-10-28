@@ -287,10 +287,17 @@ function ClientCreationScreen(
     }
 
     const destinationPath = `${companyName}/logos/`;
-    await ClientCreationScreenManager.getInstance().uploadLogo(
-      destinationPath,
-      logoURI,
-    );
+    if (Platform.OS === PlatformName.Windows) {
+      await ClientCreationScreenManager.getInstance().uploadLogoData(
+        logoData,
+        destinationPath,
+      );
+    } else {
+      await ClientCreationScreenManager.getInstance().uploadLogo(
+        destinationPath,
+        logoURI,
+      );
+    }
     dispatch(setClientListCount(clientListCount + 1));
     navigateBack();
   }
