@@ -2,6 +2,7 @@ import DocumentLogAction from '../../model/enums/DocumentLogAction';
 import UserType from '../../model/enums/UserType';
 import IDocument from '../../model/IDocument';
 import { IDocumentActivityLogInput } from '../../model/IDocumentActivityLog';
+import IFile from '../../model/IFile';
 import IToken from '../../model/IToken';
 import IUser from '../../model/IUser';
 
@@ -46,6 +47,60 @@ class DocumentScreenManager {
         token,
       );
       return createdDocument;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // TODO: Add documentation
+  async uploadFormData(
+    originPath: string,
+    fileName: string,
+    destinationPath: string,
+    token: IToken | null,
+    currentUser: IUser | undefined,
+    currentClient: IUser | undefined,
+  ): Promise<IDocument> {
+    try {
+      const createdDocument =
+        await DocumentScreenManager.getInstance().uploadFileToAPI(
+          originPath,
+          fileName,
+          destinationPath,
+          token,
+        );
+      await DocumentScreenManager.getInstance().recordDocumentActivity(
+        DocumentLogAction.Creation,
+        currentUser,
+        currentClient,
+        createdDocument.id,
+        token,
+        true,
+      );
+      return createdDocument;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async uploadViaBase64Data(
+    data: string,
+    fileName: string,
+    destinationPath: string,
+    token: IToken | null,
+  ): Promise<IDocument> {
+    try {
+      const file: IFile = {
+        data,
+        filename: fileName,
+      };
+      const doc = await DocumentServicePost.uploadViaBase64Data(
+        file,
+        fileName,
+        destinationPath,
+        token,
+      );
+      return doc;
     } catch (error) {
       throw error;
     }

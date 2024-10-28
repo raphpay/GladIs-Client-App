@@ -21,6 +21,7 @@ import UserServicePut from '../../services/UserService/UserService.put';
 import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
 import Utils from '../../utils/Utils';
 
+// TODO: Add documentation
 /**
  * A class to handle client creation screen logic
  */

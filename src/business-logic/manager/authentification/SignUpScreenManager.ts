@@ -5,9 +5,11 @@ import MimeType from '../../model/enums/MimeType';
 import IDocument from '../../model/IDocument';
 import IPotentialEmployee from '../../model/IPotentialEmployee';
 // Services
+import IFile from '../../model/IFile';
 import DocumentServicePost from '../../services/DocumentService/DocumentService.post';
 import PotentialEmployeeService from '../../services/PotentialEmployeeService';
 
+// TODO: Add documentation
 /**
  * A class to handle sign up screen logic
  */
@@ -62,6 +64,26 @@ class SignUpScreenManager {
           MimeType.png,
         );
         return doc;
+      } catch (error) {
+        throw error;
+      }
+    }
+  }
+
+  async uploadLogoData(data: string | null, destinationPath: string) {
+    if (data) {
+      const fileName = 'logo.png';
+      try {
+        const file: IFile = {
+          data,
+          filename: fileName,
+        };
+        await DocumentServicePost.uploadViaBase64Data(
+          file,
+          fileName,
+          destinationPath,
+          null,
+        );
       } catch (error) {
         throw error;
       }

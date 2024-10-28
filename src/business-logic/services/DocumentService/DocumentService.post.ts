@@ -6,6 +6,7 @@ import IToken from '../../model/IToken';
 import APIService from '../APIService';
 import DocumentService from './DocumentService';
 
+// TODO: Add documentation
 class DocumentServicePost extends DocumentService {
   static baseRoute = 'documents';
 
@@ -130,6 +131,34 @@ class DocumentServicePost extends DocumentService {
         formData,
       );
       return doc;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * Uploads a file as a document via base 64 data ( for Windows ).
+   * @param file - The file to upload.
+   * @param name - The name of the document.
+   * @param path - The path to upload the document to.
+   * @param token - The authentication token (optional).
+   * @returns A promise that resolves to the uploaded document.
+   * @throws If an error occurs while uploading the document.
+   */
+  static async uploadViaBase64Data(
+    file: IFile,
+    name: string,
+    path: string,
+    token: IToken | null,
+  ): Promise<IDocument> {
+    try {
+      const params = { name, path, file };
+      const response = await APIService.post<IDocument>(
+        `${this.baseRoute}/data`,
+        params,
+        token?.value as string,
+      );
+      return response as IDocument;
     } catch (error) {
       throw error;
     }
