@@ -228,7 +228,6 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
               value={resetEmail}
               placeholder={t('components.dialog.passwordReset.placeholder')}
               onValueChange={setResetEmail}
-              autoCapitalize={'characters'}
               width={'100%'}
             />
           </Dialog>
