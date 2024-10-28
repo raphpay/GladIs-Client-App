@@ -78,11 +78,10 @@ class SignUpScreenManager {
           data,
           filename: fileName,
         };
-        await DocumentServicePost.uploadViaBase64Data(
+        await DocumentServicePost.uploadImageViaBase64Data(
           file,
           fileName,
           destinationPath,
-          null,
         );
       } catch (error) {
         throw error;
