@@ -779,6 +779,10 @@
         "addColumnFirst": "Veuillez ajouter une colonne d'abord",
         "cleanRowFirst": "Veuillez effacer la ligne d'abord",
         "cleanColumnFirst": "Veuillez effacer la colonne d'abord"
+      },
+      "csv": {
+        "copied": "CSV copié dans le presse-papier",
+        "created": "CSV sauvegardé avec succés dans les Téléchargements"
       }
     },
     "buttons": {

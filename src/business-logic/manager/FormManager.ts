@@ -1,4 +1,5 @@
 import Clipboard from "@react-native-clipboard/clipboard";
+import { writeFile, DownloadDirectoryPath } from '@dr.pogodin/react-native-fs'
 // Token
 import IToken from "../model/IToken";
 // Form
@@ -43,9 +44,18 @@ class FormManager {
    * @param form The form to export
    * @returns void
    */
-  exportToCSV(form: IForm) {
+  async exportToCSV(form: IForm) {
     const value = form.value;
-    Clipboard.setString(value);
+    try {
+      const destinationPath = DownloadDirectoryPath + `${form.title}.csv`;
+      await writeFile(destinationPath, value);
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+  copyCSV(form: IForm) {
+    Clipboard.setString(form.value);
   }
 
   // Async Methods
