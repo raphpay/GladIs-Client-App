@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 
 import SMQManager from '../../../../business-logic/manager/SMQManager';
 import SMQClientRelationScreenManager from '../../../../business-logic/manager/smqSurvey/SMQClientRelationScreenManager';
@@ -12,6 +12,8 @@ import TextButton from '../../../components/Buttons/TextButton';
 import GladisTextInput from '../../../components/TextInputs/GladisTextInput';
 import Toast from '../../../components/Toast';
 
+import PlatformName from '../../../../business-logic/model/enums/PlatformName';
+import IDocument from '../../../../business-logic/model/IDocument';
 import styles from '../../../assets/styles/smqSurvey/SMQGeneralScreenStyles';
 
 type SMQClientRelationScreenProps = {
@@ -91,37 +93,57 @@ function SMQClientRelationScreen(
       const destinationPath = Utils.removeWhitespace(
         `${currentClient?.companyName ?? 'noCompany'}/smqSurvey/`,
       );
+      let originPath: string | undefined;
+      let fileData: string | undefined;
+      ``;
+      let createdDocument: IDocument | undefined;
+
       if (source.name === orderFileSource.name) {
         setSelectedOrderFilename(fileName);
       } else {
         setSelectedProductsFilename(fileName);
       }
 
-      const originPath =
-        await SMQClientRelationScreenManager.getInstance().pickFile();
-      const createdDocuments =
-        await SMQClientRelationScreenManager.getInstance().uploadFileToAPI(
-          fileName,
-          originPath,
-          destinationPath,
+      if (Platform.OS === PlatformName.Windows) {
+        fileData =
+          await SMQClientRelationScreenManager.getInstance().pickWindowsFile();
+        createdDocument =
+          await SMQClientRelationScreenManager.getInstance().uploadFileDataToAPI(
+            fileData,
+            fileName,
+            destinationPath,
+            token,
+          );
+      } else {
+        originPath =
+          await SMQClientRelationScreenManager.getInstance().pickFile();
+        createdDocument =
+          await SMQClientRelationScreenManager.getInstance().uploadFileToAPI(
+            fileName,
+            originPath,
+            destinationPath,
+            token,
+          );
+      }
+
+      if (createdDocument) {
+        await SMQClientRelationScreenManager.getInstance().logDocumentCreation(
+          currentUser,
+          currentClient,
+          createdDocument,
           token,
         );
-      await SMQClientRelationScreenManager.getInstance().logDocumentCreation(
-        currentUser,
-        currentClient,
-        createdDocuments[0],
-        token,
-      );
+      }
       // Update states
       if (source.name === orderFileSource.name) {
         setHasUploadedOrder(true);
-        setSelectedOrderID(createdDocuments[0].id);
+        setSelectedOrderID(createdDocument.id);
       } else {
         setHasUploadedProducts(true);
-        setSelectedProductsID(createdDocuments[0].id);
+        setSelectedProductsID(createdDocument.id);
       }
       setHasUploadedOrder(true);
-      setSelectedOrderID(createdDocuments[0].id);
+      setSelectedOrderID(createdDocument.id);
       displayToast(t('smqSurvey.generalInfo.stepTwo.uploadSuccess'));
     } catch (error) {
       displayToast(t(`errors.api.${error}`), true);
