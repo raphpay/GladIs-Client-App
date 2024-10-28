@@ -186,13 +186,22 @@ class Utils {
    */
   static formatStringDate(
     date: Date,
-    monthFormat: 'numeric' | 'long' = 'long',
+    monthFormat: 'numeric' | 'long' = 'long'
   ): string {
-    return new Intl.DateTimeFormat('fr-FR', {
-      day: 'numeric',
-      month: monthFormat,
-      year: 'numeric',
-    }).format(date);
+    if (Platform.OS === PlatformName.Windows) {
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = date.toLocaleString('fr-FR', { month: monthFormat });
+      const year = date.getFullYear();
+
+      return `${day} ${month} ${year}`;
+    } else {
+      // Use Intl.DateTimeFormat for all other platforms
+      return new Intl.DateTimeFormat('fr-FR', {
+        day: 'numeric',
+        month: monthFormat,
+        year: 'numeric',
+      }).format(date);
+    }
   }
 
   static formatDateForComparison(date: Date): Date {
