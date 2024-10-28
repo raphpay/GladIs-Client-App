@@ -11,7 +11,9 @@
     "macos": "npx react-native run-macos",
     "windows": "react-native run-windows",
     "update-windows": "npx react-native init-windows --overwrite",
-    "clean": "react-native-clean-project"
+    "clean": "react-native-clean-project",
+    "autolink windows": "react-native autolink-windows",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@dr.pogodin/react-native-fs": "^2.28.1",
@@ -26,6 +28,7 @@
     "eslint-config-prettier": "^9.1.0",
     "i18next": "^23.8.1",
     "jest-fetch-mock": "^3.0.3",
+    "patch-package": "^8.0.0",
     "pdf-lib": "^1.17.1",
     "react": "18.3.1",
     "react-i18next": "^14.0.1",

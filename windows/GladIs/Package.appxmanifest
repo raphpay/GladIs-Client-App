@@ -46,5 +46,9 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="documentsLibrary"/>
+    <uap:Capability Name="musicLibrary"/>
+    <uap:Capability Name="picturesLibrary"/>
+    <uap:Capability Name="videosLibrary"/>
   </Capabilities>
 </Package>
