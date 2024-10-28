@@ -197,10 +197,14 @@ function FormsDocumentScreen(
     setToastMessage(message);
   }
 
-  function exportToCSV(form: IForm) {
-    FormManager.getInstance().exportToCSV(form);
-    // Display toast
-    displayToast(t('smqSurvey.toast.csvCopied'));
+  async function exportToCSV(form: IForm) {
+    try {
+      await FormManager.getInstance().exportToCSV(form);
+      displayToast(t('forms.toast.csv.created'));
+    } catch (error) {
+      FormManager.getInstance().copyCSV(form);
+      displayToast(t('forms.toast.csv.copied'));
+    }
     // Hide alert
     setShowDialog(false);
     setShowRemoveConfirmationDialog(false);
