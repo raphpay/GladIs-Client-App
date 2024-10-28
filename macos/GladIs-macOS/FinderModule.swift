@@ -36,6 +36,23 @@ class FinderModule: NSObject {
             }
         }
     }
+    
+    @objc
+    func pickPDFFilePath(_ callback: @escaping RCTResponseSenderBlock) {
+        DispatchQueue.main.async {
+            let panel = NSOpenPanel()
+            panel.allowedFileTypes = ["pdf"]
+            panel.canChooseFiles = true
+            panel.canChooseDirectories = false
+            panel.allowsMultipleSelection = false
+            
+            if panel.runModal() == .OK, let url = panel.url {
+              callback([url.relativePath])
+            } else {
+                callback([])
+            }
+        }
+    }
 
     @objc
     func pickImage(_ callback: @escaping RCTResponseSenderBlock) {
@@ -52,6 +69,28 @@ class FinderModule: NSObject {
                   // Convert file data to base64 string
                   let base64String = fileData.base64EncodedString()
                   callback([base64String])
+              } catch {
+                  print("Error reading file data:", error)
+                  callback([])
+              }
+            } else {
+                callback([])
+            }
+        }
+    }
+
+    @objc
+    func pickImageFilePath(_ callback: @escaping RCTResponseSenderBlock) {
+        DispatchQueue.main.async {
+            let panel = NSOpenPanel()
+            panel.allowedFileTypes = ["jpg", "jpeg", "png", "heic", "heif"]
+            panel.canChooseFiles = true
+            panel.canChooseDirectories = false
+            panel.allowsMultipleSelection = false
+            
+            if panel.runModal() == .OK, let url = panel.url {
+              do {
+                  callback([url.relativePath])
               } catch {
                   print("Error reading file data:", error)
                   callback([])

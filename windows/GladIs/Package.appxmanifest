@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="84a2ebd7-e87e-47c0-9c19-f9d92577e5fd"
+    Name="bb9faf08-1201-4afe-a597-df1a21b2b97e"
     Publisher="CN=raphaelpayet"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="84a2ebd7-e87e-47c0-9c19-f9d92577e5fd" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="bb9faf08-1201-4afe-a597-df1a21b2b97e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>GladIs</DisplayName>
@@ -46,5 +46,9 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <uap:Capability Name="documentsLibrary"/>
+    <uap:Capability Name="musicLibrary"/>
+    <uap:Capability Name="picturesLibrary"/>
+    <uap:Capability Name="videosLibrary"/>
   </Capabilities>
 </Package>
