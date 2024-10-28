@@ -106,19 +106,20 @@ class RecordsDocumentScreenManager {
     fileName: string,
     destinationPath: string,
     token: IToken | null,
-  ) {
+  ): Promise<IDocument | undefined> {
     if (data) {
       try {
         const file: IFile = {
           data,
           filename: fileName,
         };
-        await DocumentServicePost.uploadViaBase64Data(
+        const doc = await DocumentServicePost.uploadViaBase64Data(
           file,
           fileName,
           destinationPath,
           token,
         );
+        return doc;
       } catch (error) {}
     }
   }

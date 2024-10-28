@@ -352,6 +352,7 @@ function RecordsDocumentScreen(
       const fileName = `${documentName.replace(/\s/g, '_')}.pdf`;
       let originPath: string = '';
       let fileData: string | undefined;
+      let createdDocument: IDocument | undefined;
       if (Platform.OS === PlatformName.Windows) {
         fileData =
           await RecordsDocumentScreenManager.getInstance().pickWindowsFile();
@@ -362,21 +363,25 @@ function RecordsDocumentScreen(
       setIsUploading(true);
       // Upload
       if (Platform.OS === PlatformName.Windows) {
-        await RecordsDocumentScreenManager.getInstance().uploadFileDataToAPI(
-          fileData,
-          fileName,
-          documentDestinationPath,
-          token,
-        );
+        createdDocument =
+          await RecordsDocumentScreenManager.getInstance().uploadFileDataToAPI(
+            fileData,
+            fileName,
+            documentDestinationPath,
+            token,
+          );
       } else {
-        const createdDocument =
+        createdDocument =
           await RecordsDocumentScreenManager.getInstance().uploadFileToAPI(
             fileName,
             originPath,
             documentDestinationPath,
             token,
           );
-        // Record log
+      }
+
+      // Record log
+      if (createdDocument) {
         await RecordsDocumentScreenManager.getInstance().recordLog(
           currentUser,
           currentClient,
