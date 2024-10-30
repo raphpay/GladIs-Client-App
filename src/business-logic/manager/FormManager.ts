@@ -1,4 +1,4 @@
-import { DownloadDirectoryPath, writeFile } from '@dr.pogodin/react-native-fs';
+// import { DownloadDirectoryPath, writeFile } from '@dr.pogodin/react-native-fs';
 import Clipboard from '@react-native-clipboard/clipboard';
 // Token
 import IToken from '../model/IToken';
@@ -45,13 +45,14 @@ class FormManager {
    * @returns void
    */
   async exportToCSV(form: IForm) {
-    const value = form.value;
-    try {
-      const destinationPath = DownloadDirectoryPath + `/${form.title}.csv`;
-      await writeFile(destinationPath, value);
-    } catch (error) {
-      throw error;
-    }
+    // const value = form.value;
+    // try {
+    //   const destinationPath = DownloadDirectoryPath + `/${form.title}.csv`;
+    //   await writeFile(destinationPath, value);
+    // } catch (error) {
+    //   throw error;
+    // }
+    this.copyCSV(form);
   }
 
   copyCSV(form: IForm) {
