@@ -13,12 +13,10 @@
     "update-windows": "npx react-native init-windows --overwrite",
     "clean": "react-native-clean-project",
     "autolink windows": "react-native autolink-windows",
-    "postinstall": "patch-package",
-    "doctor": "npx react-native doctor",
-    "reverse-tcp": "adb reverse tcp:8080 tcp:8080",
-    "reverse-tcp-1": "adb reverse tcp:8081 tcp:8081"
+    "postinstall": "patch-package"
   },
   "dependencies": {
+    "@dr.pogodin/react-native-fs": "^2.28.1",
     "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-clipboard/clipboard": "^1.13.2",
     "@react-navigation/native": "^6.1.9",
