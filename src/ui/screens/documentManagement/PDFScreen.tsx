@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, SafeAreaView } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -11,8 +11,8 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import IconButton from '../../components/Buttons/IconButton';
-import ContentUnavailableView from '../../components/ContentUnavailableView';
-import PDFViewer from '../../components/nativeComponents/PDFViewer';
+import TextButton from '../../components/Buttons/TextButton';
+import PDFViewer from '../../components/PDFViewer';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/documentManagement/PDFScreenStyles';
@@ -25,6 +25,8 @@ type PDFScreenProps = NativeStackScreenProps<
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // General
   const [pdfData, setPDFData] = useState<string[] | null>(null);
+  const [currentPage, setCurrentPage] = useState<number | null>(null);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   // Props
   const { navigation } = props;
@@ -41,16 +43,29 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
+  function handlePageChange(page: number) {
+    setCurrentPage(page);
+  }
+
+  // Async Methods
+  async function loadData() {
+    setIsLoading(true);
+    const data = await PDFScreenManager.getInstance().loadData(
+      documentInput,
+      token,
+    );
+    setPDFData(data);
+    if (data) {
+      setCurrentPage(0);
+      setTotalPages(data.length);
+    }
+    setIsLoading(false);
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      setIsLoading(true);
-      const data = await PDFScreenManager.getInstance().loadData(
-        documentInput,
-        token,
-      );
-      setPDFData(data);
-      setIsLoading(false);
+      await loadData();
     }
     init();
   }, []);
@@ -58,34 +73,57 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // Components
   function PDFView() {
     return (
+      <View style={{ flex: 1 }}>
+        {pdfData !== null && currentPage !== null && (
+          <PDFViewer pageData={pdfData[currentPage]} />
+        )}
+      </View>
+    );
+  }
+
+  function PageIndicator() {
+    return (
       <>
-        {pdfData ? (
-          <PDFViewer pdfPages={pdfData} />
-        ) : (
-          <ContentUnavailableView
-            title={t('document.noDocumentFound.title')}
-            message={t('document.noDocumentFound.message')}
-            image={docIcon}
-          />
+        {currentPage !== null && totalPages !== null && (
+          <View style={styles.pageIndicator}>
+            <TextButton
+              title={t('components.buttons.previous')}
+              width={100}
+              onPress={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 0}
+              extraStyle={styles.pageIndicatorButton}
+            />
+            <Text style={styles.pageIndicatorText}>
+              Page {currentPage + 1} of {totalPages}
+            </Text>
+            <TextButton
+              title={t('components.buttons.next')}
+              width={80}
+              onPress={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages - 1}
+              extraStyle={styles.pageIndicatorButton}
+            />
+          </View>
         )}
       </>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ flex: 1 }}>
       {isLoading ? (
         <ActivityIndicator size="large" color={Colors.primary} />
       ) : (
         PDFView()
       )}
+      {PageIndicator()}
       <IconButton
         title={t('components.buttons.back')}
         icon={backIcon}
         onPress={navigateBack}
         style={styles.backButton}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 

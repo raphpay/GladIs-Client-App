@@ -447,7 +447,9 @@
       "addDocument": "Add a document",
       "addTab": "Add a tab",
       "delete": "Delete",
-      "save": "Save"
+      "save": "Save",
+      "next": "Next",
+      "previous": "Previous"
     },
     "dialog": {
       "addDocument": {
