@@ -1,31 +1,23 @@
 import React from 'react';
-import { Image, ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import Pdf from 'react-native-pdf';
 
 import styles from '../../assets/styles/components/PDFViewerStyles';
 
 interface PDFViewerProps {
-  pdfPages: string[]; // Array of base64 encoded image strings
+  pageData: string;
 }
 
-// TODO: Find why it doesn't display on Windows ( works with dummy image from the web )
 function PDFViewer(props: PDFViewerProps): React.JSX.Element {
-  const { pdfPages } = props;
+  const { pageData } = props;
+
+  const source = { uri: `data:application/pdf;base64,${pageData}` };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {pdfPages.map((imageData: string, index: number) => (
-        <View key={index} style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            resizeMode="contain"
-            source={{ uri: `data:image/png;base64,${imageData}` }}
-          />
-        </View>
-      ))}
-    </ScrollView>
+    <View style={styles.container}>
+      <Pdf source={source} style={styles.pdf} />
+    </View>
   );
 }
-
-// Example usage
-// const pdfPages: string[] = ['base64Image1', 'base64Image2', ...]; // Replace with your base64
 
 export default PDFViewer;
