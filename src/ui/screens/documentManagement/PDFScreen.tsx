@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, SafeAreaView } from 'react-native';
+import { ActivityIndicator, SafeAreaView, Text, View } from 'react-native';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -11,6 +11,7 @@ import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
 
 import IconButton from '../../components/Buttons/IconButton';
+import TextButton from '../../components/Buttons/TextButton';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import PDFViewer from '../../components/nativeComponents/PDFViewer';
 
@@ -24,8 +25,11 @@ type PDFScreenProps = NativeStackScreenProps<
 
 function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // General
-  const [pdfData, setPDFData] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // PDF
+  const [pdfData, setPDFData] = useState<string[] | null>(null);
+  const [currentPage, setCurrentPage] = useState<number | null>(null);
+  const [totalPages, setTotalPages] = useState<number | null>(null);
   // Props
   const { navigation } = props;
   const { documentInput } = props.route.params;
@@ -41,16 +45,25 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
     navigation.goBack();
   }
 
+  // Async Methods
+  async function loadData() {
+    setIsLoading(true);
+    const data = await PDFScreenManager.getInstance().loadData(
+      documentInput,
+      token,
+    );
+    if (data) {
+      setPDFData(data);
+      setIsLoading(false);
+      setCurrentPage(0);
+      setTotalPages(data.length);
+    }
+  }
+
   // Lifecycle Methods
   useEffect(() => {
     async function init() {
-      setIsLoading(true);
-      const data = await PDFScreenManager.getInstance().loadData(
-        documentInput,
-        token,
-      );
-      setPDFData(data);
-      setIsLoading(false);
+      await loadData();
     }
     init();
   }, []);
@@ -58,15 +71,44 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
   // Components
   function PDFView() {
     return (
-      <>
-        {pdfData ? (
-          <PDFViewer pdfPages={pdfData} />
+      <View style={{ flex: 1 }}>
+        {pdfData !== null && currentPage !== null ? (
+          <PDFViewer pageData={pdfData[currentPage]} />
         ) : (
           <ContentUnavailableView
             title={t('document.noDocumentFound.title')}
             message={t('document.noDocumentFound.message')}
             image={docIcon}
           />
+        )}
+      </View>
+    );
+  }
+
+  function PageIndicator() {
+    return (
+      <>
+        {currentPage !== null && totalPages !== null && (
+          <View style={styles.pageIndicator}>
+            <TextButton
+              title={t('components.buttons.previous')}
+              width={100}
+              onPress={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 0}
+              extraStyle={styles.pageIndicatorButton}
+            />
+            <Text style={styles.pageIndicatorText}>
+              Page {currentPage + 1} {t('components.pageIndicator.of')}{' '}
+              {totalPages}
+            </Text>
+            <TextButton
+              title={t('components.buttons.next')}
+              width={80}
+              onPress={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages - 1}
+              extraStyle={styles.pageIndicatorButton}
+            />
+          </View>
         )}
       </>
     );
@@ -85,6 +127,7 @@ function PDFScreen(props: PDFScreenProps): React.JSX.Element {
         onPress={navigateBack}
         style={styles.backButton}
       />
+      {PageIndicator()}
     </SafeAreaView>
   );
 }
