@@ -21,29 +21,41 @@ import ErrorDialog from '../../components/Dialogs/ErrorDialog';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
-type DashboardScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.DashboardScreen>;
+type DashboardScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.DashboardScreen
+>;
 
 function DashboardScreen(props: DashboardScreenProps): any {
+  // Props
   const { navigation } = props;
+  // General
   const [searchText, setSearchText] = useState<string>('');
   const [oldPassword, setOldPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
+  // Dialogs
   const [dialogDescription, setDialogDescription] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
+  const [showWarningDialog, setShowWarningDialog] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
-  
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
+
   const plusIcon = require('../../assets/images/plus.png');
-  
+
   const { t } = useTranslation();
 
-  const { currentUser, isAdmin } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, isAdmin } = useAppSelector(
+    (state: RootState) => state.users,
+  );
   const { token } = useAppSelector((state: RootState) => state.tokens);
 
-  const searchTextPlaceholder = isAdmin ? t('dashboard.searchTextPlaceholder.admin') : t('dashboard.searchTextPlaceholder.client');
+  const searchTextPlaceholder = isAdmin
+    ? t('dashboard.searchTextPlaceholder.admin')
+    : t('dashboard.searchTextPlaceholder.client');
 
   // Sync Methods
   function navigateToClientList() {
@@ -56,6 +68,16 @@ function DashboardScreen(props: DashboardScreenProps): any {
     setShowToast(true);
   }
 
+  function handleKeepingTemporaryPassword() {
+    setShowDialog(false);
+    setShowWarningDialog(true);
+  }
+
+  function handleCancelWarningDialog() {
+    setShowDialog(true);
+    setShowWarningDialog(false);
+  }
+
   // Async Methods
   async function submitPasswordChange() {
     if (oldPassword.length !== 0 && newPassword.length !== 0) {
@@ -64,8 +86,13 @@ function DashboardScreen(props: DashboardScreenProps): any {
       } else {
         if (currentUser) {
           try {
-            const userID = currentUser.id as string; 
-            await UserServicePut.changePassword(userID, oldPassword, newPassword, token);
+            const userID = currentUser.id as string;
+            await UserServicePut.changePassword(
+              userID,
+              oldPassword,
+              newPassword,
+              token,
+            );
             await UserServicePut.setUserFirstConnectionToFalse(userID, token);
             setShowDialog(false);
             displayToast(t('api.success.passwordChanged'), false);
@@ -80,19 +107,21 @@ function DashboardScreen(props: DashboardScreenProps): any {
 
   async function loadView() {
     if (currentUser) {
-      setDialogDescription(t('components.dialog.firstConnection.description'))
+      setDialogDescription(t('components.dialog.firstConnection.description'));
       setShowDialog(currentUser.firstConnection ?? false);
     } else {
-      const userID = await CacheService.getInstance().retrieveValue<string>(CacheKeys.currentUserID);
+      const userID = await CacheService.getInstance().retrieveValue<string>(
+        CacheKeys.currentUserID,
+      );
       const user = await UserServiceGet.getUserByID(userID as string, token);
-      setDialogDescription(t('components.dialog.firstConnection.description'))
+      setDialogDescription(t('components.dialog.firstConnection.description'));
       setShowDialog(user.firstConnection ?? false);
     }
   }
 
   // Lifecycle Methods
   useEffect(() => {
-     async function init() {
+    async function init() {
       await loadView();
     }
     init();
@@ -102,13 +131,14 @@ function DashboardScreen(props: DashboardScreenProps): any {
   function appContainerChildren() {
     return (
       <>
-        {
-            isAdmin ? (
-              <DashboardAdminGrid searchText={searchText} />
-            ) : (
-              <DashboardClientGrid searchText={searchText} setShowErrorDialog={setShowErrorDialog}/>
-            )
-          }
+        {isAdmin ? (
+          <DashboardAdminGrid searchText={searchText} />
+        ) : (
+          <DashboardClientGrid
+            searchText={searchText}
+            setShowErrorDialog={setShowErrorDialog}
+          />
+        )}
       </>
     );
   }
@@ -116,40 +146,64 @@ function DashboardScreen(props: DashboardScreenProps): any {
   function dialogContent() {
     return (
       <>
-        {
-          showDialog && (
-            <Dialog
-              title={t('components.dialog.firstConnection.title')}
-              description={dialogDescription}
-              confirmTitle={t('components.dialog.firstConnection.confirmButton')}
-              isConfirmDisabled={oldPassword.length === 0 || newPassword.length === 0}
-              onConfirm={submitPasswordChange}
-              onCancel={() => setShowDialog(false)}
-              isCancelAvailable={false}
-            >
-              <>
-                <GladisTextInput 
-                  value={oldPassword}
-                  placeholder={t('components.dialog.firstConnection.temporary')}
-                  onValueChange={setOldPassword}
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
-                  showVisibilityButton={true}
-                  width={'100%'}
-                />
-                <GladisTextInput 
-                  value={newPassword}
-                  placeholder={t('components.dialog.firstConnection.new')}
-                  onValueChange={setNewPassword}
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
-                  showVisibilityButton={true}
-                  width={'100%'}
-                />
-              </>
-            </Dialog>
-          )
-        }
+        {showDialog && (
+          <Dialog
+            title={t('components.dialog.firstConnection.title')}
+            description={dialogDescription}
+            confirmTitle={t('components.dialog.firstConnection.confirmButton')}
+            isConfirmDisabled={
+              oldPassword.length === 0 || newPassword.length === 0
+            }
+            onConfirm={submitPasswordChange}
+            onCancel={() => setShowDialog(false)}
+            isCancelAvailable={false}
+            extraConfirmButtonTitle={t(
+              'components.dialog.firstConnection.extraConfirmButton',
+            )}
+            extraConfirmButtonAction={handleKeepingTemporaryPassword}>
+            <>
+              <GladisTextInput
+                value={oldPassword}
+                placeholder={t('components.dialog.firstConnection.temporary')}
+                onValueChange={setOldPassword}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                showVisibilityButton={true}
+                width={'100%'}
+              />
+              <GladisTextInput
+                value={newPassword}
+                placeholder={t('components.dialog.firstConnection.new')}
+                onValueChange={setNewPassword}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                showVisibilityButton={true}
+                width={'100%'}
+              />
+            </>
+          </Dialog>
+        )}
+      </>
+    );
+  }
+
+  function WarningDialogContent() {
+    return (
+      <>
+        {showWarningDialog && (
+          <Dialog
+            title={t('components.dialog.firstConnection.warning.title')}
+            description={t(
+              'components.dialog.firstConnection.warning.description',
+            )}
+            confirmTitle={t('components.dialog.firstConnection.confirmButton')}
+            cancelTitle={t('components.dialog.firstConnection.warning.cancel')}
+            onConfirm={() => setShowWarningDialog(false)}
+            isConfirmAvailable={true}
+            onCancel={handleCancelWarningDialog}
+            isCancelAvailable={true}
+          />
+        )}
       </>
     );
   }
@@ -157,47 +211,43 @@ function DashboardScreen(props: DashboardScreenProps): any {
   function errorDialogContent() {
     return (
       <>
-        {
-          showErrorDialog && (
-            <ErrorDialog
-              title={t('errors.modules.title')}
-              description={t('errors.modules.description')}
-              cancelTitle={t('errors.modules.cancelButton')}
-              onCancel={() => setShowErrorDialog(false)}
-            />
-          )
-        }
+        {showErrorDialog && (
+          <ErrorDialog
+            title={t('errors.modules.title')}
+            description={t('errors.modules.description')}
+            cancelTitle={t('errors.modules.cancelButton')}
+            onCancel={() => setShowErrorDialog(false)}
+          />
+        )}
       </>
-    )
+    );
   }
-  
+
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
-    )
+    );
   }
 
   return (
     <>
-      <AppContainer 
+      <AppContainer
         mainTitle={t('dashboard.adminTitle')}
         searchText={searchText}
         setSearchText={setSearchText}
         showSearchText={true}
         showSettings={true}
         searchTextPlaceholder={searchTextPlaceholder}
-        adminButton={(
+        adminButton={
           isAdmin ? (
             <IconButton
               title={t('components.buttons.addUser')}
@@ -205,14 +255,15 @@ function DashboardScreen(props: DashboardScreenProps): any {
               onPress={navigateToClientList}
             />
           ) : undefined
-        )}
+        }
         children={appContainerChildren()}
       />
       {dialogContent()}
       {errorDialogContent()}
       {ToastContent()}
+      {WarningDialogContent()}
     </>
-  )
+  );
 }
 
 export default DashboardScreen;

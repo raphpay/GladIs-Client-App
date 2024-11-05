@@ -1,10 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Colors } from '../../assets/colors/colors';
 import styles from '../../assets/styles/components/DialogStyles';
@@ -22,11 +18,10 @@ type DialogProps = {
   descriptionChildren?: JSX.Element;
   children?: JSX.Element;
   extraConfirmButtonTitle?: string;
-  extraConfirmButtonAction?: () => void,
+  extraConfirmButtonAction?: () => void;
 };
 
 function Dialog(props: DialogProps): React.JSX.Element {
-
   const {
     title,
     description,
@@ -48,46 +43,53 @@ function Dialog(props: DialogProps): React.JSX.Element {
     <View style={styles.overlay}>
       <View style={styles.dialog}>
         <Text style={styles.title}>{title}</Text>
-        {
-          descriptionChildren ? (
-            descriptionChildren
-          ) : (
-            <Text style={styles.description}>{description}</Text>
-          )
-        }
+        {descriptionChildren ? (
+          descriptionChildren
+        ) : (
+          <Text style={styles.description}>{description}</Text>
+        )}
         {children}
         <View style={styles.buttonContainer}>
-          {
-            isCancelAvailable ? (
+          {isCancelAvailable ? (
+            <TouchableOpacity style={styles.dialogButton} onPress={onCancel}>
+              <Text style={[styles.buttonText, { color: Colors.danger }]}>
+                {cancelTitle ?? t('components.dialog.cancel')}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <View style={{ flex: 1 }} />
+          )}
+          {isConfirmAvailable == true || isConfirmAvailable == undefined ? (
+            <View style={styles.confirmButtonsContainer}>
               <TouchableOpacity
                 style={styles.dialogButton}
-                onPress={onCancel}
-              >
-                <Text style={[styles.buttonText, { color: Colors.danger }]}>{cancelTitle ?? t('components.dialog.cancel')}</Text>
+                onPress={onConfirm}
+                disabled={isConfirmDisabled}>
+                <Text
+                  style={[
+                    styles.buttonText,
+                    {
+                      color: isConfirmDisabled
+                        ? Colors.inactive
+                        : Colors.primary,
+                    },
+                  ]}>
+                  {confirmTitle ?? t('components.dialog.confirm')}
+                </Text>
               </TouchableOpacity>
-            ) : (
-              <View style={{flex: 1}}/>
-            )
-          }
-          {
-            isConfirmAvailable == true || isConfirmAvailable == undefined ? (
-              <View style={styles.confirmButtonsContainer}>
+              {extraConfirmButtonAction && extraConfirmButtonTitle && (
                 <TouchableOpacity
-                  style={styles.dialogButton}
-                  onPress={onConfirm}
-                  disabled={isConfirmDisabled}>
-                  <Text style={[styles.buttonText, { color: Colors.primary }]}>{confirmTitle ?? t('components.dialog.confirm')}</Text>
+                  style={styles.extraButton}
+                  onPress={extraConfirmButtonAction}>
+                  <Text style={[styles.buttonText, { color: Colors.primary }]}>
+                    {extraConfirmButtonTitle}
+                  </Text>
                 </TouchableOpacity>
-                {extraConfirmButtonAction && extraConfirmButtonTitle && (
-                  <TouchableOpacity style={styles.extraButton} onPress={extraConfirmButtonAction}>
-                    <Text style={[styles.buttonText, { color: Colors.primary }]}>{extraConfirmButtonTitle}</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            ) : (
-              <View style={{flex: 1}}/>
-            )
-          }
+              )}
+            </View>
+          ) : (
+            <View style={{ flex: 1 }} />
+          )}
         </View>
       </View>
     </View>
