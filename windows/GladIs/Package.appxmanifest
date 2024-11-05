@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="bb9faf08-1201-4afe-a597-df1a21b2b97e"
-    Publisher="CN=raphaelpayet"
-    Version="1.0.0.0" />
+    Name="MDConsulting.Glad-Is"
+    Publisher="CN=464F1200-3CB7-41F6-B266-8B1A66B621DF"
+    Version="1.1.4.0" />
 
-  <mp:PhoneIdentity PhoneProductId="bb9faf08-1201-4afe-a597-df1a21b2b97e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="778480f2-fab0-4069-b927-2a2ffa36bf8d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>GladIs</DisplayName>
-    <PublisherDisplayName>raphaelpayet</PublisherDisplayName>
+    <DisplayName>Glad-Is</DisplayName>
+    <PublisherDisplayName>MDConsulting</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -33,14 +33,26 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="GladIs.App">
       <uap:VisualElements
-        DisplayName="GladIs"
+        DisplayName="Glad-Is"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="GladIs"
         BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileOpenPicker">
+          <uap:FileOpenPicker>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.pdf</uap:FileType>
+              <uap:FileType>.png</uap:FileType>
+              <uap:FileType>.jpg</uap:FileType>
+              <uap:FileType>.jpeg</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileOpenPicker>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 
