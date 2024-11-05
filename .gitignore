@@ -84,3 +84,6 @@ protected-contants.ts
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Gradlew files ( ? ) - Windows problem
+android/gradlew
