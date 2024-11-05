@@ -469,7 +469,13 @@
         "description": "The password should contain at least 12 characters, including 1 uppercase, 1 figure, and 1 special character.",
         "temporary": "Temporary password",
         "new": "New password",
-        "confirmButton": "Confirm"
+        "confirmButton": "Confirm",
+        "extraConfirmButton": "Keep temporary password",
+        "warning": {
+          "title": "Warning",
+          "description": "You will still have your temporary password. You can change it later in the app settings",
+          "cancel": "Back"
+        }
       },
       "technicalDocTab": {
         "title": "Add a tab to this area",
