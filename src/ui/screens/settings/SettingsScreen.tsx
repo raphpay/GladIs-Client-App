@@ -10,10 +10,21 @@ import IAction from '../../../business-logic/model/IAction';
 import { IUserUpdateInput } from '../../../business-logic/model/IUser';
 import AuthenticationServiceDelete from '../../../business-logic/services/AuthenticationService/AuthenticationService.delete';
 import UserServicePut from '../../../business-logic/services/UserService/UserService.put';
-import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
-import { removeModule, setClientListCount, setPendingUserListCount } from '../../../business-logic/store/slices/appStateReducer';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../business-logic/store/hooks';
+import {
+  removeModule,
+  setClientListCount,
+  setPendingUserListCount,
+} from '../../../business-logic/store/slices/appStateReducer';
 import { removeToken } from '../../../business-logic/store/slices/tokenReducer';
-import { removeCurrentClient, removeCurrentUser, setCurrentUser } from '../../../business-logic/store/slices/userReducer';
+import {
+  removeCurrentClient,
+  removeCurrentUser,
+  setCurrentUser,
+} from '../../../business-logic/store/slices/userReducer';
 import { RootState } from '../../../business-logic/store/store';
 
 import AppContainer from '../../components/AppContainer/AppContainer';
@@ -24,7 +35,10 @@ import Toast from '../../components/Toast';
 
 import styles from '../../assets/styles/settings/SettingsScreenStyles';
 
-type SettingsScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SettingsScreen>;
+type SettingsScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.SettingsScreen
+>;
 
 function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const { t } = useTranslation();
@@ -37,14 +51,22 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   const [newPassword, setNewPassword] = useState<string>('');
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState<boolean>(false);
-  const [showModifyInfosDialog, setShowModifyInfosDialog] = useState<boolean>(false);
+  const [showModifyInfosDialog, setShowModifyInfosDialog] =
+    useState<boolean>(false);
+  const [showTemporaryPasswordDialog, setShowTemporaryPasswordDialog] =
+    useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
   // User modification
-  const [updatedEmail, setUpdatedEmail] = useState<string>(currentUser?.email as string);
-  const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState<string>(currentUser?.phoneNumber as string);
+  const [updatedEmail, setUpdatedEmail] = useState<string>(
+    currentUser?.email as string,
+  );
+  const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState<string>(
+    currentUser?.phoneNumber as string,
+  );
 
   const settingsActions: IAction[] = [
     {
@@ -55,23 +77,27 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     {
       title: t('settings.userModification.title'),
       onPress: () => setShowModifyInfosDialog(true),
-      isDisabled: false
+      isDisabled: false,
     },
     {
       title: t('settings.modifyPassword'),
       onPress: () => showModifyPasswordDialog(),
-      isDisabled: false
+      isDisabled: false,
     },
     {
       title: t('settings.logout'),
       onPress: () => displayLogoutDialog(),
-      isDisabled: false
+      isDisabled: false,
     },
   ];
 
   // Sync Methods
   function showModifyPasswordDialog() {
-    setShowDialog(true);
+    if (currentUser?.firstConnection) {
+      setShowTemporaryPasswordDialog(true);
+    } else {
+      setShowDialog(true);
+    }
   }
 
   function displayLogoutDialog() {
@@ -79,7 +105,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   }
 
   function navigateBack() {
-    navigation.goBack()
+    navigation.goBack();
   }
 
   function removeAllReduxStates() {
@@ -104,12 +130,43 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   async function submitPasswordChange() {
     if (oldPassword.length !== 0 && newPassword.length !== 0) {
       try {
-        await UserServicePut.changePassword(currentUser?.id as string, oldPassword, newPassword, token);
+        await UserServicePut.changePassword(
+          currentUser?.id as string,
+          oldPassword,
+          newPassword,
+          token,
+        );
         setShowDialog(false);
         displayToast(t('api.success.passwordChanged'), false);
       } catch (error) {
         const errorMessage = (error as Error).message;
         displayToast(t(`errors.api.${errorMessage}`), true);
+      }
+    }
+  }
+
+  async function submitTemporaryPasswordChange() {
+    if (oldPassword.length !== 0 && newPassword.length !== 0) {
+      if (oldPassword === newPassword) {
+        displayToast(t('errors.api.unauthorized.password.samePassword'), true);
+      } else {
+        if (currentUser) {
+          try {
+            const userID = currentUser.id as string;
+            await UserServicePut.changePassword(
+              userID,
+              oldPassword,
+              newPassword,
+              token,
+            );
+            await UserServicePut.setUserFirstConnectionToFalse(userID, token);
+            setShowDialog(false);
+            displayToast(t('api.success.passwordChanged'), false);
+          } catch (error) {
+            const errorMessage = (error as Error).message as string;
+            displayToast(t(`errors.api.${errorMessage}`), true);
+          }
+        }
       }
     }
   }
@@ -129,7 +186,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
     const modifiedUser: IUserUpdateInput = {
       email: updatedEmail,
       phoneNumber: updatedPhoneNumber,
-    }
+    };
 
     let modificationCount = 0;
 
@@ -144,7 +201,11 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
 
     if (modificationCount !== 0) {
       try {
-        const updatedUser = await UserServicePut.updateUserInfos(currentUserID, modifiedUser, token);
+        const updatedUser = await UserServicePut.updateUserInfos(
+          currentUserID,
+          modifiedUser,
+          token,
+        );
         setShowModifyInfosDialog(false);
         displayToast(t('settings.userModification.success'));
         dispatch(setCurrentUser(updatedUser));
@@ -156,7 +217,7 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       displayToast(t('settings.userModification.noModification'), true);
     }
   }
-  
+
   // Components
   function additionalMentions() {
     // TODO: Add app version number to API
@@ -165,46 +226,89 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
         <Text style={styles.mentionText}>{t('legal.appName')} v 0.1.0</Text>
         <Text style={styles.mentionText}>{t('legal.developer')}</Text>
       </View>
-    )
+    );
   }
 
   function dialogContent() {
     return (
       <>
-        {
-          showDialog && (
-            <Dialog
-              title={t('settings.dialog.modifyPassword.title')}
-              description={t('settings.dialog.modifyPassword.description')}
-              confirmTitle={t('settings.dialog.modifyPassword.confirmButton')}
-              isConfirmDisabled={oldPassword.length === 0 || newPassword.length === 0}
-              onConfirm={submitPasswordChange}
-              isCancelAvailable={true}
-              onCancel={() => setShowDialog(false)}
-            >
-              <>
-                <GladisTextInput 
-                  value={oldPassword}
-                  placeholder={t('settings.dialog.modifyPassword.oldPasswordPlaceholder')}
-                  onValueChange={setOldPassword}
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
-                  showVisibilityButton={true}
-                  width={'100%'}
-                />
-                <GladisTextInput 
-                  value={newPassword}
-                  placeholder={t('settings.dialog.modifyPassword.newPasswordPlaceholder')}
-                  onValueChange={setNewPassword}
-                  secureTextEntry={true}
-                  autoCapitalize={'none'}
-                  showVisibilityButton={true}
-                  width={'100%'}
-                />
-              </>
-            </Dialog>
-          )
-        }
+        {showDialog && (
+          <Dialog
+            title={t('settings.dialog.modifyPassword.title')}
+            description={t('settings.dialog.modifyPassword.description')}
+            confirmTitle={t('settings.dialog.modifyPassword.confirmButton')}
+            isConfirmDisabled={
+              oldPassword.length === 0 || newPassword.length === 0
+            }
+            onConfirm={submitPasswordChange}
+            isCancelAvailable={true}
+            onCancel={() => setShowDialog(false)}>
+            <>
+              <GladisTextInput
+                value={oldPassword}
+                placeholder={t(
+                  'settings.dialog.modifyPassword.oldPasswordPlaceholder',
+                )}
+                onValueChange={setOldPassword}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                showVisibilityButton={true}
+                width={'100%'}
+              />
+              <GladisTextInput
+                value={newPassword}
+                placeholder={t(
+                  'settings.dialog.modifyPassword.newPasswordPlaceholder',
+                )}
+                onValueChange={setNewPassword}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                showVisibilityButton={true}
+                width={'100%'}
+              />
+            </>
+          </Dialog>
+        )}
+      </>
+    );
+  }
+
+  function TemporaryPasswordDialogContent() {
+    return (
+      <>
+        {showTemporaryPasswordDialog && (
+          <Dialog
+            title={t('components.dialog.firstConnection.title')}
+            description={t('components.dialog.firstConnection.description')}
+            confirmTitle={t('components.dialog.firstConnection.confirmButton')}
+            isConfirmDisabled={
+              oldPassword.length === 0 || newPassword.length === 0
+            }
+            onConfirm={submitTemporaryPasswordChange}
+            onCancel={() => setShowTemporaryPasswordDialog(false)}
+            isCancelAvailable={true}>
+            <>
+              <GladisTextInput
+                value={oldPassword}
+                placeholder={t('components.dialog.firstConnection.temporary')}
+                onValueChange={setOldPassword}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                showVisibilityButton={true}
+                width={'100%'}
+              />
+              <GladisTextInput
+                value={newPassword}
+                placeholder={t('components.dialog.firstConnection.new')}
+                onValueChange={setNewPassword}
+                secureTextEntry={true}
+                autoCapitalize={'none'}
+                showVisibilityButton={true}
+                width={'100%'}
+              />
+            </>
+          </Dialog>
+        )}
       </>
     );
   }
@@ -212,50 +316,45 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
   function logoutDialog() {
     return (
       <>
-        {
-          showLogoutDialog && (
-            <Dialog 
-              title={t('components.dialog.logout.title')}
-              confirmTitle={t('components.dialog.logout.confirmButton')}
-              onConfirm={logout}
-              isCancelAvailable={true}
-              onCancel={() => setShowLogoutDialog(false)}
-            />
-          )
-        }
+        {showLogoutDialog && (
+          <Dialog
+            title={t('components.dialog.logout.title')}
+            confirmTitle={t('components.dialog.logout.confirmButton')}
+            onConfirm={logout}
+            isCancelAvailable={true}
+            onCancel={() => setShowLogoutDialog(false)}
+          />
+        )}
       </>
-    )
+    );
   }
 
   function modifyInfosDialog() {
     return (
       <>
-      {
-        showModifyInfosDialog && (
+        {showModifyInfosDialog && (
           <Dialog
             title={t('settings.userModification.title')}
             description={t('settings.userModification.description')}
             onConfirm={updateUserInfos}
             isCancelAvailable={true}
-            onCancel={() => setShowModifyInfosDialog(false)}
-          >
+            onCancel={() => setShowModifyInfosDialog(false)}>
             <>
-              <GladisTextInput 
+              <GladisTextInput
                 value={updatedEmail}
                 placeholder={t('quotation.email')}
                 onValueChange={setUpdatedEmail}
               />
-              <GladisTextInput 
+              <GladisTextInput
                 value={updatedPhoneNumber}
                 placeholder={t('quotation.phone')}
                 onValueChange={setUpdatedPhoneNumber}
               />
             </>
           </Dialog>
-        )
-      }
+        )}
       </>
-    )
+    );
   }
 
   function SettingsActionGridItem(item: IAction) {
@@ -263,29 +362,28 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
       <TouchableOpacity
         disabled={item.isDisabled}
         style={styles.actionContainer}
-        onPress={item.onPress}
-      >
-        <Text style={item.isDisabled ? styles.text : styles.actionText}>{item.title}</Text>
+        onPress={item.onPress}>
+        <Text style={item.isDisabled ? styles.text : styles.actionText}>
+          {item.title}
+        </Text>
         <View style={styles.separator} />
       </TouchableOpacity>
-    )
+    );
   }
 
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
-    )
+    );
   }
 
   return (
@@ -296,17 +394,17 @@ function SettingsScreen(props: SettingsScreenProps): React.JSX.Element {
         showSettings={false}
         showBackButton={true}
         navigateBack={navigateBack}
-        additionalComponent={additionalMentions()}
-      >
+        additionalComponent={additionalMentions()}>
         <Grid
           data={settingsActions}
-          renderItem={(renderItem) => SettingsActionGridItem(renderItem.item)}
+          renderItem={renderItem => SettingsActionGridItem(renderItem.item)}
         />
       </AppContainer>
       {dialogContent()}
       {logoutDialog()}
       {modifyInfosDialog()}
       {ToastContent()}
+      {TemporaryPasswordDialogContent()}
     </>
   );
 }
