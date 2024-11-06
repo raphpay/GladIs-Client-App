@@ -43,6 +43,7 @@ import {
   setSMQScreenSource,
 } from '../../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../../business-logic/store/store';
+import DataUtils from '../../../../business-logic/utils/DataUtils';
 import Utils from '../../../../business-logic/utils/Utils';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
@@ -271,7 +272,7 @@ function RecordsDocumentScreen(
       );
       if (cachedData === null || cachedData == undefined) {
         let docData = await DocumentServiceGet.download(document.id, token);
-        docData = Utils.changeMimeType(docData, 'application/pdf');
+        docData = DataUtils.changeMimeType(docData, 'application/pdf');
         await CacheService.getInstance().storeValue(
           document.id as string,
           docData,

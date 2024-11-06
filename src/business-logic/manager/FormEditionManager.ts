@@ -9,8 +9,8 @@ import UserType from '../model/enums/UserType';
 import FormServicePost from '../services/FormService/FormService.post';
 import FormServicePut from '../services/FormService/FormService.put';
 import UserServiceGet from '../services/UserService/UserService.get';
+import DataUtils from '../utils/DataUtils';
 import DateUtils from '../utils/DateUtils';
-import Utils from '../utils/Utils';
 // Logs
 import { IDocumentActivityLogInput } from '../model/IDocumentActivityLog';
 import DocumentLogAction from '../model/enums/DocumentLogAction';
@@ -127,7 +127,7 @@ class FormEditionManager {
    */
   async loadGrid(form: IForm | undefined) {
     if (form) {
-      const gridFromCSV = Utils.csvToGrid(form.value);
+      const gridFromCSV = DataUtils.csvToGrid(form.value);
       this.setGrid(gridFromCSV);
     }
   }
@@ -183,7 +183,7 @@ class FormEditionManager {
           );
         }
       }
-      const gridFromCSV = Utils.csvToGrid(form.value);
+      const gridFromCSV = DataUtils.csvToGrid(form.value);
       this.setGrid(gridFromCSV);
     } else {
       this.setFormCreation(DateUtils.formatStringDate(new Date(), 'numeric'));
