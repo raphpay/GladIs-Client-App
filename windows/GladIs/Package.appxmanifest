@@ -9,7 +9,7 @@
   <Identity
     Name="MDConsulting.Glad-Is"
     Publisher="CN=464F1200-3CB7-41F6-B266-8B1A66B621DF"
-    Version="0.0.1.0" />
+    Version="1.1.5.0" />
 
   <mp:PhoneIdentity PhoneProductId="b9374a94-0d9f-4783-9038-d9444e840a7d" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
