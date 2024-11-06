@@ -477,7 +477,13 @@
         "description": "Le mot de passe doit contenir au moins 12 caractères, dont 1 majuscule, 1 chiffre et 1 caractère spécial.",
         "temporary": "Mot de passe temporaire",
         "new": "Nouveau mot de passe",
-        "confirmButton": "Confirmer"
+        "confirmButton": "Confirmer",
+        "extraConfirmButton": "Garder le mot de passe temporaire",
+        "warning": {
+          "title": "Attention",
+          "description": "Vous aurez toujours votre mot de passe temporaire. Vous pouvez le changer plus tard dans les paramètres de l'application.",
+          "cancel": "Retour"
+        }
       },
       "technicalDocTab": {
         "title": "Ajouter un onglet à cette région",
