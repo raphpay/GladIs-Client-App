@@ -156,87 +156,6 @@ class Utils {
   }
 
   /**
-   * Formats a month number to its corresponding name.
-   * @param month - The month number to format.
-   * @returns The name of the month.
-   */
-  static formatMonth(month: number): string {
-    const newDate = new Date(new Date().getFullYear(), month, 1);
-    return new Intl.DateTimeFormat('fr-FR', { month: 'long' }).format(newDate);
-  }
-
-  /**
-   * Formats a date to a string in the format 'YYYY-MM-DD'.
-   * @param date - The date to format.
-   * @returns A string representation of the date in the format 'YYYY-MM-DD'.
-   */
-  static formatDate(date: Date): string {
-    const year = date.getFullYear();
-    // Months are zero-indexed, so add 1 for correct month number
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
-
-  /**
-   * Formats a date to a string in the format 'DD/MM/YYYY'.
-   * @param date - The date to format.
-   * @returns A string representation of the date in the format 'DD/MM/YYYY'.
-   */
-  static formatStringDate(
-    date: Date,
-    monthFormat: 'numeric' | 'long' = 'long'
-  ): string {
-    if (Platform.OS === PlatformName.Windows) {
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = date.toLocaleString('fr-FR', { month: monthFormat });
-      const year = date.getFullYear();
-
-      return `${day} ${month} ${year}`;
-    } else {
-      // Use Intl.DateTimeFormat for all other platforms
-      return new Intl.DateTimeFormat('fr-FR', {
-        day: 'numeric',
-        month: monthFormat,
-        year: 'numeric',
-      }).format(date);
-    }
-  }
-
-  static formatDateForComparison(date: Date): Date {
-    return new Date(
-      `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`,
-    );
-  }
-
-  /**
-   * Formats a day number to its corresponding name.
-   * @param day - The day number to format.
-   * @returns The name of the day.
-   */
-  static formatDay(day: number): string {
-    const baseDate = new Date(Date.UTC(2021, 0, 4)); // Starting from a Monday to ensure correct order
-    const dayDate = new Date(baseDate);
-    dayDate.setDate(dayDate.getDate() + day - 1);
-    const dayName = new Intl.DateTimeFormat('fr-FR', {
-      weekday: 'short',
-    }).format(dayDate);
-    return dayName;
-  }
-
-  /**
-   * Formats a time to a string in the format 'HH:MM'.
-   * @param date - The date to format.
-   * @returns A string representation of the time in the format 'HH:MM'.
-   */
-  static formatTime(date: Date): string {
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
-
-  /**
    * Handle error keys to display the correct error message.
    * @param keys - The keys of the error messages.
    * @returns The title of the error message to display.
@@ -290,15 +209,6 @@ class Utils {
     // join header and body, and break into separate lines
     const csv = [headerString, ...rowItems].join('\r\n');
     return csv;
-  }
-
-  /**
-   * Get the date in the format 'YYYY-MM-DD'.
-   * @param date - The date to format.
-   * @returns The date in the format 'YYYY-MM-DD'.
-   */
-  static getJSFormatDate(date: Date): string {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
   /**

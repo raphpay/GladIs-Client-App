@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { EventsByDate, IEvent } from '../../../business-logic/model/IEvent';
-import Utils from '../../../business-logic/utils/Utils';
+import DateUtils from '../../../business-logic/utils/DateUtils';
 
 import CalendarHeader from './CalendarHeader';
 
@@ -24,11 +24,15 @@ function Calendar(props: CalendarProps): React.JSX.Element {
   const { t } = useTranslation();
 
   const {
-    events, setSelectedEvent,
-    currentDate, setCurrentDate,
+    events,
+    setSelectedEvent,
+    currentDate,
+    setCurrentDate,
     setSelectedDate,
-    setShowCreateDialog, setShowListDialog, setShowEventDialog,
-    setDaysEvents
+    setShowCreateDialog,
+    setShowListDialog,
+    setShowEventDialog,
+    setDaysEvents,
   } = props;
 
   // States
@@ -76,23 +80,23 @@ function Calendar(props: CalendarProps): React.JSX.Element {
 
   function groupEventsByDate() {
     const eventsByDate: EventsByDate = {};
-  
+
     if (events && events.length > 0) {
-      events.forEach((event) => {
+      events.forEach(event => {
         // Format the event's date as a string (e.g., "2024-03-05")
         const eventDate = new Date(event.date);
-        const dateKey = Utils.formatDate(eventDate);
-    
+        const dateKey = DateUtils.formatDate(eventDate);
+
         // If the key doesn't exist in the accumulator, initialize it with an empty array
         if (!eventsByDate[dateKey]) {
           eventsByDate[dateKey] = [];
         }
-    
+
         // Push the current event into the array for its date
         eventsByDate[dateKey].push(event);
       });
     }
-  
+
     setLocalEvents(eventsByDate);
   }
 
@@ -110,12 +114,11 @@ function Calendar(props: CalendarProps): React.JSX.Element {
           <TouchableOpacity
             key={`event-${day}-${event.name}-${index}`}
             onPress={() => openSelectedEvent(event)}
-            style={styles.eventIndicator}
-          >
+            style={styles.eventIndicator}>
             <Text style={styles.eventName}>
-            { ((event.name).length > maxlimit) ? 
-              (((event.name).substring(0,maxlimit-3)) + '...') : 
-              event.name }
+              {event.name.length > maxlimit
+                ? event.name.substring(0, maxlimit - 3) + '...'
+                : event.name}
             </Text>
           </TouchableOpacity>
         ))}
@@ -135,7 +138,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       </View>
     );
   }
-  
+
   // TODO: Check scroll behavior
   return (
     <ScrollView style={styles.container}>
@@ -145,8 +148,10 @@ function Calendar(props: CalendarProps): React.JSX.Element {
         setShowCreateDialog={setShowCreateDialog}
       />
       <View style={styles.daysOfWeekContainer}>
-        {daysItems.map((day) => (
-          <Text key={day} style={styles.dayOfWeek}>{Utils.formatDay(day)}</Text>
+        {daysItems.map(day => (
+          <Text key={day} style={styles.dayOfWeek}>
+            {DateUtils.formatDay(day)}
+          </Text>
         ))}
       </View>
       <View style={styles.daysContainer}>
@@ -155,13 +160,11 @@ function Calendar(props: CalendarProps): React.JSX.Element {
         ))}
         {daysArray.map(day => {
           const dayDate = new Date(year, month, day);
-          const dayKey = Utils.formatDate(dayDate);
-          
+          const dayKey = DateUtils.formatDate(dayDate);
+
           const dayEvents = localEvents[dayKey] || [];
-          
-          return (
-            DayCell(day, dayEvents)
-          );
+
+          return DayCell(day, dayEvents);
         })}
         {endingBlanks.map((_, index) => (
           <Text key={`end-blank-${index}`} style={styles.day}></Text>
