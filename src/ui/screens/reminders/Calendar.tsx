@@ -21,7 +21,7 @@ type CalendarProps = {
   setSelectedEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
 };
 function Calendar(props: CalendarProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const {
     events,
@@ -150,7 +150,7 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       <View style={styles.daysOfWeekContainer}>
         {daysItems.map(day => (
           <Text key={day} style={styles.dayOfWeek}>
-            {DateUtils.formatDay(day)}
+            {DateUtils.formatDay(day, i18n.language)}
           </Text>
         ))}
       </View>

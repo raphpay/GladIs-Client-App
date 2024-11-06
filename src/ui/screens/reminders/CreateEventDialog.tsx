@@ -53,7 +53,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
     ),
   );
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { currentClient } = useAppSelector((state: RootState) => state.users);
   const { token } = useAppSelector((state: RootState) => state.tokens);
@@ -141,7 +141,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
           value={monthValue}
           setValue={setMonthValue}
           items={monthsItems.map(month => ({
-            label: DateUtils.formatMonth(month),
+            label: DateUtils.formatMonth(month, i18n.language),
             value: month,
           }))}
           onSelect={month =>
