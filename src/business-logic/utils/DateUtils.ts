@@ -7,7 +7,7 @@ class DateUtils {
    * @param month - The month number to format.
    * @returns The name of the month.
    */
-  static formatMonth(month: number, locale: string = 'fr-FR'): string {
+  static formatMonth(month: number, locale: string = 'fr'): string {
     const frenchMonths = [
       'janvier',
       'février',
@@ -42,8 +42,7 @@ class DateUtils {
       throw new Error('Month must be between 0 (January) and 11 (December)');
     }
 
-    const result =
-      locale === 'fr-FR' ? frenchMonths[month] : englishMonths[month];
+    const result = locale === 'fr' ? frenchMonths[month] : englishMonths[month];
 
     return result;
   }
@@ -72,7 +71,7 @@ class DateUtils {
     monthFormat: 'numeric' | 'long' = 'long',
   ): string {
     const day = date.getDate().toString().padStart(2, '0');
-    const month = date.toLocaleString('fr-FR', { month: monthFormat });
+    const month = date.toLocaleString('fr', { month: monthFormat });
     const year = date.getFullYear();
 
     return `${day} ${month} ${year}`;
@@ -83,7 +82,7 @@ class DateUtils {
    * @param day - The day number to format.
    * @returns The name of the day.
    */
-  static formatDay(day: number, locale: string = 'fr-FR'): string {
+  static formatDay(day: number, locale: string = 'fr'): string {
     const frenchWeekdays = [
       'lun.',
       'mar.',
@@ -102,11 +101,11 @@ class DateUtils {
 
     // Map the day to the correct weekday in the array (0 for Monday, 6 for Sunday)
     const result =
-      locale === 'fr-FR' ? frenchWeekdays[day - 1] : englishWeekDays[day - 1];
+      locale === 'fr' ? frenchWeekdays[day - 1] : englishWeekDays[day - 1];
     return result;
   }
 
-  static formatMonthYear(date: Date, locale: string = 'fr-FR') {
+  static formatMonthYear(date: Date, locale: string = 'fr') {
     const frenchMonths = [
       'janvier',
       'février',
@@ -138,7 +137,7 @@ class DateUtils {
     ];
 
     const month =
-      locale === 'fr-FR'
+      locale === 'fr'
         ? frenchMonths[date.getMonth()]
         : englishMonths[date.getMonth()];
     const year = date.getFullYear();
