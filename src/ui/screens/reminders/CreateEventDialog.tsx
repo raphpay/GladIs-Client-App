@@ -6,7 +6,7 @@ import { IEvent, IEventInput } from '../../../business-logic/model/IEvent';
 import EventServicePost from '../../../business-logic/services/EventService/EventService.post';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
+import DateUtils from '../../../business-logic/utils/DateUtils';
 
 import Dialog from '../../components/Dialogs/Dialog';
 import Dropdown from '../../components/Dropdown';
@@ -23,11 +23,13 @@ type CreateEventDialogProps = {
 
 // TODO: Clean code
 function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
-
   const {
-    showDialog, setShowCreateDialog,
-    selectedDate, setSelectedDate,
-    events, setEvents
+    showDialog,
+    setShowCreateDialog,
+    selectedDate,
+    setSelectedDate,
+    events,
+    setEvents,
   } = props;
 
   const [eventName, setEventName] = useState<string>('');
@@ -44,7 +46,12 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
   };
-  const [daysItems, setDaysItems] = useState(Array.from({ length: getDaysInMonth(monthValue, yearValue) }, (_, i) => i + 1));
+  const [daysItems, setDaysItems] = useState(
+    Array.from(
+      { length: getDaysInMonth(monthValue, yearValue) },
+      (_, i) => i + 1,
+    ),
+  );
 
   const { t } = useTranslation();
 
@@ -59,13 +66,13 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
         const event: IEventInput = {
           name: eventName,
           date: selectedDateTimestamp,
-          clientID: currentClient?.id as string
-        }
+          clientID: currentClient?.id as string,
+        };
         const newEvent = await EventServicePost.create(event, token);
         setEvents([...events, newEvent]);
         resetDialog();
       } catch (error) {
-        console.log('Error adding event', error );
+        console.log('Error adding event', error);
         // TODO: Display toast
       }
     }
@@ -84,15 +91,20 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
   const onMonthOpen = () => {
     setDaysOpen(false);
     setYearOpen(false);
-  }
+  };
 
   const onYearOpen = () => {
     setDaysOpen(false);
     setMonthOpen(false);
-  }
+  };
 
   useEffect(() => {
-    setDaysItems(Array.from({ length: getDaysInMonth(monthValue, yearValue) }, (_, i) => i + 1));
+    setDaysItems(
+      Array.from(
+        { length: getDaysInMonth(monthValue, yearValue) },
+        (_, i) => i + 1,
+      ),
+    );
   }, [monthValue, yearValue]);
 
   useEffect(() => {
@@ -107,14 +119,18 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
 
   function SelectedDatePickers() {
     return (
-      <View style={{zIndex: 1, flexDirection: 'row'}}>
+      <View style={{ zIndex: 1, flexDirection: 'row' }}>
         <Dropdown
           open={daysOpen}
           setOpen={setDaysOpen}
           value={daysValue}
           setValue={setDaysValue}
           items={daysItems.map(day => ({ label: day.toString(), value: day }))}
-          onSelect={(day) => setSelectedDate(new Date(yearValue, monthValue, day.value as number))}
+          onSelect={day =>
+            setSelectedDate(
+              new Date(yearValue, monthValue, day.value as number),
+            )
+          }
           onOpen={onDayOpen}
           containerWidth={100}
           containerHeight={60}
@@ -124,8 +140,15 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
           setOpen={setMonthOpen}
           value={monthValue}
           setValue={setMonthValue}
-          items={monthsItems.map(month => ({ label: Utils.formatMonth(month), value: month }))}
-          onSelect={(month) => setSelectedDate(new Date(yearValue, month.value as number, daysValue))}
+          items={monthsItems.map(month => ({
+            label: DateUtils.formatMonth(month),
+            value: month,
+          }))}
+          onSelect={month =>
+            setSelectedDate(
+              new Date(yearValue, month.value as number, daysValue),
+            )
+          }
           onOpen={onMonthOpen}
           containerWidth={150}
           containerHeight={60}
@@ -135,8 +158,15 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
           setOpen={setYearOpen}
           value={yearValue}
           setValue={setYearValue}
-          items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
-          onSelect={(year) => setSelectedDate(new Date(year.value as number, monthValue, daysValue))}
+          items={yearsItems.map(year => ({
+            label: year.toString(),
+            value: year,
+          }))}
+          onSelect={year =>
+            setSelectedDate(
+              new Date(year.value as number, monthValue, daysValue),
+            )
+          }
           onOpen={onYearOpen}
           containerWidth={100}
           containerHeight={60}
@@ -147,28 +177,25 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
 
   return (
     <>
-      {
-        showDialog && (
-          <Dialog
-            title={t('components.dialog.calendar.newEvent.title')}
-            description={Utils.formatStringDate(selectedDate)}
-            isConfirmAvailable={true}
-            confirmTitle={t('components.dialog.calendar.newEvent.confirm')}
-            onConfirm={addEvent}
-            isCancelAvailable={true}
-            onCancel={resetDialog}
-            descriptionChildren={(SelectedDatePickers())}
-          >
-            <GladisTextInput
-              value={eventName}
-              onValueChange={setEventName}
-              placeholder={t('components.dialog.calendar.newEvent.eventName')}
-              autoCapitalize={'none'}
-              width={'100%'}
-            />
-          </Dialog>
-        )
-      }
+      {showDialog && (
+        <Dialog
+          title={t('components.dialog.calendar.newEvent.title')}
+          description={DateUtils.formatStringDate(selectedDate)}
+          isConfirmAvailable={true}
+          confirmTitle={t('components.dialog.calendar.newEvent.confirm')}
+          onConfirm={addEvent}
+          isCancelAvailable={true}
+          onCancel={resetDialog}
+          descriptionChildren={SelectedDatePickers()}>
+          <GladisTextInput
+            value={eventName}
+            onValueChange={setEventName}
+            placeholder={t('components.dialog.calendar.newEvent.eventName')}
+            autoCapitalize={'none'}
+            width={'100%'}
+          />
+        </Dialog>
+      )}
     </>
   );
 }

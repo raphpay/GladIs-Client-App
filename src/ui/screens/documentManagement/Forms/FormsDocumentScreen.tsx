@@ -14,11 +14,14 @@ import FormManager, {
 import IAction from '../../../../business-logic/model/IAction';
 import IForm from '../../../../business-logic/model/IForm';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
+import MimeType from '../../../../business-logic/model/enums/MimeType';
 import PlatformName from '../../../../business-logic/model/enums/PlatformName';
 import UserType from '../../../../business-logic/model/enums/UserType';
+import FileOpenPicker from '../../../../business-logic/modules/FileOpenPicker';
 import FinderModule from '../../../../business-logic/modules/FinderModule';
 import { useAppSelector } from '../../../../business-logic/store/hooks';
 import { RootState } from '../../../../business-logic/store/store';
+import DataUtils from '../../../../business-logic/utils/DataUtils';
 import Utils from '../../../../business-logic/utils/Utils';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
@@ -30,8 +33,6 @@ import Toast from '../../../components/Toast';
 import TooltipAction from '../../../components/TooltipAction';
 import FormRow from './FormRow';
 
-import MimeType from '../../../../business-logic/model/enums/MimeType';
-import FileOpenPicker from '../../../../business-logic/modules/FileOpenPicker';
 import styles from '../../../assets/styles/forms/FormsDocumentScreenStyles';
 
 type FormsDocumentScreenProps = NativeStackScreenProps<
@@ -311,11 +312,11 @@ function FormsDocumentScreen(
       data = Utils.replaceAllOccurrences(data, ';', ',');
     } else if (Platform.OS === PlatformName.Android) {
       const filePath = await FilePickerModule.pickSingleFile([MimeType.csv]);
-      data = (await Utils.getCSVFromFile(filePath)) as string;
+      data = (await DataUtils.getCSVFromFile(filePath)) as string;
     } else if (Platform.OS === PlatformName.Windows) {
       const filePath = await FileOpenPicker?.pickCSVFile();
       if (filePath) {
-        data = (await Utils.getCSVFromFile(filePath)) as string;
+        data = (await DataUtils.getCSVFromFile(filePath)) as string;
       }
     }
     const form: IForm = {

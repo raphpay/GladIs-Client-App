@@ -6,7 +6,7 @@ import EventServiceDelete from '../../../business-logic/services/EventService/Ev
 import EventServicePut from '../../../business-logic/services/EventService/EventService.put';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
+import DateUtils from '../../../business-logic/utils/DateUtils';
 
 import Dialog from '../../components/Dialogs/Dialog';
 
@@ -18,9 +18,11 @@ type EventDialogProps = {
 };
 
 function EventDialog(props: EventDialogProps): React.JSX.Element {
-
-  const { selectedEvent, setShowEventDialog, displayToast, loadAllEvents } = props;
-  const formattedDate = Utils.formatStringDate(new Date(selectedEvent.date));
+  const { selectedEvent, setShowEventDialog, displayToast, loadAllEvents } =
+    props;
+  const formattedDate = DateUtils.formatStringDate(
+    new Date(selectedEvent.date),
+  );
   const isArchived = selectedEvent.deletedAt !== null;
 
   const { t } = useTranslation();
@@ -76,7 +78,7 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
       }
     }
   }
-  
+
   return (
     <Dialog
       title={selectedEvent.name}
@@ -88,7 +90,9 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
       isCancelAvailable={true}
       onCancel={closeDialog}
       extraConfirmButtonAction={restoreEvent}
-      extraConfirmButtonTitle={isArchived ? t('calendar.dialog.restore') : undefined}
+      extraConfirmButtonTitle={
+        isArchived ? t('calendar.dialog.restore') : undefined
+      }
     />
   );
 }

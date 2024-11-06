@@ -7,15 +7,21 @@ import IAction from '../../../business-logic/model/IAction';
 import ISurvey from '../../../business-logic/model/ISurvey';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import SurveyService from '../../../business-logic/services/SurveyService';
-import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../business-logic/store/hooks';
 import { setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
+import DataUtils from '../../../business-logic/utils/DataUtils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import Clipboard from '@react-native-clipboard/clipboard';
-import { setIsUpdatingSurvey, setSMQScreenSource } from '../../../business-logic/store/slices/smqReducer';
-import Utils from '../../../business-logic/utils/Utils';
+import {
+  setIsUpdatingSurvey,
+  setSMQScreenSource,
+} from '../../../business-logic/store/slices/smqReducer';
 import AppContainer from '../../components/AppContainer/AppContainer';
 import ContentUnavailableView from '../../components/ContentUnavailableView';
 import Dialog from '../../components/Dialogs/Dialog';
@@ -24,10 +30,12 @@ import Toast from '../../components/Toast';
 import TooltipAction from '../../components/TooltipAction';
 import SurveyRow from './SurveyRow';
 
-type SurveysScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.SurveysScreen>;
+type SurveysScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.SurveysScreen
+>;
 
 function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
-
   const { navigation } = props;
   const { t } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
@@ -39,7 +47,8 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
   // Tooltip Action
   const [showActionDialog, setShowActionDialog] = useState<boolean>(false);
   const [showRemoveDialog, setShowRemoveDialog] = useState<boolean>(false);
@@ -57,7 +66,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
       title: t('smqSurvey.tooltip.delete'),
       onPress: () => displayRemoveDialog(),
       isDestructive: true,
-    }
+    },
   ];
   // Synchronous Methods
   function navigateBack() {
@@ -88,14 +97,14 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   function exportToCSV(survey: ISurvey) {
     // export to csv
     const surveyValue = JSON.parse(survey.value);
-    const csv = Utils.convertJSONToCSV(surveyValue);
+    const csv = DataUtils.convertJSONToCSV(surveyValue);
     Clipboard.setString(csv);
     // Display toast
     displayToast(t('smqSurvey.toast.csvCopied'));
     // Hide alert
     setShowActionDialog(false);
   }
-  
+
   // Async Methods
   async function loadSurveys() {
     try {
@@ -122,7 +131,7 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
       displayToast(errorMessage, true);
     }
     setShowRemoveDialog(false);
-  } 
+  }
 
   // Lifecycle Methods
   useEffect(() => {
@@ -136,16 +145,14 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
   function ToastContent() {
     return (
       <>
-        {
-          showToast && (
-            <Toast
-              message={toastMessage}
-              isVisible={showToast}
-              setIsVisible={setShowToast}
-              isShowingError={toastIsShowingError}
-            />
-          )
-        }
+        {showToast && (
+          <Toast
+            message={toastMessage}
+            isVisible={showToast}
+            setIsVisible={setShowToast}
+            isShowingError={toastIsShowingError}
+          />
+        )}
       </>
     );
   }
@@ -174,9 +181,9 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
         isCancelAvailable={true}
         onCancel={() => setShowRemoveDialog(false)}
       />
-    )
+    );
   }
-   
+
   return (
     <>
       <AppContainer
@@ -184,26 +191,25 @@ function SurveysScreen(props: SurveysScreenProps): React.JSX.Element {
         showBackButton={true}
         showSearchText={false}
         showSettings={true}
-        navigateBack={navigateBack}
-      >
-        {
-          surveys.length === 0 ? (
-            <ContentUnavailableView
-              title={t('passwordsToReset.noTokens.title')}
-              message={t('passwordsToReset.noTokens.message')}
-              image={clipboardIcon}
-            />
-          ) : (
-            <Grid
-              data={surveys}
-              renderItem={({ item }) => <SurveyRow survey={item} openActionDialog={openActionDialog} />}
-            />
-          )
-        }
+        navigateBack={navigateBack}>
+        {surveys.length === 0 ? (
+          <ContentUnavailableView
+            title={t('passwordsToReset.noTokens.title')}
+            message={t('passwordsToReset.noTokens.message')}
+            image={clipboardIcon}
+          />
+        ) : (
+          <Grid
+            data={surveys}
+            renderItem={({ item }) => (
+              <SurveyRow survey={item} openActionDialog={openActionDialog} />
+            )}
+          />
+        )}
       </AppContainer>
       {ToastContent()}
       {TooltipActionContent()}
-      { showRemoveDialog && RemoveDialog() }
+      {showRemoveDialog && RemoveDialog()}
     </>
   );
 }

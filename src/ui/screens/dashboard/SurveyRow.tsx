@@ -6,7 +6,7 @@ import ISurvey from '../../../business-logic/model/ISurvey';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
+import DateUtils from '../../../business-logic/utils/DateUtils';
 
 import Tooltip from '../../components/Tooltip';
 
@@ -18,7 +18,6 @@ type SurveyRowProps = {
 };
 
 function SurveyRow(props: SurveyRowProps): React.JSX.Element {
-
   const { survey, openActionDialog } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { t } = useTranslation();
@@ -35,8 +34,8 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
       setCreationDateText(jsCreationDate);
       if (survey.updatedAt) {
         const jsUpdateDate = new Date(survey.updatedAt);
-        const updateDateForComparison = Utils.getJSFormatDate(jsUpdateDate);
-        const createDateForComparison = Utils.getJSFormatDate(jsCreationDate);
+        const updateDateForComparison = DateUtils.getJSFormatDate(jsUpdateDate);
+        const createDateForComparison = DateUtils.getJSFormatDate(jsCreationDate);
         if (updateDateForComparison > createDateForComparison) {
           setUpdateDateText(jsUpdateDate);
         }
@@ -45,15 +44,23 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
   }
 
   function setCreationDateText(date: Date) {
-    const formattedDate = Utils.formatStringDate(date);
-    const formattedTime = Utils.formatTime(date);
-    setCreatedAtText(`${t('smqSurvey.dates.createdOn')} ${formattedDate} ${t('smqSurvey.dates.at')} ${formattedTime}`);
+    const formattedDate = DateUtils.formatStringDate(date);
+    const formattedTime = DateUtils.formatTime(date);
+    setCreatedAtText(
+      `${t('smqSurvey.dates.createdOn')} ${formattedDate} ${t(
+        'smqSurvey.dates.at',
+      )} ${formattedTime}`,
+    );
   }
 
   function setUpdateDateText(date: Date) {
-    const updateFormattedDate = Utils.formatStringDate(date);
-    const updateFormattedTime = Utils.formatTime(date);
-    setUpdatedAtText(`${t('smqSurvey.dates.updatedOn')} ${updateFormattedDate} ${t('smqSurvey.dates.at')} ${updateFormattedTime}`);
+    const updateFormattedDate = DateUtils.formatStringDate(date);
+    const updateFormattedTime = DateUtils.formatTime(date);
+    setUpdatedAtText(
+      `${t('smqSurvey.dates.updatedOn')} ${updateFormattedDate} ${t(
+        'smqSurvey.dates.at',
+      )} ${updateFormattedTime}`,
+    );
   }
 
   // Async Methods
@@ -83,23 +90,21 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
 
   // Component
   return (
-    <TouchableOpacity style={styles.lineContainer} onPress={() => openActionDialog(survey)}>
+    <TouchableOpacity
+      style={styles.lineContainer}
+      onPress={() => openActionDialog(survey)}>
       <View style={styles.lineRow}>
         <View style={styles.clientInfos}>
           <Text style={styles.dateText}>{clientName}</Text>
           <Text style={styles.companyText}>{clientCompany}</Text>
-          {
-            createdAtText && (
-              <Text style={styles.dateText}>{createdAtText}</Text>
-            )
-          }
-          {
-            updatedAtText && (
-              <Text style={styles.dateText}>{updatedAtText}</Text>
-            )
-          }
+          {createdAtText && (
+            <Text style={styles.dateText}>{createdAtText}</Text>
+          )}
+          {updatedAtText && (
+            <Text style={styles.dateText}>{updatedAtText}</Text>
+          )}
         </View>
-        <Tooltip action={() => openActionDialog(survey)}/>
+        <Tooltip action={() => openActionDialog(survey)} />
       </View>
       <View style={styles.separator} />
     </TouchableOpacity>
