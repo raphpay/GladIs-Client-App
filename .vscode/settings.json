@@ -1,0 +1,23 @@
+{
+  "workbench.colorTheme": "Evening Sky Theme",
+  "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
+  "lldb.launch.expressions": "native",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript, typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
+  "settingsSync.ignoredSettings": [],
+  "codeium.enableConfig": {
+    "*": true,
+    "plaintext": true
+  },
+  "workbench.settings.applyToAllProfiles": [
+    
+  ]
+}

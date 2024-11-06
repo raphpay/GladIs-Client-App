@@ -16,7 +16,7 @@ import {
 } from '../../../business-logic/store/hooks';
 import { setPasswordResetTokenCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
+import DateUtils from '../../../business-logic/utils/DateUtils';
 
 import { IRootStackParams } from '../../../navigation/Routes';
 
@@ -243,8 +243,8 @@ function PasswordResetScreen(
   function PasswordRow(item: IPasswordResetToken) {
     const expirationDate = new Date(item.expiresAt);
     const isExpired = expirationDate < new Date();
-    const dateString = Utils.formatDate(expirationDate);
-    const timeString = Utils.formatTime(expirationDate);
+    const dateString = DateUtils.formatDate(expirationDate);
+    const timeString = DateUtils.formatTime(expirationDate);
     const dateTimeString = `${dateString} ${t('tracking.at')} ${timeString}`;
     const userID = item.userID.id || item.userID;
 

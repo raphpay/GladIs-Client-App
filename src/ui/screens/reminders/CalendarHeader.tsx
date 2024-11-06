@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Image,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
-
-
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 import { useAppSelector } from '../../../business-logic/store/hooks';
 import { RootState } from '../../../business-logic/store/store';
-import Utils from '../../../business-logic/utils/Utils';
+import DateUtils from '../../../business-logic/utils/DateUtils';
 import styles from '../../assets/styles/reminders/CalendarStyles';
 import Dropdown from '../../components/Dropdown';
 
@@ -22,7 +15,7 @@ type CalendarHeaderProps = {
 };
 
 function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { currentDate, setCurrentDate, setShowCreateDialog } = props;
 
@@ -37,7 +30,10 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-  const formattedMonthYearDate = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(currentDate);
+  const formattedMonthYearDate = DateUtils.formatMonthYear(
+    currentDate,
+    i18n.language,
+  );
 
   const { currentClient } = useAppSelector((state: RootState) => state.users);
 
@@ -47,7 +43,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
 
   const onYearOpen = () => {
     setMonthsOpen(false);
-  }
+  };
 
   // Sync Methods
   function goToNextMonth() {
@@ -85,7 +81,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
       <TouchableOpacity
         style={styles.arrowButton}
         onPress={side === 'left' ? goToPreviousMonth : goToNextMonth}>
-          <Text>{side === 'left' ? '<' : '>'}</Text>
+        <Text>{side === 'left' ? '<' : '>'}</Text>
       </TouchableOpacity>
     );
   }
@@ -99,8 +95,13 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           setOpen={setMonthsOpen}
           value={monthValue}
           setValue={setMonthValue}
-          items={monthsItems.map(month => ({ label: Utils.formatMonth(month), value: month }))}
-          onSelect={(month) => setCurrentDate(new Date(year, month.value as number, 1))}
+          items={monthsItems.map(month => ({
+            label: DateUtils.formatMonth(month),
+            value: month,
+          }))}
+          onSelect={month =>
+            setCurrentDate(new Date(year, month.value as number, 1))
+          }
           onOpen={onMonthOpen}
           containerWidth={100}
         />
@@ -109,8 +110,13 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           setOpen={setYearsOpen}
           value={yearValue}
           setValue={setYearValue}
-          items={yearsItems.map(year => ({ label: year.toString(), value: year }))}
-          onSelect={(year) => setCurrentDate(new Date(year.value as number, month, 1))}
+          items={yearsItems.map(year => ({
+            label: year.toString(),
+            value: year,
+          }))}
+          onSelect={year =>
+            setCurrentDate(new Date(year.value as number, month, 1))
+          }
           onOpen={onYearOpen}
           containerWidth={100}
         />
@@ -119,13 +125,13 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
         </TouchableOpacity>
         {ArrowButton('left')}
         {ArrowButton('right')}
-        {
-          currentClient && (
-            <TouchableOpacity onPress={() => setShowCreateDialog(true)} style={styles.todayButton}>
-              <Image source={plusIcon} style={styles.plusIcon}/>
-            </TouchableOpacity>
-          )
-        }
+        {currentClient && (
+          <TouchableOpacity
+            onPress={() => setShowCreateDialog(true)}
+            style={styles.todayButton}>
+            <Image source={plusIcon} style={styles.plusIcon} />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

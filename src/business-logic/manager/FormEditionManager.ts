@@ -9,7 +9,8 @@ import UserType from '../model/enums/UserType';
 import FormServicePost from '../services/FormService/FormService.post';
 import FormServicePut from '../services/FormService/FormService.put';
 import UserServiceGet from '../services/UserService/UserService.get';
-import Utils from '../utils/Utils';
+import DataUtils from '../utils/DataUtils';
+import DateUtils from '../utils/DateUtils';
 // Logs
 import { IDocumentActivityLogInput } from '../model/IDocumentActivityLog';
 import DocumentLogAction from '../model/enums/DocumentLogAction';
@@ -126,7 +127,7 @@ class FormEditionManager {
    */
   async loadGrid(form: IForm | undefined) {
     if (form) {
-      const gridFromCSV = Utils.csvToGrid(form.value);
+      const gridFromCSV = DataUtils.csvToGrid(form.value);
       this.setGrid(gridFromCSV);
     }
   }
@@ -145,7 +146,7 @@ class FormEditionManager {
     if (form) {
       this.setFormTitle(form.title);
       if (form.createdAt && form.createdBy) {
-        const creationDate = Utils.formatStringDate(
+        const creationDate = DateUtils.formatStringDate(
           new Date(form.createdAt),
           'numeric',
         );
@@ -157,7 +158,7 @@ class FormEditionManager {
           );
         }
       } else {
-        const creationDate = Utils.formatStringDate(new Date(), 'numeric');
+        const creationDate = DateUtils.formatStringDate(new Date(), 'numeric');
         this.setFormCreation(creationDate);
         const createdByUser = await this.loadUser(
           currentUser?.id as string,
@@ -173,7 +174,7 @@ class FormEditionManager {
       if (form.updatedAt && form.updatedBy) {
         const updateDate =
           form.updatedAt &&
-          Utils.formatStringDate(new Date(form.updatedAt), 'numeric');
+          DateUtils.formatStringDate(new Date(form.updatedAt), 'numeric');
         this.setFormUpdate(updateDate);
         const updatedByUser = await this.loadUser(form.updatedBy, token);
         if (updatedByUser) {
@@ -182,10 +183,10 @@ class FormEditionManager {
           );
         }
       }
-      const gridFromCSV = Utils.csvToGrid(form.value);
+      const gridFromCSV = DataUtils.csvToGrid(form.value);
       this.setGrid(gridFromCSV);
     } else {
-      this.setFormCreation(Utils.formatStringDate(new Date(), 'numeric'));
+      this.setFormCreation(DateUtils.formatStringDate(new Date(), 'numeric'));
       this.setFormCreationActor(
         currentUser?.firstName + ' ' + currentUser?.lastName,
       );

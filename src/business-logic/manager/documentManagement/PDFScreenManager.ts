@@ -6,7 +6,7 @@ import IToken from '../../model/IToken';
 import CacheService from '../../services/CacheService';
 import DocumentServiceGet from '../../services/DocumentService/DocumentService.get';
 // Utils
-import Utils from '../../utils/Utils';
+import DataUtils from '../../utils/DataUtils';
 
 class PDFScreenManager {
   private static instance: PDFScreenManager;
@@ -136,7 +136,7 @@ class PDFScreenManager {
     let data: string[];
     try {
       const docData = await this.downloadDocument(documentInput.id, token);
-      const sanitizedData = Utils.removeBase64Prefix(docData);
+      const sanitizedData = DataUtils.removeBase64Prefix(docData);
       data = await this.splitPDF(sanitizedData);
       await this.cacheDownloadedData(documentInput, data);
     } catch (error) {
