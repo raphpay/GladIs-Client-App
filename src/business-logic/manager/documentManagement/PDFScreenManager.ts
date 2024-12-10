@@ -132,16 +132,16 @@ class PDFScreenManager {
   private async loadFromAPI(
     documentInput: IDocument,
     token: IToken | null,
-  ): Promise<string[]> {
-    let data: string[] = [];
+  ): Promise<string[] | null> {
+    let data: string[];
     try {
       const docData = await this.downloadDocument(documentInput.id, token);
       const sanitizedData = DataUtils.removeBase64Prefix(docData);
       data = await this.splitPDF(sanitizedData);
+      await this.cacheDownloadedData(documentInput, data);
     } catch (error) {
       throw error;
     }
-    await this.cacheDownloadedData(documentInput, data);
     return data;
   }
 }

@@ -79,6 +79,7 @@ protected-contants.ts
 
 # Yarn
 .yarn/*
+.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases

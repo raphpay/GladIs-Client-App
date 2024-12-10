@@ -447,7 +447,9 @@
       "addDocument": "Ajouter un document",
       "addTab": "Ajouter un onglet",
       "delete": "Supprimer",
-      "save": "Sauvegarder"
+      "save": "Sauvegarder",
+      "next": "Suivant",
+      "previous": "Précédent"
     },
     "dialog": {
       "calendar": {
@@ -576,6 +578,9 @@
         "emailNotFound": "Email non trouvé",
         "tokenDeleted": "Clé supprimée"
       }
+    },
+    "pageIndicator": {
+      "of": "sur"
     }
   },
   "errors": {
