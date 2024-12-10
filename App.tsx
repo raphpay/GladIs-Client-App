@@ -7,7 +7,7 @@ import { Routes } from './src/navigation/Routes';
 
 function App(): React.JSX.Element {
   useEffect(() => {
-     Appearance.setColorScheme('light');
+    Appearance.setColorScheme('light');
   }, []);
 
   return (
