@@ -1,5 +1,5 @@
 {
-  "workbench.colorTheme": "Evening Sky Theme",
+  "workbench.colorTheme": "Quiet Light",
   "lldb.library": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Versions/A/LLDB",
   "lldb.launch.expressions": "native",
   "typescript.updateImportsOnFileMove.enabled": "always",
@@ -17,7 +17,5 @@
     "*": true,
     "plaintext": true
   },
-  "workbench.settings.applyToAllProfiles": [
-    
-  ]
+  "workbench.settings.applyToAllProfiles": []
 }
