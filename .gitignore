@@ -88,3 +88,5 @@ protected-contants.ts
 
 # Gradlew files ( ? ) - Windows problem
 android/gradlew
+
+.vscode

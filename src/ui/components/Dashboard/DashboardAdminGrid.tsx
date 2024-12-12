@@ -9,7 +9,10 @@ import MessageService from '../../../business-logic/services/MessageService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import SurveyService from '../../../business-logic/services/SurveyService';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
-import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../business-logic/store/hooks';
 import { setSMQSurveysListCount } from '../../../business-logic/store/slices/smqReducer';
 import { RootState } from '../../../business-logic/store/store';
 
@@ -36,8 +39,12 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   const { token } = useAppSelector((state: RootState) => state.tokens);
   const { currentUser } = useAppSelector((state: RootState) => state.users);
-  const { clientListCount, passwordResetTokenCount } = useAppSelector((state: RootState) => state.appState);
-  const { smqSurveysListCount } = useAppSelector((state: RootState) => state.smq);
+  const { clientListCount, passwordResetTokenCount } = useAppSelector(
+    (state: RootState) => state.appState,
+  );
+  const { smqSurveysListCount } = useAppSelector(
+    (state: RootState) => state.smq,
+  );
   const dispatch = useAppDispatch();
 
   const { t } = useTranslation();
@@ -46,7 +53,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   async function loadClients() {
     try {
       const apiClients = await UserServiceGet.getClients(token);
-      setClients(apiClients); 
+      setClients(apiClients);
     } catch (error) {
       console.log('Error loading clients', error);
     }
@@ -60,7 +67,9 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
 
   async function loadPasswordReset() {
     try {
-      const passwordsToReset = await PasswordResetService.getInstance().getAll(token);
+      const passwordsToReset = await PasswordResetService.getInstance().getAll(
+        token,
+      );
       if (passwordsToReset.length === 0) {
         setPasswordResetAction(undefined);
       } else {
@@ -69,7 +78,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
           number: passwordsToReset.length,
           name: t('dashboard.sections.actions.passwordsToReset'),
           screenDestination: NavigationRoutes.PasswordResetScreen,
-        }
+        };
         setPasswordResetAction(resetAction);
       }
     } catch (error) {
@@ -80,7 +89,11 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
   async function loadChatMessages() {
     if (currentUser) {
       try {
-        const messages = await MessageService.getInstance().getReceivedMessagesForUser(currentUser.id as string, token);
+        const messages =
+          await MessageService.getInstance().getReceivedMessagesForUser(
+            currentUser.id as string,
+            token,
+          );
         if (messages.length === 0) {
           setMessagesAction(undefined);
         } else {
@@ -89,11 +102,11 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
             number: messages.length,
             name: t('dashboard.sections.actions.messages'),
             screenDestination: NavigationRoutes.MessagesScreen,
-          }
+          };
           setMessagesAction(messageAction);
         }
       } catch (error) {
-        console.log('Error loading messages', error );
+        console.log('Error loading messages', error);
       }
     }
   }
@@ -109,12 +122,12 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
           number: surveys.length,
           name: t('dashboard.sections.actions.surveys'),
           screenDestination: NavigationRoutes.SurveysScreen,
-        }
+        };
         setSurveysAction(surveyAction);
         dispatch(setSMQSurveysListCount(surveys.length));
       }
     } catch (error) {
-      console.log('Error loading surveys', error );
+      console.log('Error loading surveys', error);
     }
   }
 
@@ -157,7 +170,7 @@ function DashboardAdminGrid(props: DashboardAdminGridProps): React.JSX.Element {
         surveysAction={surveysAction}
       />
       <ModuleSection />
-      <ClientSection clientsFiltered={clientsFiltered}/>
+      <ClientSection clientsFiltered={clientsFiltered} />
     </ScrollView>
   );
 }

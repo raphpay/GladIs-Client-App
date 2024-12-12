@@ -96,7 +96,7 @@ function CalendarHeader(props: CalendarHeaderProps): React.JSX.Element {
           value={monthValue}
           setValue={setMonthValue}
           items={monthsItems.map(month => ({
-            label: DateUtils.formatMonth(month),
+            label: DateUtils.formatMonth(month, i18n.language),
             value: month,
           }))}
           onSelect={month =>
