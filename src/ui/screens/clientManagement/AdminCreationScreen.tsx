@@ -46,6 +46,7 @@ function AdminCreationScreen(
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('MD Consulting');
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
@@ -86,7 +87,7 @@ function AdminCreationScreen(
 
   // Async Methods
   async function submit() {
-    // TODO: Disable the button during the sending process
+    setIsDisabled(true);
     const newAdmin: IUser = {
       firstName: firstName,
       lastName: lastName,
@@ -103,6 +104,7 @@ function AdminCreationScreen(
       const email = await createEmail(createdUser);
       await EmailService.getInstance().sendEmail(email);
 
+      setIsDisabled(false);
       const delay = 2000; // 2 seconds
       setTimeout(() => {
         navigateBack();
@@ -111,6 +113,7 @@ function AdminCreationScreen(
       const errorKeys = error as string[];
       const errorTitle = Utils.handleErrorKeys(errorKeys);
       displayToast(t(errorTitle), true);
+      setIsDisabled(false);
     }
   }
 
@@ -187,7 +190,7 @@ function AdminCreationScreen(
               width={'100%'}
               title={t('quotation.submit')}
               onPress={submit}
-              disabled={!isFormFilled()}
+              disabled={!isFormFilled() || isDisabled}
             />
           </View>
         }>
