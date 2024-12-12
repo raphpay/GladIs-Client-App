@@ -1,0 +1,31 @@
+name: Feature request
+description: Define new functionality or enhancements.
+title: '[FEAT] - '
+labels: ['feature', 'Criticality: 1 - Moderate']
+projects: ['glad-medical/1']
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A concise overview of the feature.
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Clear conditions for completion.
+      placeholder: |
+        1.  When user do '...' then '...'
+        2. When user do '...' then '...'
+        3. When no values the '...'
+        4. ...
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Provide links to any issues on which this issue depends.
+      value:
+  - type: markdown
+    attributes:
+      value: |
+        **Attach visuals or relevant links or documents in comments (if applicable).**

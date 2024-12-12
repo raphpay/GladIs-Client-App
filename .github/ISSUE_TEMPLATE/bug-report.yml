@@ -1,0 +1,57 @@
+name: Bug report
+description: Create a bug report
+title: '[BUG] - '
+labels: ['bug', 'Criticality: 1 - Moderate']
+projects: ['glad-medical/1']
+body:
+  - type: textarea
+    id: description-of-the-bug
+    attributes:
+      label: Description of the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug.
+  - type: input
+    id: specific-case
+    attributes:
+      label: Specific case
+      description: If applicable, path , url, or uuids of the specific case associated with the bug.
+      placeholder: UUID of the plan is DDE3-SSE23...
+
+  - type: textarea
+    id: how-to-reproduce
+    attributes:
+      label: How the bug was discovered / how to reproduce the bug
+      description: A step by step description
+      placeholder: |
+        1. first i logged in...
+        2. then i clicked...
+  - type: textarea
+    id: root-cause
+    attributes:
+      label: Root cause of the bug
+      description: If you already have an idea for the root cause of the bug
+      placeholder: Id of the client is duplicated causing ...
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: A clear and concise description of what actually happen.
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround
+      description: Temporary solutions or mitigations (if available).
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+  - type: markdown
+    attributes:
+      value: |
+        **If applicable, add screenshots in comment.**

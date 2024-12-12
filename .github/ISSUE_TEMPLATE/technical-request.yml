@@ -1,0 +1,40 @@
+name: Documentation, Test or technical request
+description: Address technical tasks such as tests, documentation, maintenance, or cybersecurity issues.
+title: '[TECH] - '
+labels: ['tech', 'Criticality: 1 - Moderate']
+projects: ['glad-medical/1']
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What needs to be achieved.
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Why this task is necessary.
+  - type: textarea
+    id: tasks
+    attributes:
+      label: 🖱️Task List
+      description: Clear, actionable steps.
+      placeholder: |
+        - Upgrade version of xxx library
+        - Test if feature1 is working
+        - Test if CI is passing
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: How this will affect the system or process.
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Relevant links to other issues or pull requests.
+  - type: textarea
+    id: security
+    attributes:
+      label: Security Considerations
+      description: Any potential cybersecurity concerns or how this task enhances security.
