@@ -133,6 +133,25 @@ class Utils {
 
     return shuffledPassword;
   }
+
+  /**
+   * Compares two version strings in the format major.minor.patch.
+   * @param apiVersion - The version string from the API.
+   * @param configVersion - The version string from the environment config.
+   * @returns `true` if the API version is equal to or less than the config version, `false` otherwise.
+   */
+  static compareVersions(apiVersion: string, configVersion: string): boolean {
+    const parseVersion = (version: string) => version.split('.').map(Number);
+
+    const [apiMajor, apiMinor, apiPatch] = parseVersion(apiVersion);
+    const [configMajor, configMinor, configPatch] = parseVersion(configVersion);
+
+    if (apiMajor < configMajor) return true;
+    if (apiMajor > configMajor) return false;
+    if (apiMinor < configMinor) return true;
+    if (apiMinor > configMinor) return false;
+    return apiPatch <= configPatch;
+  }
 }
 
 export default Utils;

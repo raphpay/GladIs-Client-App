@@ -811,5 +811,10 @@
     "buttonNeutral": "Ask Me Later",
     "buttonNegative": "Cancel",
     "buttonPositive": "OK"
+  },
+  "versionLogAlert": {
+    "title": "Update available",
+    "description": "A new version of the application is available. You need to update to continue using the application.",
+    "button": "Update"
   }
 }

@@ -814,5 +814,10 @@
     "buttonNeutral": "Demander plus tard",
     "buttonNegative": "Annuler",
     "buttonPositive": "OK"
+  },
+  "versionLogAlert": {
+    "title": "Nouvelle version disponible",
+    "description": "Une nouvelle version est disponible. Veuillez mettre à jour votre application.",
+    "button": "Mettre à jour"
   }
 }

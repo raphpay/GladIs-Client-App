@@ -9,10 +9,13 @@ import IDocument from '../business-logic/model/IDocument';
 import IFolder from '../business-logic/model/IFolder';
 import IForm from '../business-logic/model/IForm';
 import IPendingUser from '../business-logic/model/IPendingUser';
+import CacheKeys from '../business-logic/model/enums/CacheKeys';
 import NavigationRoutes from '../business-logic/model/enums/NavigationRoutes';
 import UserType from '../business-logic/model/enums/UserType';
 import AuthenticationServiceGet from '../business-logic/services/AuthenticationService/AuthenticationService.get';
+import CacheService from '../business-logic/services/CacheService';
 import UserServiceGet from '../business-logic/services/UserService/UserService.get';
+import VersionLogService from '../business-logic/services/VersionLogService';
 import { useAppDispatch, useAppSelector } from '../business-logic/store/hooks';
 import {
   removeToken,
@@ -25,7 +28,10 @@ import {
   setCurrentUser,
   setIsAdmin,
 } from '../business-logic/store/slices/userReducer';
+import { toggleVersionLogAlertDisplay } from '../business-logic/store/slices/versionLogAlertReducer';
 import { RootState } from '../business-logic/store/store';
+import Utils from '../business-logic/utils/Utils';
+import { APP_VERSION } from '../business-logic/utils/envConfig';
 
 import LoginScreen from '../ui/screens/authentification/LoginScreen';
 import SignUpScreen from '../ui/screens/authentification/SignUpScreen';
@@ -354,13 +360,48 @@ export let Routes = () => {
     }
   }
 
+  async function checkAppVersionCompatibility(): Promise<boolean> {
+    const cacheService = CacheService.getInstance();
+    const versionLogService = VersionLogService.getInstance();
+
+    let cachedMinimumAppVersion = await cacheService.retrieveValue(
+      CacheKeys.minimumAppVersion,
+    );
+
+    try {
+      const versionLog = await versionLogService.getVersionLog();
+      cachedMinimumAppVersion = versionLog.minimumClientVersion;
+      await cacheService.storeValue(
+        CacheKeys.minimumAppVersion,
+        cachedMinimumAppVersion,
+      );
+      const isAppUpToDate = Utils.compareVersions(
+        versionLog.minimumClientVersion,
+        APP_VERSION,
+      );
+
+      return isAppUpToDate;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   useEffect(() => {
     setIsLoggedIn(!!token);
   }, [token]);
 
   useEffect(() => {
     async function init() {
-      await checkAuthentication();
+      try {
+        const isUpToDate = await checkAppVersionCompatibility();
+        if (isUpToDate) {
+          await checkAuthentication();
+        } else {
+          dispatch(toggleVersionLogAlertDisplay(true));
+        }
+      } catch (error) {
+        console.log('Error while checking app version compatibility', error);
+      }
     }
     init();
   }, []);

@@ -4,6 +4,7 @@ import formsReducer from './slices/formReducer';
 import smqReducer from './slices/smqReducer';
 import tokenReducer from './slices/tokenReducer';
 import userReducer from './slices/userReducer';
+import versionLogAlertReducer from './slices/versionLogAlertReducer';
 
 /**
  * The Redux store instance.
@@ -15,6 +16,7 @@ const store = configureStore({
     smq: smqReducer,
     tokens: tokenReducer,
     users: userReducer,
+    versionLogAlert: versionLogAlertReducer,
   },
 });
 

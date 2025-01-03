@@ -3,6 +3,7 @@ enum CacheKeys {
   currentUserToken = 'currentUserToken',
   clientSurvey = 'clientSurvey',
   isSMQFormFilled = 'isSMQFormFilled',
+  minimumAppVersion = 'minimumAppVersion',
 }
 
 export default CacheKeys;

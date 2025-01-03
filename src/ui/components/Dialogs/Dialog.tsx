@@ -14,7 +14,7 @@ type DialogProps = {
   isConfirmAvailable?: boolean | true;
   isCancelAvailable?: boolean;
   onConfirm: () => void;
-  onCancel: () => void;
+  onCancel?: () => void;
   descriptionChildren?: JSX.Element;
   children?: JSX.Element;
   extraConfirmButtonTitle?: string;
