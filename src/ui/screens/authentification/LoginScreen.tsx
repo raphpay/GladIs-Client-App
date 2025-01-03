@@ -6,28 +6,33 @@ import { SafeAreaView, Text } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import LoginScreenManager from '../../../business-logic/manager/authentification/LoginScreenManager';
+import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
 import CacheService from '../../../business-logic/services/CacheService';
 import PasswordResetService from '../../../business-logic/services/PasswordResetService';
 import UserServiceGet from '../../../business-logic/services/UserService/UserService.get';
-import { useAppDispatch } from '../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../business-logic/store/hooks';
 import { setToken } from '../../../business-logic/store/slices/tokenReducer';
 import {
   setCurrentClient,
   setCurrentUser,
   setIsAdmin,
 } from '../../../business-logic/store/slices/userReducer';
+import { RootState } from '../../../business-logic/store/store';
 
 import AppIcon from '../../components/AppIcon';
 import SimpleTextButton from '../../components/Buttons/SimpleTextButton';
 import TextButton from '../../components/Buttons/TextButton';
 import Dialog from '../../components/Dialogs/Dialog';
+import VersionLogAlert from '../../components/Dialogs/VersionLogAlert';
 import GladisTextInput from '../../components/TextInputs/GladisTextInput';
 import Toast from '../../components/Toast';
 
-import { IEventInput } from '../../../business-logic/model/IEvent';
 import styles from '../../assets/styles/authentification/LoginScreenStyles';
 
 type LoginScreenProps = NativeStackScreenProps<
@@ -58,6 +63,8 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
 
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
+
+  const { show } = useAppSelector((state: RootState) => state.versionLogAlert);
 
   // Sync Methods
   function goToSignUp() {
@@ -324,6 +331,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       {ResetDialogContent()}
       {ResetPasswordWithTokenDialogContent()}
       {ToastContent()}
+      <VersionLogAlert show={show} />
     </>
   );
 }

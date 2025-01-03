@@ -28,6 +28,7 @@ import {
   setCurrentUser,
   setIsAdmin,
 } from '../business-logic/store/slices/userReducer';
+import { toggleVersionLogAlertDisplay } from '../business-logic/store/slices/versionLogAlertReducer';
 import { RootState } from '../business-logic/store/store';
 import Utils from '../business-logic/utils/Utils';
 import { APP_VERSION } from '../business-logic/utils/envConfig';
@@ -380,7 +381,9 @@ export let Routes = () => {
       );
 
       return isAppUpToDate;
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 
   useEffect(() => {
@@ -389,8 +392,16 @@ export let Routes = () => {
 
   useEffect(() => {
     async function init() {
-      const isUpToDate = await checkAppVersionCompatibility();
-      if (isUpToDate) await checkAuthentication();
+      try {
+        const isUpToDate = await checkAppVersionCompatibility();
+        if (isUpToDate) {
+          await checkAuthentication();
+        } else {
+          dispatch(toggleVersionLogAlertDisplay(true));
+        }
+      } catch (error) {
+        console.log('Error while checking app version compatibility', error);
+      }
     }
     init();
   }, []);
