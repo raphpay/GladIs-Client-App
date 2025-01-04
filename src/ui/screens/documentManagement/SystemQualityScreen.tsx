@@ -187,7 +187,7 @@ function SystemQualityScreen(
   }
 
   function navigateTo(item: IFolder) {
-    if (item.id === 'qualityManualID') {
+    if (item.category === FolderCategory.QualityManual) {
       dispatch(setDocumentListCount(documentListCount + 1));
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         previousScreen: t('systemQuality.title'),
