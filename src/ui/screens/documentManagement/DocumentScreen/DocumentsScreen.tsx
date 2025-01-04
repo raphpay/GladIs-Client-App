@@ -96,7 +96,7 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
     previousScreen,
     currentScreen,
     documentsPath,
-    processNumber,
+    folderNumber,
     showGenerateSMQButton = true,
   } = props.route.params;
 
@@ -128,8 +128,8 @@ function DocumentsScreen(props: DocumentsScreenProps): React.JSX.Element {
       onPress: () => navigateToDocumentManagementScreen(),
     },
     {
-      title: processNumber
-        ? `${t('documentsScreen.process')} ${processNumber}`
+      title: folderNumber
+        ? `${t('documentsScreen.process')} ${folderNumber}`
         : previousScreen,
       onPress: () => navigateBack(),
     },

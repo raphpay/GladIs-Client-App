@@ -7,7 +7,10 @@ import { IRootStackParams } from '../../../navigation/Routes';
 
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import IAction from '../../../business-logic/model/IAction';
-import { useAppDispatch, useAppSelector } from '../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../business-logic/store/hooks';
 import { setDocumentListCount } from '../../../business-logic/store/slices/appStateReducer';
 import { RootState } from '../../../business-logic/store/store';
 import Utils from '../../../business-logic/utils/Utils';
@@ -19,18 +22,23 @@ import Grid from '../../components/Grid/Grid';
 import styles from '../../assets/styles/documentManagement/ProcessesScreenStyles';
 
 interface IProcessItem {
-  id: string,
-  title: string,
+  id: string;
+  title: string;
 }
 
-type ProcessesProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.ProcessesScreen>;
+type ProcessesProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.ProcessesScreen
+>;
 
 function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const [searchText, setSearchText] = useState<string>('');
   const clipboardIcon = require('../../assets/images/list.clipboard.png');
-  
+
   const { t } = useTranslation();
-  const { documentListCount } = useAppSelector((state: RootState) => state.appState);
+  const { documentListCount } = useAppSelector(
+    (state: RootState) => state.appState,
+  );
   const dispatch = useAppDispatch();
 
   const { navigation } = props;
@@ -39,19 +47,19 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const processes: IProcessItem[] = [
     {
       id: 'processesID',
-      title: t('documentsScreen.processes')
+      title: t('documentsScreen.processes'),
     },
     {
       id: 'proceduresID',
-      title: t('documentsScreen.procedures')
+      title: t('documentsScreen.procedures'),
     },
     {
       id: 'formsID',
-      title: t('documentsScreen.forms')
+      title: t('documentsScreen.forms'),
     },
     {
       id: 'recordsID',
-      title: t('documentsScreen.records')
+      title: t('documentsScreen.records'),
     },
   ];
   const processesFiltered = processes.filter(process =>
@@ -61,21 +69,21 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
   const navigationHistoryItems: IAction[] = [
     {
       title: t('dashboard.title'),
-      onPress: () => navigateToDashboard()
+      onPress: () => navigateToDashboard(),
     },
     {
       title: t('documentManagement.title'),
-      onPress: () => navigateToDocumentManagement()
+      onPress: () => navigateToDocumentManagement(),
     },
     {
       title: t('systemQuality.title'),
-      onPress: () => navigateBack()
-    }
-  ]
+      onPress: () => navigateBack(),
+    },
+  ];
 
   // Sync Methods
   function navigateToDashboard() {
-    navigation.navigate(NavigationRoutes.DashboardScreen)
+    navigation.navigate(NavigationRoutes.DashboardScreen);
   }
 
   function navigateBack() {
@@ -88,21 +96,28 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
 
   function navigateTo(item: IProcessItem) {
     dispatch(setDocumentListCount(documentListCount + 1));
-    const formattedPath = Utils.removeWhitespace(`${currentFolder.title}/${item.title}`);
+    const formattedPath = Utils.removeWhitespace(
+      `${currentFolder.title}/${item.title}`,
+    );
     if (item.id === 'formsID') {
-      navigation.navigate(NavigationRoutes.FormsDocumentScreen, { documentPath: formattedPath, currentFolder });
+      navigation.navigate(NavigationRoutes.FormsDocumentScreen, {
+        documentPath: formattedPath,
+        currentFolder,
+      });
     } else if (item.id === 'recordsID') {
       navigation.navigate(NavigationRoutes.RecordsDocumentScreen, {
         currentFolder,
         currentScreen: item.title,
-        documentsPath: Utils.removeWhitespace(`${currentFolder.title}/${t('process.items.records')}/${item.title}`)
+        documentsPath: Utils.removeWhitespace(
+          `${currentFolder.title}/${t('process.items.records')}/${item.title}`,
+        ),
       });
     } else {
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         previousScreen: currentFolder.title,
-        processNumber: currentFolder.number,
+        folderNumber: currentFolder.number,
         currentScreen: item.title,
-        documentsPath: formattedPath
+        documentsPath: formattedPath,
       });
     }
   }
@@ -115,11 +130,11 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
           <Text style={styles.categoryTitle}>{item.title}</Text>
         </View>
       </TouchableOpacity>
-    )
+    );
   }
 
   return (
-    <AppContainer 
+    <AppContainer
       mainTitle={currentFolder.title}
       navigationHistoryItems={navigationHistoryItems}
       searchText={searchText}
@@ -127,22 +142,19 @@ function ProcessesScreen(props: ProcessesProps): React.JSX.Element {
       showBackButton={true}
       showSearchText={true}
       showSettings={true}
-      navigateBack={navigateBack}
-    >
-      {
-        processesFiltered && processesFiltered.length === 0 ? (
-          <ContentUnavailableView
-            title={t('process.noItems.title')}
-            message={t('process.noItems.message')}
-            image={clipboardIcon}
-          />
-        ) : (
-          <Grid
-            data={processesFiltered}
-            renderItem={(renderItem) => ProcessusGridItem(renderItem.item)}
-          />
-        )
-      }
+      navigateBack={navigateBack}>
+      {processesFiltered && processesFiltered.length === 0 ? (
+        <ContentUnavailableView
+          title={t('process.noItems.title')}
+          message={t('process.noItems.message')}
+          image={clipboardIcon}
+        />
+      ) : (
+        <Grid
+          data={processesFiltered}
+          renderItem={renderItem => ProcessusGridItem(renderItem.item)}
+        />
+      )}
     </AppContainer>
   );
 }
