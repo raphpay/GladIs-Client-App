@@ -285,16 +285,17 @@ function FormsDocumentScreen(
   }
 
   async function deleteForm() {
-    // Delete form
-    const result: IResult = await FormManager.getInstance().deleteForm(
-      selectedForm,
-      token,
-    );
+    // Record log
     await FormManager.getInstance().recordLog(
       DocumentLogAction.Deletion,
       currentUser?.userType as UserType,
       currentUser?.id as string,
       currentClient?.id as string,
+      selectedForm,
+      token,
+    );
+    // Delete form
+    const result: IResult = await FormManager.getInstance().deleteForm(
       selectedForm,
       token,
     );
