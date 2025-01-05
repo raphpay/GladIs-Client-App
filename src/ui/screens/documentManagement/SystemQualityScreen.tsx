@@ -14,6 +14,7 @@ import { IRootStackParams } from '../../../navigation/Routes';
 import SMQManager from '../../../business-logic/manager/SMQManager';
 import IAction from '../../../business-logic/model/IAction';
 import IFolder, {
+  FolderCategory,
   IFolderInput,
   IFolderMultipleInput,
   IFolderUpdateInput,
@@ -96,6 +97,7 @@ function SystemQualityScreen(
       number: 0,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.QualityManual,
     },
     {
       id: 'folder1ID',
@@ -103,6 +105,7 @@ function SystemQualityScreen(
       number: 1,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.Process,
     },
     {
       id: 'folder2ID',
@@ -110,6 +113,7 @@ function SystemQualityScreen(
       number: 2,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.Process,
     },
     {
       id: 'folder3ID',
@@ -117,6 +121,7 @@ function SystemQualityScreen(
       number: 3,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.Process,
     },
     {
       id: 'folder4ID',
@@ -124,6 +129,7 @@ function SystemQualityScreen(
       number: 4,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.Process,
     },
     {
       id: 'folder5ID',
@@ -131,6 +137,7 @@ function SystemQualityScreen(
       number: 5,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.Process,
     },
     {
       id: 'folder6ID',
@@ -138,6 +145,7 @@ function SystemQualityScreen(
       number: 6,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.Process,
     },
     {
       id: 'folder7ID',
@@ -145,6 +153,7 @@ function SystemQualityScreen(
       number: 7,
       sleeve: Sleeve.SystemQuality,
       userID: currentClient?.id as string,
+      category: FolderCategory.Process,
     },
   ];
   const [folderItems, setFolderItems] = useState<IFolder[]>([]);
@@ -178,7 +187,7 @@ function SystemQualityScreen(
   }
 
   function navigateTo(item: IFolder) {
-    if (item.id === 'qualityManualID') {
+    if (item.category === FolderCategory.QualityManual) {
       dispatch(setDocumentListCount(documentListCount + 1));
       navigation.navigate(NavigationRoutes.DocumentsScreen, {
         previousScreen: t('systemQuality.title'),
