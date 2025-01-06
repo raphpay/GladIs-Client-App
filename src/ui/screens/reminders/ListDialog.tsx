@@ -26,19 +26,24 @@ function ListEventsDialog(props: ListEventsDialogProps): React.JSX.Element {
     setSelectedEvent,
   } = props;
 
+  // Hooks
+  const { t, i18n } = useTranslation();
+
+  // Constants
+  const language: 'en' | 'fr' = i18n.language === 'fr' ? 'fr' : 'en';
   const eventsDate = daysEvents.length > 0 && new Date(daysEvents[0].date);
   const formatedEventsDate =
-    eventsDate && DateUtils.formatStringDate(eventsDate);
+    eventsDate && DateUtils.formatDate(eventsDate, 'DD/MM/YYYY', language);
   const achivedIcon = require('../../assets/images/archivebox.png');
 
-  const { t } = useTranslation();
-
+  // Sync Methods
   function openSingleEventDialog(event: IEvent) {
     setSelectedEvent(event);
     setShowEventDialog(true);
     setShowListDialog(false);
   }
 
+  // Components
   function DayButton(event: IEvent) {
     const isArchived = event.deletedAt !== null;
     const opacity = isArchived ? 0.7 : 1;

@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Keyboard, ScrollView, Text, View } from 'react-native';
+import { Keyboard, ScrollView, View } from 'react-native';
 
 import { IRootStackParams } from '../../../../navigation/Routes';
 
@@ -10,30 +10,37 @@ import { IFormCell } from '../../../../business-logic/model/IForm';
 import DocumentLogAction from '../../../../business-logic/model/enums/DocumentLogAction';
 import NavigationRoutes from '../../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../../business-logic/model/enums/UserType';
-import { useAppDispatch, useAppSelector } from '../../../../business-logic/store/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../business-logic/store/hooks';
 import { setFormsCount } from '../../../../business-logic/store/slices/formReducer';
 import { RootState } from '../../../../business-logic/store/store';
 import Utils from '../../../../business-logic/utils/Utils';
 
 import AppContainer from '../../../components/AppContainer/AppContainer';
+import ImageButton from '../../../components/Buttons/ImageButton';
 import TextButton from '../../../components/Buttons/TextButton';
 import Dialog from '../../../components/Dialogs/Dialog';
 import Toast from '../../../components/Toast';
 import FormTextInput from '../DocumentScreen/FormTextInput';
 import FormEditionHeaderCell from './FormEditionHeaderCell';
-import ImageButton from '../../../components/Buttons/ImageButton';
 
 import styles from '../../../assets/styles/forms/FormEditionScreenStyles';
 
-type FormEditionScreenProps = NativeStackScreenProps<IRootStackParams, NavigationRoutes.FormEditionScreen>;
+type FormEditionScreenProps = NativeStackScreenProps<
+  IRootStackParams,
+  NavigationRoutes.FormEditionScreen
+>;
 
 function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
-
   const { navigation } = props;
   const { form, documentPath } = props.route.params;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { currentUser, currentClient } = useAppSelector((state: RootState) => state.users);
+  const { currentUser, currentClient } = useAppSelector(
+    (state: RootState) => state.users,
+  );
   const { formsCount } = useAppSelector((state: RootState) => state.forms);
   const dispatch = useAppDispatch();
   // Images
@@ -45,9 +52,16 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   const [grid, setGrid] = useState<IFormCell[][]>([[]]);
   // Dialogs
   const [showSaveDialog, setShowSaveDialog] = useState<boolean>(false);
-  const [showQuitWithoutSavingDialog, setShowQuitWithoutSavingDialog] = useState<boolean>(false);
-  const [showDeleteLastColumnConfirmationDialog, setShowDeleteLastColumnConfirmationDialog] = useState<boolean>(false);
-  const [showDeleteLastRowConfirmationDialog, setShowDeleteLastRowConfirmationDialog] = useState<boolean>(false);
+  const [showQuitWithoutSavingDialog, setShowQuitWithoutSavingDialog] =
+    useState<boolean>(false);
+  const [
+    showDeleteLastColumnConfirmationDialog,
+    setShowDeleteLastColumnConfirmationDialog,
+  ] = useState<boolean>(false);
+  const [
+    showDeleteLastRowConfirmationDialog,
+    setShowDeleteLastRowConfirmationDialog,
+  ] = useState<boolean>(false);
   // Form states
   const [formTitle, setFormTitle] = useState('');
   const [formCreation, setFormCreation] = useState('');
@@ -57,7 +71,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   // Toast
   const [showToast, setShowToast] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string>('');
-  const [toastIsShowingError, setToastIsShowingError] = useState<boolean>(false);
+  const [toastIsShowingError, setToastIsShowingError] =
+    useState<boolean>(false);
   const isUserEmployee = currentUser?.userType === UserType.Employee;
 
   // Sync Methods
@@ -80,7 +95,11 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     let updatedGrid: IFormCell[][];
 
     updatedGrid = grid.map((row, index) => {
-      const newCell = { id: Utils.generateUUID(), value: '', isTitle: index === 0 };
+      const newCell = {
+        id: Utils.generateUUID(),
+        value: '',
+        isTitle: index === 0,
+      };
       return [...row, newCell];
     });
 
@@ -89,7 +108,9 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   function addRow() {
     if (grid[0].length > 0) {
-      const newRow = Array(grid[0].length).fill({}).map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
+      const newRow = Array(grid[0].length)
+        .fill({})
+        .map(() => ({ id: Utils.generateUUID(), value: '', isTitle: false }));
       setGrid([...grid, newRow]);
     } else {
       displayToast(t('forms.toast.warning.addColumnFirst'), true);
@@ -97,14 +118,16 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   function removeColumn() {
-    const isLastColumnEmpty = grid.every(row => row[row.length - 1].value === '');
+    const isLastColumnEmpty = grid.every(
+      row => row[row.length - 1].value === '',
+    );
     if (isLastColumnEmpty) {
       const updatedGrid = grid.map(row => row.slice(0, -1));
       setGrid(updatedGrid);
     } else {
       displayToast(t('forms.toast.warning.cleanColumnFirst'), true);
     }
-  };
+  }
 
   function removeRow() {
     const lastRow = grid[grid.length - 1];
@@ -127,7 +150,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     // Update the state with the new grid
     setGrid(newGrid);
     FormEditionManager.getInstance().setGrid(newGrid);
-  };
+  }
 
   function displaySaveDialog() {
     Keyboard.dismiss();
@@ -136,7 +159,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   function isFormFilled() {
     let isFilled = false;
-    isFilled = formTitle.length > 0 &&
+    isFilled =
+      formTitle.length > 0 &&
       formCreation.length > 0 &&
       formCreationActor.length > 0 &&
       grid.length > 1;
@@ -145,8 +169,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
 
   function doesFormContainsData() {
     let containsData = false;
-    containsData = formTitle.length > 0 ||
-      grid.length > 1;
+    containsData = formTitle.length > 0 || grid.length > 1;
     return containsData;
   }
 
@@ -178,7 +201,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   function deleteLastColumn() {
-    const gridWithoutLastColumn = FormEditionManager.getInstance().deleteLastColumn();
+    const gridWithoutLastColumn =
+      FormEditionManager.getInstance().deleteLastColumn();
     setGrid(gridWithoutLastColumn);
     setShowDeleteLastColumnConfirmationDialog(false);
   }
@@ -188,27 +212,31 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
     setGrid(gridWithoutLastRow);
     setShowDeleteLastRowConfirmationDialog(false);
   }
-  
+
   // Async Methods
   async function saveForm() {
     try {
       if (form) {
-        await FormEditionManager.getInstance().updateForm(form, currentUser, token);
+        await FormEditionManager.getInstance().updateForm(
+          form,
+          currentUser,
+          token,
+        );
         await FormEditionManager.getInstance().recordLog(
           DocumentLogAction.Modification,
           currentUser?.userType as UserType,
           currentUser?.id as string,
           currentClient?.id as string,
           form,
-          token
-        )
+          token,
+        );
       } else {
         const createdForm = await FormEditionManager.getInstance().createForm(
           formTitle,
           currentUser?.id as string,
           documentPath,
           currentClient?.id as string,
-          token
+          token,
         );
         await FormEditionManager.getInstance().recordLog(
           DocumentLogAction.Creation,
@@ -216,7 +244,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
           currentUser?.id as string,
           currentClient?.id as string,
           createdForm,
-          token
+          token,
         );
       }
     } catch (error) {
@@ -231,12 +259,20 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   }
 
   async function loadFormInfo() {
-    await FormEditionManager.getInstance().loadFormInfo(form, currentUser, token);
+    let language: 'en' | 'fr' = i18n.language === 'fr' ? 'fr' : 'en';
+    await FormEditionManager.getInstance().loadFormInfo(
+      form,
+      currentUser,
+      token,
+      language,
+    );
     const formTitle = FormEditionManager.getInstance().getFormTitle();
     const formCreation = FormEditionManager.getInstance().getFormCreation();
     const formUpdate = FormEditionManager.getInstance().getFormUpdate();
-    const formCreationActor = FormEditionManager.getInstance().getFormCreationActor();
-    const formUpdateActor = FormEditionManager.getInstance().getFormUpdateActor();
+    const formCreationActor =
+      FormEditionManager.getInstance().getFormCreationActor();
+    const formUpdateActor =
+      FormEditionManager.getInstance().getFormUpdateActor();
 
     setFormTitle(formTitle);
     setFormCreation(formCreation);
@@ -264,39 +300,37 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
   function ActionButtons() {
     const isColumnGreaterThanOne = grid && grid[0].length >= 1;
     const isRowGreaterThanOne = grid.length > 1;
-    
+
     return (
       <View style={styles.actionButtonContainer}>
-        {
-          !isUserEmployee && (
-            <>
+        {!isUserEmployee && (
+          <>
             <ImageButton
-                icon={addColumnImage}
-                onPress={addColumn}
-                style={styles.actionButton}
-              />
-              <ImageButton
-                icon={removeColumnImage}
-                onPress={removeColumn}
-                style={styles.actionButton}
-                disabled={!isColumnGreaterThanOne}
-                onLongPress={displayRemoveColumnConfirmationDialog}
-              />
-              <ImageButton
-                icon={addRowImage}
-                onPress={addRow}
-                style={styles.actionButton}
-              />
-              <ImageButton
-                icon={removeRowImage}
-                onPress={removeRow}
-                style={styles.actionButton}
-                disabled={!isRowGreaterThanOne}
-                onLongPress={displayRemoveRowConfirmationDialog}
-              />
-            </>
-          )
-        }
+              icon={addColumnImage}
+              onPress={addColumn}
+              style={styles.actionButton}
+            />
+            <ImageButton
+              icon={removeColumnImage}
+              onPress={removeColumn}
+              style={styles.actionButton}
+              disabled={!isColumnGreaterThanOne}
+              onLongPress={displayRemoveColumnConfirmationDialog}
+            />
+            <ImageButton
+              icon={addRowImage}
+              onPress={addRow}
+              style={styles.actionButton}
+            />
+            <ImageButton
+              icon={removeRowImage}
+              onPress={removeRow}
+              style={styles.actionButton}
+              disabled={!isRowGreaterThanOne}
+              onLongPress={displayRemoveRowConfirmationDialog}
+            />
+          </>
+        )}
       </View>
     );
   }
@@ -327,7 +361,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       />
     );
   }
-  
+
   function ToastContent() {
     return (
       <Toast
@@ -349,9 +383,11 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         isConfirmAvailable={true}
         isCancelAvailable={true}
         onConfirm={navigateBack}
-        onCancel={() => { setShowQuitWithoutSavingDialog(false) }}
+        onCancel={() => {
+          setShowQuitWithoutSavingDialog(false);
+        }}
       />
-    )
+    );
   }
 
   function RemoveLastColumnConfirmationDialog() {
@@ -364,7 +400,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         isConfirmAvailable={true}
         isCancelAvailable={true}
       />
-    )
+    );
   }
 
   function RemoveLastRowConfirmationDialog() {
@@ -377,30 +413,29 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
         isConfirmAvailable={true}
         isCancelAvailable={true}
       />
-    )
+    );
   }
 
   return (
     <>
       <AppContainer
-        mainTitle='Forms'
+        mainTitle="Forms"
         showBackButton={true}
         navigateBack={tappedOnBackButton}
         adminButton={ActionButtons()}
         additionalComponent={SaveButton()}
         showSearchText={false}
-        showSettings={false}
-      >
-        <ScrollView style={{ flex : 1 }}>
+        showSettings={false}>
+        <ScrollView style={{ flex: 1 }}>
           <FormEditionHeaderCell
-              value={formTitle}
-              setValue={setFormTitle}
-              title={t('forms.headerCells.title')}
-              placeholder={t('forms.creation.formTitle')}
-              editable={!showSaveDialog}
-              width={'100%'}
-            />
-            <View style={styles.separator}/>
+            value={formTitle}
+            setValue={setFormTitle}
+            title={t('forms.headerCells.title')}
+            placeholder={t('forms.creation.formTitle')}
+            editable={!showSaveDialog}
+            width={'100%'}
+          />
+          <View style={styles.separator} />
 
           {/* Form Creator cells */}
           <View style={styles.cellRow}>
@@ -441,8 +476,7 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
               width={'50%'}
             />
           </View>
-          <View style={styles.separator}/>
-
+          <View style={styles.separator} />
 
           {/* Grid */}
           {grid.map((row, rowIndex) => (
@@ -451,7 +485,9 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
                 <FormTextInput
                   key={columnIndex}
                   value={cell.value}
-                  onChangeText={(newText) => updateCell(rowIndex, columnIndex, newText)}
+                  onChangeText={newText =>
+                    updateCell(rowIndex, columnIndex, newText)
+                  }
                   editable={!showSaveDialog || !showQuitWithoutSavingDialog}
                   isTitle={cell.isTitle}
                   multiline={false}
@@ -464,7 +500,8 @@ function FormEditionScreen(props: FormEditionScreenProps): React.JSX.Element {
       {showSaveDialog && SaveDialogContent()}
       {showQuitWithoutSavingDialog && QuitWithoutSavingDialog()}
       {showToast && ToastContent()}
-      {showDeleteLastColumnConfirmationDialog && RemoveLastColumnConfirmationDialog()}
+      {showDeleteLastColumnConfirmationDialog &&
+        RemoveLastColumnConfirmationDialog()}
       {showDeleteLastRowConfirmationDialog && RemoveLastRowConfirmationDialog()}
     </>
   );

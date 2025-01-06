@@ -32,6 +32,12 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
     setEvents,
   } = props;
 
+  // Hooks
+  const { t, i18n } = useTranslation();
+  const { currentClient } = useAppSelector((state: RootState) => state.users);
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+
+  // States
   const [eventName, setEventName] = useState<string>('');
   const [daysOpen, setDaysOpen] = useState(false);
   const [monthOpen, setMonthOpen] = useState(false);
@@ -43,6 +49,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
   const [monthValue, setMonthValue] = useState(selectedDate.getMonth());
   const [yearValue, setYearValue] = useState(selectedDate.getFullYear());
 
+  // Constants
   const getDaysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
   };
@@ -52,32 +59,9 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
       (_, i) => i + 1,
     ),
   );
+  const language: 'en' | 'fr' = i18n.language === 'fr' ? 'fr' : 'en';
 
-  const { t, i18n } = useTranslation();
-
-  const { currentClient } = useAppSelector((state: RootState) => state.users);
-  const { token } = useAppSelector((state: RootState) => state.tokens);
-
-  async function addEvent() {
-    // Call API
-    if (eventName !== '') {
-      try {
-        const selectedDateTimestamp = selectedDate.getTime();
-        const event: IEventInput = {
-          name: eventName,
-          date: selectedDateTimestamp,
-          clientID: currentClient?.id as string,
-        };
-        const newEvent = await EventServicePost.create(event, token);
-        setEvents([...events, newEvent]);
-        resetDialog();
-      } catch (error) {
-        console.log('Error adding event', error);
-        // TODO: Display toast
-      }
-    }
-  }
-
+  // Sync Methods
   function resetDialog() {
     setEventName('');
     setShowCreateDialog(false);
@@ -98,6 +82,28 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
     setMonthOpen(false);
   };
 
+  // Async Methods
+  async function addEvent() {
+    // Call API
+    if (eventName !== '') {
+      try {
+        const selectedDateTimestamp = selectedDate.getTime();
+        const event: IEventInput = {
+          name: eventName,
+          date: selectedDateTimestamp,
+          clientID: currentClient?.id as string,
+        };
+        const newEvent = await EventServicePost.create(event, token);
+        setEvents([...events, newEvent]);
+        resetDialog();
+      } catch (error) {
+        console.log('Error adding event', error);
+        // TODO: Display toast
+      }
+    }
+  }
+
+  // Lifecycle Methods
   useEffect(() => {
     setDaysItems(
       Array.from(
@@ -117,6 +123,7 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
     setYearValue(selectedDate.getFullYear());
   }, [selectedDate]);
 
+  // Components
   function SelectedDatePickers() {
     return (
       <View style={{ zIndex: 1, flexDirection: 'row' }}>
@@ -180,7 +187,11 @@ function CreateEventDialog(props: CreateEventDialogProps): React.JSX.Element {
       {showDialog && (
         <Dialog
           title={t('components.dialog.calendar.newEvent.title')}
-          description={DateUtils.formatStringDate(selectedDate)}
+          description={DateUtils.formatDate(
+            selectedDate,
+            'DD/MM/YYYY',
+            language,
+          )}
           isConfirmAvailable={true}
           confirmTitle={t('components.dialog.calendar.newEvent.confirm')}
           onConfirm={addEvent}

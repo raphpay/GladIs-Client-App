@@ -21,8 +21,6 @@ type CalendarProps = {
   setSelectedEvent: React.Dispatch<React.SetStateAction<IEvent | undefined>>;
 };
 function Calendar(props: CalendarProps): React.JSX.Element {
-  const { t, i18n } = useTranslation();
-
   const {
     events,
     setSelectedEvent,
@@ -35,10 +33,15 @@ function Calendar(props: CalendarProps): React.JSX.Element {
     setDaysEvents,
   } = props;
 
+  // Hooks
+  const { t, i18n } = useTranslation();
+
   // States
   const [lastTap, setLastTap] = useState<number | null>(null);
   const [localEvents, setLocalEvents] = useState<EventsByDate>({});
 
+  // Constants
+  const language: 'en' | 'fr' = i18n.language === 'fr' ? 'fr' : 'en';
   const daysItems = Array.from({ length: 7 }, (_, i) => i + 1);
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -85,7 +88,11 @@ function Calendar(props: CalendarProps): React.JSX.Element {
       events.forEach(event => {
         // Format the event's date as a string (e.g., "2024-03-05")
         const eventDate = new Date(event.date);
-        const dateKey = DateUtils.formatDate(eventDate);
+        const dateKey = DateUtils.formatDate(
+          eventDate,
+          'DD MMM YYYY',
+          language,
+        );
 
         // If the key doesn't exist in the accumulator, initialize it with an empty array
         if (!eventsByDate[dateKey]) {
