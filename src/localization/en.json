@@ -638,7 +638,9 @@
         "wrongUser": "You can't access another user's data",
         "event": {
           "tooManyEvents": "You can't create more than 5 events"
-        }
+        },
+        "connectionBlocked": "Connection blocked. Your provider will contact you.",
+        "accountBlocked": "Account blocked. Please contact your provider"
       },
       "unauthorized": {
         "invalidCurrentPassword": "Invalid current password",
@@ -646,7 +648,8 @@
         "login": {
           "invalidCredentials": "Wrong username or password",
           "accountBlocked": "Account blocked. Please contact your provider",
-          "connectionBlocked": "Connection blocked. Your provider will contact you "
+          "connectionBlocked": "Connection blocked. Your provider will contact you ",
+          "maxLoginAttemptReached": "You've reached the maximum login attempt, your account is now blocked. Your provider will contact you."
         },
         "password": {
           "samePassword": "The new password should be different from the current one",

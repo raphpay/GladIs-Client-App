@@ -638,7 +638,9 @@
         "wrongUser": "Vous n'êtes pas autorisé à accéder aux informations d'un autre utilisateur",
         "event": {
           "tooManyEvents": "Vous avez atteint le nombre maximum d'événements"
-        }
+        },
+        "connectionBlocked": "Connexion bloquée. Votre fournisseur va vous contacter",
+        "accountBlocked": "Compte bloqué. Veuillez contacter votre fournisseur"
       },
       "unauthorized": {
         "invalidCurrentPassword": "Le mot de passe actuel est incorrect",
@@ -646,7 +648,8 @@
         "login": {
           "invalidCredentials": "Identifiants incorrects",
           "accountBlocked": "Compte bloqué. Veuillez contacter votre fournisseur",
-          "connectionBlocked": "Connexion bloquée. Votre fournisseur va vous contacter"
+          "connectionBlocked": "Connexion bloquée. Votre fournisseur va vous contacter",
+          "maxLoginAttemptReached": "Vous avez atteint le maximum de tentatives de connexion, votre compte est bloqué. Votre fournisseur va vous contacter."
         },
         "password": {
           "current": {
