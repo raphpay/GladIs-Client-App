@@ -6,7 +6,6 @@ import { SafeAreaView, Text } from 'react-native';
 import { IRootStackParams } from '../../../navigation/Routes';
 
 import LoginScreenManager from '../../../business-logic/manager/authentification/LoginScreenManager';
-import { IEventInput } from '../../../business-logic/model/IEvent';
 import IToken from '../../../business-logic/model/IToken';
 import NavigationRoutes from '../../../business-logic/model/enums/NavigationRoutes';
 import UserType from '../../../business-logic/model/enums/UserType';
@@ -57,6 +56,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
   const [toastMessage, setToastMessage] = useState<string>('');
   const [toastIsShowingError, setToastIsShowingError] =
     useState<boolean>(false);
+  const [toastDuration, setToastDuration] = useState<number>(2000);
 
   const inputIsEditable = !showDialog && !showResetTokenDialog;
   const isButtonDisabled = identifier.length === 0 || password.length === 0;
@@ -88,10 +88,15 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
     setDialogDescription('');
   }
 
-  function displayToast(message: string, isError: boolean = false) {
+  function displayToast(
+    message: string,
+    isError: boolean = false,
+    duration: number = 2000,
+  ) {
     setShowToast(true);
     setToastIsShowingError(isError);
     setToastMessage(message);
+    setToastDuration(duration);
   }
 
   // Async Methods
@@ -112,46 +117,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
       await dispatchValues(token);
     } catch (error) {
       const errorMessage = (error as Error).message;
-      if (errorMessage.includes('unauthorized.login')) {
-        await handleFailedLogin();
-      } else {
-        displayToast(t(`errors.api.${errorMessage}`), true);
-      }
-    }
-  }
-
-  async function handleFailedLogin() {
-    try {
-      const output =
-        await LoginScreenManager.getInstance().updateUserConnectionAttempts(
-          identifier,
-        );
-      const count = output.connectionFailedAttempts || 0;
-      if (count >= 5) {
-        if (count === 5) {
-          const event: IEventInput = {
-            name: `${t('login.tooManyAttempts.eventName')} ${identifier} : ${
-              output.email
-            }`,
-            date: Date.now(),
-            clientID: output.id ?? '0',
-          };
-          await LoginScreenManager.getInstance().sendMaxLoginEvent(
-            event,
-            output,
-          );
-        }
-        displayToast(
-          t('errors.api.unauthorized.login.connectionBlocked'),
-          true,
-        );
-      } else {
-        displayToast(t('errors.api.unauthorized.login'), true);
-      }
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      console.log('handleFailedLogin error', errorMessage);
-      displayToast(t(`errors.api.${errorMessage}`), true);
+      displayToast(t(`errors.api.${errorMessage}`), true, 3000);
     }
   }
 
@@ -286,6 +252,7 @@ function LoginScreen(props: LoginScreenProps): React.JSX.Element {
             isVisible={showToast}
             setIsVisible={setShowToast}
             isShowingError={toastIsShowingError}
+            duration={toastDuration}
           />
         )}
       </>
