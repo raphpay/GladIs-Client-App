@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Animated, Text } from 'react-native';
+import { Animated, Platform, Text } from 'react-native';
+import PlatformName from '../../business-logic/model/enums/PlatformName';
 import { Colors } from '../assets/colors/colors';
 import styles from '../assets/styles/components/ToastStyles';
 
@@ -22,11 +23,14 @@ const Toast = (props: ToastProps) => {
     isShowingError = false,
   } = props;
 
+  // Determine the correct driver for animations
+  const getNativeDriver = () => Platform.OS !== PlatformName.Windows;
+
   const slideIn = () => {
     Animated.timing(slideAnim, {
       toValue: 0,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: getNativeDriver(),
     }).start();
   };
 
@@ -34,31 +38,26 @@ const Toast = (props: ToastProps) => {
     Animated.timing(slideAnim, {
       toValue: 60,
       duration: 500,
-      useNativeDriver: true,
+      useNativeDriver: getNativeDriver(),
     }).start(() => {
-      setTimeout(() => {
-        setIsVisible(false);
-      }, 500);
+      setTimeout(() => setIsVisible(false), 500);
     });
   };
 
   useEffect(() => {
     if (isVisible) {
       slideIn();
-      setTimeout(() => {
-        slideOut();
-      }, duration);
+      setTimeout(slideOut, duration);
     }
-  }, [isVisible, duration, slideIn, slideOut]);
+  }, [isVisible, duration]);
 
   return (
     <Animated.View
       style={[
         styles.toast,
-        { transform: [{ translateY: slideAnim } ]},
-        { backgroundColor: isShowingError ? Colors.danger : Colors.success }
-      ]}
-    >
+        { transform: [{ translateY: slideAnim }] },
+        { backgroundColor: isShowingError ? Colors.danger : Colors.success },
+      ]}>
       <Text style={styles.text}>{message}</Text>
     </Animated.View>
   );
