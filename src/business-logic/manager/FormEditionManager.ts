@@ -142,13 +142,15 @@ class FormEditionManager {
     form: IForm | undefined,
     currentUser: IUser | undefined,
     token: IToken | null,
+    language: 'en' | 'fr',
   ) {
     if (form) {
       this.setFormTitle(form.title);
       if (form.createdAt && form.createdBy) {
-        const creationDate = DateUtils.formatStringDate(
+        const creationDate = DateUtils.formatDate(
           new Date(form.createdAt),
-          'numeric',
+          'DD/MM/YYYY',
+          language,
         );
         this.setFormCreation(creationDate);
         const createdByUser = await this.loadUser(form.createdBy, token);
@@ -158,7 +160,11 @@ class FormEditionManager {
           );
         }
       } else {
-        const creationDate = DateUtils.formatStringDate(new Date(), 'numeric');
+        const creationDate = DateUtils.formatDate(
+          new Date(),
+          'DD/MM/YYYY',
+          language,
+        );
         this.setFormCreation(creationDate);
         const createdByUser = await this.loadUser(
           currentUser?.id as string,
@@ -174,7 +180,11 @@ class FormEditionManager {
       if (form.updatedAt && form.updatedBy) {
         const updateDate =
           form.updatedAt &&
-          DateUtils.formatStringDate(new Date(form.updatedAt), 'numeric');
+          DateUtils.formatDate(
+            new Date(form.updatedAt),
+            'DD/MM/YYYY',
+            language,
+          );
         this.setFormUpdate(updateDate);
         const updatedByUser = await this.loadUser(form.updatedBy, token);
         if (updatedByUser) {
@@ -186,7 +196,9 @@ class FormEditionManager {
       const gridFromCSV = DataUtils.csvToGrid(form.value);
       this.setGrid(gridFromCSV);
     } else {
-      this.setFormCreation(DateUtils.formatStringDate(new Date(), 'numeric'));
+      this.setFormCreation(
+        DateUtils.formatDate(new Date(), 'DD/MM/YYYY', language),
+      );
       this.setFormCreationActor(
         currentUser?.firstName + ' ' + currentUser?.lastName,
       );

@@ -20,18 +20,26 @@ type EventDialogProps = {
 function EventDialog(props: EventDialogProps): React.JSX.Element {
   const { selectedEvent, setShowEventDialog, displayToast, loadAllEvents } =
     props;
-  const formattedDate = DateUtils.formatStringDate(
+
+  // Hooks
+  const { t, i18n } = useTranslation();
+  const { token } = useAppSelector((state: RootState) => state.tokens);
+
+  // Constants
+  const language: 'en' | 'fr' = i18n.language === 'fr' ? 'fr' : 'en';
+  const formattedDate = DateUtils.formatDate(
     new Date(selectedEvent.date),
+    'DD/MM/YYYY',
+    language,
   );
   const isArchived = selectedEvent.deletedAt !== null;
 
-  const { t } = useTranslation();
-  const { token } = useAppSelector((state: RootState) => state.tokens);
-
+  // Sync Methods
   function closeDialog() {
     setShowEventDialog(false);
   }
 
+  // Async Methods
   async function tappedOnDone() {
     if (isArchived) {
       await deleteEvent();
@@ -79,6 +87,7 @@ function EventDialog(props: EventDialogProps): React.JSX.Element {
     }
   }
 
+  // Components
   return (
     <Dialog
       title={selectedEvent.name}

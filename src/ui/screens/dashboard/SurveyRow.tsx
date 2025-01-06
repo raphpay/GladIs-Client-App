@@ -20,12 +20,14 @@ type SurveyRowProps = {
 function SurveyRow(props: SurveyRowProps): React.JSX.Element {
   const { survey, openActionDialog } = props;
   const { token } = useAppSelector((state: RootState) => state.tokens);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   // States
   const [clientName, setClientName] = useState<string>('');
   const [clientCompany, setClientCompany] = useState<string>('');
   const [createdAtText, setCreatedAtText] = useState<string>('');
   const [updatedAtText, setUpdatedAtText] = useState<string>('');
+  // Constants
+  const language: 'en' | 'fr' = i18n.language === 'fr' ? 'fr' : 'en';
 
   // Sync Methods
   function loadDateInfos() {
@@ -34,8 +36,16 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
       setCreationDateText(jsCreationDate);
       if (survey.updatedAt) {
         const jsUpdateDate = new Date(survey.updatedAt);
-        const updateDateForComparison = DateUtils.getJSFormatDate(jsUpdateDate);
-        const createDateForComparison = DateUtils.getJSFormatDate(jsCreationDate);
+        const updateDateForComparison = DateUtils.formatDate(
+          jsUpdateDate,
+          'DD MMM YYYY',
+          language,
+        );
+        const createDateForComparison = DateUtils.formatDate(
+          jsCreationDate,
+          'DD MMM YYYY',
+          language,
+        );
         if (updateDateForComparison > createDateForComparison) {
           setUpdateDateText(jsUpdateDate);
         }
@@ -44,7 +54,7 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
   }
 
   function setCreationDateText(date: Date) {
-    const formattedDate = DateUtils.formatStringDate(date);
+    const formattedDate = DateUtils.formatDate(date, 'DD/MM/YYYY', language);
     const formattedTime = DateUtils.formatTime(date);
     setCreatedAtText(
       `${t('smqSurvey.dates.createdOn')} ${formattedDate} ${t(
@@ -54,7 +64,11 @@ function SurveyRow(props: SurveyRowProps): React.JSX.Element {
   }
 
   function setUpdateDateText(date: Date) {
-    const updateFormattedDate = DateUtils.formatStringDate(date);
+    const updateFormattedDate = DateUtils.formatDate(
+      date,
+      'DD/MM/YYYY',
+      language,
+    );
     const updateFormattedTime = DateUtils.formatTime(date);
     setUpdatedAtText(
       `${t('smqSurvey.dates.updatedOn')} ${updateFormattedDate} ${t(
