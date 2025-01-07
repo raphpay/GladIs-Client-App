@@ -7,7 +7,7 @@ import EmailService from '../../services/EmailService';
 import PasswordResetService from '../../services/PasswordResetService';
 import UserServiceGet from '../../services/UserService/UserService.get';
 // Constants
-import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
+import { FROM_MAIL, FROM_NAME } from '../../utils/envConfig';
 
 /**
  * A class to handle the password reset screen logic
@@ -217,7 +217,6 @@ class PasswordResetScreenManager {
       replyTo: FROM_MAIL,
       subject,
       content: mailContent,
-      apiKey: SEND_GRID_API_KEY,
       isHTML: true,
     };
 

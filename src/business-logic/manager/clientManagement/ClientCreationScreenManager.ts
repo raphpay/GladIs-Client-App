@@ -19,7 +19,7 @@ import PotentialEmployeeService from '../../services/PotentialEmployeeService';
 import UserServicePut from '../../services/UserService/UserService.put';
 // Utils
 import IFile from '../../model/IFile';
-import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
+import { FROM_MAIL, FROM_NAME } from '../../utils/envConfig';
 import Utils from '../../utils/Utils';
 
 /**
@@ -559,7 +559,6 @@ class ClientCreationScreenManager {
       replyTo: FROM_MAIL,
       subject,
       content: mailContent,
-      apiKey: SEND_GRID_API_KEY,
       isHTML: true,
     };
 

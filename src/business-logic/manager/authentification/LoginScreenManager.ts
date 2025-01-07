@@ -12,7 +12,7 @@ import PasswordResetService from '../../services/PasswordResetService';
 import UserServicePost from '../../services/UserService/UserService.post';
 import UserServicePut from '../../services/UserService/UserService.put';
 // Constants
-import { FROM_MAIL, FROM_NAME, SEND_GRID_API_KEY } from '../../utils/envConfig';
+import { FROM_MAIL, FROM_NAME } from '../../utils/envConfig';
 
 /**
  * A class to handle login screen logic
@@ -260,7 +260,6 @@ class LoginScreenManager {
       replyTo: FROM_MAIL,
       subject,
       content: mailContent,
-      apiKey: SEND_GRID_API_KEY,
       isHTML: true,
     };
 
