@@ -1,10 +1,9 @@
 export interface IEmail {
-    to: string[];
-    fromMail: string;
-    fromName: string;
-    replyTo: string;
-    subject: string;
-    content: string;
-    apiKey: string;
-    isHTML: boolean;
+  to: string[];
+  fromMail: string;
+  fromName: string;
+  replyTo: string;
+  subject: string;
+  content: string;
+  isHTML: boolean;
 }

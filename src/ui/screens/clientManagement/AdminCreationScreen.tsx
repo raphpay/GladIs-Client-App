@@ -20,7 +20,6 @@ import {
   BASE_PASSWORD,
   FROM_MAIL,
   FROM_NAME,
-  SEND_GRID_API_KEY,
 } from '../../../business-logic/utils/envConfig';
 
 import { IClientCreationStack } from '../../../navigation/Routes';
@@ -126,7 +125,6 @@ function AdminCreationScreen(
       replyTo: FROM_MAIL,
       subject: 'Bienvenue à Glad-Is',
       content,
-      apiKey: SEND_GRID_API_KEY,
       isHTML: true,
     };
     return email;
